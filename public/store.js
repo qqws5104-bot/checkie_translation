@@ -8,7 +8,7 @@
   function err(code, message) { const e = new Error(message); e.code = code; return e; }
   let me = { loggedIn: false, canEdit: false, canView: false, isAdmin: false, name: '', username: '', pending: 0 };
   const meReady = fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' })
-    .then(r => r.json()).then(j => { if (!j.error) me = j; else me.setupError = j.message; return me; })
+    .then(r => r.json()).then(j => { if (!j.error && 'loggedIn' in j) me = j; else me.setupError = j.message || '서버에서 알 수 없는 오류가 났어요.'; return me; })
     .catch(() => { me.offline = true; return me; });
 
   const stores = {};

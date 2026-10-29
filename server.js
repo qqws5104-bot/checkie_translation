@@ -51,9 +51,10 @@ function ensureBranch() {
   if (!branchReady) branchReady = (async () => {
     const b = await gh('/branches/' + encodeURIComponent(DATA_BRANCH));
     if (b.ok) return;
-    if (b.status !== 404) throw new Error('GitHub 저장소에 접근하지 못했어요 (' + b.status + '). 토큰과 GITHUB_REPO를 확인해 주세요.');
+    if (b.status === 401) throw new Error('GitHub 토큰이 올바르지 않거나 만료됐어요 (401). Render의 GITHUB_TOKEN을 다시 넣어 주세요.');
+    if (b.status !== 404) throw new Error('GitHub 저장소에 접근하지 못했어요 (' + b.status + '). 토큰 권한(Contents: Read and write)을 확인해 주세요.');
     const base = await gh('/git/ref/heads/' + encodeURIComponent(BASE_BRANCH));
-    if (!base.ok) throw new Error(BASE_BRANCH + ' 브랜치를 찾지 못했어요.');
+    if (!base.ok) throw new Error(base.status === 404 ? `저장소 ${REPO}의 ${BASE_BRANCH} 브랜치를 찾지 못했어요 (404). GITHUB_REPO 이름(밑줄·하이픈까지)과, 토큰에 이 저장소가 선택돼 있는지 확인해 주세요.` : 'GitHub 저장소에 접근하지 못했어요 (' + base.status + ').');
     const sha = (await base.json()).object.sha;
     const c = await gh('/git/refs', { method: 'POST', body: JSON.stringify({ ref: 'refs/heads/' + DATA_BRANCH, sha }) });
     if (!c.ok && c.status !== 422) throw new Error(DATA_BRANCH + ' 브랜치를 만들지 못했어요 (' + c.status + ').');
@@ -300,6 +301,7 @@ http.createServer(async (req, res) => {
     return send(res, 404, { message: '없는 주소예요.' });
   } catch (e) {
     console.error(e);
-    return send(res, 500, { message: e.message || '서버 오류가 났어요.' });
+    const msg = /fetch failed|ENOTFOUND|ECONNREFUSED|ETIMEDOUT/.test(String(e.message)) ? 'GitHub에 연결하지 못했어요. 잠시 뒤 다시 시도해 주세요.' : (e.message || '서버 오류가 났어요.');
+    return send(res, 500, { error: 'server', message: msg });
   }
 }).listen(PORT, () => console.log('checkie-translation listening on ' + PORT + (configured ? '' : ' (환경 변수 설정 필요)')));
