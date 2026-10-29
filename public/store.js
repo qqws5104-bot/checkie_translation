@@ -6,7 +6,7 @@
 (function () {
   const clone = o => JSON.parse(JSON.stringify(o));
   function err(code, message) { const e = new Error(message); e.code = code; return e; }
-  let me = { loggedIn: false, canEdit: false, canView: false, isAdmin: false, name: '', role: '', pending: 0 };
+  let me = { loggedIn: false, canEdit: false, canView: false, isAdmin: false, name: '', username: '', pending: 0 };
   const meReady = fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' })
     .then(r => r.json()).then(j => { if (!j.error) me = j; else me.setupError = j.message; return me; })
     .catch(() => { me.offline = true; return me; });
@@ -111,8 +111,12 @@
   }
   window.Store = {
     me: () => meReady,
-    login: (email, password) => post('/api/login', { email, password }),
-    signup: (name, email, password) => post('/api/signup', { name, email, password }),
+    login: (username, password) => post('/api/login', { username, password }),
+    signup: (username, name, password) => post('/api/signup', { username, name, password }),
+    async refreshMe() {
+      const r = await fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' });
+      return r.json();
+    },
     logout: () => post('/api/logout'),
     changePassword: (current, next) => post('/api/password', { current, next }),
     async adminUsers() {
@@ -121,7 +125,7 @@
       if (!r.ok) throw err('failed', j.message || '회원 목록을 불러오지 못했어요.');
       return j.users || [];
     },
-    adminAction: (id, action, role) => post('/api/admin/users/' + encodeURIComponent(id), { action, role }),
+    adminAction: (id, action, extra) => post('/api/admin/users/' + encodeURIComponent(id), Object.assign({ action }, extra || {})),
     pending: () => Object.values(stores).some(s => s.dirty.size || s.deleted.size || s.saving),
   };
   window.claude = { use: async name => ({ db, user, downloads })[name] || null };

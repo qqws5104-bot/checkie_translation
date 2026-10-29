@@ -172,6 +172,15 @@ dialog .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14
 .urow .acts { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
 .urow select { width: auto; }
 @media (max-width: 700px) { .urow { grid-template-columns: minmax(0, 1fr); } .urow .acts { justify-content: flex-start; } }
+.ptog { border: 1px solid var(--line); background: var(--bg); border-radius: 99px; padding: 6px 12px; font-size: 14px; color: var(--muted); white-space: nowrap; }
+.ptog::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid currentColor; margin-right: 6px; vertical-align: -1px; }
+.ptog[aria-pressed="true"] { border-color: var(--ok); color: var(--ok); font-weight: 700; }
+.ptog[aria-pressed="true"]::before { background: currentColor; }
+.ptog:disabled { opacity: .5; }
+.urow.waiting { border-color: var(--accent); }
+.waitbox { text-align: center; }
+.waitbox .big { font-size: 40px; margin: 6px 0; }
+@media (max-width: 640px) { .urow { grid-template-columns: 1fr; } .urow .acts { justify-content: flex-start; } }
 .temp { font-family: var(--font-mono); background: var(--panel); padding: 2px 8px; border-radius: 6px; user-select: all; }
 .err { color: var(--accent); font-size: 14px; min-height: 1.4em; margin: 6px 0 0; }
 </style>
@@ -191,7 +200,7 @@ dialog .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14
     <button type="button" role="tab" data-view="card" aria-selected="true">게임 카드<span>컨셉·말투·진행 상황</span></button>
     <button type="button" role="tab" data-view="prompts" aria-selected="false">프롬프트<span>복사해서 AI에 붙여 넣기</span></button>
     <button type="button" role="tab" data-view="glossary" aria-selected="false">용어집<span>모든 게임 공용</span></button>
-    <button type="button" role="tab" data-view="admin" aria-selected="false" id="admin-tab" hidden>회원 관리<span id="admin-sub">가입 승인·권한</span></button>
+    <button type="button" role="tab" data-view="admin" aria-selected="false" id="admin-tab" hidden>회원 관리<span id="admin-sub">보기·편집 허용</span></button>
   </nav>
   <div id="picker" class="picker"></div>
   <div id="content"><div class="empty">불러오는 중…</div></div>
@@ -204,27 +213,34 @@ dialog .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14
     <p class="err" id="setup-err" hidden></p>
     <div class="tabs2" role="group" aria-label="로그인 또는 회원가입"><button type="button" id="tab-login" aria-pressed="true">로그인</button><button type="button" id="tab-signup" aria-pressed="false">회원가입</button></div>
     <form id="login-form" class="fstack">
-      <label class="field"><span>이메일</span><input id="li-email" type="email" autocomplete="email"></label>
+      <label class="field"><span>아이디</span><input id="li-id" autocomplete="username" autocapitalize="off" spellcheck="false"></label>
       <label class="field"><span>비밀번호</span><input id="li-pw" type="password" autocomplete="current-password"></label>
       <p class="err" id="li-err"></p>
       <button type="submit" class="btn primary">로그인</button>
     </form>
     <form id="signup-form" class="fstack" hidden>
-      <p style="margin:0;font-size:14px;color:var(--muted)">가입 신청 후 관리자가 승인하면 로그인할 수 있어요.</p>
+      <p style="margin:0;font-size:14px;color:var(--muted)">가입하면 관리자가 보기·편집 권한을 줄 때까지 기다리는 화면이 나와요. 허용되면 바로 들어가져요.</p>
+      <label class="field"><span>아이디 (영문 소문자·숫자 3~20자)</span><input id="su-id" autocomplete="username" autocapitalize="off" spellcheck="false"></label>
       <label class="field"><span>이름</span><input id="su-name" autocomplete="name" placeholder="수정 기록에 표시돼요"></label>
-      <label class="field"><span>이메일</span><input id="su-email" type="email" autocomplete="email"></label>
-      <label class="field"><span>비밀번호 (8자 이상)</span><input id="su-pw" type="password" autocomplete="new-password"></label>
+      <label class="field"><span>비밀번호 (4자 이상)</span><input id="su-pw" type="password" autocomplete="new-password"></label>
       <label class="field"><span>비밀번호 확인</span><input id="su-pw2" type="password" autocomplete="new-password"></label>
       <p class="err" id="su-err"></p><p class="ok-msg" id="su-ok"></p>
       <button type="submit" class="btn primary">가입 신청</button>
     </form>
+    <div id="wait-box" class="waitbox fstack" hidden>
+      <div class="big" aria-hidden="true">⏳</div>
+      <h2 style="margin:0">승인 대기 중</h2>
+      <p id="wait-who" style="margin:0"></p>
+      <p class="hint" style="margin:0">관리자가 ‘보기 허용’을 주면 이 화면이 자동으로 바뀌어요. 창을 열어 두기만 하면 돼요.</p>
+      <button type="button" class="btn" id="wait-logout">로그아웃</button>
+    </div>
   </div>
 </main>
 <dialog id="pwdlg">
   <form id="pw-form" class="fstack">
     <h2>비밀번호 변경</h2>
     <label class="field"><span>지금 비밀번호</span><input id="pw-cur" type="password" autocomplete="current-password"></label>
-    <label class="field"><span>새 비밀번호 (8자 이상)</span><input id="pw-new" type="password" autocomplete="new-password"></label>
+    <label class="field"><span>새 비밀번호 (4자 이상)</span><input id="pw-new" type="password" autocomplete="new-password"></label>
     <p class="err" id="pw-err"></p>
     <div class="row"><button type="button" class="btn" data-close>닫기</button><button type="submit" class="btn primary">변경</button></div>
   </form>
@@ -761,29 +777,42 @@ window.addEventListener('hashchange', () => {
 });
 
 /* ================= 로그인·회원 ================= */
+let meNow = null;
 function showAuthPage(msg) {
-  $('#app').hidden = true; $('#auth-page').hidden = false;
+  $('#app').hidden = true; $('#auth-page').hidden = false; $('#wait-box').hidden = true;
+  $('.tabs2').hidden = false;
   if (msg) { $('#setup-err').hidden = false; $('#setup-err').textContent = msg; }
   dlgTab('login');
+}
+function showWaiting(me) {
+  $('#app').hidden = true; $('#auth-page').hidden = false;
+  $('.tabs2').hidden = true; $('#login-form').hidden = true; $('#signup-form').hidden = true; $('#setup-err').hidden = true;
+  $('#wait-box').hidden = false; $('.authcard .sub').hidden = true;
+  $('#wait-who').innerHTML = `<b>${esc(me.name)}</b> (${esc(me.username)}) 님, 가입이 완료됐어요.`;
 }
 function dlgTab(which) {
   $('#tab-login').setAttribute('aria-pressed', String(which === 'login'));
   $('#tab-signup').setAttribute('aria-pressed', String(which === 'signup'));
   $('#login-form').hidden = which !== 'login'; $('#signup-form').hidden = which !== 'signup';
   ['li-err', 'su-err', 'su-ok'].forEach(id => ($('#' + id).textContent = ''));
-  (which === 'login' ? $('#li-email') : $('#su-name')).focus();
+  (which === 'login' ? $('#li-id') : $('#su-id')).focus();
 }
 function openLogin() { showAuthPage(); }
+async function doLogout() {
+  if (Store.pending()) { toast('저장 중인 내용이 있어요. 잠시 후 다시 눌러 주세요.'); return; }
+  await Store.logout(); location.href = location.pathname;
+}
+function setAdminBadge(n) {
+  $('#admin-sub').innerHTML = n ? `승인 대기<span class="badge">${n}</span>` : '보기·편집 허용';
+}
 function setupAuth(me) {
-  $('#who').innerHTML = !me.loggedIn ? '' : me.role === 'admin' ? '<b>관리자</b>' : `<b>${esc(me.name)}</b> · ${me.role === 'editor' ? '편집자' : '보기 전용'}`;
-  $('#pw-btn').hidden = !me.loggedIn || me.role === 'admin';
-
+  meNow = me;
+  $('#who').innerHTML = !me.loggedIn ? '' : me.isAdmin ? `<b>관리자</b> (${esc(me.username)})` : `<b>${esc(me.name)}</b> · ${me.canEdit ? '편집 가능' : '보기 전용'}`;
+  $('#pw-btn').hidden = !me.loggedIn || me.isAdmin;
   $('#admin-tab').hidden = !me.isAdmin;
-  if (me.isAdmin && me.pending) $('#admin-sub').innerHTML = `승인 대기<span class="badge">${me.pending}</span>`;
-  $('#auth-btn').onclick = async () => {
-    if (Store.pending()) { toast('저장 중인 내용이 있어요. 잠시 후 다시 눌러 주세요.'); return; }
-    await Store.logout(); location.reload();
-  };
+  if (me.isAdmin) setAdminBadge(me.pending);
+  $('#auth-btn').onclick = doLogout;
+  $('#wait-logout').onclick = doLogout;
   $('#pw-btn').onclick = () => { $('#pw-err').textContent = ''; $('#pw-cur').value = ''; $('#pw-new').value = ''; $('#pwdlg').showModal(); $('#pw-cur').focus(); };
   $('#tab-login').onclick = () => dlgTab('login');
   $('#tab-signup').onclick = () => dlgTab('signup');
@@ -791,7 +820,7 @@ function setupAuth(me) {
   $('#login-form').onsubmit = async e => {
     e.preventDefault();
     $('#li-err').textContent = '확인 중…';
-    try { await Store.login($('#li-email').value.trim(), $('#li-pw').value); location.reload(); }
+    try { await Store.login($('#li-id').value.trim(), $('#li-pw').value); location.reload(); }
     catch (err) { $('#li-err').textContent = err.message; }
   };
   $('#signup-form').onsubmit = async e => {
@@ -799,7 +828,7 @@ function setupAuth(me) {
     $('#su-ok').textContent = '';
     if ($('#su-pw').value !== $('#su-pw2').value) { $('#su-err').textContent = '비밀번호 확인이 맞지 않아요.'; return; }
     $('#su-err').textContent = '보내는 중…';
-    try { const r = await Store.signup($('#su-name').value.trim(), $('#su-email').value.trim(), $('#su-pw').value); $('#su-err').textContent = ''; $('#su-ok').textContent = r.message; e.target.reset(); }
+    try { await Store.signup($('#su-id').value.trim(), $('#su-name').value.trim(), $('#su-pw').value); location.reload(); }
     catch (err) { $('#su-err').textContent = err.message; }
   };
   $('#pw-form').onsubmit = async e => {
@@ -807,6 +836,20 @@ function setupAuth(me) {
     try { await Store.changePassword($('#pw-cur').value, $('#pw-new').value); $('#pwdlg').close(); toast('비밀번호를 바꿨어요.'); }
     catch (err) { $('#pw-err').textContent = err.message; }
   };
+}
+/* 권한이 바뀌었는지 주기적으로 확인 → 바뀌면 새로고침해서 바로 반영 */
+function watchMe(intervalMs) {
+  setInterval(async () => {
+    if (document.hidden) return;
+    let m; try { m = await Store.refreshMe(); } catch { return; }
+    if (!m || m.error) return;
+    if (meNow.isAdmin && m.isAdmin) {
+      if (m.pending !== meNow.pending) { meNow.pending = m.pending; setAdminBadge(m.pending); if (view === 'admin') loadAdmin(); }
+      return;
+    }
+    const changed = m.loggedIn !== meNow.loggedIn || !!m.canView !== !!meNow.canView || !!m.canEdit !== !!meNow.canEdit;
+    if (changed && !Store.pending()) location.reload();
+  }, intervalMs);
 }
 
 /* ---------- 회원 관리 (관리자) ---------- */
@@ -819,52 +862,69 @@ const fmtDate = s => s ? new Date(s).toLocaleDateString('ko-KR') : '';
 function adminHTML() {
   if (adminErr) return `<div class="empty">${esc(adminErr)}</div>`;
   if (!adminUsers) return '<div class="empty">회원 목록을 불러오는 중…</div>';
-  const pend = adminUsers.filter(u => u.status === 'pending'), ok = adminUsers.filter(u => u.status === 'approved'), blk = adminUsers.filter(u => u.status === 'blocked');
-  const row = (u, acts) => `<div class="urow"><div><b>${esc(u.name)}</b><div class="meta">${esc(u.email)}</div></div><div class="meta">가입 신청 ${fmtDate(u.createdAt)}${u.approvedAt ? ` · 승인 ${fmtDate(u.approvedAt)}` : ''}</div><div class="acts">${acts}</div></div>`;
+  const byDate = (a, b) => (b.createdAt || '').localeCompare(a.createdAt || '');
+  const wait = adminUsers.filter(u => !u.canView).sort(byDate), ok = adminUsers.filter(u => u.canView).sort(byDate);
+  const row = u => `<div class="urow${u.canView ? '' : ' waiting'}">
+      <div><b>${esc(u.name)}</b><div class="meta">${esc(u.username)}</div></div>
+      <div class="meta">가입 ${fmtDate(u.createdAt)}${u.permAt ? ` · 권한 변경 ${fmtDate(u.permAt)}` : ''}</div>
+      <div class="acts">
+        <button type="button" class="ptog" data-perm="view" data-uid="${esc(u.id)}" aria-pressed="${!!u.canView}">보기 허용</button>
+        <button type="button" class="ptog" data-perm="edit" data-uid="${esc(u.id)}" aria-pressed="${!!u.canEdit}">편집 허용</button>
+        <button type="button" class="btn" data-ua="reset" data-uid="${esc(u.id)}">비밀번호 초기화</button>
+        <button type="button" class="btn danger" data-ua="delete" data-uid="${esc(u.id)}">삭제</button>
+      </div></div>`;
   return `
   ${tempShown ? `<div class="section" style="border-color:var(--ok)"><h2>임시 비밀번호</h2><p class="hint">${esc(tempShown.name)} 님에게 전달하세요. 이 화면을 벗어나면 다시 볼 수 없어요. 로그인 후 ‘비밀번호 변경’으로 바꾸게 해 주세요.</p><p><span class="temp">${esc(tempShown.pw)}</span></p><div class="dangerzone"><button type="button" class="btn" data-ua="hide-temp">닫기</button></div></div>` : ''}
-  <section class="section"><h2>승인 대기 ${pend.length ? `<span class="badge">${pend.length}</span>` : ''}</h2><p class="hint">편집자는 게임 카드와 용어집을 고칠 수 있고, 보기 전용은 읽고 프롬프트만 복사할 수 있어요.</p>
-    <div class="ulist">${pend.length ? pend.map(u => row(u, `<button type="button" class="btn primary" data-ua="approve:editor" data-uid="${esc(u.id)}">편집자로 승인</button><button type="button" class="btn" data-ua="approve:viewer" data-uid="${esc(u.id)}">보기 전용으로 승인</button><button type="button" class="btn danger" data-ua="delete" data-uid="${esc(u.id)}">거절</button>`)).join('') : '<p class="hint">대기 중인 신청이 없어요.</p>'}</div></section>
-  <section class="section"><h2>승인된 회원 (${ok.length})</h2>
-    <div class="ulist">${ok.length ? ok.map(u => row(u, `<select data-urole="${esc(u.id)}" aria-label="${esc(u.name)} 권한"><option value="editor" ${u.role === 'editor' ? 'selected' : ''}>편집자</option><option value="viewer" ${u.role === 'viewer' ? 'selected' : ''}>보기 전용</option></select><button type="button" class="btn" data-ua="reset" data-uid="${esc(u.id)}">비밀번호 초기화</button><button type="button" class="btn danger" data-ua="block" data-uid="${esc(u.id)}">사용 중지</button>`)).join('') : '<p class="hint">아직 승인된 회원이 없어요.</p>'}</div></section>
-  ${blk.length ? `<section class="section"><h2>사용 중지 (${blk.length})</h2><div class="ulist">${blk.map(u => row(u, `<button type="button" class="btn" data-ua="approve:${u.role === 'editor' ? 'editor' : 'viewer'}" data-uid="${esc(u.id)}">다시 사용</button><button type="button" class="btn danger" data-ua="delete" data-uid="${esc(u.id)}">삭제</button>`)).join('')}</div></section>` : ''}`;
+  <section class="section"><h2>승인 대기 ${wait.length ? `<span class="badge">${wait.length}</span>` : ''}</h2>
+    <p class="hint"><b>보기 허용</b>을 켜면 그 사람 화면이 바로 열려요. <b>편집 허용</b>을 켜면 게임 카드와 용어집을 고칠 수 있어요. (편집을 켜면 보기도 같이 켜지고, 보기를 끄면 편집도 꺼져요.)</p>
+    <div class="ulist">${wait.length ? wait.map(row).join('') : '<p class="hint">기다리는 사람이 없어요.</p>'}</div></section>
+  <section class="section"><h2>이용 중인 회원 (${ok.length})</h2>
+    <div class="ulist">${ok.length ? ok.map(row).join('') : '<p class="hint">아직 허용된 회원이 없어요.</p>'}</div></section>`;
 }
 document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-perm]');
+  if (t) {
+    const on = t.getAttribute('aria-pressed') !== 'true';
+    t.disabled = true;
+    try {
+      await Store.adminAction(t.dataset.uid, 'perm', { [t.dataset.perm]: on });
+      toast(`${t.dataset.perm === 'view' ? '보기' : '편집'} 허용을 ${on ? '켰어요' : '껐어요'}.`);
+      await loadAdmin(); setAdminBadge(adminUsers ? adminUsers.filter(u => !u.canView).length : 0);
+    } catch (err) { toast(err.message); t.disabled = false; }
+    return;
+  }
   const b = e.target.closest('[data-ua]'); if (!b) return;
-  const act = b.dataset.ua;
-  if (act === 'hide-temp') { tempShown = null; render(true); return; }
-  const [action, role] = act.split(':');
-  if ((action === 'delete' || action === 'block') && b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = '한 번 더 누르면 실행'; return; }
+  const action = b.dataset.ua;
+  if (action === 'hide-temp') { tempShown = null; render(true); return; }
+  if ((action === 'delete' || action === 'reset') && b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = '한 번 더 누르면 실행'; return; }
   b.disabled = true;
   try {
-    const r = await Store.adminAction(b.dataset.uid, action, role);
+    const r = await Store.adminAction(b.dataset.uid, action);
     if (r.tempPassword) tempShown = { name: r.name, pw: r.tempPassword };
-    toast({ approve: '승인했어요.', delete: '삭제했어요.', block: '사용을 중지했어요.', reset: '임시 비밀번호를 만들었어요.' }[action] || '처리했어요.');
-    await loadAdmin();
+    toast({ delete: '삭제했어요.', reset: '임시 비밀번호를 만들었어요.' }[action] || '처리했어요.');
+    await loadAdmin(); setAdminBadge(adminUsers ? adminUsers.filter(u => !u.canView).length : 0);
   } catch (err) { toast(err.message); b.disabled = false; }
 });
-document.addEventListener('change', async e => {
-  const sel = e.target.closest('[data-urole]'); if (!sel) return;
-  try { await Store.adminAction(sel.dataset.urole, 'role', sel.value); toast('권한을 바꿨어요.'); await loadAdmin(); } catch (err) { toast(err.message); }
-});
 window.addEventListener('store-save-error', e => { const err = e.detail || {}; if (err.code === 'invalid_argument') { readOnly = true; render(true); } toast(err.message || '저장하지 못했어요.'); });
-window.addEventListener('store-need-view', () => showAuthPage('로그인이 풀렸어요. 다시 로그인해 주세요.'));
+window.addEventListener('store-need-view', () => location.reload());
 
 /* ================= boot ================= */
 (async () => {
   try { db = await window.claude?.use?.('db'); } catch { db = null; }
   if (!db) { $('#app').hidden = false; render(true); return; }
-  try { const user = await window.claude.use('user'); if (user && typeof user.can === 'function' && (await user.can('data.write')) === false) readOnly = true; } catch {}
   window.claude.use('downloads').then(d => { downloads = d; }).catch(() => {});
   const h = location.hash.slice(1);
   if (h === 'glossary') view = 'glossary';
   const me = await Store.me();
-  $('#saved').textContent = me.setupError ? '서버 설정 필요' : !me.loggedIn ? '' : readOnly ? '보기 전용' : '입력하면 자동 저장';
   setupAuth(me);
   if (me.setupError) { showAuthPage(me.setupError); return; }
   if (me.offline) { showAuthPage('서버에 연결하지 못했어요. 잠시 후 새로고침해 주세요. (무료 서버는 처음 열 때 1분 정도 걸릴 수 있어요)'); return; }
   if (!me.loggedIn) { showAuthPage(); return; }
+  if (!me.canView) { showWaiting(me); watchMe(8000); return; }
+  readOnly = !me.canEdit;
+  $('#saved').textContent = readOnly ? '보기 전용' : '입력하면 자동 저장';
   $('#app').hidden = false;
+  watchMe(20000);
   if (h === 'admin' && me.isAdmin) { view = 'admin'; loadAdmin(); }
   db.collection('themes').onSnapshot(snap => {
     themes = snap.docs.filter(d => d.exists).map(d => ({ id: d.id, data: d.data() })).sort((a, b) => (a.data.name || '').localeCompare(b.data.name || '', 'ko'));
