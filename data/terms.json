@@ -155,8 +155,10 @@
     "updatedAt": "2026-10-29T00:00:00Z"
   },
   "ui-front": {
-    "common": true,
-    "games": [],
+    "common": false,
+    "games": [
+      "chris-mas"
+    ],
     "intent": "앞쪽 방향 안내",
     "ko": "FRONT",
     "memo": "영어 버전에서는 자연스러운지 확인 필요",
@@ -181,7 +183,7 @@
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-29T00:00:00Z"
+    "updatedAt": "2026-10-29T05:38:32.453Z"
   },
   "ui-goal": {
     "common": false,
