@@ -251,7 +251,7 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "확정",
+        "status": "후보",
         "text": "ROUND"
       },
       "ja": {
@@ -268,7 +268,7 @@
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-29T05:21:30.580Z"
+    "updatedAt": "2026-10-29T05:28:55.463Z"
   },
   "ui-side": {
     "common": true,
