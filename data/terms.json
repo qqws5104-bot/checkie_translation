@@ -123,35 +123,6 @@
     "type": "버튼 라벨",
     "updatedAt": "2026-10-29T00:00:00Z"
   },
-  "remember": {
-    "common": true,
-    "games": [],
-    "intent": "화면에 보인 것을 잠시 기억하는 동작",
-    "ko": "기억하다",
-    "memo": "",
-    "tr": {
-      "en": {
-        "avoid": "",
-        "avoidWhy": "",
-        "status": "후보",
-        "text": "Remember"
-      },
-      "ja": {
-        "avoid": "覚えろ",
-        "avoidWhy": "명령형은 거칠게 들림",
-        "status": "후보",
-        "text": "覚えて"
-      },
-      "zh": {
-        "avoid": "",
-        "avoidWhy": "",
-        "status": "후보",
-        "text": "记住"
-      }
-    },
-    "type": "지시 동사",
-    "updatedAt": "2026-10-29T00:00:00Z"
-  },
   "this-one": {
     "common": false,
     "games": [
