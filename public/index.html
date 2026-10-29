@@ -451,6 +451,17 @@ dialog .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14
 .gpanel-row small { grid-column: 1 / -1; color: var(--muted); font-size: 13px; }
 dialog.wide { max-width: 760px; }
 #paste-text { min-height: 240px; font-family: var(--font-mono); font-size: 13px; white-space: pre; }
+.flowline { display: flex; flex-wrap: wrap; gap: 4px 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
+.flowline span { display: inline-flex; gap: 6px; align-items: baseline; }
+.flowline span:not(:last-child)::after { content: '›'; margin: 0 10px; color: var(--line); }
+.flowline em { font-style: normal; font-size: 12px; border: 1px solid var(--line); border-radius: 99px; padding: 0 7px; }
+.flowline span { color: var(--fg); }
+.pnote { margin: 0; }
+.srcmini { font-size: 14px; background: var(--panel); border-radius: 10px; padding: 8px 12px; }
+.srcmini .linkbtn { margin: 0 0 0 4px; }
+.more .mh { margin: 12px 0 4px; font-size: 14px; color: var(--muted); }
+.more .hsteps { margin-top: 8px; }
+.pbody { gap: 10px; }
 .toast.busy::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; margin-right: 8px; vertical-align: -1px; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
@@ -936,14 +947,19 @@ function usageFor(id, t, L) {
 }
 function usageHTML(u) {
   if (!u) return '';
-  return `
-  <div class="io">
-    <div><span>도구</span>${esc(u.tool)}</div>
-    <div><span>넣을 것</span>${esc(u.input)}</div>
-    <div><span>받을 것</span>${esc(u.output)}</div>
-    <div><span>다음</span>${esc(u.next)}</div>
-  </div>
-  <ol class="hsteps">${u.steps.map(x => `<li>${x}</li>`).join('')}</ol>`;
+  return `<div class="flowline"><span><em>도구</em>${esc(u.tool)}</span><span><em>넣을 것</em>${esc(u.input)}</span><span><em>받을 것</em>${esc(u.output)}</span><span><em>다음</em>${esc(u.next)}</span></div>`;
+}
+/* 하는 법 · 주의할 점 · 프롬프트 · 설계 설명을 접힌 칸 두 개로 */
+function moreHTML(p, u, L, t) {
+  const how = u ? `<ol class="hsteps">${u.steps.map(x => `<li>${x}</li>`).join('')}</ol>${u.warn && u.warn.length ? `<h4 class="mh">주의할 점</h4><ul>${u.warn.map(w => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}` : '';
+  return `${how ? `<details class="more"><summary>하는 법${u.warn && u.warn.length ? ` · 주의할 점 <small>${u.warn.length}</small>` : ''}</summary>${how}</details>` : ''}
+    <details class="more"><summary>프롬프트 · 설계 설명</summary><pre class="ptext" id="pt-${p.i}">${esc(p.text)}</pre><h4 class="mh">설계 설명</h4><dl class="why">${designFor(p.id, L, t).map(([k, v]) => `<div class="r"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></details>`;
+}
+/* 1 원문 분석 카드용 원문 표 요약 (자세한 표는 게임 설정에서) */
+function srcMiniHTML(id, t) {
+  const st = tableStats(t.srcTable); if (!st.rows) return '';
+  const unc = (String(t.srcTable || '').match(/판독 불확실/g) || []).length;
+  return `<div class="srcmini">원문 표 <b>${st.rows}행</b> 준비됨${unc ? ` · <b class="badtxt">판독 불확실 ${unc}곳</b>` : ''} — 패키지에 자동으로 들어가요. <button type="button" class="linkbtn" data-goto="${esc(id)}|card">게임 설정에서 보기·고치기</button></div>`;
 }
 function designFor(id, L, t) {
   const game = t.name || '이 게임';
@@ -1336,7 +1352,7 @@ function workHTML({ id, data: t }) {
   };
   if (step === 'confirmed' || step === 'done') [1, 2, 3, 4].forEach(n => { if (N || step === 'confirmed') stat[n] = ['done', N ? stat[n][1] : '확정됨']; });
   const extra = {
-    1: { n: N, label: '번역 입력표', drop: 'step1', ups: readOnly ? '' : `<label class="btn upl">결과 표 올리기<input type="file" hidden data-upload="inputTable" accept="${FILE_ACCEPT}"></label><button type="button" class="btn" data-paste="field:inputTable">붙여 넣기</button>`, before: srcBoxHTML(t), note: N ? `번역 입력표 ${N}행이 저장돼 있어요${s.unresolved ? ` · <b class="badtxt">확인 필요·판독 불확실 ${s.unresolved}곳</b>` : ''}. 게임 카드에서 표를 볼 수 있어요.` : '결과로 받은 표 파일(xlsx)을 올리면 다음 단계부터 자동으로 들어가요.' },
+    1: { n: N, label: '번역 입력표', drop: 'step1', ups: readOnly ? '' : `<label class="btn upl" title="캡처·대본에서 원문을 미리 읽어 원문 표를 만들어요 (선택)">원문 파일 읽기<input type="file" hidden multiple data-src accept="${SRC_ACCEPT}"></label><label class="btn upl">결과 표 올리기<input type="file" hidden data-upload="inputTable" accept="${FILE_ACCEPT}"></label><button type="button" class="btn" data-paste="field:inputTable">붙여 넣기</button>`, before: srcMiniHTML(id, t), note: N ? `번역 입력표 <b>${N}행</b> 저장됨${s.unresolved ? ` · <b class="badtxt">확인 필요·판독 불확실 ${s.unresolved}곳</b> — 기획 답을 반영해 다시 올려 주세요` : ''}` : 'ChatGPT가 준 결과 표(xlsx)를 올리면 다음 단계부터 자동으로 들어가요.' },
     2: { n: N, label: '번역 입력표', drop: 'wup:tr', ups: `${upl('tr', '번역 결과 올리기')}<button type="button" class="btn" data-wact="deepl">DeepL용 파일 받기</button>${upl('b', 'DeepL 결과 올리기')}`, note: `번역문 A ${s.tr}/${N} · DeepL 번역문 B ${s.b}/${N}${lk !== 'en' && !enReady(t) ? ' · <b class="badtxt">영어를 먼저 확정해 주세요</b>' : ''}` },
     3: { n: rv.n, label: rv.again ? '재검수할 행' : '검수할 행', drop: 'wup:rv', ups: upl('rv', '검수 결과 올리기'), note: rv.n ? `${rv.again ? '바뀐 문구만 다시 검수해요. ' : ''}검수할 ${rv.n}행이 패키지에 들어가 있어요.` : s.human ? `AI 검수는 끝났어요. 아래 <b>사람 확인 ${s.human}건</b>만 골라 주세요.` : '지금 검수할 행이 없어요.', after: humanListHTML(t, lk) },
     4: { n: tsP.n, label: '테스트할 행', drop: 'wup:ts', ups: upl('ts', '테스트 결과 올리기'), note: tsP.n ? `검수를 통과한 ${tsP.n}행이 원문 없이 들어가 있어요.` : s.compare ? `AI 테스트는 끝났어요. 아래 <b>대조 ${s.compare}건</b>만 확인해 주세요.` : '지금 테스트할 행이 없어요.', after: compareListHTML(t, lk) },
@@ -1346,22 +1362,19 @@ function workHTML({ id, data: t }) {
     const u = usageFor(p.id, t, L);
     if (p.setup) return `
       <details class="pcard setup1"><summary><span class="ptag s">${esc(p.tag)}</span><span class="ptitle"><span class="pname">${esc(p.name)}</span><span class="psum">${esc(p.sum)} · ${esc(p.tool)}</span></span><button type="button" class="btn pcopy" data-copy="${p.i}">지침 복사</button></summary>
-        <div class="pbody">${usageHTML(u)}<details class="more"><summary>프롬프트 내용 보기</summary><pre class="ptext" id="pt-${p.i}">${esc(p.text)}</pre></details>
-        <details class="more"><summary>설계 설명</summary><dl class="why">${designFor(p.id, L, t).map(([k, v]) => `<div class="r"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></details></div></details>`;
+        <div class="pbody">${usageHTML(u)}${moreHTML(p, u, L, t)}</div></details>`;
     const n = +p.tag, [cls, txt] = stat[n], x = extra[n], now = cls === 'now';
     return `
       <details class="pcard ${cls} dropzone" id="card-${n}" data-tag="${n}" data-drop="${x.drop || ''}"${os.open.has(String(n)) ? ' open' : ''}>
         <summary><span class="ptag">${n}</span><span class="ptitle"><span class="pname">${esc(p.name)}</span><span class="psum">${esc(p.sum)} · ${esc(p.tool)}</span></span><span class="pstate ${cls}">${esc(txt)}</span>
           <button type="button" class="btn${now && (n === 1 || x.n) ? ' primary' : ''} pcopy" data-copy="${p.i}" title="프롬프트와 ${esc(x.label)}을 한 번에 복사">패키지 복사${n > 1 ? `<small>${x.n}행</small>` : ''}</button></summary>
         <div class="pbody">
-          ${x.before || ''}
-          <div class="pnote">${x.note}</div>
+          <p class="pnote">${x.note}</p>
           ${usageHTML(u)}
-          <div class="wups">${x.ups}${readOnly ? '' : `<span class="droptip">${fileTip()} · 이 칸에 끌어다 놓아도 돼요</span>`}</div>
+          ${x.before || ''}
+          ${x.ups ? `<div class="wups" title="${readOnly ? '' : fileTip() + ' 파일을 이 칸에 끌어다 놓아도 돼요'}">${x.ups}</div>` : ''}
           ${x.after || ''}
-          ${u && u.warn ? `<details class="more"><summary>주의할 점 <small>${u.warn.length}</small></summary><ul>${u.warn.map(w => `<li>${esc(w)}</li>`).join('')}</ul></details>` : ''}
-          <details class="more"><summary>프롬프트 내용 보기</summary><pre class="ptext" id="pt-${p.i}">${esc(p.text)}</pre></details>
-          <details class="more"><summary>설계 설명</summary><dl class="why">${designFor(p.id, L, t).map(([k, v]) => `<div class="r"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></details>
+          ${moreHTML(p, u, L, t)}
         </div>
       </details>`;
   };
@@ -1955,9 +1968,8 @@ function nowBarHTML(t, lk, L, step, stat, extra, main) {
   if (step === 'confirmed') return `<div class="nowbar ok"><div class="nb-txt"><span class="nb-k">완료</span><span class="nb-t">✓ ${esc(L.label)} 번역이 확정됐어요</span></div><div class="nb-acts"><button type="button" class="btn" data-wact="export">최종 결과 내보내기</button></div></div>`;
   const p = main.find(x => +x.tag === step); if (!p) return '';
   const u = usageFor(p.id, t, L) || {}, x = extra[step];
-  const srcBtn = step === 1 && !readOnly ? `<label class="btn upl">원문 파일 읽기<input type="file" hidden multiple data-src accept="${SRC_ACCEPT}"></label>` : '';
   return `<div class="nowbar"><div class="nb-txt"><span class="nb-k">지금 할 일 · ${step}단계 · ${esc(stat[step][1])}</span><span class="nb-t">${esc(p.name)}</span> <span class="nb-s">${esc(u.tool || p.tool)} · 넣을 것: ${esc(u.input || '')}</span></div>
-    <div class="nb-acts">${step > 1 && !x.n ? `<button type="button" class="btn primary" data-jump="${step}">아래에서 확인하기</button>` : `<button type="button" class="btn primary pcopy" data-copy="${p.i}">패키지 복사${step > 1 ? `<small>${x.n}행</small>` : ''}</button>${srcBtn}${x.ups}`}</div></div>`;
+    <div class="nb-acts">${step > 1 && !x.n ? `<button type="button" class="btn primary" data-jump="${step}">아래에서 확인하기</button>` : `<button type="button" class="btn primary pcopy" data-copy="${p.i}">패키지 복사${step > 1 ? `<small>${x.n}행</small>` : ''}</button>${x.ups}`}</div></div>`;
 }
 
 /* ---------- 원문 표 (파일에서 읽기) ---------- */
