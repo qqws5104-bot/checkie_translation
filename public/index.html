@@ -128,6 +128,20 @@ button.dot { width: 22px; height: 22px; vertical-align: -6px; cursor: pointer; b
 .pname { font-weight: 700; font-size: 16px; }
 .ptool { font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 1px 10px; }
 .pcard .spacer { flex: 1; }
+.flow { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 15px; line-height: 1.7; background: var(--panel); }
+.flow b { margin-right: 6px; }
+.flow span { display: block; font-size: 14px; color: var(--muted); }
+.usage { margin: 0 16px 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.usage h4 { margin: 0 0 10px; font-size: 16px; }
+.usage > ol { margin: 0; padding: 0; list-style: none; counter-reset: st; display: grid; gap: 12px; }
+.usage > ol > li { counter-increment: st; display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 10px; }
+.usage > ol > li::before { content: counter(st); grid-row: span 2; width: 28px; height: 28px; border-radius: 50%; background: var(--fg); color: var(--bg); display: grid; place-items: center; font-weight: 700; font-size: 14px; }
+.usage .ut { display: flex; align-items: center; gap: 8px; font-size: 16px; }
+.uwho { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 0 8px; }
+.usage ul { margin: 4px 0 0; padding-left: 18px; font-size: 15px; line-height: 1.6; }
+.usage code { font-family: var(--font-mono); font-size: 14px; background: var(--bg); padding: 0 4px; border-radius: 4px; }
+.uwarn { margin-top: 14px; padding: 10px 12px; border-left: 4px solid var(--accent); background: var(--bg); border-radius: 6px; font-size: 15px; }
+.uwarn ul { margin-top: 4px; }
 .why { padding: 0 16px 12px; }
 .why h4 { margin: 0 0 6px; font-size: 14px; color: var(--accent); }
 .why dl { margin: 0; display: grid; gap: 6px; }
@@ -558,6 +572,231 @@ ${gloss}` },
 }
 
 
+/* 프롬프트별 사용 순서 */
+function usageFor(id, t, L) {
+  const game = t.name || '이 게임';
+  const abbr = (String(t.name || '').match(/[A-Za-z]/g) || ['G', 'M']).slice(0, 2).join('').toUpperCase();
+  const U = {
+    'P1': {
+      steps: [
+        ['원문 표 준비', '기획', [
+          '엑셀에 4개 열을 만든다: <b>ID | 화면 원문 | 사용 위치 | 글자 수 제한</b>',
+          `ID는 게임 약자와 번호로 정한다. 예: <code>${abbr}-001</code>. 이후 모든 단계가 이 ID로 연결된다.`,
+          '사용 위치는 “어느 화면에서, 누가, 언제” 나오는지까지 적는다.',
+          '문구가 나오는 화면 캡처를 준비한다. 파일 이름에 ID를 넣어 둔다.',
+        ]],
+        ['게임 카드 확인', '기획', [
+          `<b>게임 카드</b> 탭에서 ${esc(game)}의 상황, 화자별 말투, 존댓말·반말이 채워졌는지 본다.`,
+          '이 내용이 프롬프트에 자동으로 들어간다. 비어 있으면 분석이 추측으로 채워진다.',
+        ]],
+        ['ChatGPT에서 실행', '작업자', [
+          '위의 <b>복사</b>를 누른다. (P1은 언어와 상관없어서 어느 언어 탭에서 복사해도 같다)',
+          'ChatGPT에서 <b>새 대화</b>를 열고 붙여 넣는다.',
+          '맨 아래 “(여기에 원문 표를 붙여 넣고…)” 줄을 지우고 엑셀 원문 표를 붙여 넣는다.',
+          '화면 캡처를 첨부하고 보낸다.',
+          '한 대화에는 한 게임만 넣는다. 30~40행이 넘으면 ID 순서대로 나누어 “이어서 다음 행”으로 요청한다.',
+        ]],
+        ['결과 확인', '작업자', [
+          '결과는 <b>출력 1 번역 입력표</b>, <b>출력 2 기획 확인 질문</b>, <b>출력 3 용어집 후보</b>로 나뉘어 온다.',
+          '출력 1에 원문 표의 ID가 모두 있는지 센다.',
+          '‘추측:’이 붙은 칸, 판정 기준이 ‘있음’인 행, 처리 방식이 ‘재설계’인 행에 표시해 둔다.',
+          '‘재설계’ 행은 번역 전에 기획 회의 안건으로 올린다.',
+        ]],
+        ['질문에 답하고 표 고치기', '기획', [
+          '출력 2의 Q 목록에 답한다.',
+          '답에 따라 출력 1의 해당 행을 고친다. ‘확인 필요(Q번호)’가 남은 칸이 없어야 한다.',
+          '게임 전체에 해당하는 답(예: 메리는 플레이어에게 존댓말)은 <b>게임 카드</b>에도 적는다.',
+          '출력 3의 용어는 <b>용어집 → 추가·수정</b>에 등록한다. 번역 칸을 비워 두면 ‘미정’으로 들어간다.',
+          '게임 카드 <b>진행 상황</b>에서 언어마다 <b>원문 정리</b>를 누른다.',
+        ]],
+        ['번역으로 넘기기', '작업자', [
+          '<b>영어</b>: 고친 출력 1 표를 <b>P2-2 초벌 번역 — 영어</b> 맨 아래에 그대로 붙여 넣는다.',
+          '<b>일본어·중국어</b>: 같은 표 끝에 ‘영어 확정본’ 열을 더해 <b>P2-3</b>에 붙여 넣는다.',
+          'P1과 P2는 표의 열 순서가 같아서, 표를 다시 만들 필요가 없다.',
+        ]],
+      ],
+      warn: [
+        'ChatGPT가 번역 후보를 써 오면 “번역은 쓰지 말고 분석만 다시 출력해”라고 한 번 더 요청한다.',
+        '정리 원문은 번역 AI가 뜻을 이해하도록 돕는 설명용이다. 게임 화면의 실제 문구는 바꾸지 않는다.',
+        '‘확인 필요’가 남은 채로 번역에 넘기지 않는다. 번역 AI가 추측해서 번역하고, 일본어·중국어는 사람이 검수하기 어렵다.',
+      ],
+    },
+    'P2-1': {
+      steps: [
+        ['언어별 프로젝트 만들기', '작업자', [
+          `${L.label} 초벌 번역에 쓰는 AI에서 프로젝트를 하나 만든다. (ChatGPT 프로젝트, Claude 프로젝트, Gemini Gem 등)`,
+          `이름 예: <b>체키 번역 — ${L.label}</b>. 언어마다 프로젝트를 따로 둔다.`,
+        ]],
+        ['지침에 등록', '작업자', [
+          `위 언어 탭이 <b>${L.label}</b>인지 확인하고 <b>복사</b>를 누른다. 언어마다 규칙과 용어집이 다르다.`,
+          '프로젝트의 <b>지침(Instructions)</b> 칸에 붙여 넣고 저장한다. 대화창에 붙이지 않는다.',
+        ]],
+        ['바뀌면 다시 등록', '작업자', [
+          '용어집에 확정 번역이나 금지 번역이 늘면, 다시 복사해 지침을 통째로 바꾼다.',
+          '다른 게임을 번역할 때는 그 게임을 고른 뒤 다시 복사해 바꾼다. 용어집이 게임마다 다르다.',
+        ]],
+      ],
+      warn: [
+        '대화창에 매번 붙여 넣으면 대화가 길어질수록 규칙이 흐려진다. 지침에 한 번 등록한다.',
+        '다른 언어 프로젝트와 섞어 쓰지 않는다.',
+      ],
+    },
+    'P2-2': {
+      steps: [
+        ['번역 입력표 준비', '작업자', [
+          'P1 원문 분석의 <b>출력 1</b>을, 기획이 질문에 답한 내용으로 고친 표를 쓴다.',
+          '‘확인 필요’가 남은 칸이 없는지 다시 본다.',
+        ]],
+        ['초벌 번역 실행', '작업자', [
+          'P2-1을 등록한 <b>영어 프로젝트</b>에서 새 대화를 연다.',
+          '<b>복사</b> → 붙여 넣기 → 맨 아래 “(P1 원문 분석의 출력 1을…)” 줄을 지우고 번역 입력표를 붙여 넣는다.',
+          '화면 캡처를 첨부하고 보낸다. 한 대화에는 한 게임만 넣는다.',
+        ]],
+        ['결과 확인', '작업자', [
+          '‘확신 낮은 부분’, ‘정답·판정 위험’, ‘기획 확인 질문’에 내용이 있는 행에 표시한다.',
+          '기획 확인 질문은 기획에 전달한다. 축약안은 글자 수를 넘는 행만 본다.',
+          '결과를 <b>번역문 A</b>로 엑셀에 붙여 둔다.',
+        ]],
+        ['DeepL 독립 번역 (번역문 B)', '작업자', [
+          '번역 입력표의 <b>정리 원문</b> 열을 DeepL에 넣어 영어로 번역한다. ‘원문 유지’인 행은 화면 원문을 넣는다.',
+          '결과를 <b>번역문 B</b>로 엑셀에 붙여 둔다. P3 오류 검수에서 A와 비교한다.',
+        ]],
+        ['다음 단계', '작업자', [
+          `게임 카드 <b>진행 상황</b>에서 영어 <b>번역</b>을 누른다. → <b>P3 오류 검수</b>로 간다.`,
+        ]],
+      ],
+      warn: [
+        '여러 게임을 한 대화에 섞지 않는다. 말투와 용어가 섞인다.',
+        '확인 질문이 나온 행은 기획 답을 받기 전에 확정하지 않는다.',
+      ],
+    },
+    'P2-3': {
+      steps: [
+        ['시작 조건 확인', '작업자', [
+          `영어 진행 상황이 <b>확정</b>인지 본다. ${L.label}는 영어 확정본이 있어야 시작한다.`,
+        ]],
+        ['번역 입력표 준비', '작업자', [
+          'P2-2에 썼던 번역 입력표 끝에 <b>영어 확정본</b> 열을 더한다.',
+          `현지화·재설계 행에서 영어 표현이 ${L.label}에 맞지 않으면 영어 칸을 비워도 된다. AI가 맥락 설명만 보고 번역한다.`,
+        ]],
+        ['초벌 번역 실행', '작업자', [
+          `위 언어 탭이 <b>${L.label}</b>인지 확인한다. P2-1을 등록한 <b>${L.label} 프로젝트</b>에서 새 대화를 연다.`,
+          '<b>복사</b> → 붙여 넣기 → 맨 아래 안내 줄을 지우고 번역 입력표를 붙여 넣는다 → 화면 캡처를 첨부한다.',
+        ]],
+        ['해석 불일치 처리', '기획', [
+          '‘해석 불일치’ 표시가 있는 행은 기획이 어느 뜻이 맞는지 정한다.',
+          '정리 원문(또는 영어 확정본)을 고친 뒤, 그 행만 새 대화에서 다시 번역한다.',
+        ]],
+        ['번역문 B와 다음 단계', '작업자', [
+          `정리 원문을 DeepL에 넣어 ${L.label}로 번역하고, <b>번역문 B</b>로 엑셀에 붙여 둔다.`,
+          `진행 상황에서 ${L.label} <b>번역</b>을 누른다. → <b>P3 오류 검수</b>로 간다.`,
+        ]],
+      ],
+      warn: [
+        '“영어를 기준으로 번역해”라고 따로 말하지 않는다. 기준은 한국어 원문이고 영어는 해석 확인용이다.',
+        `${L.label}는 팀 안에서 사람이 검수하기 어렵다. 해석 불일치를 그냥 넘기지 않는다.`,
+      ].concat(L.key === 'zh' ? ['결과가 간체인지 확인한다. 번체 글자가 섞이면 다시 요청한다.'] : []),
+    },
+    'P3': {
+      steps: [
+        ['자료 모으기', '작업자', [
+          '번역 입력표, <b>번역문 A</b>(초벌 번역), <b>번역문 B</b>(DeepL), 화면 캡처를 준비한다.',
+          '컨텍스트 카드와 용어집은 프롬프트에 자동으로 들어 있다.',
+        ]],
+        ['검수 AI 고르기', '작업자', [
+          '<b>Claude 새 대화</b>를 연다. 초벌 번역을 Claude로 했다면 ChatGPT를 쓴다.',
+          '같은 AI가 자기 번역을 검수하면 문제를 잘 찾지 못한다.',
+        ]],
+        ['검수 실행', '작업자', [
+          `언어 탭이 <b>${L.label}</b>인지 확인하고 <b>복사</b> → 붙여 넣는다.`,
+          '그 아래에 표를 붙인다: <b>ID | 화면 원문 | 의도 | 판정 기준 | 번역문 A | 번역문 B</b>',
+          '화면 캡처를 첨부하고 보낸다.',
+        ]],
+        ['판정 정리', '작업자', [
+          '<b>FAIL</b> 행 → P5 재수정 대상으로 모은다.',
+          '<b>REVIEW</b> 행 → 기획이 보고 고칠지 정한다.',
+          '<b>PASS</b> 행 → P6 역번역과 P4 행동 테스트로 넘긴다.',
+          `진행 상황에서 ${L.label} <b>검수</b>를 누른다.`,
+        ]],
+      ],
+      warn: [
+        'PASS는 ‘큰 문제를 못 찾았다’는 뜻이지 확정이 아니다.',
+        '수정 제안을 그대로 붙여 쓰지 않는다. P5를 거쳐 판정 기준이 유지되는지 확인한다.',
+      ],
+    },
+    'P4': {
+      steps: [
+        ['자료 준비', '작업자', [
+          '화면 캡처와 <b>ID | 번역문</b> 표만 준비한다. 원문, 의도, 맥락은 주지 않는다.',
+        ]],
+        ['테스트 실행', '작업자', [
+          `<b>Gemini 새 대화</b>를 연다. 언어 탭이 <b>${L.label}</b>인지 확인하고 <b>복사</b> → 붙여 넣는다.`,
+          '맨 아래 “[화면 캡처] [ID | 번역문]” 자리에 표를 붙이고 캡처를 첨부한다.',
+        ]],
+        ['답과 의도 비교', '작업자', [
+          'AI가 답한 <b>다음 행동</b>을 번역 입력표의 <b>의도</b>와 비교한다. 다르면 P5 근거로 모은다.',
+          '말한 사람의 인상이 컨텍스트 카드의 화자·말투와 다르면 말투 문제로 표시한다.',
+          '‘헷갈리는 부분’에 답이 있는 행도 P5 후보로 둔다.',
+        ]],
+      ],
+      warn: [
+        '원문이나 의도를 같이 주면 AI가 정답을 알고 답해서 테스트가 의미 없어진다.',
+        '앞 단계를 한 대화에서 하지 않는다. 반드시 새 대화에서 한다.',
+      ],
+    },
+    'P5': {
+      steps: [
+        ['걸린 행 모으기', '작업자', [
+          'P3의 FAIL, P6에서 뜻이 바뀐 행, P4에서 행동이 의도와 다른 행만 모은다.',
+        ]],
+        ['근거 붙이기', '작업자', [
+          '행마다 <b>걸린 항목</b>과 <b>근거</b>를 적는다. 근거는 P3의 이유, P6 역번역 결과, P4 답변을 그대로 옮긴다.',
+        ]],
+        ['재수정 실행', '작업자', [
+          `<b>${L.label} 프로젝트</b>(초벌 번역 AI)에서 새 대화를 연다. <b>복사</b> → 붙여 넣기 → 표 자리에 모은 행을 붙인다.`,
+        ]],
+        ['다시 검수', '작업자', [
+          '고친 행만 P3 오류 검수를 다시 한다. 필요하면 P6·P4도 그 행만 다시 한다.',
+          '재수정은 <b>최대 2회</b>. 두 번 고쳐도 걸리면 기획 회의에서 현지화·재설계를 다시 정한다.',
+        ]],
+        ['확정 처리', '기획', [
+          `진행 상황에서 ${L.label} <b>확정</b>을 누른다.`,
+          `<b>용어집 → 추가·수정</b>에서 이번에 쓴 용어의 ${L.label} 번역을 <b>후보 → 확정</b>으로 바꾸고, 쓰지 않기로 한 번역은 금지 번역에 적는다.`,
+          L.key === 'en' ? '영어가 확정되면 일본어·중국어 번역(P2-3)을 시작할 수 있다.' : '확정본을 엑셀 마스터 시트에 옮긴다.',
+        ]],
+      ],
+      warn: [
+        '통과한 행까지 다시 고치게 하지 않는다. 걸린 행만 넣는다.',
+        '근거 없이 “더 자연스럽게”만 요청하지 않는다. 고칠 이유가 분명해야 AI가 필요한 부분만 고친다.',
+      ],
+    },
+    'P6': {
+      steps: [
+        ['대상 고르기', '작업자', [
+          'P3에서 FAIL이 아닌 번역문을 고른다. 짧은 버튼 문구도 포함한다.',
+        ]],
+        ['역번역 실행', '작업자', [
+          'DeepL·파파고 같은 번역기나 <b>AI 새 대화</b>를 쓴다. 번역을 만든 대화창은 쓰지 않는다.',
+          '<b>복사</b> → 붙여 넣기 → “[번역문 목록]” 자리에 <b>ID | 번역문</b>만 붙인다. 원문과 맥락은 주지 않는다.',
+        ]],
+        ['뜻 비교', '작업자', [
+          '역번역 결과를 번역 입력표의 <b>정리 원문</b>과 나란히 놓는다.',
+          '뜻이 달라진 행(대상, 행동, 조건, 방향이 바뀐 행)을 P5 근거로 모은다.',
+        ]],
+      ],
+      warn: [
+        '역번역이 어색한 것은 정상이다. 문장이 어색한지가 아니라 뜻이 바뀌었는지만 본다.',
+        '원문을 아는 대화창에서 하면 AI가 원래 뜻으로 고쳐 읽어 오역을 놓친다.',
+      ],
+    },
+  };
+  return U[id] || null;
+}
+function usageHTML(u) {
+  if (!u) return '';
+  return `<div class="usage"><h4>사용 순서</h4><ol>${u.steps.map(([title, who, items]) => `<li><div class="ut"><b>${title}</b><span class="uwho">${who}</span></div><ul>${items.map(x => `<li>${x}</li>`).join('')}</ul></li>`).join('')}</ol>
+    ${u.warn ? `<div class="uwarn"><b>자주 하는 실수</b><ul>${u.warn.map(x => `<li>${x}</li>`).join('')}</ul></div>` : ''}</div>`;
+}
 function designFor(id, L, t) {
   const game = t.name || '이 게임';
   const D = {
@@ -713,10 +952,12 @@ function promptsHTML({ id, data: t }) {
   const ps = buildPrompts(t, promptLang, id);
   return `
     <div class="langseg" role="group" aria-label="번역할 언어">${LANGS.map(l => `<button type="button" data-lang="${l.key}" aria-pressed="${promptLang === l.key}">${l.label}</button>`).join('')}</div>
-    <p class="hint" style="margin:0 0 14px;color:var(--muted);font-size:14px">「${esc(t.name)}」의 게임 카드와 용어집이 자동으로 들어가 있어요. 제목을 누르면 내용과 설계 설명이 펼쳐집니다.</p>
+    <p class="hint" style="margin:0 0 14px;color:var(--muted);font-size:14px">「${esc(t.name)}」의 게임 카드와 용어집이 자동으로 들어가 있어요. 제목을 누르면 사용 순서와 내용이 펼쳐집니다.</p>
+    <div class="flow" aria-label="전체 순서"><b>전체 순서</b> P1 원문 분석 → P2-1 규칙 등록(언어별 한 번) → P2 초벌 번역 + DeepL → P3 오류 검수 → P6 역번역 · P4 행동 테스트 → P5 재수정(최대 2회) → 확정 <span>영어를 먼저 확정한 뒤 일본어·중국어를 진행해요.</span></div>
     ${ps.map((p, i) => `
       <details class="pcard">
         <summary><span class="pid">${p.id}</span><span class="pname">${esc(p.name)}</span><span class="ptool">${esc(p.tool)}</span><span class="spacer"></span><button type="button" class="btn" data-copy="${i}">복사</button></summary>
+        ${usageHTML(usageFor(p.id, t, L))}
         <div class="why"><h4>이 프롬프트는 이렇게 설계했어요</h4><dl>${designFor(p.id, L, t).map(([k, v]) => `<div class="r"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></div>
         <pre class="ptext" id="pt-${i}">${esc(p.text)}</pre>
       </details>`).join('')}`;
