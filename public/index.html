@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>체키 번역 프롬프트 카드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: three big tabs (게임 카드 / 프롬프트 / 용어집), a game picker row, and forms that save as you type */
+:root {
+  --bg: #ffffff;
+  --panel: #f5f3f1;
+  --line: #ddd6d1;
+  --fg: #231f1c;
+  --muted: #625953;
+  --accent: #d24a16;
+  --accent-soft: #fdece4;
+  --ok: #24764a;
+  --ok-soft: #e4f3ea;
+  --code-bg: #faf8f6;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171412; --panel: #221e1b; --line: #3d3532; --fg: #f3eee9; --muted: #b9aea6;
+    --accent: #ff8352; --accent-soft: #3b251b; --ok: #74cf9b; --ok-soft: #1d3326; --code-bg: #1c1917; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171412; --panel: #221e1b; --line: #3d3532; --fg: #f3eee9; --muted: #b9aea6;
+  --accent: #ff8352; --accent-soft: #3b251b; --ok: #74cf9b; --ok-soft: #1d3326; --code-bg: #1c1917; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+.wrap { max-width: 1100px; margin: 0 auto; padding-block: 24px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1 { font-size: 26px; margin: 0; line-height: 1.3; }
+.sub { color: var(--muted); margin: 4px 0 0; font-size: 15px; }
+.topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.saved { font-size: 14px; color: var(--muted); }
+.saved.on { color: var(--ok); }
+
+button { font: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn { border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 10px; padding: 9px 16px; font-size: 15px; min-height: 42px; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+.btn.danger { color: var(--accent); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* Main tabs */
+.mainnav { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 20px 0 16px; }
+.mainnav button { border: 2px solid var(--line); background: var(--bg); border-radius: 12px; padding: 12px 8px; font-size: 17px; font-weight: 700; color: var(--muted); }
+.mainnav button span { display: block; font-size: 13px; font-weight: 400; }
+.mainnav button[aria-selected="true"] { border-color: var(--accent); color: var(--fg); background: var(--accent-soft); }
+
+/* Game picker */
+.picker { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 20px; }
+.picker .label { font-size: 14px; color: var(--muted); margin-right: 4px; }
+.gbtn { border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 99px; padding: 8px 16px; font-size: 15px; min-height: 42px; }
+.gbtn[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); font-weight: 700; }
+.gbtn.add { border-style: dashed; color: var(--accent); border-color: var(--accent); }
+
+/* Sections */
+.section { border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 16px; }
+.section > h2 { font-size: 18px; margin: 0 0 4px; }
+.section > .hint { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.field { display: grid; gap: 6px; }
+.field > span { font-size: 14px; font-weight: 700; }
+.field > small { font-size: 13px; color: var(--muted); }
+input, textarea, select { font: inherit; font-size: 15px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; width: 100%; min-height: 42px; }
+textarea { resize: vertical; min-height: 72px; }
+input:hover, textarea:hover, select:hover { border-color: var(--muted); }
+input:disabled, textarea:disabled, select:disabled { background: var(--panel); }
+
+/* Speakers */
+.sp { display: grid; grid-template-columns: 1fr 1fr 2fr 2fr auto; gap: 8px; align-items: end; padding: 10px 0; border-top: 1px solid var(--line); }
+.sp:first-of-type { border-top: 0; padding-top: 0; }
+@media (max-width: 760px) { .sp { grid-template-columns: 1fr 1fr; } .sp .del { grid-column: 1 / -1; justify-self: end; } }
+.addrow { width: 100%; margin-top: 12px; border: 2px dashed var(--line); background: none; border-radius: 10px; padding: 10px; color: var(--accent); font-weight: 700; font-size: 15px; }
+.addrow:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+/* Progress */
+.prog { display: grid; gap: 12px; }
+.prow { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; align-items: center; }
+.prow b { font-size: 15px; }
+.steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.steps button { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 8px 4px; font-size: 14px; color: var(--muted); min-height: 40px; }
+.steps button.past { background: var(--accent-soft); border-color: transparent; color: var(--accent); }
+.steps button.cur { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+.steps button.cur.final { background: var(--ok); border-color: var(--ok); }
+@media (max-width: 600px) { .prow { grid-template-columns: minmax(0, 1fr); gap: 6px; } .steps button { font-size: 12px; } }
+
+/* Prompts */
+.langseg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 14px; flex-wrap: wrap; }
+.langseg button { border: 0; background: var(--bg); padding: 9px 18px; font-size: 15px; color: var(--muted); min-height: 42px; }
+.langseg button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: 700; }
+.pcard { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+.pcard > summary { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 14px 16px; cursor: pointer; }
+.pcard > summary::-webkit-details-marker { display: none; }
+.pcard > summary::before { content: "▸"; color: var(--accent); font-size: 14px; }
+.pcard[open] > summary::before { content: "▾"; }
+.pid { font-family: var(--font-mono); color: var(--accent); font-weight: 500; }
+.pname { font-weight: 700; font-size: 16px; }
+.ptool { font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 1px 10px; }
+.pcard .spacer { flex: 1; }
+.why { padding: 0 16px 12px; }
+.why h4 { margin: 0 0 6px; font-size: 14px; color: var(--accent); }
+.why dl { margin: 0; display: grid; gap: 6px; }
+.why .r { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 10px; font-size: 14px; }
+.why dt { font-weight: 700; } .why dd { margin: 0; }
+@media (max-width: 600px) { .why .r { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+pre.ptext { margin: 0; padding: 16px; background: var(--code-bg); border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 13.5px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; max-height: 420px; overflow: auto; }
+
+/* Glossary */
+.gtools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.gtools input[type=search] { flex: 1 1 220px; width: auto; }
+.gtools select { width: auto; }
+.gtools .chk { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; }
+.gtools .chk input { width: 20px; min-height: 20px; }
+.gstats { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--muted); margin-bottom: 12px; }
+.gstats b { color: var(--fg); font-variant-numeric: tabular-nums; }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+table.g { border-collapse: collapse; width: 100%; min-width: 1120px; font-size: 14px; }
+table.g th { background: var(--panel); text-align: left; font-size: 13px; color: var(--muted); font-weight: 700; padding: 10px 8px; white-space: nowrap; position: sticky; top: 0; }
+table.g td { padding: 6px; border-top: 1px solid var(--line); vertical-align: top; }
+table.g td input, table.g td select { min-height: 38px; padding: 7px 8px; font-size: 14px; }
+.lcell { display: grid; gap: 4px; }
+.st { border: 1px solid var(--line); background: var(--bg); border-radius: 99px; font-size: 12px; padding: 2px 10px; color: var(--muted); justify-self: start; min-height: 28px; }
+.st.cand { border-color: var(--accent); color: var(--accent); }
+.st.ok { background: var(--ok); border-color: var(--ok); color: #fff; }
+.iconbtn { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; min-width: 38px; min-height: 38px; color: var(--muted); font-size: 14px; }
+.iconbtn.warn { background: var(--accent); color: #fff; border-color: var(--accent); }
+tr.detail td { background: var(--panel); }
+.dgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; padding: 6px 4px; }
+.dgrid .field > span { font-size: 13px; }
+tr.draft td { background: var(--accent-soft); }
+tfoot td { padding: 8px; border-top: 1px solid var(--line); }
+tfoot .addrow { margin: 0; }
+
+.empty { color: var(--muted); padding: 28px 12px; text-align: center; border: 1px dashed var(--line); border-radius: 12px; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(20px + env(safe-area-inset-bottom, 0px)); background: var(--fg); color: var(--bg); padding: 10px 18px; border-radius: 10px; font-size: 15px; z-index: 20; max-width: calc(100% - 32px); }
+.dangerzone { display: flex; justify-content: flex-end; gap: 8px; align-items: center; flex-wrap: wrap; }
+.csvbox { width: 100%; min-height: 150px; font-family: var(--font-mono); font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.auth { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+dialog { border: 1px solid var(--line); border-radius: 14px; padding: 22px; max-width: 520px; width: calc(100% - 32px); background: var(--bg); color: var(--fg); }
+dialog::backdrop { background: rgba(0,0,0,.45); }
+dialog h2 { margin: 0 0 8px; font-size: 20px; }
+dialog ol { padding-left: 20px; font-size: 14px; color: var(--muted); }
+dialog .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap; }
+.authpage { min-height: 100%; display: grid; place-items: center; padding-block: 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.authcard { width: 100%; max-width: 420px; border: 1px solid var(--line); border-radius: 16px; padding: 28px 24px; background: var(--bg); }
+.authcard h1 { font-size: 24px; margin: 0 0 4px; }
+.authcard .sub { margin: 0 0 20px; }
+.tabs2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; }
+.tabs2 button { border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 9px; font-size: 15px; color: var(--muted); }
+.tabs2 button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--fg); font-weight: 700; }
+.fstack { display: grid; gap: 10px; }
+.ok-msg { color: var(--ok); font-size: 14px; min-height: 1.4em; margin: 6px 0 0; }
+.who { font-size: 14px; }
+.who b { font-weight: 700; }
+.mainnav .badge { display: inline-block; }
+.badge { display: inline-block; min-width: 20px; padding: 0 6px; border-radius: 99px; background: var(--accent); color: #fff; font-size: 12px; margin-left: 6px; vertical-align: 2px; }
+.ulist { display: grid; gap: 8px; }
+.urow { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.6fr) auto; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.urow .meta { font-size: 13px; color: var(--muted); }
+.urow .acts { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.urow select { width: auto; }
+@media (max-width: 700px) { .urow { grid-template-columns: minmax(0, 1fr); } .urow .acts { justify-content: flex-start; } }
+.temp { font-family: var(--font-mono); background: var(--panel); padding: 2px 8px; border-radius: 6px; user-select: all; }
+.err { color: var(--accent); font-size: 14px; min-height: 1.4em; margin: 6px 0 0; }
+</style>
+</head>
+<body>
+
+
+<div class="wrap" id="app" hidden>
+  <div class="topline">
+    <div>
+      <h1>체키 번역 프롬프트 카드</h1>
+      <p class="sub">게임 카드에 컨셉과 말투를 적고, 용어집을 채우면, 프롬프트 탭에서 바로 복사해 쓸 수 있어요. 입력한 내용은 자동으로 저장됩니다.</p>
+    </div>
+    <div class="auth"><span class="saved" id="saved" aria-live="polite"></span><span class="who" id="who"></span><button type="button" class="btn" id="pw-btn" hidden>비밀번호 변경</button><button type="button" class="btn" id="auth-btn">로그아웃</button></div>
+  </div>
+  <nav class="mainnav" role="tablist" aria-label="화면">
+    <button type="button" role="tab" data-view="card" aria-selected="true">게임 카드<span>컨셉·말투·진행 상황</span></button>
+    <button type="button" role="tab" data-view="prompts" aria-selected="false">프롬프트<span>복사해서 AI에 붙여 넣기</span></button>
+    <button type="button" role="tab" data-view="glossary" aria-selected="false">용어집<span>모든 게임 공용</span></button>
+    <button type="button" role="tab" data-view="admin" aria-selected="false" id="admin-tab" hidden>회원 관리<span id="admin-sub">가입 승인·권한</span></button>
+  </nav>
+  <div id="picker" class="picker"></div>
+  <div id="content"><div class="empty">불러오는 중…</div></div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<main class="authpage" id="auth-page" hidden>
+  <div class="authcard">
+    <h1>체키 번역 프롬프트 카드</h1>
+    <p class="sub">팀 전용 사이트예요. 로그인해 주세요.</p>
+    <p class="err" id="setup-err" hidden></p>
+    <div class="tabs2" role="group" aria-label="로그인 또는 회원가입"><button type="button" id="tab-login" aria-pressed="true">로그인</button><button type="button" id="tab-signup" aria-pressed="false">회원가입</button></div>
+    <form id="login-form" class="fstack">
+      <label class="field"><span>이메일</span><input id="li-email" type="email" autocomplete="email"></label>
+      <label class="field"><span>비밀번호</span><input id="li-pw" type="password" autocomplete="current-password"></label>
+      <p class="err" id="li-err"></p>
+      <button type="submit" class="btn primary">로그인</button>
+    </form>
+    <form id="signup-form" class="fstack" hidden>
+      <p style="margin:0;font-size:14px;color:var(--muted)">가입 신청 후 관리자가 승인하면 로그인할 수 있어요.</p>
+      <label class="field"><span>이름</span><input id="su-name" autocomplete="name" placeholder="수정 기록에 표시돼요"></label>
+      <label class="field"><span>이메일</span><input id="su-email" type="email" autocomplete="email"></label>
+      <label class="field"><span>비밀번호 (8자 이상)</span><input id="su-pw" type="password" autocomplete="new-password"></label>
+      <label class="field"><span>비밀번호 확인</span><input id="su-pw2" type="password" autocomplete="new-password"></label>
+      <p class="err" id="su-err"></p><p class="ok-msg" id="su-ok"></p>
+      <button type="submit" class="btn primary">가입 신청</button>
+    </form>
+  </div>
+</main>
+<dialog id="pwdlg">
+  <form id="pw-form" class="fstack">
+    <h2>비밀번호 변경</h2>
+    <label class="field"><span>지금 비밀번호</span><input id="pw-cur" type="password" autocomplete="current-password"></label>
+    <label class="field"><span>새 비밀번호 (8자 이상)</span><input id="pw-new" type="password" autocomplete="new-password"></label>
+    <p class="err" id="pw-err"></p>
+    <div class="row"><button type="button" class="btn" data-close>닫기</button><button type="submit" class="btn primary">변경</button></div>
+  </form>
+</dialog>
+<script src="store.js"></script>
+
+<script>
+const LANGS = [
+  { key: 'en', label: '영어', target: '영어', region: '영어권(미국 등)', short: 'EN' },
+  { key: 'ja', label: '일본어', target: '일본어', region: '일본', short: 'JA' },
+  { key: 'zh', label: '중국어(간체)', target: '중국어(간체, 중국 본토용)', region: '중국 본토', short: 'ZH' },
+];
+const STAGES = ['미착수', '원문 정리', '번역', '검수', '확정'];
+const TYPES = ['게임명', '캐릭터명', '버튼 라벨', '지시 동사', '결과·판정 문구', '영문 표기', '기타'];
+
+let db = null, downloads = null, readOnly = false;
+let themes = [], terms = [];
+let view = 'card', gameId = null, promptLang = 'en';
+let gf = { q: '', game: 'all', open: false };
+let drafts = [];               // unsaved new term rows
+const expanded = new Set();    // term ids with detail row open
+let armedDelete = null;        // id armed for delete
+let csvText = '';
+let pending = false;           // a render waits for the user to leave a field
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (t.hidden = true), 2400); }
+function savedMark() { const s = $('#saved'); s.textContent = '저장됨 ✓'; s.classList.add('on'); clearTimeout(savedMark.t); savedMark.t = setTimeout(() => { s.textContent = '모든 변경 사항이 저장되어 있어요'; s.classList.remove('on'); }, 1800); }
+function makeId(name) {
+  const base = String(name).normalize('NFKD').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase().slice(0, 30);
+  return (base || 'item') + '-' + Math.random().toString(36).slice(2, 7);
+}
+function writeErr(err) {
+  if (err && err.code === 'invalid_argument') { readOnly = true; toast((err && err.message) || '수정 권한이 없어요. 오른쪽 위에서 로그인해 주세요.'); render(true); return; }
+  if (err && err.code === 'quota_exceeded') { toast('저장 공간이 가득 찼어요. 쓰지 않는 항목을 지워 주세요.'); return; }
+  toast('저장하지 못했어요. 잠시 후 다시 시도해 주세요.');
+}
+
+function termsFor(themeId) { return terms.filter(x => x.data.common || (x.data.games || []).includes(themeId)); }
+function trOf(term, k) { return (term.tr && term.tr[k]) || { text: '', status: '미정', avoid: '', avoidWhy: '' }; }
+function statusOf(term, k) { const r = trOf(term, k); return r.text ? (r.status === '확정' ? '확정' : '후보') : '미정'; }
+function themeName(id) { const t = themes.find(x => x.id === id); return t ? (t.data.name || '(이름 없음)') : ''; }
+const cur = () => themes.find(t => t.id === gameId);
+
+function cardText(t) {
+  const lines = [`[게임 컨텍스트 카드: ${t.name || '(이름 없음)'}]`];
+  if (t.concept) lines.push(`- 테마: ${t.concept}`);
+  if (t.situation) lines.push(`- 상황: ${t.situation}`);
+  (t.speakers || []).filter(s => s.who).forEach(s => {
+    lines.push(`- 화자 ${s.who}${s.to ? ` → ${s.to}` : ''}: ${s.tone || ''}${s.banned ? ` / 금지: ${s.banned}` : ''}`);
+  });
+  if (t.honorific) lines.push(`- 존댓말·반말: ${t.honorific}`);
+  const dirs = LANGS.filter(l => t.lang?.[l.key]).map(l => `  · ${l.label}: ${t.lang[l.key]}`);
+  if (dirs.length) lines.push('- 언어별 말투 방향 (예문은 말투 참고용)', ...dirs);
+  return lines.join('\n');
+}
+
+function glossaryText(themeId, langKey) {
+  const list = termsFor(themeId).map(x => x.data).filter(r => r.ko);
+  if (!list.length) return '[용어집]\n(등록된 용어 없음)';
+  const head = '[용어집] ‘확정’ 번역은 반드시 그대로 쓰고, ‘후보’는 참고만 하며, ‘금지’ 번역은 쓰지 않는다.';
+  if (langKey) {
+    const L = LANGS.find(l => l.key === langKey);
+    return head + '\n원문 | 의도 | ' + L.label + ' | 상태 | 금지 번역\n' + list.map(r => { const x = trOf(r, langKey); return [r.ko, r.intent || '-', x.text || '-', statusOf(r, langKey), x.avoid ? x.avoid + (x.avoidWhy ? ' (' + x.avoidWhy + ')' : '') : '-'].join(' | '); }).join('\n');
+  }
+  return head + '\n원문 | 의도 | 영어 | 일본어 | 중국어\n' + list.map(r => [r.ko, r.intent || '-', ...LANGS.map(l => (trOf(r, l.key).text || '-') + ' [' + statusOf(r, l.key) + ']')].join(' | ')).join('\n');
+}
+
+
+function buildPrompts(t, lk, themeId) {
+  const L = LANGS.find(l => l.key === lk);
+  const card = cardText(t);
+  const gloss = glossaryText(themeId, lk);
+  const glossAll = glossaryText(themeId);
+  const isEn = lk === 'en';
+  return [
+    { id: 'P1', name: '원문 분석', tool: 'ChatGPT', when: '준비 · 결과는 기획이 확정', text:
+`너는 오프라인 게임의 현지화 준비 담당자다. 번역은 하지 않는다.
+아래 게임 컨텍스트 카드, 원문 표, 화면 캡처를 보고 문구마다 아래를 정리하라.
+
+1. 의도: 플레이어가 이해하거나 해야 하는 것 (한 문장)
+2. 화자와 말투: 컨텍스트 카드의 어느 화자인지
+3. 정답·판정 영향: 번역에 따라 정답이나 행동이 달라질 수 있는지
+4. 번역 주의점: 생략된 주어·대상, 두 가지로 읽히는 단어, 말장난
+5. 처리 방식 제안: 직접 번역 / 현지화 / 재설계 중 하나와 이유
+6. 용어집 후보: 반복될 단어
+7. 문화 의존 요소: 한국 문화를 알아야 이해되는 부분
+8. 정리 원문 제안: 주어·대상을 채우고 한 문장에 한 동작
+9. 확인 질문: 기획에 물어봐야 할 것
+
+추측한 내용은 ‘추측’이라고 표시하라. 결과는 원문 표에 9개 열을 추가해 출력하라.
+용어집 후보는 아래 이미 등록된 용어와 겹치지 않게 제안하라.
+
+${card}
+
+${glossAll}
+
+[원문 표: ID | 원문 | 사용 위치 | 글자 수 제한]` },
+    { id: 'P2-1', name: '번역 AI 공통 규칙', tool: '초벌 번역 AI', when: '프로젝트 지침에 한 번 등록', text:
+`[역할] 너는 오프라인 게임 매장의 ${L.target} 현지화 담당자다.
+[대상] 한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객
+[우선순위] ① 규칙·정답·행동 보존 ② 화자별 말투 ③ 자연스러운 표현 ④ 글자 수
+
+[규칙]
+- 용어집의 ‘확정’ 번역은 반드시 그대로 쓰고, ‘금지’ 번역은 쓰지 않는다. 다른 제안은 따로 적는다.
+- 원문에 없는 조건·힌트를 더하지 않는다.
+- 말투는 컨텍스트 카드를 따른다.
+- ‘현지화’ 문구는 같은 기능을 하는 대안을 2개 낸다.
+- 게임명, { } 변수, ↵ 줄바꿈은 그대로 둔다.
+- 모호하면 추측하지 말고 질문으로 남긴다.
+- 한국 문화 요소는 몰라도 플레이할 수 있으면 살린다.
+- 한국 한자어를 그대로 옮기지 않는다.
+- 번역문도 짧게 쓴다. 한 문장에 한 동작만 담는다.${lk === 'zh' ? '\n- 중국 본토용 간체로만 쓴다.' : ''}
+
+${gloss}` },
+    isEn ? { id: 'P2-2', name: '초벌 번역 — 영어', tool: '초벌 번역 AI · 새 대화창', when: '번역', text:
+`${t.name || '[게임명]'} 문구를 영어로 번역해 줘.
+아래 컨텍스트 카드를 먼저 읽고, 표의 맥락 설명·정리 원문·의도를 반영해.
+번역 기준은 화면 원문이야. 뜻은 맥락 설명과 정리 원문으로 확인해.
+
+같은 표에 아래 열을 추가해서 줘.
+번역문 | 적용한 말투 | 현지화 이유 | 정답·판정 위험 | 확신 낮은 부분 | 축약안 | 기획 확인 질문
+
+${card}
+
+[원문 표: ID | 화면 원문 | 맥락 설명 | 정리 원문 | 사용 위치 | 화자 | 의도 | 판정 기준 | 처리 방식 | 글자 수]` }
+    : { id: 'P2-3', name: `초벌 번역 — ${L.label}`, tool: '초벌 번역 AI · 새 대화창', when: '번역 · 영어 확정본 함께 제공', text:
+`${t.name || '[게임명]'} 문구를 ${L.target}로 번역해 줘. 아래 컨텍스트 카드를 먼저 읽어.
+
+1. 번역 기준은 한국어 화면 원문이다.
+2. 영어 확정본은 해석 확인용이다. 팀이 뜻을 확인한 영어다.
+3. 영어의 어순, 표현, 말투는 따르지 마라.
+4. 영어의 대명사(you)나 공손 표현(please)을 옮기지 마라.
+5. 한국어와 영어의 뜻이 다르면 번역하지 말고 ‘해석 불일치’로 표시해라.
+6. 영어 칸이 비어 있으면 맥락 설명만 보고 번역해라.
+
+같은 표에 아래 열을 추가해서 줘.
+번역문 | 적용한 말투 | 해석 불일치 | 현지화 이유 | 정답·판정 위험 | 확신 낮은 부분 | 축약안 | 기획 확인 질문
+
+${card}
+
+[원문 표: ID | 화면 원문 | 맥락 설명 | 정리 원문 | 영어 확정본 | 화자 | 의도 | 판정 기준 | 처리 방식 | 글자 수]` },
+    { id: 'P3', name: '오류 검수', tool: 'Claude 새 대화창', when: '검수 · 번역 AI가 Claude면 ChatGPT', text:
+`너는 번역자가 아니라 독립적인 현지화 QA 담당자다. 문제를 찾는 것이 목적이다.
+[자료] 컨텍스트 카드, 용어집, 원문 표, 번역문 A(초벌), 번역문 B(DeepL), 화면 캡처
+[목표 언어] ${L.target}
+
+문구마다 아래 항목을 PASS / REVIEW / FAIL로 판정하라.
+1. 의미: 누락이나 추가
+2. 규칙·정답: 판정 기준대로 플레이할 수 있는가
+3. 행동: 다른 행동을 유도하지 않는가
+4. 말투: 컨텍스트 카드의 화자 말투와 맞는가
+5. 용어: 용어집의 확정 번역과 일치하고, 금지 번역을 쓰지 않았는가
+6. A·B 비교: 뜻이 다르면 어느 쪽이 의도에 맞는가
+7. 화면: 글자 수, 버튼 크기, 줄바꿈
+8. 문화: 무례하거나, 불길하거나, 민감한 표현이 없는가
+
+출력: ID | 항목별 판정 | 문제 유형 | 이유 | 수정 제안 | 수정안에서도 판정 기준 유지 여부
+PASS여도 번역이 완벽하다고 단정하지 마라.
+
+${card}
+
+${gloss}` },
+    { id: 'P4', name: '행동 테스트', tool: 'Gemini 새 대화창', when: '검수 · 원문은 주지 않음', text:
+`너는 한국어를 모르는 ${L.region} 출신 관광객이고, 이 게임을 처음 해 본다.
+화면 캡처와 아래 문구만 보고 문구마다 답하라.
+
+1. 이 문구를 보고 다음에 무엇을 하겠는가
+2. 누가 말하는 것 같은가, 말투는 어떤 인상인가
+3. 헷갈리거나 두 가지로 읽히는 부분
+
+원래 뜻을 추측하지 말고, 처음 보는 사람의 반응만 적어라.
+[화면 캡처] [ID | 번역문]` },
+    { id: 'P5', name: '재수정 요청', tool: '초벌 번역 AI · 새 대화창', when: '최대 2회', text:
+`아래 문구는 검수에서 걸렸다. 걸린 이유에 해당하는 부분만 고쳐라.
+말투는 ${t.name || '이 게임'}의 컨텍스트 카드를 그대로 따른다.
+
+[ID | 원문 | 의도 | 현재 번역문 | 걸린 항목 | 근거]
+
+출력: ID | 수정 번역문 | 바꾼 내용과 이유 | 판정 기준 유지 여부` },
+    { id: 'P6', name: '블라인드 역번역', tool: '번역기 (또는 AI 새 대화창)', when: '검수 · 원문은 주지 않음', text:
+`다음 ${L.label} 문장을 한국어로 직역해 줘.
+다듬거나 뜻을 보충하지 마. 어색하면 어색한 그대로 옮겨.
+[번역문 목록]` },
+  ];
+}
+
+
+function designFor(id, L, t) {
+  const game = t.name || '이 게임';
+  const D = {
+    'P1': [
+      ['역할 부여', 'ChatGPT에게 ‘오프라인 게임의 현지화 준비 담당자’ 역할을 부여하고, “번역은 하지 않는다”고 명시하여 원문 분석에만 집중하도록 하였다.'],
+      ['목표 제시', '문구마다 의도, 화자와 말투, 정답·판정 영향, 번역 주의점, 처리 방식, 용어집 후보, 문화 의존 요소, 정리 원문, 확인 질문의 9가지를 정리하도록 과업을 나누어 제시하였다.'],
+      ['맥락 제공', `${game}의 게임 컨텍스트 카드와 화면 캡처를 함께 제공하여, 문구가 어느 화면에서 누구의 말로 쓰이는지 파악하게 하였다.`],
+      ['불확실성 표시', '추측한 내용은 ‘추측’으로 표시하게 하여, 기획 담당자가 확인해야 할 부분을 한눈에 구분할 수 있게 하였다.'],
+      ['출력 형식 지정', '원문 표에 9개 열을 추가한 표로 받도록 하여, 결과를 엑셀 마스터 시트에 그대로 옮길 수 있게 하였다.'],
+    ],
+    'P2-1': [
+      ['역할 부여', `‘오프라인 게임 매장의 ${L.target} 현지화 담당자’ 역할을 부여하였다. 단순 번역가가 아니라 현지화 담당자로 설정하여, 직역보다 현지 플레이어가 이해하는 표현을 우선하게 하였다.`],
+      ['대상 독자 지정', `‘한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객’을 독자로 지정하여, 설명 없이 바로 이해되는 문장을 쓰도록 하였다.`],
+      ['우선순위 제시', '규칙·정답 보존 → 화자별 말투 → 자연스러운 표현 → 글자 수 순으로 우선순위를 정하여, 조건이 충돌할 때의 판단 기준을 주었다.'],
+      ['제약 조건', '용어집의 확정 번역 사용과 금지 번역 배제, 원문에 없는 조건·힌트 추가 금지, 게임명·변수·줄바꿈 유지를 명시하여 번역 중 생길 수 있는 변형을 막았다.'],
+      ['문화 지침', '한국 문화 요소는 몰라도 플레이할 수 있으면 살리고, 한국 한자어는 그대로 옮기지 않도록 하였다.'],
+      ['고정 등록', '이 규칙은 번역 AI의 프로젝트 지침에 한 번만 등록하여, 매 요청마다 반복해서 붙이지 않아도 자동으로 적용되게 하였다.'],
+    ],
+    'P2-2': [
+      ['과업 지시', `${game}의 문구를 한 문장씩이 아니라 게임 단위 표로 한 번에 요청하여, 같은 게임 안에서 용어와 말투가 일관되게 하였다.`],
+      ['맥락 제공', '컨텍스트 카드와 표의 맥락 설명·정리 원문·의도 열을 함께 주어, 생략된 주어나 대상을 추측하지 않게 하였다.'],
+      ['기준 명시', '번역 기준은 화면 원문이고, 뜻은 맥락 설명과 정리 원문으로 확인하도록 기준과 참고 자료를 구분하였다.'],
+      ['자기 점검 유도', '현지화 이유, 정답·판정 위험, 확신이 낮은 부분, 기획 확인 질문을 따로 적게 하여, AI가 스스로 불확실한 부분을 드러내도록 하였다.'],
+      ['출력 형식 지정', '같은 표에 열을 추가하는 형식으로 받아, 원문과 번역문을 나란히 비교할 수 있게 하였다.'],
+    ],
+    'P2-3': [
+      ['과업 지시', `${game}의 문구를 게임 단위 표로 한 번에 ${L.target}로 번역하도록 요청하였다.`],
+      ['기준 자료 위계', '번역 기준은 한국어 화면 원문이고, 영어 확정본은 해석을 확인하는 참고 자료라고 위계를 명시하였다.'],
+      ['간섭 방지', '영어의 어순·표현·말투와 대명사(you)·공손 표현(please)을 따르지 않도록 하여, 영어를 거친 번역투가 생기지 않게 하였다.'],
+      ['불일치 처리', '한국어와 영어의 뜻이 다르게 읽히면 번역하지 말고 ‘해석 불일치’로 표시하게 하여, 기획이 어느 해석이 맞는지 판단하도록 하였다.'],
+      ['예외 처리', '영어 칸이 비어 있는 문구(현지화·재설계 대상)는 맥락 설명만 보고 번역하도록 하였다.'],
+      ['출력 형식 지정', '해석 불일치 열을 포함한 표 형식으로 받아, 걸린 문구를 바로 골라낼 수 있게 하였다.'],
+    ],
+    'P3': [
+      ['역할 부여', 'Claude에게 ‘번역자가 아닌 독립적인 현지화 QA 담당자’ 역할을 부여하여, 번역문을 다시 쓰기보다 문제를 찾는 데 집중하게 하였다.'],
+      ['평가 기준 제시', '의미, 규칙·정답, 행동, 말투, 용어, A·B 비교, 화면, 문화의 8개 항목을 검수 기준으로 제시하였다.'],
+      ['판정 체계', '항목마다 PASS / REVIEW / FAIL 3단계로 판정하게 하여, 재수정할 문구를 기계적으로 고를 수 있게 하였다.'],
+      ['비교 자료 제공', '초벌 번역(A)과 DeepL 독립 번역(B)을 함께 주어, 두 번역의 뜻이 갈리는 곳을 찾도록 하였다.'],
+      ['근거 요구', '문제 유형, 이유, 수정 제안과 함께 수정안에서도 판정 기준이 유지되는지 적게 하여, 막연한 지적을 막았다.'],
+      ['과신 방지', 'PASS여도 번역이 완벽하다고 단정하지 않도록 하여, AI 검수의 한계를 분명히 하였다.'],
+    ],
+    'P4': [
+      ['역할 부여', `Gemini에게 ‘한국어를 모르는 ${L.region} 출신 관광객’ 역할을 부여하여, 실제 손님의 입장에서 문구를 읽게 하였다.`],
+      ['정보 차단', '원문을 주지 않고 화면 캡처와 번역문만 제공하여, 번역문만으로 의도한 행동이 전달되는지 확인하였다.'],
+      ['질문 설계', '다음 행동, 화자와 말투의 인상, 헷갈리는 부분의 3가지를 묻도록 질문을 구체화하였다.'],
+      ['추측 금지', '원래 뜻을 추측하지 말고 처음 보는 사람의 반응만 적게 하여, 결과가 실제 반응에 가깝도록 하였다.'],
+    ],
+    'P5': [
+      ['근거 제시', '걸린 항목과 그 근거(역번역 결과, 오류 검수 지적, 행동 테스트 답변)를 함께 주어 무엇을 고쳐야 하는지 분명히 하였다.'],
+      ['수정 범위 제한', '걸린 이유에 해당하는 부분만 고치게 하여, 이미 통과한 부분이 바뀌지 않도록 하였다.'],
+      ['말투 유지', `수정할 때도 ${game}의 컨텍스트 카드 말투를 그대로 따르게 하였다.`],
+      ['출력 형식 지정', '수정 번역문과 함께 바꾼 내용·이유, 판정 기준 유지 여부를 적게 하였다.'],
+    ],
+    'P6': [
+      ['직역 지시', '다듬거나 뜻을 보충하지 말고 어색한 그대로 직역하게 하여, 번역문의 오역이 드러나도록 하였다.'],
+      ['정보 차단', '원문과 맥락을 주지 않고 새 대화창에서 진행하여, AI가 원래 뜻을 기억해 오역을 보정해 읽는 것을 막았다.'],
+    ],
+  };
+  return D[id] || [];
+}
+
+
+
+/* ================= render ================= */
+function render(force) {
+  const a = document.activeElement;
+  if (!force && a && a.matches && a.matches('#content input, #content textarea, #content select')) { pending = true; return; }
+  pending = false;
+  document.querySelectorAll('.mainnav button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === view)));
+  renderPicker();
+  const c = $('#content');
+  if (!db) { c.innerHTML = '<div class="empty">데이터를 불러오지 못했어요. 잠시 후 새로고침해 주세요.</div>'; return; }
+  if (view === 'admin') { c.innerHTML = adminHTML(); return; }
+  if (view === 'glossary') c.innerHTML = glossaryHTML();
+  else if (!cur()) c.innerHTML = `<div class="empty">아직 게임이 없어요. 위의 <b>+ 게임 추가</b>를 눌러 첫 게임을 만들어 주세요.</div>`;
+  else c.innerHTML = view === 'card' ? cardHTML(cur()) : promptsHTML(cur());
+}
+document.addEventListener('focusout', () => setTimeout(() => { if (pending) render(); }, 0));
+
+function renderPicker() {
+  const p = $('#picker');
+  if (view === 'glossary' || view === 'admin') { p.innerHTML = ''; return; }
+  p.innerHTML = `<span class="label">게임 선택</span>` + themes.map(t => `<button type="button" class="gbtn" data-game="${esc(t.id)}" aria-pressed="${t.id === gameId}">${esc(t.data.name || '(이름 없음)')}</button>`).join('')
+    + (readOnly ? '' : `<button type="button" class="gbtn add" id="add-game">+ 게임 추가</button>`);
+}
+
+/* ---------- game card ---------- */
+function stageOf(t, k) { return Math.max(0, Math.min(STAGES.length - 1, Number(t.progress?.[k] ?? 0))); }
+function fld(label, path, value, opts = {}) {
+  const dis = readOnly ? 'disabled' : '';
+  const ctl = opts.area
+    ? `<textarea data-path="${path}" ${dis} placeholder="${esc(opts.ph || '')}">${esc(value)}</textarea>`
+    : `<input data-path="${path}" value="${esc(value)}" ${dis} placeholder="${esc(opts.ph || '')}">`;
+  return `<label class="field"><span>${label}</span>${ctl}${opts.help ? `<small>${opts.help}</small>` : ''}</label>`;
+}
+function cardHTML({ id, data: t }) {
+  const sp = t.speakers || [];
+  return `
+  <section class="section">
+    <h2>기본 정보</h2><p class="hint">번역 AI가 게임 상황을 이해하는 데 쓰입니다.</p>
+    <div class="fields">
+      ${fld('게임 이름', 'name', t.name)}
+      ${fld('테마 (컨셉 한 줄)', 'concept', t.concept, { ph: '예: 망가진 파일 복구' })}
+    </div>
+    <div class="fields" style="margin-top:14px">
+      ${fld('상황', 'situation', t.situation, { area: true, ph: '플레이어가 놓인 상황과 목표' })}
+      ${fld('존댓말·반말', 'honorific', t.honorific, { area: true, ph: '예: 메리는 플레이어에게 존댓말', help: '번역 전에 기획이 정해 주세요.' })}
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>진행 상황</h2><p class="hint">순서는 영어 → 일본어 → 중국어(간체). 현재 단계를 누르세요.</p>
+    <div class="prog">${LANGS.map(l => { const s = stageOf(t, l.key); return `
+      <div class="prow"><b>${l.label}</b>
+        <div class="steps" role="group" aria-label="${l.label} 진행 단계">${STAGES.map((st, i) => `<button type="button" data-prog="${l.key}:${i}" aria-pressed="${i === s}" class="${i < s ? 'past' : i === s ? 'cur' + (i === STAGES.length - 1 ? ' final' : '') : ''}" ${readOnly ? 'disabled' : ''}>${st}</button>`).join('')}</div>
+      </div>`; }).join('')}</div>
+  </section>
+
+  <section class="section">
+    <h2>화자별 말투</h2><p class="hint">‘밝게’ 같은 형용사보다 문장 길이, 어미, 느낌표 사용처럼 구체적으로 적어 주세요.</p>
+    <div id="sp-list">${sp.length ? sp.map((s, i) => `
+      <div class="sp">
+        ${fld('화자', `speakers.${i}.who`, s.who, { ph: '예: 비서 메리' })}
+        ${fld('누구에게', `speakers.${i}.to`, s.to, { ph: '예: 플레이어' })}
+        ${fld('말투 규칙', `speakers.${i}.tone`, s.tone)}
+        ${fld('금지 말투', `speakers.${i}.banned`, s.banned)}
+        ${readOnly ? '' : `<button type="button" class="btn danger del" data-sp-del="${i}" aria-label="${esc(s.who || '화자')} 삭제">삭제</button>`}
+      </div>`).join('') : '<p class="hint">아직 화자가 없어요.</p>'}</div>
+    ${readOnly ? '' : '<button type="button" class="addrow" id="sp-add">+ 화자 추가</button>'}
+  </section>
+
+  <section class="section">
+    <h2>언어별 말투 방향</h2><p class="hint">예문은 말투를 보여 주는 참고용이에요.</p>
+    <div class="fields">${LANGS.map(l => fld(l.label, `lang.${l.key}`, t.lang?.[l.key], { area: true })).join('')}</div>
+  </section>
+
+  <section class="section">
+    <h2>메모</h2>
+    ${fld('', 'memo', t.memo, { area: true })}
+  </section>
+
+  ${readOnly ? '' : `<div class="dangerzone">${armedDelete === 'game:' + id
+    ? `<span>이 게임 카드를 삭제할까요? 용어집은 남아요.</span><button type="button" class="btn danger" id="game-del-yes">삭제</button><button type="button" class="btn" id="game-del-no">취소</button>`
+    : `<button type="button" class="btn danger" id="game-del">이 게임 삭제</button>`}</div>`}`;
+}
+
+/* ---------- prompts ---------- */
+function promptsHTML({ id, data: t }) {
+  const L = LANGS.find(l => l.key === promptLang);
+  const ps = buildPrompts(t, promptLang, id);
+  return `
+    <div class="langseg" role="group" aria-label="번역할 언어">${LANGS.map(l => `<button type="button" data-lang="${l.key}" aria-pressed="${promptLang === l.key}">${l.label}</button>`).join('')}</div>
+    <p class="hint" style="margin:0 0 14px;color:var(--muted);font-size:14px">「${esc(t.name)}」의 게임 카드와 용어집이 자동으로 들어가 있어요. 제목을 누르면 내용과 설계 설명이 펼쳐집니다.</p>
+    ${ps.map((p, i) => `
+      <details class="pcard">
+        <summary><span class="pid">${p.id}</span><span class="pname">${esc(p.name)}</span><span class="ptool">${esc(p.tool)}</span><span class="spacer"></span><button type="button" class="btn" data-copy="${i}">복사</button></summary>
+        <div class="why"><h4>이 프롬프트는 이렇게 설계했어요</h4><dl>${designFor(p.id, L, t).map(([k, v]) => `<div class="r"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></div>
+        <pre class="ptext" id="pt-${i}">${esc(p.text)}</pre>
+      </details>`).join('')}`;
+}
+
+/* ---------- glossary ---------- */
+function filtered() {
+  const q = gf.q.trim().toLowerCase();
+  return terms.filter(({ data: d }) => {
+    if (gf.game === 'common' && !d.common) return false;
+    if (gf.game !== 'all' && gf.game !== 'common' && !(d.common || (d.games || []).includes(gf.game))) return false;
+    if (gf.open && LANGS.every(l => statusOf(d, l.key) === '확정')) return false;
+    if (q) { const h = [d.ko, d.intent, d.memo, ...LANGS.map(l => trOf(d, l.key).text + ' ' + trOf(d, l.key).avoid)].join(' ').toLowerCase(); if (!h.includes(q)) return false; }
+    return true;
+  }).sort((a, b) => (a.data.ko || '').localeCompare(b.data.ko || '', 'ko'));
+}
+function gameValue(d) { return d.common ? 'common' : ((d.games || [])[0] || ''); }
+function termRowHTML(id, d, isDraft) {
+  const dis = readOnly ? 'disabled' : '';
+  const k = isDraft ? 'draft' : 'term';
+  const gv = gameValue(d);
+  return `
+  <tr class="${isDraft ? 'draft' : ''}" data-${k}="${esc(id)}">
+    <td><input data-f="ko" value="${esc(d.ko)}" placeholder="원문" aria-label="원문" ${dis}></td>
+    <td><select data-f="type" aria-label="유형" ${dis}>${TYPES.map(x => `<option ${d.type === x ? 'selected' : ''}>${x}</option>`).join('')}</select></td>
+    <td><select data-f="game" aria-label="사용 게임" ${dis}><option value="common" ${gv === 'common' ? 'selected' : ''}>모든 게임 공통</option>${themes.map(t => `<option value="${esc(t.id)}" ${gv === t.id ? 'selected' : ''}>${esc(t.data.name || '(이름 없음)')}</option>`).join('')}<option value="" ${gv === '' ? 'selected' : ''}>미지정</option></select></td>
+    <td><input data-f="intent" value="${esc(d.intent)}" placeholder="플레이어가 하는 행동" aria-label="의도" ${dis}></td>
+    ${LANGS.map(l => { const x = trOf(d, l.key), st = statusOf(d, l.key); return `
+    <td><div class="lcell"><input data-f="tr.${l.key}.text" value="${esc(x.text)}" placeholder="${l.label}" aria-label="${l.label} 번역" ${dis}>
+      <button type="button" class="st ${st === '확정' ? 'ok' : st === '후보' ? 'cand' : ''}" data-st="${l.key}" ${readOnly || !x.text || isDraft ? 'disabled' : ''} title="누르면 후보 ↔ 확정">${st}${x.avoid ? ' · 금지 있음' : ''}</button></div></td>`; }).join('')}
+    <td style="white-space:nowrap">
+      <button type="button" class="iconbtn" data-more="${esc(id)}" aria-expanded="${expanded.has(id)}" title="금지 번역·메모">${expanded.has(id) ? '접기' : '더보기'}</button>
+      ${readOnly ? '' : `<button type="button" class="iconbtn ${armedDelete === id ? 'warn' : ''}" data-del="${esc(id)}" title="삭제">${armedDelete === id ? '삭제?' : '✕'}</button>`}
+    </td>
+  </tr>
+  ${expanded.has(id) ? `<tr class="detail" data-${k}="${esc(id)}"><td colspan="9"><div class="dgrid">
+    ${LANGS.map(l => { const x = trOf(d, l.key); return `<label class="field"><span>${l.label} 금지 번역</span><input data-f="tr.${l.key}.avoid" value="${esc(x.avoid)}" placeholder="쓰면 안 되는 번역" ${dis}></label><label class="field"><span>${l.label} 금지 이유</span><input data-f="tr.${l.key}.avoidWhy" value="${esc(x.avoidWhy)}" ${dis}></label>`; }).join('')}
+    <label class="field" style="grid-column:1/-1"><span>메모</span><input data-f="memo" value="${esc(d.memo)}" ${dis}></label>
+  </div></td></tr>` : ''}`;
+}
+function glossaryHTML() {
+  const list = filtered(), total = terms.length;
+  return `
+  <div class="gtools">
+    <input type="search" id="g-q" placeholder="원문·번역·금지 번역 검색" value="${esc(gf.q)}" aria-label="용어 검색">
+    <select id="g-game" aria-label="게임 필터"><option value="all">모든 용어</option><option value="common" ${gf.game === 'common' ? 'selected' : ''}>공통 용어만</option>${themes.map(t => `<option value="${esc(t.id)}" ${gf.game === t.id ? 'selected' : ''}>${esc(t.data.name || '(이름 없음)')}</option>`).join('')}</select>
+    <label class="chk"><input type="checkbox" id="g-open" ${gf.open ? 'checked' : ''}> 미확정만</label>
+    <button type="button" class="btn" id="g-csv">엑셀(CSV)로 내보내기</button>
+  </div>
+  <div class="gstats"><span>전체 <b>${total}</b>개</span>${LANGS.map(l => `<span>${l.label} 확정 <b>${terms.filter(x => statusOf(x.data, l.key) === '확정').length}</b></span>`).join('')}</div>
+  ${csvText ? `<div class="section"><h2>CSV 텍스트</h2><p class="hint">전체 선택(Ctrl+A) 후 복사해서 엑셀에 붙여 넣으세요.</p><textarea class="csvbox" id="csv-text" readonly>${esc(csvText)}</textarea><div class="dangerzone" style="margin-top:8px"><button type="button" class="btn" id="csv-close">닫기</button></div></div>` : ''}
+  <div class="tbl"><table class="g">
+    <thead><tr><th style="width:12%">원문</th><th style="width:10%">유형</th><th style="width:12%">사용 게임</th><th style="width:15%">의도</th>${LANGS.map(l => `<th>${l.label}</th>`).join('')}<th style="width:120px"></th></tr></thead>
+    <tbody>
+      ${list.map(x => termRowHTML(x.id, x.data, false)).join('')}
+      ${drafts.map(d => termRowHTML(d.id, d.data, true)).join('')}
+      ${!list.length && !drafts.length ? `<tr><td colspan="9"><div class="empty" style="border:0">${total ? '조건에 맞는 용어가 없어요.' : '아직 용어가 없어요. 아래 + 를 눌러 추가하세요.'}</div></td></tr>` : ''}
+    </tbody>
+    ${readOnly ? '' : `<tfoot><tr><td colspan="9"><button type="button" class="addrow" id="g-add">+ 용어 추가</button></td></tr></tfoot>`}
+  </table></div>
+  <p class="hint" style="color:var(--muted);font-size:14px;margin-top:10px">칸을 고치고 다른 곳을 누르면 저장돼요. 번역 아래 버튼으로 <b>후보 ↔ 확정</b>을 바꿀 수 있어요. ‘모든 게임 공통’ 용어는 모든 게임의 프롬프트에 들어갑니다.</p>`;
+}
+function blankTerm() {
+  const g = gf.game !== 'all' && gf.game !== 'common' ? gf.game : '';
+  return { ko: '', type: '지시 동사', common: gf.game === 'common' || !g, games: g ? [g] : [], intent: '', tr: Object.fromEntries(LANGS.map(l => [l.key, { text: '', status: '후보', avoid: '', avoidWhy: '' }])), memo: '' };
+}
+function csvOf(list) {
+  const q = v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const head = ['원문', '유형', '사용 게임', '의도', ...LANGS.flatMap(l => [l.label, l.label + ' 상태', l.label + ' 금지 번역', l.label + ' 금지 이유']), '메모'];
+  const rows = list.map(({ data: d }) => [d.ko, d.type, d.common ? '모든 게임 공통' : (d.games || []).map(themeName).filter(Boolean).join(' / '), d.intent, ...LANGS.flatMap(l => { const x = trOf(d, l.key); return [x.text, statusOf(d, l.key), x.avoid, x.avoidWhy]; }), d.memo]);
+  return '﻿' + [head, ...rows].map(r => r.map(q).join(',')).join('\r\n');
+}
+
+/* ================= events (delegated) ================= */
+function setPath(obj, path, v) { const ks = path.split('.'); let o = obj; ks.slice(0, -1).forEach(k => { o[k] = o[k] ?? (/^\d+$/.test(k) ? [] : {}); o = o[k]; }); o[ks.at(-1)] = v; }
+function nest(path, v) { const out = {}; setPath(out, path, v); return out; }
+
+async function saveGameField(path, v) {
+  const c = cur(); if (!c) return;
+  let patch;
+  if (path.startsWith('speakers.')) { const sp = JSON.parse(JSON.stringify(c.data.speakers || [])); setPath({ speakers: sp }, path, v); patch = { speakers: sp }; }
+  else patch = nest(path, v);
+  patch.updatedAt = new Date().toISOString();
+  try { await db.doc('themes/' + c.id).update(patch); savedMark(); } catch (e) { writeErr(e); }
+}
+async function saveTermField(id, f, v) {
+  const x = terms.find(t => t.id === id); if (!x) return;
+  let patch;
+  if (f === 'game') patch = v === 'common' ? { common: true, games: [] } : { common: false, games: v ? [v] : [] };
+  else if (/^tr\.\w+\.text$/.test(f)) { const k = f.split('.')[1]; const old = trOf(x.data, k); patch = { tr: { [k]: { ...old, text: v, status: v ? (old.status === '확정' ? '확정' : '후보') : '미정' } } }; }
+  else patch = nest(f, v);
+  patch.updatedAt = new Date().toISOString();
+  try { await db.doc('terms/' + id).update(patch); savedMark(); } catch (e) { writeErr(e); }
+}
+async function saveDraft(d) {
+  const data = JSON.parse(JSON.stringify(d.data));
+  LANGS.forEach(l => { const r = data.tr[l.key]; r.status = r.text ? '후보' : '미정'; });
+  data.updatedAt = new Date().toISOString();
+  if (terms.some(t => t.data.ko === data.ko)) toast(`‘${data.ko}’는 이미 있는 원문이에요. 필요하면 하나를 지워 주세요.`);
+  const id = makeId(data.ko);
+  const af = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.f : null;
+  const inDraft = document.activeElement && document.activeElement.closest && document.activeElement.closest('[data-draft="' + d.id + '"]');
+  try {
+    await db.doc('terms/' + id).set(data); drafts = drafts.filter(x => x !== d);
+    terms = terms.some(t => t.id === id) ? terms : [...terms, { id, data }];
+    savedMark(); render(true);
+    if (af && inDraft) { const n = document.querySelector(`[data-term="${id}"] [data-f="${af}"]`); if (n) n.focus(); }
+  } catch (e) { writeErr(e); }
+}
+
+document.addEventListener('change', e => {
+  const el = e.target; if (readOnly) return;
+  if (el.dataset.path) { saveGameField(el.dataset.path, el.value.trim()); return; }
+  if (el.dataset.f) {
+    const row = el.closest('[data-term],[data-draft]'); if (!row) return;
+    const v = el.type === 'checkbox' ? el.checked : el.value.trim();
+    if (row.dataset.term) { saveTermField(row.dataset.term, el.dataset.f, v); return; }
+    const d = drafts.find(x => x.id === row.dataset.draft); if (!d) return;
+    if (el.dataset.f === 'game') { d.data.common = v === 'common'; d.data.games = v && v !== 'common' ? [v] : []; }
+    else setPath(d.data, el.dataset.f, v);
+    if (d.data.ko) saveDraft(d);
+  }
+  if (el.id === 'g-game') { gf.game = el.value; render(true); }
+  if (el.id === 'g-open') { gf.open = el.checked; render(true); }
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'g-q') { gf.q = e.target.value; const pos = e.target.selectionStart; render(true); const n = $('#g-q'); n.focus(); n.setSelectionRange(pos, pos); }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.matches('table.g input')) { e.preventDefault(); e.target.blur(); }
+});
+
+document.addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.closest('.mainnav')) { view = b.dataset.view; armedDelete = null; location.hash = view === 'card' || view === 'prompts' ? (gameId || '') : view; if (view === 'admin') loadAdmin(); render(true); return; }
+  if (b.dataset.game) { gameId = b.dataset.game; armedDelete = null; location.hash = gameId; render(true); return; }
+  if (b.id === 'add-game') {
+    const id = makeId('game');
+    const data = { name: '새 게임', concept: '', situation: '', honorific: '', speakers: [{ who: '', to: '플레이어', tone: '', banned: '' }], lang: { en: '', ja: '', zh: '' }, progress: { en: 0, ja: 0, zh: 0 }, memo: '', updatedAt: new Date().toISOString() };
+    try { await db.doc('themes/' + id).set(data); gameId = id; view = 'card'; location.hash = id; render(true); const n = document.querySelector('[data-path="name"]'); if (n) { n.focus(); n.select(); } } catch (err) { writeErr(err); }
+    return;
+  }
+  if (b.dataset.prog) {
+    const [k, v] = b.dataset.prog.split(':'); const c = cur();
+    try { await db.doc('themes/' + c.id).update({ progress: { ...(c.data.progress || {}), [k]: +v } }); savedMark(); } catch (err) { writeErr(err); }
+    return;
+  }
+  if (b.id === 'sp-add') { const c = cur(); const sp = [...(c.data.speakers || []), { who: '', to: '플레이어', tone: '', banned: '' }]; try { await db.doc('themes/' + c.id).update({ speakers: sp }); } catch (err) { writeErr(err); } return; }
+  if (b.dataset.spDel !== undefined) { const c = cur(); const sp = [...(c.data.speakers || [])]; sp.splice(+b.dataset.spDel, 1); try { await db.doc('themes/' + c.id).update({ speakers: sp }); savedMark(); } catch (err) { writeErr(err); } return; }
+  if (b.id === 'game-del') { armedDelete = 'game:' + gameId; render(true); return; }
+  if (b.id === 'game-del-no') { armedDelete = null; render(true); return; }
+  if (b.id === 'game-del-yes') { const id = gameId; armedDelete = null; try { await db.doc('themes/' + id).delete(); gameId = null; toast('게임 카드를 삭제했어요.'); } catch (err) { writeErr(err); } return; }
+  if (b.dataset.lang) { promptLang = b.dataset.lang; render(true); return; }
+  if (b.dataset.copy !== undefined) {
+    e.preventDefault(); e.stopPropagation();
+    const pre = $('#pt-' + b.dataset.copy); const txt = pre.textContent;
+    const fallback = () => { b.closest('details').open = true; const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('텍스트를 선택했어요. Ctrl+C로 복사하세요.'); };
+    try { navigator.clipboard.writeText(txt).then(() => { b.textContent = '복사됨 ✓'; setTimeout(() => (b.textContent = '복사'), 1500); }, fallback); } catch { fallback(); }
+    return;
+  }
+  if (b.id === 'g-add') { const d = { id: 'draft-' + Math.random().toString(36).slice(2, 8), data: blankTerm() }; drafts.push(d); render(true); const inp = document.querySelector(`[data-draft="${d.id}"] input[data-f="ko"]`); if (inp) inp.focus(); return; }
+  if (b.dataset.more) { const id = b.dataset.more; expanded.has(id) ? expanded.delete(id) : expanded.add(id); render(true); return; }
+  if (b.dataset.del) {
+    const id = b.dataset.del;
+    if (id.startsWith('draft-')) { drafts = drafts.filter(x => x.id !== id); render(true); return; }
+    if (armedDelete !== id) { armedDelete = id; render(true); setTimeout(() => { if (armedDelete === id) { armedDelete = null; render(); } }, 4000); return; }
+    armedDelete = null;
+    try { await db.doc('terms/' + id).delete(); toast('용어를 삭제했어요.'); } catch (err) { writeErr(err); }
+    return;
+  }
+  if (b.dataset.st) {
+    const row = b.closest('[data-term]'); const x = terms.find(t => t.id === row.dataset.term); const k = b.dataset.st; const old = trOf(x.data, k);
+    try { await db.doc('terms/' + x.id).update({ tr: { [k]: { ...old, status: old.status === '확정' ? '후보' : '확정' } }, updatedAt: new Date().toISOString() }); savedMark(); } catch (err) { writeErr(err); }
+    return;
+  }
+  if (b.id === 'g-csv') {
+    const csv = csvOf(filtered());
+    if (downloads) { try { await downloads.save({ filename: '체키_번역_용어집.csv', data: csv }); toast('CSV 파일을 저장했어요.'); return; } catch (err) { if (err && err.code === 'declined') return; } }
+    csvText = csv.replace(/^﻿/, ''); render(true); const ta = $('#csv-text'); if (ta) ta.select(); return;
+  }
+  if (b.id === 'csv-close') { csvText = ''; render(true); return; }
+});
+
+window.addEventListener('hashchange', () => {
+  const h = location.hash.slice(1);
+  if (h === 'glossary') { if (view !== 'glossary') { view = 'glossary'; render(true); } }
+  else if (h === 'admin') { /* 탭에서만 이동 */ }
+  else if (h && themes.some(t => t.id === h) && h !== gameId) { gameId = h; if (view === 'glossary') view = 'card'; render(true); }
+});
+
+/* ================= 로그인·회원 ================= */
+function showAuthPage(msg) {
+  $('#app').hidden = true; $('#auth-page').hidden = false;
+  if (msg) { $('#setup-err').hidden = false; $('#setup-err').textContent = msg; }
+  dlgTab('login');
+}
+function dlgTab(which) {
+  $('#tab-login').setAttribute('aria-pressed', String(which === 'login'));
+  $('#tab-signup').setAttribute('aria-pressed', String(which === 'signup'));
+  $('#login-form').hidden = which !== 'login'; $('#signup-form').hidden = which !== 'signup';
+  ['li-err', 'su-err', 'su-ok'].forEach(id => ($('#' + id).textContent = ''));
+  (which === 'login' ? $('#li-email') : $('#su-name')).focus();
+}
+function openLogin() { showAuthPage(); }
+function setupAuth(me) {
+  $('#who').innerHTML = !me.loggedIn ? '' : me.role === 'admin' ? '<b>관리자</b>' : `<b>${esc(me.name)}</b> · ${me.role === 'editor' ? '편집자' : '보기 전용'}`;
+  $('#pw-btn').hidden = !me.loggedIn || me.role === 'admin';
+
+  $('#admin-tab').hidden = !me.isAdmin;
+  if (me.isAdmin && me.pending) $('#admin-sub').innerHTML = `승인 대기<span class="badge">${me.pending}</span>`;
+  $('#auth-btn').onclick = async () => {
+    if (Store.pending()) { toast('저장 중인 내용이 있어요. 잠시 후 다시 눌러 주세요.'); return; }
+    await Store.logout(); location.reload();
+  };
+  $('#pw-btn').onclick = () => { $('#pw-err').textContent = ''; $('#pw-cur').value = ''; $('#pw-new').value = ''; $('#pwdlg').showModal(); $('#pw-cur').focus(); };
+  $('#tab-login').onclick = () => dlgTab('login');
+  $('#tab-signup').onclick = () => dlgTab('signup');
+  document.querySelectorAll('dialog [data-close]').forEach(b => (b.onclick = () => b.closest('dialog').close()));
+  $('#login-form').onsubmit = async e => {
+    e.preventDefault();
+    $('#li-err').textContent = '확인 중…';
+    try { await Store.login($('#li-email').value.trim(), $('#li-pw').value); location.reload(); }
+    catch (err) { $('#li-err').textContent = err.message; }
+  };
+  $('#signup-form').onsubmit = async e => {
+    e.preventDefault();
+    $('#su-ok').textContent = '';
+    if ($('#su-pw').value !== $('#su-pw2').value) { $('#su-err').textContent = '비밀번호 확인이 맞지 않아요.'; return; }
+    $('#su-err').textContent = '보내는 중…';
+    try { const r = await Store.signup($('#su-name').value.trim(), $('#su-email').value.trim(), $('#su-pw').value); $('#su-err').textContent = ''; $('#su-ok').textContent = r.message; e.target.reset(); }
+    catch (err) { $('#su-err').textContent = err.message; }
+  };
+  $('#pw-form').onsubmit = async e => {
+    e.preventDefault();
+    try { await Store.changePassword($('#pw-cur').value, $('#pw-new').value); $('#pwdlg').close(); toast('비밀번호를 바꿨어요.'); }
+    catch (err) { $('#pw-err').textContent = err.message; }
+  };
+}
+
+/* ---------- 회원 관리 (관리자) ---------- */
+let adminUsers = null, adminErr = '', tempShown = null;
+async function loadAdmin() {
+  try { adminUsers = await Store.adminUsers(); adminErr = ''; } catch (e) { adminErr = e.message; }
+  if (view === 'admin') render(true);
+}
+const fmtDate = s => s ? new Date(s).toLocaleDateString('ko-KR') : '';
+function adminHTML() {
+  if (adminErr) return `<div class="empty">${esc(adminErr)}</div>`;
+  if (!adminUsers) return '<div class="empty">회원 목록을 불러오는 중…</div>';
+  const pend = adminUsers.filter(u => u.status === 'pending'), ok = adminUsers.filter(u => u.status === 'approved'), blk = adminUsers.filter(u => u.status === 'blocked');
+  const row = (u, acts) => `<div class="urow"><div><b>${esc(u.name)}</b><div class="meta">${esc(u.email)}</div></div><div class="meta">가입 신청 ${fmtDate(u.createdAt)}${u.approvedAt ? ` · 승인 ${fmtDate(u.approvedAt)}` : ''}</div><div class="acts">${acts}</div></div>`;
+  return `
+  ${tempShown ? `<div class="section" style="border-color:var(--ok)"><h2>임시 비밀번호</h2><p class="hint">${esc(tempShown.name)} 님에게 전달하세요. 이 화면을 벗어나면 다시 볼 수 없어요. 로그인 후 ‘비밀번호 변경’으로 바꾸게 해 주세요.</p><p><span class="temp">${esc(tempShown.pw)}</span></p><div class="dangerzone"><button type="button" class="btn" data-ua="hide-temp">닫기</button></div></div>` : ''}
+  <section class="section"><h2>승인 대기 ${pend.length ? `<span class="badge">${pend.length}</span>` : ''}</h2><p class="hint">편집자는 게임 카드와 용어집을 고칠 수 있고, 보기 전용은 읽고 프롬프트만 복사할 수 있어요.</p>
+    <div class="ulist">${pend.length ? pend.map(u => row(u, `<button type="button" class="btn primary" data-ua="approve:editor" data-uid="${esc(u.id)}">편집자로 승인</button><button type="button" class="btn" data-ua="approve:viewer" data-uid="${esc(u.id)}">보기 전용으로 승인</button><button type="button" class="btn danger" data-ua="delete" data-uid="${esc(u.id)}">거절</button>`)).join('') : '<p class="hint">대기 중인 신청이 없어요.</p>'}</div></section>
+  <section class="section"><h2>승인된 회원 (${ok.length})</h2>
+    <div class="ulist">${ok.length ? ok.map(u => row(u, `<select data-urole="${esc(u.id)}" aria-label="${esc(u.name)} 권한"><option value="editor" ${u.role === 'editor' ? 'selected' : ''}>편집자</option><option value="viewer" ${u.role === 'viewer' ? 'selected' : ''}>보기 전용</option></select><button type="button" class="btn" data-ua="reset" data-uid="${esc(u.id)}">비밀번호 초기화</button><button type="button" class="btn danger" data-ua="block" data-uid="${esc(u.id)}">사용 중지</button>`)).join('') : '<p class="hint">아직 승인된 회원이 없어요.</p>'}</div></section>
+  ${blk.length ? `<section class="section"><h2>사용 중지 (${blk.length})</h2><div class="ulist">${blk.map(u => row(u, `<button type="button" class="btn" data-ua="approve:${u.role === 'editor' ? 'editor' : 'viewer'}" data-uid="${esc(u.id)}">다시 사용</button><button type="button" class="btn danger" data-ua="delete" data-uid="${esc(u.id)}">삭제</button>`)).join('')}</div></section>` : ''}`;
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-ua]'); if (!b) return;
+  const act = b.dataset.ua;
+  if (act === 'hide-temp') { tempShown = null; render(true); return; }
+  const [action, role] = act.split(':');
+  if ((action === 'delete' || action === 'block') && b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = '한 번 더 누르면 실행'; return; }
+  b.disabled = true;
+  try {
+    const r = await Store.adminAction(b.dataset.uid, action, role);
+    if (r.tempPassword) tempShown = { name: r.name, pw: r.tempPassword };
+    toast({ approve: '승인했어요.', delete: '삭제했어요.', block: '사용을 중지했어요.', reset: '임시 비밀번호를 만들었어요.' }[action] || '처리했어요.');
+    await loadAdmin();
+  } catch (err) { toast(err.message); b.disabled = false; }
+});
+document.addEventListener('change', async e => {
+  const sel = e.target.closest('[data-urole]'); if (!sel) return;
+  try { await Store.adminAction(sel.dataset.urole, 'role', sel.value); toast('권한을 바꿨어요.'); await loadAdmin(); } catch (err) { toast(err.message); }
+});
+window.addEventListener('store-save-error', e => { const err = e.detail || {}; if (err.code === 'invalid_argument') { readOnly = true; render(true); } toast(err.message || '저장하지 못했어요.'); });
+window.addEventListener('store-need-view', () => showAuthPage('로그인이 풀렸어요. 다시 로그인해 주세요.'));
+
+/* ================= boot ================= */
+(async () => {
+  try { db = await window.claude?.use?.('db'); } catch { db = null; }
+  if (!db) { $('#app').hidden = false; render(true); return; }
+  try { const user = await window.claude.use('user'); if (user && typeof user.can === 'function' && (await user.can('data.write')) === false) readOnly = true; } catch {}
+  window.claude.use('downloads').then(d => { downloads = d; }).catch(() => {});
+  const h = location.hash.slice(1);
+  if (h === 'glossary') view = 'glossary';
+  const me = await Store.me();
+  $('#saved').textContent = me.setupError ? '서버 설정 필요' : !me.loggedIn ? '' : readOnly ? '보기 전용' : '입력하면 자동 저장';
+  setupAuth(me);
+  if (me.setupError) { showAuthPage(me.setupError); return; }
+  if (me.offline) { showAuthPage('서버에 연결하지 못했어요. 잠시 후 새로고침해 주세요. (무료 서버는 처음 열 때 1분 정도 걸릴 수 있어요)'); return; }
+  if (!me.loggedIn) { showAuthPage(); return; }
+  $('#app').hidden = false;
+  if (h === 'admin' && me.isAdmin) { view = 'admin'; loadAdmin(); }
+  db.collection('themes').onSnapshot(snap => {
+    themes = snap.docs.filter(d => d.exists).map(d => ({ id: d.id, data: d.data() })).sort((a, b) => (a.data.name || '').localeCompare(b.data.name || '', 'ko'));
+    if (!gameId && h && themes.some(t => t.id === h)) gameId = h;
+    if (!gameId || !themes.some(t => t.id === gameId)) gameId = themes[0]?.id ?? null;
+    render();
+  }, () => toast('게임 목록을 불러오지 못했어요. 새로고침해 주세요.'));
+  db.collection('terms').onSnapshot(snap => {
+    terms = snap.docs.filter(d => d.exists).map(d => ({ id: d.id, data: d.data() }));
+    render();
+  }, () => toast('용어집을 불러오지 못했어요. 새로고침해 주세요.'));
+})();
+</script>
+
+</body>
+</html>

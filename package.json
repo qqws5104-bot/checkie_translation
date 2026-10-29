@@ -1,0 +1,8 @@
+{
+  "name": "checkie-translation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "체키 성수 게임 번역 프롬프트 카드·용어집 사이트",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}
