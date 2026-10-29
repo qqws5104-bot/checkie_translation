@@ -123,35 +123,6 @@
     "type": "버튼 라벨",
     "updatedAt": "2026-10-29T00:00:00Z"
   },
-  "press": {
-    "common": true,
-    "games": [],
-    "intent": "물리 버튼을 누르는 동작",
-    "ko": "누르다",
-    "memo": "",
-    "tr": {
-      "en": {
-        "avoid": "Click",
-        "avoidWhy": "화면 클릭이 아니라 물리 버튼",
-        "status": "후보",
-        "text": "Press"
-      },
-      "ja": {
-        "avoid": "押せ",
-        "avoidWhy": "명령형은 거칠게 들림",
-        "status": "후보",
-        "text": "押して"
-      },
-      "zh": {
-        "avoid": "点击",
-        "avoidWhy": "点击은 화면 터치·클릭에 쓰는 말",
-        "status": "후보",
-        "text": "按"
-      }
-    },
-    "type": "지시 동사",
-    "updatedAt": "2026-10-29T00:00:00Z"
-  },
   "remember": {
     "common": true,
     "games": [],
