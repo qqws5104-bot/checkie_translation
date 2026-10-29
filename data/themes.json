@@ -113,7 +113,10 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-10-29T05:25:11.391Z"
+    "updatedAt": "2026-10-29T05:25:11.391Z",
+    "progressBy": {
+      "en": {}
+    }
   },
   "game-it5mm": {
     "name": "새 게임",
