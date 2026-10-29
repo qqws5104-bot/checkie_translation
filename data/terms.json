@@ -184,8 +184,10 @@
     "updatedAt": "2026-10-29T00:00:00Z"
   },
   "ui-goal": {
-    "common": true,
-    "games": [],
+    "common": false,
+    "games": [
+      "chris-mas"
+    ],
     "intent": "목표 달성 표시",
     "ko": "GOAL!",
     "memo": "일·중은 영문 그대로 유지",
@@ -210,7 +212,7 @@
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-29T00:00:00Z"
+    "updatedAt": "2026-10-29T05:38:30.689Z"
   },
   "ui-here": {
     "common": true,
