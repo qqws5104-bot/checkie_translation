@@ -62,5 +62,31 @@
       }
     ],
     "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "game-ynr8w": {
+    "name": "새 게임",
+    "concept": "",
+    "situation": "",
+    "honorific": "",
+    "speakers": [
+      {
+        "who": "",
+        "to": "플레이어",
+        "tone": "",
+        "banned": ""
+      }
+    ],
+    "lang": {
+      "en": "",
+      "ja": "",
+      "zh": ""
+    },
+    "progress": {
+      "en": 0,
+      "ja": 0,
+      "zh": 0
+    },
+    "memo": "",
+    "updatedAt": "2026-10-29T05:24:40.065Z"
   }
 }
