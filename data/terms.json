@@ -11,8 +11,8 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
-        "text": "d"
+        "status": "미정",
+        "text": ""
       },
       "ja": {
         "avoid": "",
@@ -28,7 +28,7 @@
       }
     },
     "type": "캐릭터명",
-    "updatedAt": "2026-10-29T05:21:38.927Z"
+    "updatedAt": "2026-10-29T05:45:56.058Z"
   },
   "chris-mas-name": {
     "common": false,
