@@ -143,6 +143,37 @@ button.dot { width: 22px; height: 22px; vertical-align: -6px; cursor: pointer; b
 .subh { font-size: 16px; margin: 4px 0 6px; }
 .subh small { font-size: 13px; color: var(--muted); font-weight: 400; margin-left: 6px; }
 .pwarn { background: var(--accent-soft); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
+.whead { display: flex; align-items: center; gap: 10px; margin: 4px 0 10px; flex-wrap: wrap; }
+.whead h2 { font-size: 20px; margin: 0; }
+.wstate { font-size: 13px; border-radius: 99px; padding: 2px 10px; border: 1px solid var(--line); color: var(--muted); }
+.wstate.now { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+.wstate.ok { background: var(--ok); border-color: var(--ok); color: var(--on-accent); font-weight: 700; }
+.gstats.wstats { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.wstats .hot { box-shadow: inset 0 0 0 2px var(--accent); }
+.wstats .hot b { color: var(--accent); }
+@media (max-width: 760px) { .gstats.wstats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.wdone { border: 2px solid var(--ok); border-radius: 12px; padding: 12px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-weight: 700; }
+.wdone.ok { background: var(--ok-soft); }
+.wfoot { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.wups { display: flex; flex-wrap: wrap; gap: 8px; }
+.pnote { font-size: 14px; color: var(--muted); }
+.badtxt { color: var(--accent); }
+.pcopy small { display: block; font-size: 11px; font-weight: 400; opacity: .85; line-height: 1.1; }
+.hlist { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 10px; }
+.hlist h4 { margin: 0; font-size: 16px; }
+.hlist h4 small { font-weight: 400; color: var(--muted); font-size: 13px; margin-left: 6px; }
+.hrow { display: grid; grid-template-columns: 110px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding-top: 10px; border-top: 1px solid var(--line); }
+.hrow.flag { box-shadow: inset 3px 0 0 var(--accent); padding-left: 8px; }
+.hid { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+.hko { font-weight: 700; font-size: 16px; }
+.htr { font-size: 16px; margin-top: 4px; }
+.hmeta { font-size: 13px; color: var(--muted); }
+.hacts { display: flex; gap: 6px; }
+.hcmp { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; font-size: 15px; }
+.hcmp span { display: block; font-size: 12px; color: var(--muted); }
+.hwarn { grid-column: 1 / -1; color: var(--accent); font-size: 14px; font-weight: 700; }
+.hcalm { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+@media (max-width: 640px) { .hrow { grid-template-columns: 1fr; } .hcmp { grid-template-columns: 1fr; } }
 .setup { border: 1px dashed var(--line); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; }
 .setup > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
 .setup > summary::-webkit-details-marker { display: none; }
@@ -211,6 +242,22 @@ pre.ptext { margin: 0; padding: 16px; background: var(--code-bg); border-top: 1p
 .gstats small { font-size: 13px; color: var(--muted); margin-left: 4px; }
 @media (max-width: 560px) { .gstats { grid-template-columns: 1fr 1fr; } }
 body.wide .wrap { max-width: 1320px; }
+.savebar { position: sticky; bottom: 12px; z-index: 15; display: flex; align-items: center; gap: 10px; margin-top: 16px; padding: 10px 12px 10px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); box-shadow: 0 6px 20px rgba(0,0,0,.25); font-size: 15px; transition: border-color .2s; }
+.savebar .sb-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+.savebar .sb-text { font-weight: 700; }
+.savebar .sb-time { color: var(--muted); font-size: 13px; flex: 1; }
+.savebar #sb-save { margin-left: auto; min-width: 96px; }
+.savebar.ok .sb-dot { background: var(--ok); }
+.savebar.ok .sb-text { color: var(--ok); }
+.savebar.dirty { border-color: var(--accent); }
+.savebar.dirty .sb-dot { background: var(--accent); }
+.savebar.busy .sb-dot { background: var(--accent); animation: sbpulse 1s infinite; }
+.savebar.err { border-color: var(--accent); background: var(--accent-soft); }
+.savebar.err .sb-dot { background: var(--accent); }
+.savebar.flash { border-color: var(--ok); }
+@keyframes sbpulse { 50% { opacity: .3; } }
+@media (prefers-reduced-motion: reduce) { .savebar.busy .sb-dot { animation: none; } }
+.unsaved { border-color: var(--accent) !important; box-shadow: inset 3px 0 0 var(--accent); }
 .subtabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
 .subtabs button { border: 0; background: none; color: var(--muted); font-size: 15px; font-weight: 700; padding: 8px 14px; border-bottom: 3px solid transparent; margin-bottom: -1px; }
 .subtabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
@@ -353,12 +400,13 @@ dialog .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14
   </div>
   <nav class="mainnav" role="tablist" aria-label="화면">
     <button type="button" role="tab" data-view="card" aria-selected="true">게임 카드<span>컨셉·말투·진행 상황</span></button>
-    <button type="button" role="tab" data-view="prompts" aria-selected="false">프롬프트<span>복사해서 AI에 붙여 넣기</span></button>
+    <button type="button" role="tab" data-view="prompts" aria-selected="false">번역 작업<span>단계별 진행 · 결과 올리기</span></button>
     <button type="button" role="tab" data-view="glossary" aria-selected="false">용어집<span>모든 게임 공용</span></button>
     <button type="button" role="tab" data-view="admin" aria-selected="false" id="admin-tab" hidden>회원 관리<span id="admin-sub">보기·편집 허용</span></button>
   </nav>
   <div id="picker" class="picker"></div>
   <div id="content"><div class="empty">불러오는 중…</div></div>
+  <div class="savebar" id="savebar" hidden role="status" aria-live="polite"><span class="sb-dot"></span><span class="sb-text" id="sb-text">모두 저장됨</span><span class="sb-time" id="sb-time"></span><button type="button" class="btn" id="sb-save">저장</button></div>
 </div>
 <div class="toast" id="toast" hidden></div>
 <main class="authpage" id="auth-page" hidden>
@@ -436,7 +484,7 @@ let pending = false;           // a render waits for the user to leave a field
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 function toast(m) { const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (t.hidden = true), 2400); }
-function savedMark() { const s = $('#saved'); s.textContent = '저장됨 ✓'; s.classList.add('on'); clearTimeout(savedMark.t); savedMark.t = setTimeout(() => { s.textContent = '모든 변경 사항이 저장되어 있어요'; s.classList.remove('on'); }, 1800); }
+function savedMark() { /* 실제 저장 상태는 아래 저장 바가 서버 응답 기준으로 보여 준다 */ }
 function makeId(name) {
   const base = String(name).normalize('NFKD').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase().slice(0, 30);
   return (base || 'item') + '-' + Math.random().toString(36).slice(2, 7);
@@ -524,6 +572,7 @@ function buildPrompts(t, lk, themeId) {
   const gloss = glossaryText(themeId, lk);
   const glossAll = glossaryText(themeId);
   const isEn = lk === 'en';
+  const rvP = pkgReview(t, lk), tsP = pkgTest(t, lk), fxP = pkgFix(t, lk), ab = abbrOf(t), enTxt = enFinalText(t);
   return [
     { id: 'P1-1', tag: 'A', setup: true, sum: '분석 담당자의 역할과 규칙을 ChatGPT 프로젝트에 등록', name: '원문 분석 담당자 등록', tool: 'ChatGPT 프로젝트 지침', when: '처음 한 번 등록', text:
 `[역할]
@@ -549,7 +598,7 @@ function buildPrompts(t, lk, themeId) {
 
 [출력 1. 번역 입력표]
 원문 표가 오면 모든 행을 ID 순서대로 유지하고, ID·화면 원문·사용 위치·글자 수는 고치지 않는다.
-원문 표 없이 PNG만 오면, 요청의 [원문 읽기] 방법대로 캡처에서 원문을 읽어 표를 만든다.
+원문 표 없이 파일(PNG·Word·PDF·엑셀 등)만 오면, 요청의 [첨부 파일 읽기] 방법대로 파일에서 원문을 읽어 표를 만든다.
 열: ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문
 
 - 화자: 컨텍스트 카드의 화자 이름, 또는 ‘시스템 안내’·‘버튼’. 모르면 ‘미확인’.
@@ -584,21 +633,28 @@ function buildPrompts(t, lk, themeId) {
 표가 길면 행을 빼지 말고 ID 순서대로 나누어 출력한다.
 
 [입력]
-요청마다 게임 컨텍스트 카드, 용어집, 화면 캡처(PNG)가 함께 온다. 원문 표는 있을 때만 온다.
+요청마다 게임 컨텍스트 카드, 용어집, 첨부 파일(화면 캡처·대본·기획서·문구 표 등)이 함께 온다. 원문 표는 있을 때만 온다.
 요청에 없는 다른 게임의 내용은 섞지 않는다.` },
-    { id: 'P1-2', tag: '1', sum: 'PNG에서 원문을 읽고 의도·판정 기준·질문을 정리', name: '원문 분석', tool: 'ChatGPT 프로젝트 · 새 대화', when: '게임마다', text:
+    { id: 'P1-2', tag: '1', sum: '첨부 파일에서 원문을 읽고 의도·판정 기준·질문을 정리', name: '원문 분석', tool: 'ChatGPT 프로젝트 · 새 대화', when: '게임마다', text:
 `${t.name || '[게임명]'} 원문을 분석해 줘. 번역은 하지 마.
-원문 표는 따로 없어. 첨부한 PNG 화면 캡처에서 원문을 직접 읽어.
+원문 표는 따로 없어. 첨부한 파일에서 원문을 직접 읽어.
 
-[원문 읽기]
-1. PNG를 파일 이름 순서대로 본다.
-2. 화면에 보이는 한국어 문구를 하나도 빼지 않고 적는다. 버튼, 안내문, 대사, 효과 글자 모두 포함한다.
-3. ID는 ‘파일 이름-순번’으로 붙인다. 예: ${abbrOf(t)}-01.png의 문구 → ${abbrOf(t)}-01-1, ${abbrOf(t)}-01-2
-   순번은 화면 위에서 아래로, 왼쪽에서 오른쪽 순서다.
-4. 사용 위치는 ‘파일 이름 · 화면 속 위치’로 쓴다. 예: ${abbrOf(t)}-01 · 아래 왼쪽 버튼
-5. 글자 수 열에는 지금 화면 원문의 글자 수(공백 포함)를 쓴다. 칸이 좁아 보이면 맥락 설명에 ‘[공간] 좁음’이라고 적는다.
-6. 흐리거나 잘려서 확실히 읽을 수 없는 글자는 ‘판독 불확실:’을 붙이고 출력 2에 질문으로 올린다.
-7. 로고나 장식 글자는 맥락 설명에 ‘로고’ 또는 ‘장식’이라고 적는다.
+[첨부 파일 읽기]
+1. 첨부 파일을 모두 연다. 화면 캡처(PNG·JPG), 대본·기획서(Word·PDF), 문구 표(엑셀·CSV) 무엇이든 올 수 있다.
+2. 파일마다 ‘원문 자료’인지 ‘참고 자료’인지 먼저 구분한다.
+   - 원문 자료: 플레이어가 화면이나 음성으로 접하는 문구가 들어 있는 파일 (화면 캡처, 대본, 문구 표)
+   - 참고 자료: 규칙·설정을 설명하는 파일 (기획서 등). 원문 표에 넣지 않고, 의도·판정 기준을 판단하는 근거로만 쓴다.
+   - 구분이 애매하면 출력 2에 질문으로 올린다.
+3. 원문 자료의 한국어 문구를 하나도 빼지 않고 적는다. 버튼, 안내문, 대사, 효과 글자, 음성 대사 모두 포함한다.
+4. ID: 파일에 ID가 있으면 그대로 쓴다. 없으면 ‘파일 ID-T두 자리 번호’로 붙인다. 파일 ID는 확장자를 뺀 파일 이름이다.
+   예: ${abbrOf(t)}-01.png → ${abbrOf(t)}-01-T01, ${abbrOf(t)}-01-T02 / ${abbrOf(t)}-script.docx → ${abbrOf(t)}-script-T01
+   순번은 화면이면 위에서 아래로, 왼쪽에서 오른쪽 / 문서면 나오는 순서다.
+5. 사용 위치는 ‘파일 이름 · 위치’로 쓴다. 예: ${abbrOf(t)}-01 · 아래 왼쪽 버튼 / ${abbrOf(t)}-script · 3쪽 메리 대사
+6. 글자 수 열에는 지금 원문의 글자 수(공백 포함)를 쓴다. 화면 칸이 좁아 보이면 맥락 설명에 ‘[공간] 좁음’이라고 적는다.
+7. 흐리거나 잘려서 확실히 읽을 수 없는 글자는 ‘판독 불확실:’을 붙이고 출력 2에 질문으로 올린다.
+8. 같은 문구가 여러 파일에 나오면 합치지 말고 각각 적고, 맥락 설명에 ‘[중복] 다른 ID’를 적는다.
+9. 로고나 장식 글자는 맥락 설명에 ‘로고’ 또는 ‘장식’이라고 적는다.
+10. 맨 앞에 [읽은 파일] 목록을 적는다: 파일 이름 | 원문 자료·참고 자료 | 읽은 문구 수. 열지 못한 파일이 있으면 그렇다고 적는다.
 
 그다음 지침의 출력 1(번역 입력표), 출력 2(기획 확인 질문), 출력 3(용어집 후보) 형식으로 줘.
 출력 1은 같은 내용을 ‘${abbrOf(t)}_input_table.xlsx’ 파일로도 만들어 줘. 첫 행은 열 이름이고, 한 칸 안에 줄바꿈을 넣지 않는다.
@@ -608,7 +664,7 @@ ${card}
 
 ${glossAll}
 
-[첨부: 화면 캡처 PNG]` },
+[첨부: 화면 캡처, 대본, 기획서, 문구 표 등]` },
     { id: 'P2-1', tag: 'B', setup: true, sum: '번역 규칙을 언어별 번역 프로젝트에 등록', name: `번역 규칙 등록 — ${L.label}`, tool: '번역 AI 프로젝트 지침', when: '언어별 한 번 등록', text:
 `[역할] 너는 오프라인 게임 매장의 ${L.target} 현지화 담당자다.
 [대상] 한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객
@@ -625,19 +681,21 @@ ${glossAll}
 - 한국 한자어를 그대로 옮기지 않는다.
 - 번역문도 짧게 쓴다. 한 문장에 한 동작만 담는다.${lk === 'zh' ? '\n- 중국 본토용 간체로만 쓴다.' : ''}
 
-[입력] 요청마다 게임 컨텍스트 카드, 용어집, 번역 입력표, 화면 캡처(PNG)가 함께 온다.
+[입력] 요청마다 게임 컨텍스트 카드, 용어집, 번역 입력표, 첨부 파일(화면 캡처·대본 등)이 함께 온다.
+번역할 문구의 기준은 번역 입력표다. 첨부 파일은 장면과 화면 크기를 확인하는 데 쓴다.
 요청에 없는 다른 게임의 내용은 섞지 않는다.` },
-    isEn ? { id: 'P2-2', tag: '2', sum: '번역 입력표와 PNG로 초벌 번역 (DeepL 비교본도 준비)', name: '번역 — 영어', tool: '초벌 번역 AI · 새 대화창', when: '번역', text:
+    isEn ? { id: 'P2-2', tag: '2', sum: '번역 입력표와 첨부 파일로 초벌 번역 (DeepL 비교본도 준비)', name: '번역 — 영어', tool: '초벌 번역 AI · 새 대화창', when: '번역', text:
 `${t.name || '[게임명]'} 문구를 영어로 번역해 줘.
 아래 컨텍스트 카드를 먼저 읽고, 표의 맥락 설명·정리 원문·의도를 반영해.
 번역 기준은 화면 원문이야. 뜻은 맥락 설명과 정리 원문으로 확인해.
 판정 기준이 ‘있음’인 문구는 번역 후에도 같은 정답과 행동이 나오게 해.
-첨부한 PNG는 화면 캡처야. 버튼 크기와 위치는 캡처로 확인해.
-표의 모든 행을 ID 순서대로 빠짐없이 번역해.
+첨부 파일(화면 캡처·대본 등)은 장면과 버튼 크기·위치를 확인하는 데 써. 번역할 문구는 아래 번역 입력표가 기준이야.
+표의 모든 행을 ID 순서대로 빠짐없이 번역해. 원문과 번역문은 같은 ID로 짝지어.
+버튼 문구·정답처럼 글자 하나가 중요한 행은 ‘정답·판정 위험’ 열에 ‘중요’라고 표시해.
 
-같은 표에 아래 열을 추가해서 줘.
-번역문 | 적용한 말투 | 현지화 이유 | 정답·판정 위험 | 확신 낮은 부분 | 축약안 | 기획 확인 질문
-결과 표는 ‘${abbrOf(t)}_translation_EN.xlsx’ 파일로도 만들어 줘.
+결과는 아래 열로 줘. 열 이름을 바꾸지 마.
+ID | 번역문 | 적용한 말투 | 현지화 이유 | 정답·판정 위험 | 확신 낮은 부분 | 축약안 | 기획 확인 질문
+같은 표를 ‘${ab}_translation_EN.xlsx’ 파일로도 만들어 줘.
 
 ${card}
 
@@ -653,12 +711,12 @@ ${inputTableBlock(t)}` }
 4. 영어의 대명사(you)나 공손 표현(please)을 옮기지 마라.
 5. 한국어와 영어의 뜻이 다르면 번역하지 말고 ‘해석 불일치’로 표시해라.
 6. 영어 확정본은 ID로 맞춰 본다. 영어가 없는 ID는 맥락 설명만 보고 번역해라.
-7. 첨부한 PNG는 화면 캡처다. 버튼 크기와 위치는 캡처로 확인해라.
+7. 첨부 파일(화면 캡처·대본 등)은 장면과 버튼 크기·위치를 확인하는 데 써라. 번역할 문구는 번역 입력표가 기준이다.
 8. 표의 모든 행을 ID 순서대로 빠짐없이 번역해라.
 
-같은 표에 아래 열을 추가해서 줘.
-번역문 | 적용한 말투 | 해석 불일치 | 현지화 이유 | 정답·판정 위험 | 확신 낮은 부분 | 축약안 | 기획 확인 질문
-결과 표는 ‘${abbrOf(t)}_translation_${L.short}.xlsx’ 파일로도 만들어 줘.
+결과는 아래 열로 줘. 열 이름을 바꾸지 마.
+ID | 번역문 | 적용한 말투 | 해석 불일치 | 현지화 이유 | 정답·판정 위험 | 확신 낮은 부분 | 축약안 | 기획 확인 질문
+같은 표를 ‘${ab}_translation_${L.short}.xlsx’ 파일로도 만들어 줘.
 
 ${card}
 
@@ -666,54 +724,74 @@ ${gloss}
 
 ${inputTableBlock(t)}
 
-${t.enFinal && t.enFinal.trim() ? `[영어 확정본: ID | 영어]\n${t.enFinal.trim()}` : '[영어 확정본: ID | 영어]\n(게임 카드의 ‘영어 확정본’ 칸이 비어 있어요. 영어를 확정한 뒤 붙여 넣으세요.)'}` },
-    { id: 'P3', tag: '3', sum: '오역·누락·규칙 위반을 PASS / REVIEW / FAIL로 판정', name: '오류 검수', tool: 'Claude 새 대화창', when: '검수 · 번역 AI가 Claude면 ChatGPT', text:
-`너는 번역자가 아니라 독립적인 현지화 QA 담당자다. 문제를 찾는 것이 목적이다.
-[자료] 컨텍스트 카드, 용어집, 원문 표, 번역문 A(초벌), 번역문 B(DeepL), 화면 캡처
+${enTxt ? `[영어 확정본]\n${enTxt}` : '[영어 확정본]\n(아직 없어요. 영어를 먼저 확정해 주세요.)'}` },
+    { id: 'P3', tag: '3', sum: '번역한 AI와 다른 대화에서 의미·행동·정답·용어·화면을 판정', name: '독립 검수', tool: 'Claude 새 대화창', when: '검수 · 번역 AI가 Claude면 ChatGPT', text:
+`너는 번역자가 아니라 독립적인 현지화 검수 담당자다. 문제를 찾는 것이 목적이다.
 [목표 언어] ${L.target}
+[자료] 컨텍스트 카드, 용어집, 아래 검수 표(원문·의도·판정 기준·번역문 A·B), 첨부한 화면 캡처
 
-문구마다 아래 항목을 PASS / REVIEW / FAIL로 판정하라.
-1. 의미: 누락이나 추가
-2. 규칙·정답: 판정 기준대로 플레이할 수 있는가
-3. 행동: 다른 행동을 유도하지 않는가
-4. 말투: 컨텍스트 카드의 화자 말투와 맞는가
-5. 용어: 용어집의 확정 번역과 일치하고, 금지 번역을 쓰지 않았는가
-6. A·B 비교: 뜻이 다르면 어느 쪽이 의도에 맞는가
-7. 화면: 글자 수, 버튼 크기, 줄바꿈
-8. 문화: 무례하거나, 불길하거나, 민감한 표현이 없는가
+문구마다 아래 7가지를 확인하라.
+1. 의미 보존: 원문과 번역문의 뜻이 같은가
+2. 행동 보존: 왼쪽·오른쪽, 누르기·버리기 같은 행동이 바뀌지 않았는가
+3. 정답 보존: 숫자, 고유명사, 정답이 바뀌지 않았는가 (판정 기준이 ‘있음’인 행은 특히)
+4. 용어 일관성: 용어집의 확정 번역과 같고, 금지 번역을 쓰지 않았는가
+5. 누락·추가: 원문에 없는 지시가 더해지거나 중요한 내용이 빠지지 않았는가
+6. 현지 자연스러움: 그 나라 플레이어가 바로 이해하는 표현인가
+7. 화면 적합성: 길이가 버튼·칸에 맞는가 (글자 수와 화면 캡처 참고)
+번역문 A와 B(DeepL)의 뜻이 다르면 어느 쪽이 의도에 맞는지 근거에 적어라.
 
-출력: ID | 항목별 판정 | 문제 유형 | 이유 | 수정 제안 | 수정안에서도 판정 기준 유지 여부
-PASS여도 번역이 완벽하다고 단정하지 마라.
+[판정] 문구마다 하나만 고른다.
+- 통과: 7가지에 문제가 없다.
+- 수정 필요: 문제가 분명하고 고칠 방법이 있다. 수정안을 쓴다.
+- 사람 확인 필요: 정답·승패·물리적 행동이 바뀔 수 있는데 확신할 수 없거나, 의도 해석이 갈린다.
+[심각도] 높음(정답·행동·판정이 바뀜) / 중간(뜻이 어긋남) / 낮음(어색함·길이)
+
+출력 열: ID | 판정 | 심각도 | 문제 유형 | 문제점 | 수정안 | 근거
+- 통과인 행도 빼지 말고 적는다. 통과면 심각도부터는 ‘-’로 둔다.
+- 표의 모든 행을 ID 순서대로 빠짐없이 적는다. 열 이름을 바꾸지 않는다.
+- 같은 표를 ‘${ab}_review_${L.short}.xlsx’ 파일로도 만든다.
+통과는 ‘큰 문제를 못 찾았다’는 뜻이지 완벽하다는 뜻이 아니다. 확신이 없으면 사람 확인 필요로 둔다.
 
 ${card}
 
 ${gloss}
 
-${inputTableBlock(t)}
+[검수 표 · ${rvP.again ? '바뀐 문구만' : '전체'} ${rvP.n}행]
+${rvP.text || '(검수할 행이 없어요. 번역 결과를 먼저 올려 주세요.)'}
 
-[번역문: ID | 번역문 A(초벌) | 번역문 B(DeepL)]
-(여기에 붙여 넣고, 화면 캡처 PNG를 첨부한다)` },
-    { id: 'P4', tag: '4', sum: '원문 없이 읽혀서 뜻과 행동이 그대로 전달되는지 확인', name: '테스트 (원문 없이)', tool: 'Gemini 새 대화창', when: '검수 · 원문은 주지 않음', text:
+(화면 캡처를 첨부한다)` },
+    { id: 'P4', tag: '4', sum: '원문 없이 읽혀서 뜻·행동·화면 길이가 맞는지 확인', name: '화면·행동 테스트', tool: 'Gemini 새 대화창', when: '검수 통과 후 · 원문은 주지 않음', text:
 `아래 ${L.label} 문구를 이 게임을 처음 보는 ${L.region} 플레이어 입장에서 읽어 줘.
-한국어 원문은 모른다고 가정한다. 화면 캡처와 문구만 보고 문구마다 답해.
+한국어 원문은 모른다고 가정한다. 첨부한 화면 캡처와 문구만 보고 문구마다 답해.
 
 1. 직역: 한국어로 그대로 옮긴다. 다듬거나 뜻을 보충하지 않는다. 어색하면 어색한 그대로 쓴다.
 2. 행동: 이 문구를 보고 다음에 무엇을 하겠는가
 3. 인상: 누가 말하는 것 같은가, 말투는 어떤 인상인가
 4. 헷갈림: 두 가지로 읽히거나 막히는 부분 (없으면 ‘없음’)
+5. 화면 적합: 캡처 속 버튼·칸에 들어갈 길이인가. ‘들어감’ / ‘넘칠 수 있음’ / ‘확인 필요’ 중 하나 (칸 크기 열 참고)
 
 원래 뜻을 추측하지 말고, 처음 보는 사람의 반응만 적어.
-출력: ID | 직역 | 행동 | 인상 | 헷갈림
+출력 열: ID | 직역 | 행동 | 인상 | 헷갈림 | 화면 적합
+표의 모든 행을 빠짐없이 적고 열 이름을 바꾸지 마. 같은 표를 ‘${ab}_test_${L.short}.xlsx’ 파일로도 만들어 줘.
 
-[ID | 번역문]
-(여기에 붙여 넣고, 화면 캡처 PNG를 첨부한다)` },
-    { id: 'P5', tag: '5', sum: '검수·테스트에서 걸린 문구만 근거와 함께 고치기', name: '재수정 (걸린 문구만)', tool: '초벌 번역 AI · 새 대화창', when: '최대 2회', text:
-`아래 문구는 검수에서 걸렸다. 걸린 이유에 해당하는 부분만 고쳐라.
-말투는 ${t.name || '이 게임'}의 컨텍스트 카드를 그대로 따른다.
+[테스트 표 · ${tsP.n}행]
+${tsP.text || '(테스트할 행이 없어요. 검수를 먼저 통과해야 해요.)'}
 
-[ID | 원문 | 의도 | 현재 번역문 | 걸린 항목 | 근거]
+(화면 캡처를 첨부한다)` },
+    { id: 'P5', tag: '5', sum: '걸린 문구만 고치고, 바뀐 문구만 다시 검수로 보내기', name: '수정 (걸린 문구만)', tool: '초벌 번역 AI · 새 대화창', when: '최대 2회', text:
+`아래 문구는 검수나 테스트에서 걸렸다. 걸린 이유에 해당하는 부분만 고쳐라.
+말투는 컨텍스트 카드를 따르고, 용어집의 확정 번역은 그대로 쓴다.
+고친 문구 때문에 함께 바뀌어야 하는 다른 문구(같은 정답, 같은 버튼 이름 등)가 있으면 ‘영향받는 ID’에 적어라.
 
-출력: ID | 수정 번역문 | 바꾼 내용과 이유 | 판정 기준 유지 여부` },
+출력 열: ID | 수정 번역문 | 바꾼 내용과 이유 | 영향받는 ID | 판정 기준 유지 여부
+열 이름을 바꾸지 마. 같은 표를 ‘${ab}_fix_${L.short}.xlsx’ 파일로도 만들어 줘.
+
+${card}
+
+${gloss}
+
+[수정할 표 · ${fxP.n}행]
+${fxP.text || '(고칠 행이 없어요.)'}` },
   ];
 }
 
@@ -725,28 +803,28 @@ function usageFor(id, t, L) {
     'P1-1': { tool: 'ChatGPT 프로젝트', input: '이 카드 전체', output: '— (지침 등록만)', next: '1 원문 분석',
       steps: ['ChatGPT 왼쪽 메뉴 → <b>새 프로젝트</b><small>이름: 체키 원문 분석</small>', '프로젝트 설정 → <b>지침</b> 칸에 붙여 넣고 저장', '규칙을 바꿀 때만 다시 붙여 넣기'],
       warn: ['게임 카드·용어집은 지침에 넣지 않아요. 게임마다 달라서 1 원문 분석에 자동으로 들어가요.', '번역용 프로젝트와 섞어 쓰지 않아요. 분석 담당자는 번역을 하지 않아요.'] },
-    'P1-2': { tool: '‘체키 원문 분석’ 프로젝트 · 새 대화', input: 'PNG 캡처만', output: '번역 입력표 · 질문 · 용어 후보', next: '게임 카드에 붙여 넣기 → 2 번역',
-      steps: [`PNG 파일 이름 정하기<small>예: ${abbr}-01.png, ${abbr}-02.png</small>`, '복사 → 붙여 넣고 PNG 첨부해서 보내기', '화면 원문이 캡처와 같은지 확인<small>한국어라 바로 확인돼요</small>', '표 파일(xlsx) 받기 → 게임 카드에서 <b>파일 올리기</b><small>질문 답은 엑셀이나 사이트에서 고쳐요</small>'],
-      warn: ['캡처가 많으면 10장 안팎씩 나눠서 “이어서 다음 캡처”로 보내요.', '글씨가 작으면 그 부분만 확대해서 따로 캡처해요.', '‘판독 불확실’이나 ‘확인 필요’가 남은 채로 번역에 넘기지 않아요. 사이트 표에서 주황색 칸으로 보여요.',
+    'P1-2': { tool: '‘체키 원문 분석’ 프로젝트 · 새 대화', input: '캡처·대본·기획서 등 파일 첨부', output: '번역 입력표 · 질문 · 용어 후보', next: '게임 카드에 붙여 넣기 → 2 번역',
+      steps: [`파일 이름 정하기<small>예: ${abbr}-01.png, ${abbr}-script.docx</small>`, '복사 → 붙여 넣고 파일 첨부해서 보내기', '[읽은 파일] 목록과 원문 확인<small>빠진 파일 · 잘못 읽은 글자</small>', '결과 표(xlsx)를 아래 <b>결과 표 올리기</b><small>질문 답은 엑셀이나 게임 카드에서 고쳐요</small>'],
+      warn: ['PNG·JPG, Word, PDF, 엑셀·CSV 모두 돼요. 한글(HWP)은 못 읽는 경우가 많아 Word나 PDF로 바꿔서 첨부해요.', '기획서 같은 참고 자료도 같이 첨부하면 의도·판정 기준이 더 정확해져요.', '파일이 많으면 10개 안팎씩 나눠서 “이어서 다음 파일”로 보내요.', '글씨가 작으면 그 부분만 확대해서 따로 캡처해요.', '‘판독 불확실’이나 ‘확인 필요’가 남은 채로 번역에 넘기지 않아요. 사이트 표에서 주황색 칸으로 보여요.',
         '파일이 안 나오면 “출력 1을 xlsx 파일로 만들어 줘”라고 다시 요청해요.', '번역 후보가 나오면 “분석만 다시 출력해”라고 요청해요.', '용어 후보는 용어집에 등록하고, 진행 상황에서 ‘원문 정리’를 눌러요.'] },
     'P2-1': { tool: `${L.label}용 번역 AI 프로젝트`, input: '이 카드 전체', output: '— (지침 등록만)', next: '2 번역',
       steps: [`${L.label} 프로젝트 만들기<small>이름: 체키 번역 — ${L.label}</small>`, '복사 → 프로젝트 ‘지침’에 붙여 넣기', '규칙을 바꿀 때만 다시 붙여 넣기'],
       warn: ['대화창이 아니라 프로젝트 지침에 넣어요.', '언어마다 프로젝트를 따로 써요.'] },
-    'P2-2': { tool: '영어 프로젝트 새 대화', input: 'PNG 캡처만 (표는 자동 포함)', output: '번역문 A', next: '3 검수',
-      steps: ['복사 → 영어 프로젝트 새 대화에 붙여 넣기', 'PNG 캡처 첨부하고 보내기<small>파일 이름에 ID</small>', '정리 원문을 DeepL로 번역 → 번역문 B', '진행 상황 ‘번역’ 누르기'],
-      warn: ['한 대화에는 한 게임만 넣어요.', '기획 확인 질문이 나온 행은 답을 받고 넘어가요.'] },
-    'P2-3': { tool: `${L.label} 프로젝트 새 대화`, input: 'PNG 캡처만 (표·영어 자동 포함)', output: '번역문 A · 해석 불일치', next: '3 검수',
-      steps: ['게임 카드에 영어 확정본 붙여 넣기', `복사 → ${L.label} 프로젝트 새 대화에 붙여 넣기`, 'PNG 캡처 첨부하고 보내기', `정리 원문을 DeepL로 번역 → 번역문 B`],
+    'P2-2': { tool: '영어 프로젝트 새 대화', input: '패키지 + 캡처 파일', output: '번역 결과 표 (ID · 번역문)', next: '3 독립 검수',
+      steps: ['<b>패키지 복사</b> → 영어 프로젝트 새 대화에 붙여 넣기', '캡처 첨부하고 보내기', '결과 xlsx를 <b>번역 결과 올리기</b>', '<b>DeepL용 파일 받기</b> → DeepL 문서 번역 → <b>DeepL 결과 올리기</b>'],
+      warn: ['한 대화에는 한 게임만 넣어요.', '기획 확인 질문이 나온 행은 답을 받고 다시 번역해요.', 'DeepL 결과는 검수에서 비교용으로만 써요.'] },
+    'P2-3': { tool: `${L.label} 프로젝트 새 대화`, input: '패키지(영어 확정본 포함) + 캡처', output: '번역 결과 표 · 해석 불일치', next: '3 독립 검수',
+      steps: ['영어가 ‘확정됨’인지 확인', `<b>패키지 복사</b> → ${L.label} 프로젝트 새 대화 + 캡처 첨부`, '결과 xlsx를 <b>번역 결과 올리기</b>', '<b>DeepL용 파일 받기</b> → DeepL → <b>DeepL 결과 올리기</b>'],
       warn: ['‘해석 불일치’ 행은 기획이 뜻을 정한 뒤 그 행만 다시 번역해요.', '“영어 기준으로 번역해”라고 따로 말하지 않아요.'].concat(L.key === 'zh' ? ['결과가 간체인지 확인해요.'] : []) },
-    'P3': { tool: 'Claude 새 대화', input: 'PNG + 번역문 A·B (원문 표는 자동)', output: 'PASS · REVIEW · FAIL', next: 'FAIL → 5 / PASS → 4 테스트',
-      steps: ['복사 → Claude 새 대화', '맨 아래에 번역문 붙이고 PNG 첨부<small>ID · 번역문 A · 번역문 B</small>', 'FAIL은 5 재수정, PASS는 4 테스트로', '진행 상황 ‘검수’ 누르기'],
-      warn: ['번역을 Claude로 했다면 검수는 ChatGPT로 해요.', 'PASS는 확정이 아니에요.'] },
-    'P4': { tool: 'Gemini 새 대화', input: 'PNG 캡처 + ID · 번역문 (원문 없이)', output: '직역 · 행동 · 인상 · 헷갈림', next: '다르면 5 재수정',
-      steps: ['복사 → Gemini 새 대화', 'PNG 첨부, 맨 아래에 ID · 번역문 붙이기', '직역은 정리 원문과, 행동은 의도와 비교'],
-      warn: ['원문이나 의도를 같이 주면 테스트가 의미 없어요.', '직역이 어색한 건 정상이에요. 뜻이 바뀌었는지만 봐요.', '번역을 만든 대화창에서 하지 않아요.'] },
-    'P5': { tool: `${L.label} 프로젝트 새 대화`, input: '걸린 행 + 근거', output: '수정 번역문', next: '다시 3 검수 → 확정',
-      steps: ['걸린 행과 근거 모으기<small>검수 · 테스트 결과</small>', '복사 → 붙여 넣고 보내기', '고친 행만 다시 검수', `통과하면 ‘확정’ 누르고 용어집도 확정으로${L.key === 'en' ? '<small>최종 영어 표는 게임 카드 ‘영어 확정본’에 파일 올리기</small>' : ''}`],
-      warn: ['최대 2회. 그래도 걸리면 기획 회의로 가요.', '통과한 행은 넣지 않아요.'] },
+    'P3': { tool: 'Claude 새 대화', input: '패키지(검수할 행만) + 캡처', output: '통과 · 수정 필요 · 사람 확인 필요', next: '수정 필요 → 5 / 모두 통과 → 4',
+      steps: ['<b>패키지 복사</b> → Claude 새 대화 + 캡처 첨부', '결과 xlsx를 <b>검수 결과 올리기</b>', '아래 <b>사람 확인 필요</b>만 보고 통과·수정 필요 고르기'],
+      warn: ['번역을 Claude로 했다면 검수는 ChatGPT로 해요.', '고친 뒤에는 바뀐 문구만 패키지에 들어가요. 전체를 다시 검수하지 않아요.', '통과는 확정이 아니에요. 정답·승패가 걸린 문구는 테스트까지 거쳐요.'] },
+    'P4': { tool: 'Gemini 새 대화', input: '패키지(번역문만, 원문 없음) + 캡처', output: '직역 · 행동 · 헷갈림 · 화면 적합', next: '다르면 5 수정 / 모두 일치 → 확정',
+      steps: ['<b>패키지 복사</b> → Gemini 새 대화 + 캡처 첨부', '결과 xlsx를 <b>테스트 결과 올리기</b>', '아래 대조에서 <b>일치 · 다름</b> 고르기<small>문제 없는 건 한 번에 처리</small>'],
+      warn: ['패키지에는 원문이 들어가지 않아요. 따로 원문을 붙이지 마세요.', '직역이 어색한 건 정상이에요. 뜻과 행동이 바뀌었는지만 봐요.', '실제 게임 화면에 넣어 보는 확인은 사람이 해요. 여기서는 길이 위험만 미리 걸러요.'] },
+    'P5': { tool: `${L.label} 프로젝트 새 대화`, input: '패키지(걸린 행 + 이유)', output: '수정 번역문 · 영향받는 ID', next: '바뀐 문구만 3 재검수',
+      steps: ['<b>패키지 복사</b> → 번역 프로젝트 새 대화', '결과 xlsx를 <b>수정 결과 올리기</b>', '3 독립 검수로 돌아가기<small>바뀐 문구만 들어가요</small>'],
+      warn: ['최대 2회. 그래도 걸리면 기획 회의로 가요.', '수정 이력은 자동으로 남고, 최종 결과 내보내기에 들어가요.'] },
   };
   return U[id] || null;
 }
@@ -775,7 +853,7 @@ function designFor(id, L, t) {
       ['누락 방지', '모든 ID 유지, 빈칸 금지, 길면 ID 순서대로 나누어 출력하는 규칙과 마지막 점검 항목을 두어, 긴 표에서 행이 빠지지 않게 하였다.'],
     ],
     'P1-2': [
-      ['입력 단순화', '원문 표를 따로 만들지 않고 PNG 캡처만 첨부하면 AI가 원문을 읽어 ID와 사용 위치를 붙이게 하였다. 읽은 원문은 한국어라 기획이 바로 대조할 수 있어, 이미지 판독 오류를 이 단계에서 걸러낸다.'],
+      ['입력 단순화', '원문 표를 따로 만들지 않고 화면 캡처·대본·기획서 등 있는 파일을 그대로 첨부하면 AI가 원문을 읽어 ID와 사용 위치를 붙이게 하였다. 원문 자료와 참고 자료를 구분하게 하고, [읽은 파일] 목록으로 빠진 파일이 없는지 확인하게 하였다. 읽은 원문은 한국어라 기획이 바로 대조할 수 있어, 이미지 판독 오류를 이 단계에서 걸러낸다.'],
       ['판독 표시', '흐리거나 잘린 글자는 ‘판독 불확실’로 표시하고 질문 목록에 올리게 하여, 잘못 읽은 원문이 그대로 번역으로 넘어가지 않게 하였다.'],
       ['과업 지시', `${game}의 원문을 분석하되 번역은 하지 말라고 다시 짧게 적어, 지침의 역할을 요청 단위에서도 확인하게 하였다.`],
       ['맥락 제공', `${game}의 게임 컨텍스트 카드와 화면 캡처를 함께 주어, 문구가 어느 화면에서 누구의 말로 쓰이는지 파악하게 하였다.`],
@@ -806,25 +884,22 @@ function designFor(id, L, t) {
       ['출력 형식 지정', '해석 불일치 열을 포함한 표 형식으로 받아, 걸린 문구를 바로 골라낼 수 있게 하였다.'],
     ],
     'P3': [
-      ['역할 부여', 'Claude에게 ‘번역자가 아닌 독립적인 현지화 QA 담당자’ 역할을 부여하여, 번역문을 다시 쓰기보다 문제를 찾는 데 집중하게 하였다.'],
-      ['평가 기준 제시', '의미, 규칙·정답, 행동, 말투, 용어, A·B 비교, 화면, 문화의 8개 항목을 검수 기준으로 제시하였다.'],
-      ['판정 체계', '항목마다 PASS / REVIEW / FAIL 3단계로 판정하게 하여, 재수정할 문구를 기계적으로 고를 수 있게 하였다.'],
-      ['비교 자료 제공', '초벌 번역(A)과 DeepL 독립 번역(B)을 함께 주어, 두 번역의 뜻이 갈리는 곳을 찾도록 하였다.'],
-      ['근거 요구', '문제 유형, 이유, 수정 제안과 함께 수정안에서도 판정 기준이 유지되는지 적게 하여, 막연한 지적을 막았다.'],
-      ['과신 방지', 'PASS여도 번역이 완벽하다고 단정하지 않도록 하여, AI 검수의 한계를 분명히 하였다.'],
+      ['독립성', '번역한 AI와 다른 대화(가능하면 다른 AI)에서 검수하게 하여, 처음의 오해가 그대로 이어지지 않게 하였다.'],
+      ['검수 기준 명시', '“자연스러운지 확인해” 대신 의미·행동·정답·용어·누락·자연스러움·화면 적합성 7가지를 기준으로 주었다.'],
+      ['3단계 판정', '통과 / 수정 필요 / 사람 확인 필요로 나누어, 외국어를 읽기 어려운 작업자가 위험한 문구만 골라 볼 수 있게 하였다.'],
+      ['필요한 행만', '사이트가 검수할 행만 골라 패키지를 만들어, 수정 뒤에는 바뀐 문구와 영향받는 문구만 다시 검수하게 하였다.'],
+      ['과신 방지', '통과가 완벽하다는 뜻이 아니라고 적고, 확신이 없으면 사람 확인 필요로 두게 하였다.'],
     ],
     'P4': [
-      ['역할 부여', `Gemini에게 ‘이 게임을 처음 보는 ${L.region} 플레이어’ 입장을 주어, 실제 손님처럼 문구를 읽게 하였다.`],
-      ['정보 차단', '원문과 맥락을 주지 않고 새 대화에서 화면 캡처와 번역문만 제공하여, 번역문만으로 뜻과 행동이 전달되는지 확인하였다.'],
-      ['한 번에 두 검증', '직역(역번역)과 행동·인상 질문을 한 대화에서 함께 받아, 뜻이 바뀌었는지와 행동이 바뀌었는지를 한 번에 확인하게 하였다.'],
-      ['직역 지시', '다듬거나 뜻을 보충하지 말고 어색한 그대로 직역하게 하여, 오역이 가려지지 않게 하였다.'],
-      ['추측 금지', '원래 뜻을 추측하지 말고 처음 보는 사람의 반응만 적게 하여, 결과가 실제 반응에 가깝도록 하였다.'],
+      ['정보 차단', '패키지에 원문과 의도를 넣지 않고 번역문과 칸 크기만 넣어, 번역문만으로 뜻과 행동이 전달되는지 확인하게 하였다.'],
+      ['한국어로 대조', '직역과 행동을 한국어로 받아, 외국어를 몰라도 정리 원문·의도와 나란히 놓고 사람이 바로 비교할 수 있게 하였다.'],
+      ['화면 길이', '캡처 속 버튼·칸에 들어갈 길이인지 미리 표시하게 하여, 잘림 위험이 있는 문구를 먼저 걸러내게 하였다.'],
+      ['피로 줄이기', '헷갈림이 없고 칸에 들어가는 문구는 한 번에 일치 처리하고, 걸린 문구만 하나씩 보게 하였다.'],
     ],
     'P5': [
-      ['근거 제시', '걸린 항목과 그 근거(역번역 결과, 오류 검수 지적, 행동 테스트 답변)를 함께 주어 무엇을 고쳐야 하는지 분명히 하였다.'],
-      ['수정 범위 제한', '걸린 이유에 해당하는 부분만 고치게 하여, 이미 통과한 부분이 바뀌지 않도록 하였다.'],
-      ['말투 유지', `수정할 때도 ${game}의 컨텍스트 카드 말투를 그대로 따르게 하였다.`],
-      ['출력 형식 지정', '수정 번역문과 함께 바꾼 내용·이유, 판정 기준 유지 여부를 적게 하였다.'],
+      ['수정 범위 제한', '걸린 행과 그 이유만 패키지에 넣어, 통과한 문구가 바뀌지 않게 하였다.'],
+      ['영향 추적', '함께 바뀌어야 하는 문구를 ‘영향받는 ID’로 적게 하여, 그 문구도 다시 검수 대상에 오르게 하였다.'],
+      ['이력 관리', '올린 수정은 이전 번역·바뀐 이유·작업자와 함께 기록되어 최종 결과 내보내기에 남게 하였다.'],
     ],
   };
   return D[id] || [];
@@ -845,7 +920,8 @@ function render(force) {
   if (view === 'admin') { c.innerHTML = adminHTML(); return; }
   if (view === 'glossary') c.innerHTML = glossaryHTML();
   else if (!cur()) c.innerHTML = `<div class="empty">아직 게임이 없어요. 위의 <b>+ 게임 추가</b>를 눌러 첫 게임을 만들어 주세요.</div>`;
-  else c.innerHTML = view === 'card' ? cardHTML(cur()) : promptsHTML(cur());
+  else c.innerHTML = view === 'card' ? cardHTML(cur()) : workHTML(cur());
+  updateSaveBar();
 }
 document.addEventListener('focusout', () => setTimeout(() => { if (pending) render(); }, 0));
 
@@ -921,7 +997,7 @@ function cardHTML({ id, data: t }) {
 
   ${(() => { const st = tableStats(t.inputTable), en = tableStats(t.enFinal); return `
   <section class="section">
-    <h2>번역 입력표</h2><p class="hint">1 원문 분석에서 받은 표 파일(엑셀·CSV)을 <b>파일 올리기</b>로 올리세요. 2 번역 프롬프트에 자동으로 들어가서, 번역할 때는 <b>PNG 캡처만 첨부</b>하면 돼요.</p>
+    <h2>번역 입력표</h2><p class="hint">1 원문 분석에서 받은 표 파일(엑셀·CSV)을 <b>파일 올리기</b>로 올리세요. 2 번역 프롬프트에 자동으로 들어가서, 번역할 때는 <b>캡처·대본 같은 파일만 첨부</b>하면 돼요.</p>
     ${tableEditorHTML('inputTable', t.inputTable, `${abbrOf(t)}_input_table`, 'ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문')}
     <p class="tstat">${st.rows ? `<b>${st.rows}행</b>` : '아직 비어 있어요'}${st.rows && !st.hasId ? ' · <span class="bad">첫 행에 ID 열이 없어요</span>' : ''}${st.unresolved ? ` · <span class="bad">‘확인 필요·판독 불확실’ ${st.unresolved}곳 남음 — 번역 전에 기획 답을 반영하세요</span>` : st.rows ? ' · <span class="good">확인 필요 없음</span>' : ''}</p>
     <h3 class="subh">영어 확정본 <small>영어가 확정되면 올리기 · 일본어·중국어 번역에 들어가요</small></h3>
@@ -940,42 +1016,255 @@ function cardHTML({ id, data: t }) {
 }
 
 /* ---------- prompts ---------- */
-function promptsHTML({ id, data: t }) {
-  const L = LANGS.find(l => l.key === promptLang);
-  const ps = buildPrompts(t, promptLang, id).map((p, i) => Object.assign(p, { i }));
-  /* 게임 카드 진행 상황 → 지금 할 단계 (미착수 1 · 원문 정리 2 · 번역 3 · 검수 4 · 확정 없음) */
-  const stage = stageOf(t, L.key), curStep = stage >= 4 ? 0 : stage + 1;
-  const enWait = L.key !== 'en' && stageOf(t, 'en') < 4;
-  const stateOf = p => {
-    if (p.setup) return { cls: 'setup', txt: '처음 한 번' };
-    const n = +p.tag;
-    if (n === 5) return stage >= 4 ? { cls: 'done', txt: '완료' } : { cls: 'opt', txt: '걸리면' };
-    if (n === 2 && enWait && stage < 2) return { cls: 'wait', txt: '영어 확정 후' };
-    if (n < curStep || curStep === 0) return { cls: 'done', txt: '완료' };
-    if (n === curStep) return { cls: 'now', txt: '지금 할 차례' };
-    return { cls: 'wait', txt: '대기' };
+/* ================= 번역 작업 엔진 =================
+ * 단계마다 AI 결과 파일을 올리면 게임 카드(themes 문서)의 work[언어].items에 문구별로 저장하고,
+ * 다음 단계에 넣을 ‘입력 패키지’(프롬프트 + 필요한 행만 담은 표)를 자동으로 만든다.
+ * items[ID] = { tr, b, rv:{v,sev,kind,issue,fix,why,at,by}, ts:{back,act,imp,conf,fit,match,at}, hist:[{at,by,from,to,why}] }
+ */
+const COLS = {
+  id: ['id'], ko: ['화면 원문', '원문'], where: ['사용 위치'], len: ['글자 수'], intent: ['의도'], judge: ['판정 기준'], ctx: ['맥락 설명'], clean: ['정리 원문'],
+  tr: ['수정 번역문', '번역문', '번역문 a', '번역'], verdict: ['판정'], sev: ['심각도'], kind: ['문제 유형', '걸린 항목'], issue: ['문제점'], fix: ['수정안'],
+  why: ['근거', '바꾼 내용과 이유', '이유'], back: ['직역'], act: ['행동'], imp: ['인상'], conf: ['헷갈림'], fit: ['화면 적합'], affected: ['영향받는 id'],
+};
+function colIdx(head, key) { const h = head.map(x => String(x).trim().toLowerCase()); for (const n of COLS[key]) { const i = h.indexOf(n.toLowerCase()); if (i >= 0) return i; } return -1; }
+function tableObjects(rows, keys) {
+  if (!rows.length) return [];
+  const head = rows[0], map = {}; keys.forEach(k => { map[k] = colIdx(head, k); });
+  if (map.id < 0) return [];
+  return rows.slice(1).map(r => { const o = {}; keys.forEach(k => { o[k] = map[k] >= 0 ? String(r[map[k]] ?? '').trim() : ''; }); return o; }).filter(o => o.id);
+}
+const srcRows = t => tableObjects(parseTable(t.inputTable), ['id', 'ko', 'where', 'len', 'intent', 'judge', 'ctx', 'clean']);
+const workOf = (t, lk) => ((t.work || {})[lk] || {}).items || {};
+function normVerdict(v) {
+  const s = String(v || '').trim();
+  if (/사람|human|review/i.test(s)) return '사람 확인 필요';
+  if (/수정|fail/i.test(s)) return '수정 필요';
+  if (/통과|pass/i.test(s)) return '통과';
+  return s ? '사람 확인 필요' : '';
+}
+const testFlagged = ts => !!ts && ((ts.conf && !/^(없음|none|-)?$/i.test(ts.conf)) || (ts.fit && !/들어감/.test(ts.fit)));
+function workStats(t, lk) {
+  const src = srcRows(t), it = workOf(t, lk), st = tableStats(t.inputTable);
+  const s = { N: src.length, unresolved: st.unresolved, tr: 0, b: 0, pass: 0, fix: 0, human: 0, needReview: 0, tested: 0, needTest: 0, compare: 0, changed: 0 };
+  src.forEach(r => {
+    const x = it[r.id]; if (!x || !x.tr) return;
+    s.tr++; if (x.b) s.b++;
+    if (x.hist && x.hist.length) s.changed++;
+    if (!x.rv) s.needReview++;
+    else if (x.rv.v === '통과') s.pass++;
+    else if (x.rv.v === '수정 필요') s.fix++;
+    else s.human++;
+    if (x.rv && x.rv.v === '통과') { if (!x.ts) s.needTest++; else if (x.ts.match == null) s.compare++; else s.tested++; }
+  });
+  return s;
+}
+const enReady = t => stageOf(t, 'en') >= 4 || tableStats(t.enFinal).rows > 0;
+/* 지금 할 단계: 1 원문 분석 · 2 번역 · 3 검수(사람 확인 포함) · 4 테스트(대조 포함) · 5 재수정 · done */
+function currentStep(t, lk) {
+  const s = workStats(t, lk), locked = stageOf(t, lk) >= 4;
+  if (locked && !s.tr) return 'confirmed';          // 결과를 올리지 않고 손으로 확정한 경우
+  if (!s.N || s.unresolved) return 1;
+  if (lk !== 'en' && !enReady(t)) return 'wait';
+  if (s.tr < s.N) return 2;
+  if (s.needReview || s.human) return 3;            // 사람 확인을 먼저 끝내야 고칠 목록이 확정된다
+  if (s.fix) return 5;
+  if (s.needTest || s.compare) return 4;
+  return locked ? 'confirmed' : 'done';
+}
+const stepStage = step => ({ 1: 0, wait: 0, 2: 1, 3: 2, 4: 3, 5: 3, done: 3, confirmed: 4 })[step];
+const tsv = (head, rows) => [head.join('\t'), ...rows.map(r => r.map(c => String(c ?? '').replace(/[\t\r\n]+/g, ' ')).join('\t'))].join('\n');
+
+/* ---- 단계별 입력 표 (필요한 행만) ---- */
+function pkgReview(t, lk) {
+  const it = workOf(t, lk), rows = srcRows(t).filter(r => it[r.id] && it[r.id].tr && !it[r.id].rv);
+  const again = srcRows(t).some(r => it[r.id] && it[r.id].rv);
+  return { n: rows.length, again, text: rows.length ? tsv(['ID', '화면 원문', '의도', '판정 기준', '글자 수', '번역문 A', '번역문 B'], rows.map(r => [r.id, r.ko, r.intent, r.judge, r.len, it[r.id].tr, it[r.id].b || '-'])) : '' };
+}
+function pkgTest(t, lk) {
+  const it = workOf(t, lk), rows = srcRows(t).filter(r => it[r.id] && it[r.id].rv && it[r.id].rv.v === '통과' && !it[r.id].ts);
+  return { n: rows.length, text: rows.length ? tsv(['ID', '번역문', '칸 크기'], rows.map(r => [r.id, it[r.id].tr, /\[공간\]\s*좁음/.test(r.ctx) ? '좁음' : '보통'])) : '' };
+}
+function pkgFix(t, lk) {
+  const it = workOf(t, lk), rows = srcRows(t).filter(r => it[r.id] && it[r.id].rv && it[r.id].rv.v === '수정 필요');
+  return { n: rows.length, text: rows.length ? tsv(['ID', '화면 원문', '의도', '판정 기준', '현재 번역문', '걸린 항목', '근거'], rows.map(r => { const v = it[r.id].rv; return [r.id, r.ko, r.intent, r.judge, it[r.id].tr, v.kind || v.sev || '', [v.issue, v.fix && '수정안: ' + v.fix, v.why].filter(Boolean).join(' / ')]; })) : '' };
+}
+function enFinalText(t) {
+  if (tableStats(t.enFinal).rows) return t.enFinal.trim();
+  const it = workOf(t, 'en'), rows = srcRows(t).filter(r => it[r.id] && it[r.id].tr);
+  return rows.length && stageOf(t, 'en') >= 4 ? tsv(['ID', '영어'], rows.map(r => [r.id, it[r.id].tr])) : '';
+}
+
+/* ---- 결과 올리기 ---- */
+async function saveWork(mutate, msg) {
+  const c = cur(); if (!c) return;
+  const next = JSON.parse(JSON.stringify(c.data));
+  next.work = next.work || {}; next.work[promptLang] = next.work[promptLang] || { items: {} };
+  const items = next.work[promptLang].items = next.work[promptLang].items || {};
+  const n = mutate(items, next);
+  // 진행 상황 자동 반영
+  const step = currentStep(next, promptLang), stg = stepStage(step);
+  if (stg !== undefined && stg !== stageOf(next, promptLang)) {
+    next.progress = { ...(next.progress || {}), [promptLang]: stg };
+    const by = JSON.parse(JSON.stringify(next.progressBy || {})), m = by[promptLang] || {};
+    Object.keys(m).forEach(i => { if (+i > stg) delete m[i]; });
+    if (stg > 0 && meNow) m[stg] = { n: meNow.name || meNow.username, c: meNow.color || '#5f3dc4', at: new Date().toISOString() };
+    by[promptLang] = m; next.progressBy = by;
+  }
+  next.updatedAt = new Date().toISOString();
+  try { await db.doc('themes/' + c.id).set(next); toast(msg(n)); render(true); } catch (err) { writeErr(err); }
+}
+const nowISO = () => new Date().toISOString();
+const meName = () => (meNow && (meNow.name || meNow.username)) || '';
+async function applyUpload(kind, rows) {
+  const valid = new Set(srcRows(cur().data).map(r => r.id));
+  if (kind === 'b') {   // DeepL 결과: 첫 열 ID, 둘째 열 번역 (열 이름이 번역돼도 위치로 읽는다)
+    const body = rows.slice(1).filter(r => valid.has(String(r[0]).trim()));
+    return saveWork(items => { body.forEach(r => { const id = String(r[0]).trim(); items[id] = items[id] || {}; items[id].b = String(r[1] ?? '').trim(); }); return body.length; }, n => `DeepL 번역 ${n}행을 저장했어요.`);
+  }
+  const keys = { tr: ['id', 'tr'], rv: ['id', 'verdict', 'sev', 'kind', 'issue', 'fix', 'why'], ts: ['id', 'back', 'act', 'imp', 'conf', 'fit'], fx: ['id', 'tr', 'why', 'affected'] }[kind];
+  const objs = tableObjects(rows, keys).filter(o => valid.has(o.id));
+  if (!objs.length) { toast('ID가 번역 입력표와 맞는 행을 찾지 못했어요. 첫 행에 ID 열이 있는지 확인해 주세요.'); return; }
+  if (kind === 'tr') return saveWork(items => {
+    let n = 0; objs.forEach(o => { if (!o.tr) return; const x = items[o.id] = items[o.id] || {};
+      if (x.tr && x.tr !== o.tr) { (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: o.tr, why: '번역 다시 올림' }); x.rv = null; x.ts = null; }
+      x.tr = o.tr; n++; }); return n; }, n => `번역 ${n}행을 저장했어요.`);
+  if (kind === 'rv') return saveWork(items => {
+    let n = 0; objs.forEach(o => { const x = items[o.id]; if (!x || !x.tr) return; x.rv = { v: normVerdict(o.verdict), sev: o.sev, kind: o.kind, issue: o.issue, fix: o.fix, why: o.why, at: nowISO() }; n++; }); return n; },
+    n => `검수 결과 ${n}행을 저장했어요.`);
+  if (kind === 'ts') return saveWork(items => {
+    let n = 0; objs.forEach(o => { const x = items[o.id]; if (!x || !x.tr) return; x.ts = { back: o.back, act: o.act, imp: o.imp, conf: o.conf, fit: o.fit, match: null, at: nowISO() }; n++; }); return n; },
+    n => `테스트 결과 ${n}행을 저장했어요. 아래에서 뜻과 행동을 대조해 주세요.`);
+  if (kind === 'fx') return saveWork(items => {
+    let n = 0; objs.forEach(o => { const x = items[o.id]; if (!x || !o.tr) return;
+      (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: o.tr, why: o.why || (x.rv && x.rv.issue) || '' });
+      x.tr = o.tr; x.rv = null; x.ts = null; n++;
+      String(o.affected || '').split(/[,\s/]+/).map(s => s.trim()).filter(id => id && items[id] && id !== o.id).forEach(id => { items[id].rv = null; items[id].ts = null; });
+    }); return n; }, n => `수정 ${n}행을 반영했어요. 바뀐 문구만 다시 검수하면 돼요.`);
+}
+document.addEventListener('change', async e => {
+  const inp = e.target.closest && e.target.closest('[data-wup]'); if (!inp || !inp.files || !inp.files[0]) return;
+  try { const rows = await readTableFile(inp.files[0]); if (rows.length < 2) { toast('표를 찾지 못했어요.'); return; } await applyUpload(inp.dataset.wup, rows); }
+  catch (err) { toast(err.message || '파일을 읽지 못했어요.'); } finally { inp.value = ''; }
+});
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-wact]'); if (!b) return;
+  const act = b.dataset.wact, id = b.dataset.id, t = cur() && cur().data; if (!t) return;
+  const q = v => { const x = String(v ?? ''); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; };
+  const csv = rows => '﻿' + rows.map(r => r.map(q).join(',')).join('\r\n');
+  if (act === 'deepl') {   // DeepL 문서 번역용: ID | 정리 원문(없으면 화면 원문)
+    const rows = srcRows(t).map(r => [r.id, /^원문 유지/.test(r.clean) || !r.clean ? r.ko : r.clean]);
+    if (downloads) await downloads.save({ filename: `${abbrOf(t)}_for_DeepL.csv`, data: csv([['ID', 'Source'], ...rows]) }); return;
+  }
+  if (act === 'export') {
+    const head = ['ID', '화면 원문', '사용 위치', '글자 수'];
+    LANGS.forEach(l => head.push(`${l.label} 번역`, `${l.label} 상태`, `${l.label} 수정 이력`));
+    const rows = srcRows(t).map(r => { const out = [r.id, r.ko, r.where, r.len]; LANGS.forEach(l => { const x = workOf(t, l.key)[r.id] || {}; out.push(x.tr || '', stageOf(t, l.key) >= 4 && x.tr ? '확정' : x.rv ? x.rv.v : x.tr ? '검수 전' : '미번역', (x.hist || []).map(h => `${h.at.slice(0, 10)} ${h.by}: ${h.from} → ${h.to}${h.why ? ' (' + h.why + ')' : ''}`).join(' | ')); }); return out; });
+    if (downloads) await downloads.save({ filename: `${abbrOf(t)}_final.csv`, data: csv([head, ...rows]) }); return;
+  }
+  if (act === 'pass' || act === 'needfix') return saveWork(items => { const x = items[id]; if (!x) return 0; x.rv = Object.assign({}, x.rv || {}, { v: act === 'pass' ? '통과' : '수정 필요', by: meName(), at: nowISO(), kind: (x.rv && x.rv.kind) || '사람 확인' }); return 1; }, () => act === 'pass' ? '통과로 처리했어요.' : '수정 필요로 보냈어요.');
+  if (act === 'match' || act === 'diff') return saveWork(items => { const x = items[id]; if (!x || !x.ts) return 0; x.ts.match = act === 'match';
+      if (act === 'diff') x.rv = { v: '수정 필요', kind: '테스트 불일치', issue: '테스트에서 뜻이나 행동이 의도와 다르게 읽힘', why: `직역: ${x.ts.back || '-'} / 행동: ${x.ts.act || '-'}${x.ts.conf && x.ts.conf !== '없음' ? ' / 헷갈림: ' + x.ts.conf : ''}`, at: nowISO(), by: meName() };
+      return 1; }, () => act === 'match' ? '일치로 처리했어요.' : '수정 필요로 보냈어요.');
+  if (act === 'matchall') return saveWork(items => { let n = 0; Object.values(items).forEach(x => { if (x.ts && x.ts.match == null && !testFlagged(x.ts)) { x.ts.match = true; n++; } }); return n; }, n => `문제 없어 보이는 ${n}건을 일치로 처리했어요.`);
+  if (act === 'confirm') {
+    const c = cur(), next = JSON.parse(JSON.stringify(c.data));
+    next.progress = { ...(next.progress || {}), [promptLang]: 4 };
+    const by = JSON.parse(JSON.stringify(next.progressBy || {})); by[promptLang] = { ...(by[promptLang] || {}), 4: { n: meName(), c: meNow.color || '#5f3dc4', at: nowISO() } }; next.progressBy = by;
+    if (promptLang === 'en') { const it = workOf(c.data, 'en'); next.enFinal = tsv(['ID', '영어'], srcRows(c.data).filter(r => it[r.id] && it[r.id].tr).map(r => [r.id, it[r.id].tr])); }
+    try { await db.doc('themes/' + c.id).set(next); toast(promptLang === 'en' ? '영어를 확정했어요. 일본어·중국어를 시작할 수 있어요.' : '확정했어요.'); render(true); } catch (err) { writeErr(err); }
+  }
+});
+
+/* ---- 화면 ---- */
+function upl(kind, label) { return readOnly ? '' : `<label class="btn upl">${label}<input type="file" hidden data-wup="${kind}" accept=".xlsx,.xls,.csv,.tsv,.txt,.md"></label>`; }
+function humanListHTML(t, lk) {
+  const it = workOf(t, lk), rows = srcRows(t).filter(r => it[r.id] && it[r.id].rv && it[r.id].rv.v === '사람 확인 필요');
+  if (!rows.length) return '';
+  return `<div class="hlist"><h4>사람 확인 필요 · ${rows.length}건 <small>한국어 원문과 검수 의견을 보고 정해 주세요</small></h4>${rows.map(r => { const x = it[r.id]; return `
+    <div class="hrow"><div class="hid">${esc(r.id)}${x.rv.sev ? ` <span class="sbadge ${/높/.test(x.rv.sev) ? 'cand' : ''}">${esc(x.rv.sev)}</span>` : ''}</div>
+      <div><div class="hko">${esc(r.ko)}</div><div class="hmeta">의도: ${esc(r.intent || '-')}${r.judge && !/^없음/.test(r.judge) ? ` · 판정 기준: ${esc(r.judge)}` : ''}</div>
+        <div class="htr">${esc(x.tr)}</div><div class="hmeta">검수 의견: ${esc([x.rv.issue, x.rv.fix && '수정안 ' + x.rv.fix, x.rv.why].filter(Boolean).join(' / ') || '-')}</div></div>
+      ${readOnly ? '' : `<div class="hacts"><button type="button" class="btn" data-wact="pass" data-id="${esc(r.id)}">통과</button><button type="button" class="btn" data-wact="needfix" data-id="${esc(r.id)}">수정 필요</button></div>`}</div>`; }).join('')}</div>`;
+}
+function compareListHTML(t, lk) {
+  const it = workOf(t, lk), rows = srcRows(t).filter(r => it[r.id] && it[r.id].ts && it[r.id].ts.match == null);
+  if (!rows.length) return '';
+  const flagged = rows.filter(r => testFlagged(it[r.id].ts)), calm = rows.length - flagged.length;
+  return `<div class="hlist"><h4>테스트 대조 · ${rows.length}건 <small>둘 다 한국어라 바로 비교할 수 있어요</small></h4>
+    ${calm && !readOnly ? `<div class="hcalm">헷갈림이 없고 칸에 들어가는 ${calm}건 <button type="button" class="btn" data-wact="matchall">한 번에 일치 처리</button></div>` : ''}
+    ${flagged.concat(rows.filter(r => !testFlagged(it[r.id].ts))).map(r => { const x = it[r.id]; return `
+    <div class="hrow${testFlagged(x.ts) ? ' flag' : ''}"><div class="hid">${esc(r.id)}</div>
+      <div class="hcmp"><div><span>정리 원문</span>${esc(/^원문 유지/.test(r.clean) || !r.clean ? r.ko : r.clean)}</div><div><span>AI 직역</span>${esc(x.ts.back || '-')}</div>
+        <div><span>의도</span>${esc(r.intent || '-')}</div><div><span>AI가 할 행동</span>${esc(x.ts.act || '-')}</div>
+        ${testFlagged(x.ts) ? `<div class="hwarn">${x.ts.conf && x.ts.conf !== '없음' ? '헷갈림: ' + esc(x.ts.conf) : ''}${x.ts.fit && !/들어감/.test(x.ts.fit) ? ' 화면: ' + esc(x.ts.fit) : ''}</div>` : ''}</div>
+      ${readOnly ? '' : `<div class="hacts"><button type="button" class="btn" data-wact="match" data-id="${esc(r.id)}">일치</button><button type="button" class="btn" data-wact="diff" data-id="${esc(r.id)}">다름</button></div>`}</div>`; }).join('')}</div>`;
+}
+function workHTML({ id, data: t }) {
+  const L = LANGS.find(l => l.key === promptLang), lk = L.key;
+  const ps = buildPrompts(t, lk, id).map((p, i) => Object.assign(p, { i }));
+  const s = workStats(t, lk), step = currentStep(t, lk);
+  const rv = pkgReview(t, lk), tsP = pkgTest(t, lk), fx = pkgFix(t, lk);
+  const N = s.N || 0;
+  const stat = {
+    1: !N ? ['now', '표 없음'] : s.unresolved ? ['now', `확인 필요 ${s.unresolved}`] : ['done', `${N}개 문구`],
+    2: step === 'wait' ? ['wait', '영어 확정 후'] : s.tr >= N && N ? ['done', `번역 ${s.tr}/${N}`] : step === 2 ? ['now', `번역 ${s.tr}/${N}`] : ['wait', '대기'],
+    3: step === 3 ? ['now', s.needReview ? `검수할 ${s.needReview}건` : `사람 확인 ${s.human}건`] : s.tr && !s.needReview && !s.human && !s.fix && s.tr >= N ? ['done', `통과 ${s.pass}/${N}`] : ['wait', s.pass ? `통과 ${s.pass}/${N}` : '대기'],
+    4: step === 4 ? ['now', s.needTest ? `테스트할 ${s.needTest}건` : `대조 ${s.compare}건`] : s.tested >= N && N ? ['done', `테스트 ${s.tested}/${N}`] : ['wait', '대기'],
+    5: step === 5 ? ['now', `수정할 ${s.fix}건`] : ['opt', s.changed ? `수정 이력 ${s.changed}건` : '걸리면'],
   };
-  const card = p => { const u = usageFor(p.id, t, L), stt = stateOf(p), now = stt.cls === 'now'; return `
-      <details class="pcard ${stt.cls}"${now ? ' open' : ''}>
-        <summary><span class="ptag${p.setup ? ' s' : ''}">${esc(p.tag)}</span><span class="ptitle"><span class="pname">${esc(p.name)}</span><span class="psum">${esc(p.sum || '')} · ${esc(p.tool)}</span></span><span class="pstate ${stt.cls}">${stt.txt}</span><button type="button" class="btn${now ? ' primary' : ''} pcopy" data-copy="${p.i}">복사</button></summary>
+  if (step === 'confirmed' || step === 'done') [2, 3, 4].forEach(n => { if (N) stat[n] = ['done', stat[n][1]]; });
+  const extra = {
+    1: { n: N, label: '번역 입력표', ups: readOnly ? '' : `<label class="btn upl">결과 표 올리기<input type="file" hidden data-upload="inputTable" accept=".xlsx,.xls,.csv,.tsv,.txt,.md"></label>`, note: N ? `번역 입력표 ${N}행이 저장돼 있어요${s.unresolved ? ` · <b class="badtxt">확인 필요·판독 불확실 ${s.unresolved}곳</b>` : ''}. 게임 카드에서 표를 볼 수 있어요.` : '결과로 받은 표 파일(xlsx)을 올리면 다음 단계부터 자동으로 들어가요.' },
+    2: { n: N, label: '번역 입력표', ups: `${upl('tr', '번역 결과 올리기')}<button type="button" class="btn" data-wact="deepl">DeepL용 파일 받기</button>${upl('b', 'DeepL 결과 올리기')}`, note: `번역문 A ${s.tr}/${N} · DeepL 번역문 B ${s.b}/${N}${lk !== 'en' && !enReady(t) ? ' · <b class="badtxt">영어를 먼저 확정해 주세요</b>' : ''}` },
+    3: { n: rv.n, label: rv.again ? '재검수할 행' : '검수할 행', ups: upl('rv', '검수 결과 올리기'), note: rv.n ? `${rv.again ? '바뀐 문구만 다시 검수해요. ' : ''}검수할 ${rv.n}행이 패키지에 들어가 있어요.` : s.human ? `AI 검수는 끝났어요. 아래 <b>사람 확인 ${s.human}건</b>만 골라 주세요.` : '지금 검수할 행이 없어요.', after: humanListHTML(t, lk) },
+    4: { n: tsP.n, label: '테스트할 행', ups: upl('ts', '테스트 결과 올리기'), note: tsP.n ? `검수를 통과한 ${tsP.n}행이 원문 없이 들어가 있어요.` : s.compare ? `AI 테스트는 끝났어요. 아래 <b>대조 ${s.compare}건</b>만 확인해 주세요.` : '지금 테스트할 행이 없어요.', after: compareListHTML(t, lk) },
+    5: { n: fx.n, label: '수정할 행', ups: upl('fx', '수정 결과 올리기'), note: fx.n ? `걸린 ${fx.n}행과 이유가 들어가 있어요. 수정 결과를 올리면 바뀐 문구만 다시 검수 대상이 돼요.` : '지금 고칠 행이 없어요.' },
+  };
+  const card = p => {
+    const u = usageFor(p.id, t, L);
+    if (p.setup) return `
+      <details class="pcard setup1"><summary><span class="ptag s">${esc(p.tag)}</span><span class="ptitle"><span class="pname">${esc(p.name)}</span><span class="psum">${esc(p.sum)} · ${esc(p.tool)}</span></span><button type="button" class="btn pcopy" data-copy="${p.i}">지침 복사</button></summary>
+        <div class="pbody">${usageHTML(u)}<details class="more"><summary>프롬프트 내용 보기</summary><pre class="ptext" id="pt-${p.i}">${esc(p.text)}</pre></details>
+        <details class="more"><summary>설계 설명</summary><dl class="why">${designFor(p.id, L, t).map(([k, v]) => `<div class="r"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></details></div></details>`;
+    const n = +p.tag, [cls, txt] = stat[n], x = extra[n], now = cls === 'now';
+    return `
+      <details class="pcard ${cls}"${now ? ' open' : ''}>
+        <summary><span class="ptag">${n}</span><span class="ptitle"><span class="pname">${esc(p.name)}</span><span class="psum">${esc(p.sum)} · ${esc(p.tool)}</span></span><span class="pstate ${cls}">${esc(txt)}</span>
+          <button type="button" class="btn${now && (n === 1 || x.n) ? ' primary' : ''} pcopy" data-copy="${p.i}" title="프롬프트와 ${esc(x.label)}을 한 번에 복사">패키지 복사${n > 1 ? `<small>${x.n}행</small>` : ''}</button></summary>
         <div class="pbody">
-          ${/^P2-[23]$/.test(p.id) ? (() => { const st = tableStats(t.inputTable); const en = tableStats(t.enFinal); const msgs = []; if (!st.rows) msgs.push('게임 카드의 ‘번역 입력표’가 비어 있어요.'); else if (st.unresolved) msgs.push(`번역 입력표에 ‘확인 필요·판독 불확실’이 ${st.unresolved}곳 남아 있어요.`); if (p.id === 'P2-3' && !en.rows) msgs.push('게임 카드의 ‘영어 확정본’이 비어 있어요.'); return msgs.length ? `<div class="pwarn">⚠ ${msgs.join(' ')}</div>` : `<div class="pwarn" style="background:var(--ok-soft)">✓ 번역 입력표 ${st.rows}행이 자동으로 들어가 있어요. PNG만 첨부하세요.</div>`; })() : ''}
+          <div class="pnote">${x.note}</div>
           ${usageHTML(u)}
-          ${u && u.warn ? `<details class="more"><summary>주의할 점 <small>${u.warn.length}</small></summary><ul>${u.warn.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
+          <div class="wups">${x.ups}</div>
+          ${x.after || ''}
+          ${u && u.warn ? `<details class="more"><summary>주의할 점 <small>${u.warn.length}</small></summary><ul>${u.warn.map(w => `<li>${esc(w)}</li>`).join('')}</ul></details>` : ''}
           <details class="more"><summary>프롬프트 내용 보기</summary><pre class="ptext" id="pt-${p.i}">${esc(p.text)}</pre></details>
           <details class="more"><summary>설계 설명</summary><dl class="why">${designFor(p.id, L, t).map(([k, v]) => `<div class="r"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></details>
         </div>
-      </details>`; };
+      </details>`;
+  };
   const setup = ps.filter(p => p.setup), main = ps.filter(p => !p.setup);
+  const state = step === 'confirmed' ? ['ok', '확정됨'] : step === 'wait' ? ['wait', '영어 확정 대기'] : step === 'done' ? ['ok', '확정 가능'] : ['now', '진행 중'];
   return `
     <div class="langseg" role="group" aria-label="번역할 언어">${LANGS.map(l => `<button type="button" data-lang="${l.key}" aria-pressed="${promptLang === l.key}">${l.label}</button>`).join('')}</div>
+    <div class="whead"><h2>${esc(t.name || '')} · ${esc(L.label)} 현지화</h2><span class="wstate ${state[0]}">${state[1]}</span></div>
+    <div class="gstats wstats">
+      <div><span>전체 문구</span><b>${N}</b></div>
+      <div><span>번역</span><b>${s.tr}</b><small>/ ${N}</small></div>
+      <div><span>검수 통과</span><b>${s.pass}</b><small>/ ${N}</small></div>
+      <div class="${s.fix ? 'hot' : ''}"><span>수정 필요</span><b>${s.fix}</b></div>
+      <div class="${s.human ? 'hot' : ''}"><span>사람 확인</span><b>${s.human}</b></div>
+      <div><span>테스트 통과</span><b>${s.tested}</b><small>/ ${N}</small></div>
+    </div>
+    ${step === 'done' ? `<div class="wdone">모든 문구가 검수와 테스트를 통과했어요. ${readOnly ? '' : `<button type="button" class="btn primary" data-wact="confirm">${esc(L.label)} 확정하기</button>`}</div>` : ''}
+    ${step === 'confirmed' ? `<div class="wdone ok">✓ ${esc(L.label)} 번역이 확정됐어요.${lk === 'en' ? ' 영어 확정본이 일본어·중국어 번역에 자동으로 들어가요.' : ''}</div>` : ''}
     <details class="setup">
-      <summary><b>처음 한 번만 설정</b><span>A 분석 담당자 등록 · B ${esc(L.label)} 번역 규칙 등록</span></summary>
-      <p class="hint" style="margin:8px 0 10px;color:var(--muted);font-size:14px">AI 프로젝트의 ‘지침’ 칸에 한 번 넣어 두면 끝이에요. 게임이 바뀌어도 다시 할 필요 없어요.</p>
+      <summary><b>처음 한 번만 설정</b><span>A 분석 담당자 · B ${esc(L.label)} 번역 규칙 — AI 프로젝트 ‘지침’에 등록</span></summary>
+      <p class="hint" style="margin:8px 0 10px;color:var(--muted);font-size:14px">한 번 등록하면 게임이 바뀌어도 다시 할 필요 없어요. 규칙을 바꿀 때만 다시 등록해요.</p>
       ${setup.map(card).join('')}
     </details>
     ${main.map(card).join('')}
-    <p class="hint" style="margin:10px 0 0;color:var(--muted);font-size:14px">단계 표시는 게임 카드의 <b>진행 상황</b>(${esc(L.label)}: ${STAGES[stage]})을 따라 바뀌어요. 5번은 걸린 문구가 있을 때만 해요. 영어를 먼저 확정한 뒤 일본어·중국어를 진행해요.<br>「${esc(t.name)}」의 게임 카드와 용어집은 프롬프트에 자동으로 들어가 있어요.</p>`;
+    <div class="wfoot"><button type="button" class="btn" data-wact="export">최종 결과 내보내기 (전 언어 CSV)</button>
+      <span class="hint" style="color:var(--muted);font-size:14px">ID · 원문 · 위치 · 언어별 번역 · 상태 · 수정 이력을 한 표로 받아요.</span></div>`;
 }
 
 /* ---------- glossary ---------- */
@@ -1459,6 +1748,55 @@ function growAll(root) { if (NATIVE_GROW) return; (root || document).querySelect
 document.addEventListener('input', e => { if (!NATIVE_GROW && e.target.matches && e.target.matches('textarea.grow')) growAll(e.target.parentNode); });
 new MutationObserver(() => growAll()).observe(document.getElementById('content'), { childList: true, subtree: true });
 
+/* ---------- 저장 바: 입력 중 · 저장 안 됨 · 저장 중 · 저장됨 ---------- */
+const uiDirty = new Set();           // 입력했지만 아직 칸을 벗어나지 않은 칸
+let storeState = { queued: false, saving: false, lastSaved: null, error: null };
+const fieldKey = el => el.dataset.path ? 'g:' + el.dataset.path : el.dataset.f ? 't:' + ((el.closest('[data-term],[data-draft]') || {}).dataset?.term || (el.closest('[data-draft]') || {}).dataset?.draft || '') + ':' + el.dataset.f : null;
+function updateSaveBar() {
+  const bar = $('#savebar'); if (!bar) return;
+  const show = !readOnly && db && !$('#app').hidden && (view === 'card' || (view === 'glossary' && gmode === 'edit'));
+  bar.hidden = !show; if (!show) return;
+  const draftsOpen = view === 'glossary' && drafts.length;
+  let cls, txt;
+  if (storeState.error && !storeState.saving) { cls = 'err'; txt = '저장하지 못했어요. 다시 저장을 눌러 주세요.'; }
+  else if (storeState.saving) { cls = 'busy'; txt = '저장 중…'; }
+  else if (uiDirty.size || storeState.queued) { cls = 'dirty'; txt = `저장 안 된 변경이 있어요${uiDirty.size ? ` (${uiDirty.size}칸)` : ''}`; }
+  else if (draftsOpen) { cls = 'dirty'; txt = '새 용어는 원문을 입력하면 저장돼요'; }
+  else { cls = 'ok'; txt = '모두 저장됨'; }
+  bar.className = 'savebar ' + cls;
+  $('#sb-text').textContent = txt;
+  $('#sb-time').textContent = cls === 'ok' && storeState.lastSaved ? `마지막 저장 ${storeState.lastSaved.toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit' })}` : '';
+  const btn = $('#sb-save');
+  btn.disabled = cls === 'ok' || cls === 'busy';
+  btn.className = 'btn' + (cls === 'dirty' || cls === 'err' ? ' primary' : '');
+  btn.textContent = cls === 'err' ? '다시 저장' : cls === 'ok' ? '저장됨 ✓' : '저장';
+  document.querySelectorAll('#content [data-path], #content [data-f]').forEach(el => { const k = fieldKey(el); el.classList.toggle('unsaved', !!k && uiDirty.has(k)); });
+}
+async function saveNow() {
+  const a = document.activeElement;
+  if (a && a.matches && a.matches('#content [data-path], #content [data-f]')) a.blur();   // 칸을 벗어나면 change → 저장 예약
+  await new Promise(r => setTimeout(r, 50));
+  await Store.flush();
+  updateSaveBar();
+}
+document.addEventListener('input', e => {
+  const el = e.target; if (!el.matches || !el.matches('#content [data-path], #content [data-f]')) return;
+  const k = fieldKey(el); if (k) { uiDirty.add(k); el.classList.add('unsaved'); updateSaveBar(); }
+}, true);
+document.addEventListener('change', e => {
+  const el = e.target; if (!el.matches || !el.matches('#content [data-path], #content [data-f]')) return;
+  const k = fieldKey(el); if (k) uiDirty.delete(k);
+  setTimeout(updateSaveBar, 0);
+}, true);
+window.addEventListener('store-state', e => {
+  const was = storeState.saving; storeState = e.detail;
+  updateSaveBar();
+  if (was && !storeState.saving && !storeState.error) { const bar = $('#savebar'); bar.classList.add('flash'); setTimeout(() => bar.classList.remove('flash'), 900); }
+});
+document.addEventListener('click', e => { if (e.target.closest('#sb-save')) saveNow(); });
+document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); if (!readOnly) saveNow(); } });
+window.addEventListener('beforeunload', e => { if (uiDirty.size) { e.preventDefault(); e.returnValue = ''; } });
+
 /* ================= boot ================= */
 (async () => {
   try { db = await window.claude?.use?.('db'); } catch { db = null; }
@@ -1473,7 +1811,7 @@ new MutationObserver(() => growAll()).observe(document.getElementById('content')
   if (!me.loggedIn) { showAuthPage(); return; }
   if (!me.canView) { showWaiting(me); watchMe(8000); return; }
   readOnly = !me.canEdit;
-  $('#saved').textContent = readOnly ? '보기 전용' : '입력하면 자동 저장';
+  $('#saved').textContent = readOnly ? '보기 전용' : '자동 저장 · Ctrl+S';
   $('#app').hidden = false;
   watchMe(20000);
   if (h === 'admin' && me.isAdmin) { view = 'admin'; loadAdmin(); }

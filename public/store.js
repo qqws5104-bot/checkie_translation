@@ -32,9 +32,19 @@
     s.loaded = true; notify(col);
   }
 
+  /* 저장 상태를 화면에 알린다: queued(보낼 변경 있음) · saving(보내는 중) · lastSaved · error */
+  let lastSaved = null, lastError = null;
+  function emit() {
+    const ss = Object.values(stores);
+    window.dispatchEvent(new CustomEvent('store-state', { detail: { queued: ss.some(s => s.dirty.size || s.deleted.size), saving: ss.some(s => s.saving), lastSaved, error: lastError } }));
+  }
   function scheduleSave(col) {
     const s = store(col); clearTimeout(s.timer);
-    s.timer = setTimeout(() => save(col).catch(e => window.dispatchEvent(new CustomEvent('store-save-error', { detail: e }))), 1200);
+    s.timer = setTimeout(() => runSave(col), 1200);
+    emit();
+  }
+  function runSave(col) {
+    return save(col).then(() => { lastError = null; emit(); }, e => { lastError = e; emit(); window.dispatchEvent(new CustomEvent('store-save-error', { detail: e })); });
   }
   async function save(col) {
     const s = store(col);
@@ -43,6 +53,7 @@
     const dirty = [...s.dirty], deleted = [...s.deleted];
     const body = { set: Object.fromEntries(dirty.filter(id => s.data[id]).map(id => [id, s.data[id]])), del: deleted };
     s.saving = (async () => {
+      emit();
       const r = await fetch('/api/data/' + col, { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const j = await r.json().catch(() => ({}));
       if (r.status === 403 || r.status === 401) throw err('invalid_argument', j.message || '수정하려면 로그인해 주세요.');
@@ -51,6 +62,7 @@
       const merged = j.data || {};
       Object.keys(merged).forEach(id => { if (!s.dirty.has(id) && !s.deleted.has(id)) s.data[id] = merged[id]; });
       Object.keys(s.data).forEach(id => { if (!(id in merged) && !s.dirty.has(id)) delete s.data[id]; });
+      lastSaved = new Date();
       notify(col);
     })();
     try { await s.saving; } finally { s.saving = null; }
@@ -129,6 +141,10 @@
     },
     adminAction: (id, action, extra) => post('/api/admin/users/' + encodeURIComponent(id), Object.assign({ action }, extra || {})),
     pending: () => Object.values(stores).some(s => s.dirty.size || s.deleted.size || s.saving),
+    /* 기다리지 않고 바로 저장 */
+    async flush() {
+      await Promise.all(Object.keys(stores).map(col => { const s = stores[col]; if (s.dirty.size || s.deleted.size) { clearTimeout(s.timer); return runSave(col); } return s.saving ? s.saving.catch(() => {}) : null; }));
+    },
   };
   window.claude = { use: async name => ({ db, user, downloads })[name] || null };
 })();
