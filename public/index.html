@@ -128,6 +128,14 @@ button.dot { width: 22px; height: 22px; vertical-align: -6px; cursor: pointer; b
 .pname { font-weight: 700; font-size: 16px; }
 .ptool { font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 1px 10px; }
 .pcard .spacer { flex: 1; }
+.tablebox { font-family: var(--font-mono); font-size: 13px; line-height: 1.5; white-space: pre; overflow: auto; min-height: 180px; tab-size: 4; }
+.tablebox.small { min-height: 100px; }
+.tstat { margin: 6px 0 14px; font-size: 14px; color: var(--muted); }
+.tstat .bad { color: var(--accent); font-weight: 700; }
+.tstat .good { color: var(--ok); }
+.subh { font-size: 16px; margin: 4px 0 6px; }
+.subh small { font-size: 13px; color: var(--muted); font-weight: 400; margin-left: 6px; }
+.pwarn { background: var(--accent-soft); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
 .flow { list-style: none; margin: 0 0 16px; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
 .flow li { position: relative; background: var(--panel); border-radius: 10px; padding: 8px 6px; text-align: center; line-height: 1.3; }
 .flow li b { display: block; font-size: 15px; }
@@ -416,6 +424,16 @@ function cardText(t) {
   return lines.join('\n');
 }
 
+/* 게임 카드에 저장한 번역 입력표·영어 확정본 */
+function tableStats(txt) {
+  const lines = String(txt || '').split(/\r?\n/).filter(l => l.trim() && !/^\s*\|?\s*:?-{3,}/.test(l));
+  return { rows: Math.max(0, lines.length - 1), unresolved: (String(txt || '').match(/확인 필요/g) || []).length };
+}
+function inputTableBlock(t) {
+  return t.inputTable && t.inputTable.trim()
+    ? `[번역 입력표]\n${t.inputTable.trim()}`
+    : `[번역 입력표: ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문]\n(게임 카드의 ‘번역 입력표’ 칸이 비어 있어요. 사이트에 붙여 넣은 뒤 다시 복사하세요.)`;
+}
 function glossaryText(themeId, langKey) {
   const list = termsFor(themeId).map(x => x.data).filter(r => r.ko);
   if (!list.length) return '[용어집]\n(등록된 용어 없음)';
@@ -435,7 +453,7 @@ function buildPrompts(t, lk, themeId) {
   const glossAll = glossaryText(themeId);
   const isEn = lk === 'en';
   return [
-    { id: 'P1', name: '원문 분석', tool: 'ChatGPT', when: '준비 · 기획이 질문에 답한 뒤 결과표를 번역(P2)에 그대로 사용', text:
+    { id: 'P1-1', name: '원문 분석 담당자 설정', tool: 'ChatGPT 프로젝트 지침', when: '처음 한 번 등록', text:
 `[역할]
 너는 오프라인 게임의 현지화 사전 분석 담당자다.
 번역은 하지 않는다. 번역문과 번역 후보도 쓰지 않는다.
@@ -492,6 +510,14 @@ function buildPrompts(t, lk, themeId) {
 모든 ID가 있는가 / 빈칸이 없는가 / 사실과 추측이 구분됐는가 / 번역문이 없는가 / 정답·규칙을 바꾸지 않았는가
 표가 길면 행을 빼지 말고 ID 순서대로 나누어 출력한다.
 
+[입력]
+요청마다 게임 컨텍스트 카드, 용어집, 원문 표, 화면 캡처가 함께 온다.
+요청에 없는 다른 게임의 내용은 섞지 않는다.` },
+    { id: 'P1-2', name: '원문 분석 요청', tool: 'ChatGPT 프로젝트 · 새 대화', when: '게임마다', text:
+`${t.name || '[게임명]'} 원문을 분석해 줘. 번역은 하지 마.
+지침의 출력 1(번역 입력표), 출력 2(기획 확인 질문), 출력 3(용어집 후보) 형식으로 줘.
+용어집 후보는 아래 용어집에 이미 있는 용어와 겹치지 않게 해.
+
 ${card}
 
 ${glossAll}
@@ -520,14 +546,15 @@ ${gloss}` },
 아래 컨텍스트 카드를 먼저 읽고, 표의 맥락 설명·정리 원문·의도를 반영해.
 번역 기준은 화면 원문이야. 뜻은 맥락 설명과 정리 원문으로 확인해.
 판정 기준이 ‘있음’인 문구는 번역 후에도 같은 정답과 행동이 나오게 해.
+첨부한 PNG는 화면 캡처야. 버튼 크기와 위치는 캡처로 확인해.
+표의 모든 행을 ID 순서대로 빠짐없이 번역해.
 
 같은 표에 아래 열을 추가해서 줘.
 번역문 | 적용한 말투 | 현지화 이유 | 정답·판정 위험 | 확신 낮은 부분 | 축약안 | 기획 확인 질문
 
 ${card}
 
-[번역 입력표: ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문]
-(P1 원문 분석의 출력 1을, 기획 확인 질문의 답을 반영해 붙여 넣는다)` }
+${inputTableBlock(t)}` }
     : { id: 'P2-3', name: `초벌 번역 — ${L.label}`, tool: '초벌 번역 AI · 새 대화창', when: '번역 · 영어 확정본 함께 제공', text:
 `${t.name || '[게임명]'} 문구를 ${L.target}로 번역해 줘. 아래 컨텍스트 카드를 먼저 읽어.
 
@@ -536,15 +563,18 @@ ${card}
 3. 영어의 어순, 표현, 말투는 따르지 마라.
 4. 영어의 대명사(you)나 공손 표현(please)을 옮기지 마라.
 5. 한국어와 영어의 뜻이 다르면 번역하지 말고 ‘해석 불일치’로 표시해라.
-6. 영어 칸이 비어 있으면 맥락 설명만 보고 번역해라.
+6. 영어 확정본은 ID로 맞춰 본다. 영어가 없는 ID는 맥락 설명만 보고 번역해라.
+7. 첨부한 PNG는 화면 캡처다. 버튼 크기와 위치는 캡처로 확인해라.
+8. 표의 모든 행을 ID 순서대로 빠짐없이 번역해라.
 
 같은 표에 아래 열을 추가해서 줘.
 번역문 | 적용한 말투 | 해석 불일치 | 현지화 이유 | 정답·판정 위험 | 확신 낮은 부분 | 축약안 | 기획 확인 질문
 
 ${card}
 
-[번역 입력표: ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문 | 영어 확정본]
-(P1 출력 1에 영어 확정본 열을 덧붙여 붙여 넣는다)` },
+${inputTableBlock(t)}
+
+${t.enFinal && t.enFinal.trim() ? `[영어 확정본: ID | 영어]\n${t.enFinal.trim()}` : '[영어 확정본: ID | 영어]\n(게임 카드의 ‘영어 확정본’ 칸이 비어 있어요. 영어를 확정한 뒤 붙여 넣으세요.)'}` },
     { id: 'P3', name: '오류 검수', tool: 'Claude 새 대화창', when: '검수 · 번역 AI가 Claude면 ChatGPT', text:
 `너는 번역자가 아니라 독립적인 현지화 QA 담당자다. 문제를 찾는 것이 목적이다.
 [자료] 컨텍스트 카드, 용어집, 원문 표, 번역문 A(초벌), 번역문 B(DeepL), 화면 캡처
@@ -595,17 +625,20 @@ ${gloss}` },
 function usageFor(id, t, L) {
   const abbr = (String(t.name || '').match(/[A-Za-z]/g) || ['G', 'M']).slice(0, 2).join('').toUpperCase();
   const U = {
-    'P1': { tool: 'ChatGPT 새 대화', input: '원문 표 + 화면 캡처', output: '번역 입력표 · 질문 · 용어 후보', next: '기획 답변 → P2 번역',
-      steps: ['원문 표 준비<small>ID · 화면 원문 · 사용 위치 · 글자 수</small>', '복사 → ChatGPT 새 대화에 붙여 넣기', '맨 아래에 원문 표·캡처 넣고 보내기', '기획 답변 → 표 수정'],
+    'P1-1': { tool: 'ChatGPT 프로젝트', input: '이 카드 전체', output: '— (지침 등록만)', next: 'P1-2 원문 분석 요청',
+      steps: ['ChatGPT 왼쪽 메뉴 → <b>새 프로젝트</b><small>이름: 체키 원문 분석</small>', '프로젝트 설정 → <b>지침</b> 칸에 붙여 넣고 저장', '규칙을 바꿀 때만 다시 붙여 넣기'],
+      warn: ['게임 카드·용어집은 지침에 넣지 않아요. 게임마다 달라서 P1-2에 자동으로 들어가요.', '번역용 프로젝트와 섞어 쓰지 않아요. 분석 담당자는 번역을 하지 않아요.'] },
+    'P1-2': { tool: '‘체키 원문 분석’ 프로젝트 · 새 대화', input: '원문 표 + 화면 캡처', output: '번역 입력표 · 질문 · 용어 후보', next: '게임 카드에 붙여 넣기 → P2',
+      steps: ['원문 표 준비<small>ID · 화면 원문 · 사용 위치 · 글자 수</small>', '복사 → 프로젝트 안에서 새 대화', '맨 아래에 원문 표·캡처 넣고 보내기', '기획 답변 → 표 수정<small>게임 카드 ‘번역 입력표’에 붙여 넣기</small>'],
       warn: [`ID는 게임 약자+번호로 정해요. 예: ${abbr}-001`, '번역 후보가 나오면 “분석만 다시 출력해”라고 요청해요.', '‘확인 필요’가 남은 채로 번역에 넘기지 않아요.', '정리 원문은 설명용이에요. 화면 문구는 바꾸지 않아요.', '용어 후보는 용어집에 등록하고, 진행 상황에서 ‘원문 정리’를 눌러요.'] },
     'P2-1': { tool: `${L.label}용 번역 AI 프로젝트`, input: '이 카드 전체', output: '— (지침 등록만)', next: 'P2 초벌 번역',
       steps: [`${L.label} 프로젝트 만들기`, '복사 → 프로젝트 ‘지침’에 붙여 넣기', '용어집·게임이 바뀌면 다시 붙여 넣기'],
       warn: ['대화창이 아니라 프로젝트 지침에 넣어요.', '언어마다 프로젝트를 따로 써요.'] },
-    'P2-2': { tool: '영어 프로젝트 새 대화', input: 'P1 번역 입력표 + 캡처', output: '번역문 A', next: 'P3 오류 검수',
-      steps: ['복사 → 영어 프로젝트 새 대화', '맨 아래에 번역 입력표 붙이고 보내기', '정리 원문을 DeepL로 번역 → 번역문 B', '진행 상황 ‘번역’ 누르기'],
+    'P2-2': { tool: '영어 프로젝트 새 대화', input: 'PNG 캡처만 (표는 자동 포함)', output: '번역문 A', next: 'P3 오류 검수',
+      steps: ['복사 → 영어 프로젝트 새 대화에 붙여 넣기', 'PNG 캡처 첨부하고 보내기<small>파일 이름에 ID</small>', '정리 원문을 DeepL로 번역 → 번역문 B', '진행 상황 ‘번역’ 누르기'],
       warn: ['한 대화에는 한 게임만 넣어요.', '기획 확인 질문이 나온 행은 답을 받고 넘어가요.'] },
-    'P2-3': { tool: `${L.label} 프로젝트 새 대화`, input: '번역 입력표 + 영어 확정본 열', output: '번역문 A · 해석 불일치', next: 'P3 오류 검수',
-      steps: ['영어가 ‘확정’인지 확인', '번역 입력표 끝에 영어 확정본 열 추가', `복사 → ${L.label} 프로젝트 새 대화에 보내기`, `정리 원문을 DeepL로 번역 → 번역문 B`],
+    'P2-3': { tool: `${L.label} 프로젝트 새 대화`, input: 'PNG 캡처만 (표·영어 자동 포함)', output: '번역문 A · 해석 불일치', next: 'P3 오류 검수',
+      steps: ['게임 카드에 영어 확정본 붙여 넣기', `복사 → ${L.label} 프로젝트 새 대화에 붙여 넣기`, 'PNG 캡처 첨부하고 보내기', `정리 원문을 DeepL로 번역 → 번역문 B`],
       warn: ['‘해석 불일치’ 행은 기획이 뜻을 정한 뒤 그 행만 다시 번역해요.', '“영어 기준으로 번역해”라고 따로 말하지 않아요.'].concat(L.key === 'zh' ? ['결과가 간체인지 확인해요.'] : []) },
     'P3': { tool: 'Claude 새 대화', input: '원문·의도·판정 기준·A·B 표 + 캡처', output: 'PASS · REVIEW · FAIL', next: 'FAIL → P5 / PASS → P6·P4',
       steps: ['복사 → Claude 새 대화', '아래에 표 붙이기<small>ID · 원문 · 의도 · 판정 기준 · A · B</small>', 'FAIL은 P5로, PASS는 P6·P4로', '진행 상황 ‘검수’ 누르기'],
@@ -636,7 +669,8 @@ function usageHTML(u) {
 function designFor(id, L, t) {
   const game = t.name || '이 게임';
   const D = {
-    'P1': [
+    'P1-1': [
+      ['고정 등록', '역할과 분석 규칙은 게임이 바뀌어도 같으므로 ChatGPT 프로젝트 지침에 한 번만 등록하여, 매번 긴 규칙을 붙이지 않아도 같은 기준으로 분석하게 하였다.'],
       ['역할 부여', 'ChatGPT에게 ‘오프라인 게임의 현지화 사전 분석 담당자’ 역할을 부여하고, 번역문과 번역 후보를 쓰지 않도록 명시하여 원문 분석에만 집중하게 하였다.'],
       ['산출물 연결', '결과표의 열을 번역 단계(P2)의 입력표와 같게 맞추어, 기획이 질문에 답한 뒤 표를 고쳐 쓰지 않고 그대로 번역에 넘길 수 있게 하였다.'],
       ['자료 위계', '기획 확정 규칙 → 컨텍스트 카드 → 용어집 → 원문 → 화면 캡처 → 추론 순으로 신뢰 순서를 정하고, 자료끼리 다르면 하나를 고르지 말고 ‘충돌’로 적게 하였다.'],
@@ -644,6 +678,12 @@ function designFor(id, L, t) {
       ['출력 분리', `${game}의 문구별 분석은 표 하나로, 기획 질문과 용어집 후보는 별도 목록으로 나누어, 행마다 ‘없음’이 반복되는 넓은 표를 피하고 담당자별로 볼 곳을 나누었다.`],
       ['제약 조건', '정리 원문에서 뜻·정답·규칙을 바꾸거나 새 대상을 넣지 않게 하고, 용어집 상태를 바꾸지 않게 하여 분석 단계에서 생길 수 있는 변형을 막았다.'],
       ['누락 방지', '모든 ID 유지, 빈칸 금지, 길면 ID 순서대로 나누어 출력하는 규칙과 마지막 점검 항목을 두어, 긴 표에서 행이 빠지지 않게 하였다.'],
+    ],
+    'P1-2': [
+      ['과업 지시', `${game}의 원문을 분석하되 번역은 하지 말라고 다시 짧게 적어, 지침의 역할을 요청 단위에서도 확인하게 하였다.`],
+      ['맥락 제공', `${game}의 게임 컨텍스트 카드와 화면 캡처를 함께 주어, 문구가 어느 화면에서 누구의 말로 쓰이는지 파악하게 하였다.`],
+      ['중복 방지', '현재 용어집을 함께 주어, 이미 등록된 용어를 후보로 다시 올리지 않게 하였다.'],
+      ['출력 형식 지정', '지침의 출력 1~3 형식을 그대로 쓰게 하여, 결과표를 번역(P2)에 바로 넘길 수 있게 하였다.'],
     ],
     'P2-1': [
       ['역할 부여', `‘오프라인 게임 매장의 ${L.target} 현지화 담당자’ 역할을 부여하였다. 단순 번역가가 아니라 현지화 담당자로 설정하여, 직역보다 현지 플레이어가 이해하는 표현을 우선하게 하였다.`],
@@ -772,6 +812,16 @@ function cardHTML({ id, data: t }) {
     <div class="fields">${LANGS.map(l => fld(l.label, `lang.${l.key}`, t.lang?.[l.key], { area: true })).join('')}</div>
   </section>
 
+  ${(() => { const st = tableStats(t.inputTable), en = tableStats(t.enFinal); return `
+  <section class="section">
+    <h2>번역 입력표</h2><p class="hint">P1 원문 분석 결과(출력 1)를 기획이 고친 뒤 붙여 넣으세요. 엑셀이나 ChatGPT 표를 그대로 붙여 넣으면 돼요. 번역 프롬프트(P2)에 자동으로 들어가서, 번역할 때는 <b>PNG 캡처만 첨부</b>하면 돼요.</p>
+    <textarea class="tablebox" data-path="inputTable" ${readOnly ? 'disabled' : ''} placeholder="ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문" spellcheck="false">${esc(t.inputTable || '')}</textarea>
+    <p class="tstat">${st.rows ? `<b>${st.rows}행</b>` : '아직 비어 있어요'}${st.unresolved ? ` · <span class="bad">‘확인 필요’ ${st.unresolved}곳 남음 — 번역 전에 기획 답을 반영하세요</span>` : st.rows ? ' · <span class="good">확인 필요 없음</span>' : ''}</p>
+    <h3 class="subh">영어 확정본 <small>영어가 확정되면 붙여 넣기 · 일본어·중국어 번역(P2-3)에 들어가요</small></h3>
+    <textarea class="tablebox small" data-path="enFinal" ${readOnly ? 'disabled' : ''} placeholder="ID | 영어" spellcheck="false">${esc(t.enFinal || '')}</textarea>
+    <p class="tstat">${en.rows ? `<b>${en.rows}행</b>${st.rows && en.rows < st.rows ? ` · 번역 입력표보다 ${st.rows - en.rows}행 적어요 (현지화·재설계로 비운 행이면 괜찮아요)` : ''}` : '아직 비어 있어요'}</p>
+  </section>`; })()}
+
   <section class="section">
     <h2>메모</h2>
     ${fld('', 'memo', t.memo, { area: true })}
@@ -789,12 +839,13 @@ function promptsHTML({ id, data: t }) {
   return `
     <div class="langseg" role="group" aria-label="번역할 언어">${LANGS.map(l => `<button type="button" data-lang="${l.key}" aria-pressed="${promptLang === l.key}">${l.label}</button>`).join('')}</div>
     <ol class="flow" aria-label="전체 순서">
-      <li><b>원문 분석</b><span>P1</span></li><li><b>번역</b><span>P2</span></li><li><b>검수</b><span>P3</span></li><li><b>테스트</b><span>P6 · P4</span></li><li><b>재수정</b><span>P5</span></li><li class="end"><b>확정</b><span>영어 → 일·중</span></li>
+      <li><b>원문 분석</b><span>P1-1 · P1-2</span></li><li><b>번역</b><span>P2</span></li><li><b>검수</b><span>P3</span></li><li><b>테스트</b><span>P6 · P4</span></li><li><b>재수정</b><span>P5</span></li><li class="end"><b>확정</b><span>영어 → 일·중</span></li>
     </ol>
     ${ps.map((p, i) => { const u = usageFor(p.id, t, L); return `
       <details class="pcard">
         <summary><span class="pid">${p.id}</span><span class="pname">${esc(p.name)}</span><span class="ptool">${esc(p.tool)}</span><span class="spacer"></span><button type="button" class="btn primary" data-copy="${i}">복사</button></summary>
         <div class="pbody">
+          ${/^P2-[23]$/.test(p.id) ? (() => { const st = tableStats(t.inputTable); const en = tableStats(t.enFinal); const msgs = []; if (!st.rows) msgs.push('게임 카드의 ‘번역 입력표’가 비어 있어요.'); else if (st.unresolved) msgs.push(`번역 입력표에 ‘확인 필요’가 ${st.unresolved}곳 남아 있어요.`); if (p.id === 'P2-3' && !en.rows) msgs.push('게임 카드의 ‘영어 확정본’이 비어 있어요.'); return msgs.length ? `<div class="pwarn">⚠ ${msgs.join(' ')}</div>` : `<div class="pwarn" style="background:var(--ok-soft)">✓ 번역 입력표 ${st.rows}행이 자동으로 들어가 있어요. PNG만 첨부하세요.</div>`; })() : ''}
           ${usageHTML(u)}
           ${u && u.warn ? `<details class="more"><summary>주의할 점 <small>${u.warn.length}</small></summary><ul>${u.warn.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
           <details class="more"><summary>프롬프트 내용 보기</summary><pre class="ptext" id="pt-${i}">${esc(p.text)}</pre></details>
