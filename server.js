@@ -15,11 +15,15 @@
  *   SESSION_SECRET   선택. 로그인 유지용 서명 키 (없으면 GITHUB_TOKEN으로 만듦)
  *   DATA_BRANCH      선택. 기본값 data
  *   BASE_BRANCH      선택. 기본값 main
+ *   ANTHROPIC_API_KEY 선택. 넣으면 PNG·JPG·PDF 파일을 AI(Claude)로 읽을 수 있다. 없으면 Word·엑셀·CSV만 읽는다.
+ *   ANTHROPIC_MODEL  선택. 파일 읽기에 쓸 모델 ID. 비우면 쓸 수 있는 최신 Sonnet 모델을 자동으로 고른다.
+ *   AI_HOURLY_LIMIT  선택. 한 사람이 한 시간에 AI로 읽을 수 있는 파일 수 (기본 60)
  */
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const zlib = require('zlib');
 
 const env = process.env;
 const REPO = env.GITHUB_REPO || '';
@@ -169,15 +173,123 @@ function tooMany(key, limit, windowMs) {
 function hit(key) { const l = attempts.get(key) || []; l.push(Date.now()); attempts.set(key, l); }
 const publicUser = (id, u) => Object.assign({ id }, norm(u));
 
+/* ---------- 파일 읽기: Word(docx)는 서버에서 바로, PNG·JPG·PDF는 Claude API로 ---------- */
+const AI_KEY = env.ANTHROPIC_API_KEY || '';
+const AI_BASE = (env.ANTHROPIC_BASE_URL || 'https://api.anthropic.com').replace(/\/$/, '');
+const AI_LIMIT = Number(env.AI_HOURLY_LIMIT) || 60;
+const MAX_FILE = 12 * 1024 * 1024;
+
+/* zip 안의 파일 하나 꺼내기 (docx는 zip) */
+function unzipEntry(buf, name) {
+  let eocd = -1;
+  for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) if (buf.readUInt32LE(i) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) throw new Error('Word 파일을 열지 못했어요. 파일이 손상됐거나 예전 형식(.doc)일 수 있어요. .docx로 다시 저장해 주세요.');
+  const count = buf.readUInt16LE(eocd + 10);
+  let p = buf.readUInt32LE(eocd + 16);
+  for (let k = 0; k < count && p + 46 <= buf.length; k++) {
+    if (buf.readUInt32LE(p) !== 0x02014b50) break;
+    const method = buf.readUInt16LE(p + 10), csize = buf.readUInt32LE(p + 20);
+    const nlen = buf.readUInt16LE(p + 28), xlen = buf.readUInt16LE(p + 30), clen = buf.readUInt16LE(p + 32), lho = buf.readUInt32LE(p + 42);
+    if (buf.toString('utf8', p + 46, p + 46 + nlen) === name) {
+      const start = lho + 30 + buf.readUInt16LE(lho + 26) + buf.readUInt16LE(lho + 28);
+      const data = buf.subarray(start, start + csize);
+      return method === 0 ? data : zlib.inflateRawSync(data);
+    }
+    p += 46 + nlen + xlen + clen;
+  }
+  return null;
+}
+const unxml = s => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n)).replace(/&amp;/g, '&');
+function wText(xml) {
+  let out = '';
+  xml.replace(/<w:t(?:\s[^>]*)?>([^<]*)<\/w:t>|<w:tab\/>|<w:br\b[^>]*\/>/g, (m, t) => { out += t !== undefined ? unxml(t) : m.startsWith('<w:tab') ? ' ' : ' ↵ '; return m; });
+  return out.replace(/\s+/g, ' ').trim();
+}
+const paras = xml => (xml.replace(/<w:p\b[^>]*\/>/g, '').match(/<w:p\b[^>]*>[\s\S]*?<\/w:p>/g) || []).map(wText);
+/* docx → 순서대로 [{type:'p', text}] / [{type:'table', rows}] */
+function readDocx(buf) {
+  const doc = unzipEntry(buf, 'word/document.xml');
+  if (!doc) throw new Error('Word 문서 내용을 찾지 못했어요.');
+  const xml = doc.toString('utf8');
+  const body = (xml.match(/<w:body>([\s\S]*)<\/w:body>/) || [, xml])[1];
+  /* 바깥 표만 따로 떼어 낸다 (표 안의 표는 칸 글자로 합쳐짐) */
+  const tables = []; let rest = '', depth = 0, start = 0, last = 0;
+  const re = /<w:tbl>|<\/w:tbl>/g; let m;
+  while ((m = re.exec(body))) {
+    if (m[0] === '<w:tbl>') { if (depth++ === 0) { rest += body.slice(last, m.index); start = m.index; } }
+    else if (depth > 0 && --depth === 0) { tables.push(body.slice(start, re.lastIndex)); rest += `\u0000T${tables.length - 1}\u0000`; last = re.lastIndex; }
+  }
+  rest += body.slice(last);
+  const blocks = [];
+  rest.split(/\u0000T(\d+)\u0000/).forEach((part, i) => {
+    if (i % 2) {
+      const rows = (tables[+part].match(/<w:tr\b[^>]*>[\s\S]*?<\/w:tr>/g) || []).map(tr => (tr.match(/<w:tc\b[^>]*>[\s\S]*?<\/w:tc>/g) || []).map(tc => paras(tc).filter(Boolean).join(' / ')));
+      if (rows.some(r => r.some(c => c))) blocks.push({ type: 'table', rows });
+    } else paras(part).forEach(text => { if (text) blocks.push({ type: 'p', text }); });
+  });
+  return blocks;
+}
+
+let modelPick = null;
+async function aiModel() {
+  if (env.ANTHROPIC_MODEL) return env.ANTHROPIC_MODEL;
+  if (modelPick) return modelPick;
+  try {
+    const r = await fetch(AI_BASE + '/v1/models?limit=100', { headers: { 'x-api-key': AI_KEY, 'anthropic-version': '2023-06-01' } });
+    if (r.ok) { const ids = ((await r.json()).data || []).map(x => x.id); modelPick = ids.find(i => /sonnet/i.test(i)) || ids[0] || null; }
+  } catch { /* 아래 기본값 */ }
+  return modelPick || 'claude-sonnet-4-5';
+}
+const AI_PROMPTS = {
+  source: `이 파일은 한국 오프라인 게임의 화면 캡처 또는 대본·기획 문서다.
+플레이어가 보거나 듣는 한국어 문구를 하나도 빠짐없이 그대로 옮겨 적어라. 번역·요약·맞춤법 수정을 하지 마라.
+- 순서: 화면은 위에서 아래, 왼쪽에서 오른쪽 / 문서는 나오는 순서.
+- 버튼, 안내문, 대사, 효과 글자, 숫자가 섞인 문구를 모두 넣는다. 한 문구가 줄바꿈되어 있으면 한 행에 쓰고 줄바꿈 자리에 ↵ 를 넣는다.
+- 위치: 화면이면 ‘위 왼쪽 버튼’, ‘가운데 말풍선’처럼 짧게. 문서면 ‘2쪽 메리 대사’, ‘3번째 문단’처럼.
+- 흐리거나 잘려서 확실히 읽을 수 없으면 비고에 ‘판독 불확실: 이유’를 쓴다. 추측한 글자는 화면 원문에 쓰되 비고에 꼭 표시한다.
+- 로고·장식 글자는 비고에 ‘로고’ 또는 ‘장식’. 한국어가 아닌 글자는 비고에 ‘외국어’.
+출력은 탭으로 구분한 표 하나만, 코드 블록 하나 안에 쓴다. 다른 설명은 쓰지 않는다.
+첫 행은 정확히 다음과 같다: 순번\t화면 원문\t위치\t비고
+읽을 문구가 없으면 첫 행만 출력한다.`,
+  table: `이 파일 안의 표를 그대로 옮겨 적어라. 내용을 고치거나 번역·요약하지 마라.
+- 첫 행은 표의 열 이름을 그대로 쓴다.
+- 표가 여러 개면 ID 열이 있는 가장 큰 표 하나만 옮긴다. 여러 쪽에 걸쳐 이어지는 표는 하나로 합친다.
+- 칸 안의 줄바꿈은 ‘ / ’로 바꾼다. 빈 칸은 비워 둔다.
+- 흐려서 확실하지 않은 칸은 칸 끝에 ‘ (판독 불확실)’을 붙인다.
+출력은 탭으로 구분한 표 하나만, 코드 블록 하나 안에 쓴다. 다른 설명은 쓰지 않는다.`,
+};
+async function aiRead(buf, mediaType, mode) {
+  const block = mediaType === 'application/pdf'
+    ? { type: 'document', source: { type: 'base64', media_type: mediaType, data: buf.toString('base64') } }
+    : { type: 'image', source: { type: 'base64', media_type: mediaType, data: buf.toString('base64') } };
+  const r = await fetch(AI_BASE + '/v1/messages', {
+    method: 'POST',
+    headers: { 'x-api-key': AI_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+    body: JSON.stringify({ model: await aiModel(), max_tokens: 16000, messages: [{ role: 'user', content: [block, { type: 'text', text: AI_PROMPTS[mode] }] }] }),
+  });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    if (r.status === 401) throw new Error('AI 키(ANTHROPIC_API_KEY)가 올바르지 않아요. 관리자에게 알려 주세요.');
+    if (r.status === 404 && !env.ANTHROPIC_MODEL) modelPick = null;
+    if (r.status === 429 || r.status === 529) throw new Error('AI가 지금 바빠요. 1분쯤 뒤에 다시 올려 주세요.');
+    throw new Error('AI가 파일을 읽지 못했어요 (' + r.status + (j.error && j.error.message ? ': ' + j.error.message : '') + ').');
+  }
+  const text = (j.content || []).filter(c => c.type === 'text').map(c => c.text).join('\n');
+  const code = (text.match(/```[^\n]*\n([\s\S]*?)```/) || [, text])[1];
+  const rows = code.split(/\r?\n/).filter(l => l.trim()).map(l => l.split('\t').map(c => c.trim()));
+  return { rows, cut: j.stop_reason === 'max_tokens' };
+}
+const MEDIA = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', pdf: 'application/pdf' };
+
 /* ---------- HTTP ---------- */
 function send(res, status, obj, headers = {}) {
   res.writeHead(status, Object.assign({ 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, headers));
   res.end(JSON.stringify(obj));
 }
-function readBody(req) {
+function readBody(req, limit = 2e6) {
   return new Promise((resolve, reject) => {
     let size = 0; const chunks = [];
-    req.on('data', c => { size += c.length; if (size > 2e6) { reject(new Error('too large')); req.destroy(); } else chunks.push(c); });
+    req.on('data', c => { size += c.length; if (size > limit) { reject(new Error('too large')); req.destroy(); } else chunks.push(c); });
     req.on('end', () => { try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')); } catch (e) { reject(e); } });
     req.on('error', reject);
   });
@@ -210,7 +322,7 @@ http.createServer(async (req, res) => {
     if (p === '/api/me' && req.method === 'GET') {
       let pending = 0;
       if (me && me.isAdmin) pending = members((await readCol('users')).data).filter(([, u]) => !norm(u).canView).length;
-      return send(res, 200, me ? { loggedIn: true, name: me.name, username: me.username, canView: me.canView, canEdit: me.canEdit, isAdmin: me.isAdmin, isOwner: me.isOwner, id: me.id, color: me.color, palette: PALETTE, pending } : { loggedIn: false });
+      return send(res, 200, me ? { loggedIn: true, name: me.name, username: me.username, canView: me.canView, canEdit: me.canEdit, isAdmin: me.isAdmin, isOwner: me.isOwner, id: me.id, color: me.color, palette: PALETTE, pending, ai: !!AI_KEY } : { loggedIn: false });
     }
 
     if (p === '/api/signup' && req.method === 'POST') {
@@ -317,6 +429,26 @@ http.createServer(async (req, res) => {
       if (denied) return send(res, 403, { message: denied });
       if (!found) return send(res, 404, { message: '없는 회원이에요.' });
       return send(res, 200, { ok: true, tempPassword: temp, name: label });
+    }
+
+    /* ----- 파일 읽기 (편집 권한 필요) ----- */
+    if (p === '/api/extract' && req.method === 'POST') {
+      if (!me || !me.canEdit) return send(res, 403, { message: me ? '파일 읽기는 편집 허용을 받은 사람만 할 수 있어요.' : '로그인이 필요해요.' });
+      let b;
+      try { b = await readBody(req, MAX_FILE * 1.4 + 1e5); } catch { return send(res, 413, { message: '파일이 너무 커요. 12MB 이하로 올려 주세요.' }); }
+      const name = String(b.name || ''), ext = (name.match(/\.([a-z0-9]+)$/i) || [, ''])[1].toLowerCase();
+      const buf = Buffer.from(String(b.data || ''), 'base64');
+      if (!buf.length) return send(res, 400, { message: '빈 파일이에요.' });
+      if (buf.length > MAX_FILE) return send(res, 413, { message: '파일이 너무 커요. 12MB 이하로 올려 주세요.' });
+      if (ext === 'docx') return send(res, 200, { kind: 'docx', blocks: readDocx(buf) });
+      const media = (/^image\/(png|jpeg|webp|gif)$/.test(b.type || '') ? b.type : null) || MEDIA[ext];
+      if (!media) return send(res, 400, { message: '읽을 수 없는 파일 형식이에요. PNG·JPG·PDF·Word(docx)·엑셀·CSV를 올려 주세요.' });
+      if (!AI_KEY) return send(res, 501, { message: '이미지·PDF 읽기가 아직 켜져 있지 않아요. 관리자가 Render에 ANTHROPIC_API_KEY를 넣어야 해요.' });
+      if (tooMany('ai:' + me.id, AI_LIMIT, 3600000)) return send(res, 429, { message: `AI 파일 읽기는 한 시간에 ${AI_LIMIT}개까지예요. 잠시 뒤 다시 해 주세요.` });
+      hit('ai:' + me.id);
+      const mode = b.mode === 'table' ? 'table' : 'source';
+      const out = await aiRead(buf, media, mode);
+      return send(res, 200, Object.assign({ kind: 'ai', mode }, out));
     }
 
     /* ----- 게임 카드·용어집 ----- */
