@@ -1,0 +1,389 @@
+{
+  "chris-mas-chars": {
+    "common": false,
+    "games": [
+      "chris-mas"
+    ],
+    "intent": "캐릭터명. 크리스+마스 말장난 성립 여부 확인",
+    "ko": "크리스, 마스, 메리",
+    "memo": "중국어는 크리스마스를 보통 ‘圣诞’이라 해 말장난이 약해질 수 있음",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      },
+      "ja": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      }
+    },
+    "type": "캐릭터명",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "chris-mas-name": {
+    "common": false,
+    "games": [
+      "chris-mas"
+    ],
+    "intent": "게임명 (× 기호 유지 여부 확정 필요)",
+    "ko": "Chris×Mas",
+    "memo": "",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "Chris×Mas"
+      },
+      "ja": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      }
+    },
+    "type": "게임명",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "fix-pix-name": {
+    "common": false,
+    "games": [
+      "fix-pix"
+    ],
+    "intent": "게임명 (영문 유지 여부 확정 필요)",
+    "ko": "Fix Pix",
+    "memo": "",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "Fix Pix"
+      },
+      "ja": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      }
+    },
+    "type": "게임명",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "left-right": {
+    "common": false,
+    "games": [
+      "chris-mas"
+    ],
+    "intent": "방향 버튼 라벨",
+    "ko": "왼쪽! / 오른쪽!",
+    "memo": "아이콘으로 대체할지 함께 결정",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      },
+      "ja": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      }
+    },
+    "type": "버튼 라벨",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "press": {
+    "common": true,
+    "games": [],
+    "intent": "물리 버튼을 누르는 동작",
+    "ko": "누르다",
+    "memo": "",
+    "tr": {
+      "en": {
+        "avoid": "Click",
+        "avoidWhy": "화면 클릭이 아니라 물리 버튼",
+        "status": "후보",
+        "text": "Press"
+      },
+      "ja": {
+        "avoid": "押せ",
+        "avoidWhy": "명령형은 거칠게 들림",
+        "status": "후보",
+        "text": "押して"
+      },
+      "zh": {
+        "avoid": "点击",
+        "avoidWhy": "点击은 화면 터치·클릭에 쓰는 말",
+        "status": "후보",
+        "text": "按"
+      }
+    },
+    "type": "지시 동사",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "remember": {
+    "common": true,
+    "games": [],
+    "intent": "화면에 보인 것을 잠시 기억하는 동작",
+    "ko": "기억하다",
+    "memo": "",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "Remember"
+      },
+      "ja": {
+        "avoid": "覚えろ",
+        "avoidWhy": "명령형은 거칠게 들림",
+        "status": "후보",
+        "text": "覚えて"
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "记住"
+      }
+    },
+    "type": "지시 동사",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "this-one": {
+    "common": false,
+    "games": [
+      "chris-mas"
+    ],
+    "intent": "의도 확정 필요 (고르기인지 가리키기인지)",
+    "ko": "이거!",
+    "memo": "고르기면 PICK!, 가리키기면 THIS! 쪽으로 갈림",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      },
+      "ja": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "미정",
+        "text": ""
+      }
+    },
+    "type": "버튼 라벨",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "ui-front": {
+    "common": true,
+    "games": [],
+    "intent": "앞쪽 방향 안내",
+    "ko": "FRONT",
+    "memo": "영어 버전에서는 자연스러운지 확인 필요",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "FRONT"
+      },
+      "ja": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "FRONT"
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "FRONT"
+      }
+    },
+    "type": "영문 표기",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "ui-goal": {
+    "common": true,
+    "games": [],
+    "intent": "목표 달성 표시",
+    "ko": "GOAL!",
+    "memo": "일·중은 영문 그대로 유지",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "GOAL!"
+      },
+      "ja": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "GOAL!"
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "GOAL!"
+      }
+    },
+    "type": "영문 표기",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "ui-here": {
+    "common": true,
+    "games": [],
+    "intent": "위치 안내",
+    "ko": "HERE",
+    "memo": "영어 버전에서는 자연스러운지 확인 필요",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "HERE"
+      },
+      "ja": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "HERE"
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "HERE"
+      }
+    },
+    "type": "영문 표기",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "ui-round": {
+    "common": true,
+    "games": [],
+    "intent": "라운드 표시",
+    "ko": "ROUND",
+    "memo": "일·중은 영문 그대로 유지",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "ROUND"
+      },
+      "ja": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "ROUND"
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "ROUND"
+      }
+    },
+    "type": "영문 표기",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "ui-side": {
+    "common": true,
+    "games": [],
+    "intent": "옆쪽 방향 안내",
+    "ko": "SIDE",
+    "memo": "영어 버전에서는 자연스러운지 확인 필요",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "SIDE"
+      },
+      "ja": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "SIDE"
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "SIDE"
+      }
+    },
+    "type": "영문 표기",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  },
+  "ui-time": {
+    "common": true,
+    "games": [],
+    "intent": "남은 시간 표시",
+    "ko": "TIME",
+    "memo": "일·중은 영문 그대로 유지",
+    "tr": {
+      "en": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "TIME"
+      },
+      "ja": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "TIME"
+      },
+      "zh": {
+        "avoid": "",
+        "avoidWhy": "",
+        "status": "후보",
+        "text": "TIME"
+      }
+    },
+    "type": "영문 표기",
+    "updatedAt": "2026-10-29T00:00:00Z"
+  }
+}
