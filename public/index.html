@@ -36,7 +36,7 @@
 [hidden] { display: none !important; }
 html, body { margin: 0; height: 100%; }
 body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
-.wrap { max-width: 1100px; margin: 0 auto; padding-block: 24px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1100px; transition: max-width .15s; margin: 0 auto; padding-block: 24px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 h1 { font-size: 26px; margin: 0; line-height: 1.3; }
 .sub { color: var(--muted); margin: 4px 0 0; font-size: 15px; }
 .topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -93,6 +93,14 @@ input:disabled, textarea:disabled, select:disabled { background: var(--panel); }
 .steps button.past { background: var(--accent-soft); border-color: transparent; color: var(--accent); }
 .steps button.cur { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
 .steps button.cur.final { background: var(--ok); border-color: var(--ok); }
+.steps button.by { background: var(--by); border-color: var(--by); color: #fff; line-height: 1.25; }
+.steps button.by.cur { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--by); font-weight: 700; }
+.steps button .who { display: block; font-size: 11px; font-weight: 400; opacity: .92; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; vertical-align: -2px; border: 0; padding: 0; }
+button.dot { width: 22px; height: 22px; vertical-align: -6px; cursor: pointer; box-shadow: 0 0 0 1px var(--line); }
+.swatches { display: grid; grid-template-columns: repeat(6, 44px); gap: 10px; margin: 6px 0 4px; }
+.swatches button { width: 44px; height: 44px; border-radius: 50%; border: 0; }
+.swatches button[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--fg); }
 @media (max-width: 600px) { .prow { grid-template-columns: minmax(0, 1fr); gap: 6px; } .steps button { font-size: 12px; } }
 
 /* Prompts */
@@ -124,12 +132,29 @@ pre.ptext { margin: 0; padding: 16px; background: var(--code-bg); border-top: 1p
 .gtools .chk input { width: 20px; min-height: 20px; }
 .gstats { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--muted); margin-bottom: 12px; }
 .gstats b { color: var(--fg); font-variant-numeric: tabular-nums; }
-.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
-table.g { border-collapse: collapse; width: 100%; min-width: 1120px; font-size: 14px; }
+body.wide .wrap { max-width: 1320px; }
+.tbl { border: 1px solid var(--line); border-radius: 12px; }
+table.g { border-collapse: collapse; width: 100%; table-layout: fixed; font-size: 14px; }
+table.g td input, table.g td select { width: 100%; min-width: 0; }
+.kind { display: grid; gap: 4px; }
+.racts { display: grid; gap: 4px; justify-items: stretch; }
+.racts .iconbtn { min-width: 0; width: 100%; padding: 0 4px; font-size: 13px; }
+@media (max-width: 860px) {
+  table.g, table.g tbody, table.g tfoot, table.g tr, table.g td { display: block; width: 100%; }
+  table.g thead { display: none; }
+  table.g tbody tr:not(.detail) { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; padding: 10px; border-top: 1px solid var(--line); }
+  table.g tbody tr td { border: 0; padding: 0; }
+  table.g td[data-label]::before { content: attr(data-label); display: block; font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+  table.g td.c-ko, table.g td.c-intent { grid-column: span 1; }
+  table.g td.c-acts { grid-column: 1 / -1; }
+  table.g td.c-acts .racts { grid-template-columns: 1fr 1fr; }
+  table.g tr.detail td { padding: 6px; }
+}
 table.g th { background: var(--panel); text-align: left; font-size: 13px; color: var(--muted); font-weight: 700; padding: 10px 8px; white-space: nowrap; position: sticky; top: 0; }
 table.g td { padding: 6px; border-top: 1px solid var(--line); vertical-align: top; }
-table.g td input, table.g td select { min-height: 38px; padding: 7px 8px; font-size: 14px; }
+table.g td input, table.g td select { min-height: 36px; padding: 6px 7px; font-size: 14px; }
 .lcell { display: grid; gap: 4px; }
+.lcell .st { white-space: normal; text-align: left; max-width: 100%; }
 .st { border: 1px solid var(--line); background: var(--bg); border-radius: 99px; font-size: 12px; padding: 2px 10px; color: var(--muted); justify-self: start; min-height: 28px; }
 .st.cand { border-color: var(--accent); color: var(--accent); }
 .st.ok { background: var(--ok); border-color: var(--ok); color: #fff; }
@@ -236,6 +261,14 @@ dialog .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14
     </div>
   </div>
 </main>
+<dialog id="colordlg">
+  <div class="fstack">
+    <h2 id="color-title">내 색 고르기</h2>
+    <p class="hint" style="margin:0">진행 단계 버튼을 누르면 이 색으로 표시돼요.</p>
+    <div class="swatches" id="swatches"></div>
+    <div class="row"><button type="button" class="btn" data-close>닫기</button></div>
+  </div>
+</dialog>
 <dialog id="pwdlg">
   <form id="pw-form" class="fstack">
     <h2>비밀번호 변경</h2>
@@ -498,6 +531,7 @@ function render(force) {
   const a = document.activeElement;
   if (!force && a && a.matches && a.matches('#content input, #content textarea, #content select')) { pending = true; return; }
   pending = false;
+  document.body.classList.toggle('wide', view === 'glossary');
   document.querySelectorAll('.mainnav button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === view)));
   renderPicker();
   const c = $('#content');
@@ -541,10 +575,10 @@ function cardHTML({ id, data: t }) {
   </section>
 
   <section class="section">
-    <h2>진행 상황</h2><p class="hint">순서는 영어 → 일본어 → 중국어(간체). 현재 단계를 누르세요.</p>
+    <h2>진행 상황</h2><p class="hint">순서는 영어 → 일본어 → 중국어(간체). 현재 단계를 누르세요. 누른 사람의 색과 이름이 버튼에 남아요.</p>
     <div class="prog">${LANGS.map(l => { const s = stageOf(t, l.key); return `
       <div class="prow"><b>${l.label}</b>
-        <div class="steps" role="group" aria-label="${l.label} 진행 단계">${STAGES.map((st, i) => `<button type="button" data-prog="${l.key}:${i}" aria-pressed="${i === s}" class="${i < s ? 'past' : i === s ? 'cur' + (i === STAGES.length - 1 ? ' final' : '') : ''}" ${readOnly ? 'disabled' : ''}>${st}</button>`).join('')}</div>
+        <div class="steps" role="group" aria-label="${l.label} 진행 단계">${STAGES.map((st, i) => { const by = i > 0 && i <= s ? (t.progressBy?.[l.key]?.[i]) : null; const cls = (i < s ? 'past' : i === s ? 'cur' + (i === STAGES.length - 1 ? ' final' : '') : '') + (by ? ' by' : ''); return `<button type="button" data-prog="${l.key}:${i}" aria-pressed="${i === s}" class="${cls}" ${by ? `style="--by:${esc(by.c)}" title="${esc(by.n)} · ${esc(fmtDate(by.at))}"` : ''} ${readOnly ? 'disabled' : ''}>${st}${by ? `<span class="who">${esc(by.n)}</span>` : ''}</button>`; }).join('')}</div>
       </div>`; }).join('')}</div>
   </section>
 
@@ -609,19 +643,19 @@ function termRowHTML(id, d, isDraft) {
   const gv = gameValue(d);
   return `
   <tr class="${isDraft ? 'draft' : ''}" data-${k}="${esc(id)}">
-    <td><input data-f="ko" value="${esc(d.ko)}" placeholder="원문" aria-label="원문" ${dis}></td>
-    <td><select data-f="type" aria-label="유형" ${dis}>${TYPES.map(x => `<option ${d.type === x ? 'selected' : ''}>${x}</option>`).join('')}</select></td>
-    <td><select data-f="game" aria-label="사용 게임" ${dis}><option value="common" ${gv === 'common' ? 'selected' : ''}>모든 게임 공통</option>${themes.map(t => `<option value="${esc(t.id)}" ${gv === t.id ? 'selected' : ''}>${esc(t.data.name || '(이름 없음)')}</option>`).join('')}<option value="" ${gv === '' ? 'selected' : ''}>미지정</option></select></td>
-    <td><input data-f="intent" value="${esc(d.intent)}" placeholder="플레이어가 하는 행동" aria-label="의도" ${dis}></td>
+    <td class="c-ko" data-label="원문"><input data-f="ko" value="${esc(d.ko)}" placeholder="원문" aria-label="원문" ${dis}></td>
+    <td class="c-intent" data-label="의도"><input data-f="intent" value="${esc(d.intent)}" placeholder="플레이어가 하는 행동" aria-label="의도" ${dis}></td>
+    <td class="c-kind" data-label="유형 · 사용 게임"><div class="kind"><select data-f="type" aria-label="유형" ${dis}>${TYPES.map(x => `<option ${d.type === x ? 'selected' : ''}>${x}</option>`).join('')}</select>
+    <select data-f="game" aria-label="사용 게임" ${dis}><option value="common" ${gv === 'common' ? 'selected' : ''}>모든 게임 공통</option>${themes.map(t => `<option value="${esc(t.id)}" ${gv === t.id ? 'selected' : ''}>${esc(t.data.name || '(이름 없음)')}</option>`).join('')}<option value="" ${gv === '' ? 'selected' : ''}>미지정</option></select></div></td>
     ${LANGS.map(l => { const x = trOf(d, l.key), st = statusOf(d, l.key); return `
-    <td><div class="lcell"><input data-f="tr.${l.key}.text" value="${esc(x.text)}" placeholder="${l.label}" aria-label="${l.label} 번역" ${dis}>
+    <td data-label="${l.label}"><div class="lcell"><input data-f="tr.${l.key}.text" value="${esc(x.text)}" placeholder="${l.label}" aria-label="${l.label} 번역" ${dis}>
       <button type="button" class="st ${st === '확정' ? 'ok' : st === '후보' ? 'cand' : ''}" data-st="${l.key}" ${readOnly || !x.text || isDraft ? 'disabled' : ''} title="누르면 후보 ↔ 확정">${st}${x.avoid ? ' · 금지 있음' : ''}</button></div></td>`; }).join('')}
-    <td style="white-space:nowrap">
+    <td class="c-acts"><div class="racts">
       <button type="button" class="iconbtn" data-more="${esc(id)}" aria-expanded="${expanded.has(id)}" title="금지 번역·메모">${expanded.has(id) ? '접기' : '더보기'}</button>
-      ${readOnly ? '' : `<button type="button" class="iconbtn ${armedDelete === id ? 'warn' : ''}" data-del="${esc(id)}" title="삭제">${armedDelete === id ? '삭제?' : '✕'}</button>`}
-    </td>
+      ${readOnly ? '' : `<button type="button" class="iconbtn ${armedDelete === id ? 'warn' : ''}" data-del="${esc(id)}" title="삭제" aria-label="삭제">${armedDelete === id ? '삭제?' : '✕ 삭제'}</button>`}
+    </div></td>
   </tr>
-  ${expanded.has(id) ? `<tr class="detail" data-${k}="${esc(id)}"><td colspan="9"><div class="dgrid">
+  ${expanded.has(id) ? `<tr class="detail" data-${k}="${esc(id)}"><td colspan="8"><div class="dgrid">
     ${LANGS.map(l => { const x = trOf(d, l.key); return `<label class="field"><span>${l.label} 금지 번역</span><input data-f="tr.${l.key}.avoid" value="${esc(x.avoid)}" placeholder="쓰면 안 되는 번역" ${dis}></label><label class="field"><span>${l.label} 금지 이유</span><input data-f="tr.${l.key}.avoidWhy" value="${esc(x.avoidWhy)}" ${dis}></label>`; }).join('')}
     <label class="field" style="grid-column:1/-1"><span>메모</span><input data-f="memo" value="${esc(d.memo)}" ${dis}></label>
   </div></td></tr>` : ''}`;
@@ -638,13 +672,14 @@ function glossaryHTML() {
   <div class="gstats"><span>전체 <b>${total}</b>개</span>${LANGS.map(l => `<span>${l.label} 확정 <b>${terms.filter(x => statusOf(x.data, l.key) === '확정').length}</b></span>`).join('')}</div>
   ${csvText ? `<div class="section"><h2>CSV 텍스트</h2><p class="hint">전체 선택(Ctrl+A) 후 복사해서 엑셀에 붙여 넣으세요.</p><textarea class="csvbox" id="csv-text" readonly>${esc(csvText)}</textarea><div class="dangerzone" style="margin-top:8px"><button type="button" class="btn" id="csv-close">닫기</button></div></div>` : ''}
   <div class="tbl"><table class="g">
-    <thead><tr><th style="width:12%">원문</th><th style="width:10%">유형</th><th style="width:12%">사용 게임</th><th style="width:15%">의도</th>${LANGS.map(l => `<th>${l.label}</th>`).join('')}<th style="width:120px"></th></tr></thead>
+    <colgroup><col style="width:13%"><col style="width:15%"><col style="width:14%">${LANGS.map(() => '<col>').join('')}<col style="width:76px"></colgroup>
+    <thead><tr><th>원문</th><th>의도</th><th>유형 · 사용 게임</th>${LANGS.map(l => `<th>${l.label}</th>`).join('')}<th></th></tr></thead>
     <tbody>
       ${list.map(x => termRowHTML(x.id, x.data, false)).join('')}
       ${drafts.map(d => termRowHTML(d.id, d.data, true)).join('')}
-      ${!list.length && !drafts.length ? `<tr><td colspan="9"><div class="empty" style="border:0">${total ? '조건에 맞는 용어가 없어요.' : '아직 용어가 없어요. 아래 + 를 눌러 추가하세요.'}</div></td></tr>` : ''}
+      ${!list.length && !drafts.length ? `<tr><td colspan="8"><div class="empty" style="border:0">${total ? '조건에 맞는 용어가 없어요.' : '아직 용어가 없어요. 아래 + 를 눌러 추가하세요.'}</div></td></tr>` : ''}
     </tbody>
-    ${readOnly ? '' : `<tfoot><tr><td colspan="9"><button type="button" class="addrow" id="g-add">+ 용어 추가</button></td></tr></tfoot>`}
+    ${readOnly ? '' : `<tfoot><tr><td colspan="8"><button type="button" class="addrow" id="g-add">+ 용어 추가</button></td></tr></tfoot>`}
   </table></div>
   <p class="hint" style="color:var(--muted);font-size:14px;margin-top:10px">칸을 고치고 다른 곳을 누르면 저장돼요. 번역 아래 버튼으로 <b>후보 ↔ 확정</b>을 바꿀 수 있어요. ‘모든 게임 공통’ 용어는 모든 게임의 프롬프트에 들어갑니다.</p>`;
 }
@@ -730,7 +765,12 @@ document.addEventListener('click', async e => {
   }
   if (b.dataset.prog) {
     const [k, v] = b.dataset.prog.split(':'); const c = cur();
-    try { await db.doc('themes/' + c.id).update({ progress: { ...(c.data.progress || {}), [k]: +v } }); savedMark(); } catch (err) { writeErr(err); }
+    const n = +v, byAll = JSON.parse(JSON.stringify(c.data.progressBy || {})), by = byAll[k] || {};
+    Object.keys(by).forEach(i => { if (+i >= n) delete by[i]; });
+    if (n > 0 && meNow) by[n] = { n: meNow.isOwner ? (meNow.username || '관리자') : meNow.name, c: meNow.color || '#343a40', at: new Date().toISOString() };
+    byAll[k] = by;
+    const next = Object.assign(JSON.parse(JSON.stringify(c.data)), { progress: { ...(c.data.progress || {}), [k]: n }, progressBy: byAll });
+    try { await db.doc('themes/' + c.id).set(next); savedMark(); } catch (err) { writeErr(err); }
     return;
   }
   if (b.id === 'sp-add') { const c = cur(); const sp = [...(c.data.speakers || []), { who: '', to: '플레이어', tone: '', banned: '' }]; try { await db.doc('themes/' + c.id).update({ speakers: sp }); } catch (err) { writeErr(err); } return; }
@@ -807,8 +847,9 @@ function setAdminBadge(n) {
 }
 function setupAuth(me) {
   meNow = me;
-  $('#who').innerHTML = !me.loggedIn ? '' : me.isAdmin ? `<b>관리자</b> (${esc(me.username)})` : `<b>${esc(me.name)}</b> · ${me.canEdit ? '편집 가능' : '보기 전용'}`;
-  $('#pw-btn').hidden = !me.loggedIn || me.isAdmin;
+  const dot = me.loggedIn ? `<button type="button" class="dot" id="my-color" style="background:${esc(me.color || '#343a40')}" title="내 색 바꾸기" aria-label="내 색 바꾸기"></button> ` : '';
+  $('#who').innerHTML = !me.loggedIn ? '' : dot + (me.isOwner ? `<b>대표 관리자</b> (${esc(me.username)})` : `<b>${esc(me.name)}</b> · ${me.isAdmin ? '관리자' : me.canEdit ? '편집 가능' : '보기 전용'}`);
+  $('#pw-btn').hidden = !me.loggedIn || me.isOwner;
   $('#admin-tab').hidden = !me.isAdmin;
   if (me.isAdmin) setAdminBadge(me.pending);
   $('#auth-btn').onclick = doLogout;
@@ -843,11 +884,11 @@ function watchMe(intervalMs) {
     if (document.hidden) return;
     let m; try { m = await Store.refreshMe(); } catch { return; }
     if (!m || m.error) return;
-    if (meNow.isAdmin && m.isAdmin) {
+    if (meNow.isAdmin && m.isAdmin && m.canEdit === meNow.canEdit) {
       if (m.pending !== meNow.pending) { meNow.pending = m.pending; setAdminBadge(m.pending); if (view === 'admin') loadAdmin(); }
       return;
     }
-    const changed = m.loggedIn !== meNow.loggedIn || !!m.canView !== !!meNow.canView || !!m.canEdit !== !!meNow.canEdit;
+    const changed = m.loggedIn !== meNow.loggedIn || !!m.canView !== !!meNow.canView || !!m.canEdit !== !!meNow.canEdit || !!m.isAdmin !== !!meNow.isAdmin;
     if (changed && !Store.pending()) location.reload();
   }, intervalMs);
 }
@@ -862,22 +903,32 @@ const fmtDate = s => s ? new Date(s).toLocaleDateString('ko-KR') : '';
 function adminHTML() {
   if (adminErr) return `<div class="empty">${esc(adminErr)}</div>`;
   if (!adminUsers) return '<div class="empty">회원 목록을 불러오는 중…</div>';
+  const owner = !!(meNow && meNow.isOwner), myId = meNow && meNow.id;
   const byDate = (a, b) => (b.createdAt || '').localeCompare(a.createdAt || '');
-  const wait = adminUsers.filter(u => !u.canView).sort(byDate), ok = adminUsers.filter(u => u.canView).sort(byDate);
-  const row = u => `<div class="urow${u.canView ? '' : ' waiting'}">
-      <div><b>${esc(u.name)}</b><div class="meta">${esc(u.username)}</div></div>
-      <div class="meta">가입 ${fmtDate(u.createdAt)}${u.permAt ? ` · 권한 변경 ${fmtDate(u.permAt)}` : ''}</div>
-      <div class="acts">
-        <button type="button" class="ptog" data-perm="view" data-uid="${esc(u.id)}" aria-pressed="${!!u.canView}">보기 허용</button>
-        <button type="button" class="ptog" data-perm="edit" data-uid="${esc(u.id)}" aria-pressed="${!!u.canEdit}">편집 허용</button>
+  const wait = adminUsers.filter(u => !u.canView).sort(byDate);
+  const admins = adminUsers.filter(u => u.canView && u.canAdmin).sort(byDate);
+  const ok = adminUsers.filter(u => u.canView && !u.canAdmin).sort(byDate);
+  const tog = (u, key, label, on, lock) => `<button type="button" class="ptog" data-perm="${key}" data-uid="${esc(u.id)}" aria-pressed="${!!on}" ${lock ? 'disabled' : ''}>${label}</button>`;
+  const row = u => {
+    const lock = !owner && (u.canAdmin || u.id === myId);
+    const acts = lock
+      ? `<span class="meta">${u.id === myId ? '본인 계정' : '관리자 계정'} · 대표 관리자만 바꿀 수 있어요</span>`
+      : `${tog(u, 'view', '보기 허용', u.canView)}${tog(u, 'edit', '편집 허용', u.canEdit)}${owner ? tog(u, 'admin', '관리자 지정', u.canAdmin) : ''}
         <button type="button" class="btn" data-ua="reset" data-uid="${esc(u.id)}">비밀번호 초기화</button>
-        <button type="button" class="btn danger" data-ua="delete" data-uid="${esc(u.id)}">삭제</button>
-      </div></div>`;
+        <button type="button" class="btn danger" data-ua="delete" data-uid="${esc(u.id)}">삭제</button>`;
+    return `<div class="urow${u.canView ? '' : ' waiting'}">
+      <div>${lock ? `<span class="dot" style="background:${esc(u.color)}"></span>` : `<button type="button" class="dot" data-ucolor="${esc(u.id)}" style="background:${esc(u.color)}" title="색 바꾸기" aria-label="${esc(u.name)} 색 바꾸기"></button>`} <b>${esc(u.name)}</b>${u.canAdmin ? ' <span class="badge" style="background:var(--ok)">관리자</span>' : ''}<div class="meta">${esc(u.username)}</div></div>
+      <div class="meta">가입 ${fmtDate(u.createdAt)}${u.permAt ? ` · 권한 변경 ${fmtDate(u.permAt)}` : ''}</div>
+      <div class="acts">${acts}</div></div>`;
+  };
   return `
   ${tempShown ? `<div class="section" style="border-color:var(--ok)"><h2>임시 비밀번호</h2><p class="hint">${esc(tempShown.name)} 님에게 전달하세요. 이 화면을 벗어나면 다시 볼 수 없어요. 로그인 후 ‘비밀번호 변경’으로 바꾸게 해 주세요.</p><p><span class="temp">${esc(tempShown.pw)}</span></p><div class="dangerzone"><button type="button" class="btn" data-ua="hide-temp">닫기</button></div></div>` : ''}
   <section class="section"><h2>승인 대기 ${wait.length ? `<span class="badge">${wait.length}</span>` : ''}</h2>
-    <p class="hint"><b>보기 허용</b>을 켜면 그 사람 화면이 바로 열려요. <b>편집 허용</b>을 켜면 게임 카드와 용어집을 고칠 수 있어요. (편집을 켜면 보기도 같이 켜지고, 보기를 끄면 편집도 꺼져요.)</p>
+    <p class="hint"><b>보기 허용</b>을 켜면 그 사람 화면이 바로 열려요. <b>편집 허용</b>을 켜면 게임 카드와 용어집을 고칠 수 있어요.${owner ? ' <b>관리자 지정</b>을 켜면 그 사람도 가입 승인과 권한 관리를 할 수 있어요.' : ''}</p>
     <div class="ulist">${wait.length ? wait.map(row).join('') : '<p class="hint">기다리는 사람이 없어요.</p>'}</div></section>
+  <section class="section"><h2>관리자 (${admins.length + 1})</h2>
+    <p class="hint">대표 관리자는 항상 모든 권한이 있어요. 지정된 관리자는 일반 회원의 권한만 바꿀 수 있고, 관리자 지정·해제는 대표 관리자만 할 수 있어요.</p>
+    <div class="ulist">${admins.length ? admins.map(row).join('') : '<p class="hint">지정된 관리자가 없어요.</p>'}</div></section>
   <section class="section"><h2>이용 중인 회원 (${ok.length})</h2>
     <div class="ulist">${ok.length ? ok.map(row).join('') : '<p class="hint">아직 허용된 회원이 없어요.</p>'}</div></section>`;
 }
@@ -888,7 +939,7 @@ document.addEventListener('click', async e => {
     t.disabled = true;
     try {
       await Store.adminAction(t.dataset.uid, 'perm', { [t.dataset.perm]: on });
-      toast(`${t.dataset.perm === 'view' ? '보기' : '편집'} 허용을 ${on ? '켰어요' : '껐어요'}.`);
+      toast(`${{ view: '보기 허용', edit: '편집 허용', admin: '관리자 지정' }[t.dataset.perm]}을 ${on ? '켰어요' : '껐어요'}.`);
       await loadAdmin(); setAdminBadge(adminUsers ? adminUsers.filter(u => !u.canView).length : 0);
     } catch (err) { toast(err.message); t.disabled = false; }
     return;
@@ -904,6 +955,28 @@ document.addEventListener('click', async e => {
     toast({ delete: '삭제했어요.', reset: '임시 비밀번호를 만들었어요.' }[action] || '처리했어요.');
     await loadAdmin(); setAdminBadge(adminUsers ? adminUsers.filter(u => !u.canView).length : 0);
   } catch (err) { toast(err.message); b.disabled = false; }
+});
+/* ---------- 색 고르기 ---------- */
+let colorTarget = null;
+function openColor(target, title, current) {
+  colorTarget = target;
+  $('#color-title').textContent = title;
+  const pal = (meNow && meNow.palette) || [];
+  const taken = new Set((adminUsers || []).map(u => (u.color || '').toLowerCase()));
+  $('#swatches').innerHTML = pal.map(c => `<button type="button" data-swatch="${c}" style="background:${c}" aria-pressed="${c.toLowerCase() === (current || '').toLowerCase()}" aria-label="${c}${taken.has(c.toLowerCase()) && c.toLowerCase() !== (current || '').toLowerCase() ? ' (다른 사람이 쓰는 색)' : ''}"></button>`).join('');
+  $('#colordlg').showModal();
+}
+document.addEventListener('click', async e => {
+  if (e.target.closest('#my-color')) { openColor('me', '내 색 고르기', meNow.color); return; }
+  const uc = e.target.closest('[data-ucolor]');
+  if (uc) { const u = (adminUsers || []).find(x => x.id === uc.dataset.ucolor); if (u) openColor(u.id, `${u.name} 님의 색`, u.color); return; }
+  const sw = e.target.closest('[data-swatch]'); if (!sw) return;
+  const c = sw.dataset.swatch;
+  try {
+    if (colorTarget === 'me') { await Store.setColor(c); meNow.color = c; $('#my-color').style.background = c; }
+    else { await Store.adminAction(colorTarget, 'color', { color: c }); await loadAdmin(); }
+    $('#colordlg').close(); toast('색을 바꿨어요. 앞으로 누르는 단계부터 새 색으로 표시돼요.');
+  } catch (err) { toast(err.message); }
 });
 window.addEventListener('store-save-error', e => { const err = e.detail || {}; if (err.code === 'invalid_argument') { readOnly = true; render(true); } toast(err.message || '저장하지 못했어요.'); });
 window.addEventListener('store-need-view', () => location.reload());

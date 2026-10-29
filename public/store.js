@@ -119,6 +119,7 @@
     },
     logout: () => post('/api/logout'),
     changePassword: (current, next) => post('/api/password', { current, next }),
+    setColor: color => post('/api/color', { color }),
     async adminUsers() {
       const r = await fetch('/api/admin/users', { credentials: 'same-origin', cache: 'no-store' });
       const j = await r.json().catch(() => ({}));

@@ -34,6 +34,16 @@ const PORT = env.PORT || 3000;
 const configured = !!(REPO && TOKEN);
 const ID_RE = /^[a-z0-9._-]{3,20}$/;
 const PW_MIN = 4;
+/* 회원 색: 흰 글씨가 잘 보이는 진한 색 12가지 */
+const PALETTE = ['#e03131', '#1971c2', '#2f9e44', '#f08c00', '#9c36b5', '#0c8599', '#c2255c', '#5c940d', '#3b5bdb', '#862e9c', '#087f5b', '#d9480f'];
+const OWNER_KEY = '__owner';
+const COLOR_RE = /^#[0-9a-f]{6}$/i;
+const members = data => Object.entries(data).filter(([id]) => id !== OWNER_KEY);
+function colorFor(id) { let h = 0; for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return PALETTE[h % PALETTE.length]; }
+function freeColor(data) {
+  const used = new Set(Object.values(data).map(u => (u.color || '').toLowerCase()));
+  return PALETTE.find(c => !used.has(c)) || PALETTE[Math.floor(Math.random() * PALETTE.length)];
+}
 
 /* ---------- GitHub ---------- */
 async function gh(p, opts = {}) {
@@ -128,6 +138,8 @@ function norm(u) {
     name: u.name || '',
     canView: u.canView !== undefined ? !!u.canView : u.status === 'approved',
     canEdit: u.canEdit !== undefined ? !!u.canEdit : (u.status === 'approved' && u.role === 'editor'),
+    canAdmin: !!u.canAdmin,
+    color: COLOR_RE.test(u.color || '') ? u.color : colorFor(u.username || u.email || ''),
     createdAt: u.createdAt || null,
     permAt: u.permAt || u.approvedAt || null,
   };
@@ -137,11 +149,14 @@ async function currentUser(req) {
   const m = (req.headers.cookie || '').match(/(?:^|;\s*)checkie_session=([^;]+)/);
   const s = m ? verify(decodeURIComponent(m[1])) : null;
   if (!s) return null;
-  if (s.uid === 'admin') return { id: 'admin', username: ADMIN_ID, name: '관리자', canView: true, canEdit: true, isAdmin: true };
   const users = (await readCol('users')).data;
+  if (s.uid === 'admin') { const oc = (users[OWNER_KEY] || {}).color; return { id: 'admin', username: ADMIN_ID, name: '관리자', color: COLOR_RE.test(oc || '') ? oc : '#343a40', canView: true, canEdit: true, isAdmin: true, isOwner: true }; }
+  if (s.uid === OWNER_KEY) return null;
   const u = users[s.uid];
   if (!u || (u.pwv || 1) !== s.pwv) return null;
-  return Object.assign({ id: s.uid, isAdmin: false }, norm(u));
+  const n = norm(u);
+  /* 관리자로 지정된 회원은 보기·편집·회원 관리를 모두 할 수 있다 */
+  return Object.assign({ id: s.uid }, n, n.canAdmin ? { canView: true, canEdit: true, isAdmin: true } : { isAdmin: false }, { isOwner: false });
 }
 const attempts = new Map();
 function tooMany(key, limit, windowMs) {
@@ -192,8 +207,8 @@ http.createServer(async (req, res) => {
 
     if (p === '/api/me' && req.method === 'GET') {
       let pending = 0;
-      if (me && me.isAdmin) pending = Object.values((await readCol('users')).data).filter(u => !norm(u).canView).length;
-      return send(res, 200, me ? { loggedIn: true, name: me.name, username: me.username, canView: me.canView, canEdit: me.canEdit, isAdmin: me.isAdmin, pending } : { loggedIn: false });
+      if (me && me.isAdmin) pending = members((await readCol('users')).data).filter(([, u]) => !norm(u).canView).length;
+      return send(res, 200, me ? { loggedIn: true, name: me.name, username: me.username, canView: me.canView, canEdit: me.canEdit, isAdmin: me.isAdmin, isOwner: me.isOwner, id: me.id, color: me.color, palette: PALETTE, pending } : { loggedIn: false });
     }
 
     if (p === '/api/signup' && req.method === 'POST') {
@@ -207,8 +222,8 @@ http.createServer(async (req, res) => {
       const { salt, hash } = await hashPw(pw);
       let dup = false, uid = 'u-' + crypto.randomBytes(6).toString('hex');
       await writeCol('users', data => {
-        if (Object.values(data).some(u => norm(u).username === username)) { dup = true; return false; }
-        data[uid] = { username, name, salt, hash, pwv: 1, canView: false, canEdit: false, createdAt: new Date().toISOString() };
+        if (members(data).some(([, u]) => norm(u).username === username)) { dup = true; return false; }
+        data[uid] = { username, name, color: freeColor(data), salt, hash, pwv: 1, canView: false, canEdit: false, createdAt: new Date().toISOString() };
       }, `회원가입 · ${name} (${username})`);
       if (dup) return send(res, 409, { message: '이미 사용 중인 아이디예요.' });
       hit('signup:' + ip);
@@ -225,7 +240,7 @@ http.createServer(async (req, res) => {
         return send(res, 401, { message: '아이디 또는 비밀번호가 맞지 않아요.' });
       }
       const users = (await readCol('users', true)).data;
-      const entry = Object.entries(users).find(([, u]) => norm(u).username === username);
+      const entry = members(users).find(([, u]) => norm(u).username === username);
       if (!entry || !(await checkPw(pw, entry[1]))) { hit('ip:' + ip); hit('id:' + username); return send(res, 401, { message: '아이디 또는 비밀번호가 맞지 않아요.' }); }
       attempts.delete('id:' + username);
       return send(res, 200, { ok: true }, session({ uid: entry[0], pwv: entry[1].pwv || 1 }));
@@ -233,7 +248,7 @@ http.createServer(async (req, res) => {
     if (p === '/api/logout' && req.method === 'POST') return send(res, 200, { ok: true }, { 'Set-Cookie': cookie('', 0) });
 
     if (p === '/api/password' && req.method === 'POST') {
-      if (!me || me.isAdmin) return send(res, 403, { message: me ? '관리자 비밀번호는 Render의 ADMIN_PASSWORD에서 바꿔 주세요.' : '로그인이 필요해요.' });
+      if (!me || me.isOwner) return send(res, 403, { message: me ? '대표 관리자 비밀번호는 Render의 ADMIN_PASSWORD에서 바꿔 주세요.' : '로그인이 필요해요.' });
       const b = await readBody(req);
       if (String(b.next || '').length < PW_MIN) return send(res, 400, { message: `새 비밀번호는 ${PW_MIN}자 이상으로 정해 주세요.` });
       const users = (await readCol('users', true)).data;
@@ -244,37 +259,59 @@ http.createServer(async (req, res) => {
       return send(res, 200, { ok: true }, session({ uid: me.id, pwv }));
     }
 
+    /* ----- 내 색 바꾸기 ----- */
+    if (p === '/api/color' && req.method === 'POST') {
+      if (!me) return send(res, 401, { message: '로그인이 필요해요.' });
+      const b = await readBody(req);
+      if (!COLOR_RE.test(b.color || '')) return send(res, 400, { message: '색 값이 올바르지 않아요.' });
+      await writeCol('users', data => { const key = me.isOwner ? OWNER_KEY : me.id; data[key] = Object.assign(data[key] || {}, { color: b.color }); }, `색 변경 · ${me.name}`);
+      return send(res, 200, { ok: true, color: b.color });
+    }
+
     /* ----- 관리자: 회원 권한 ----- */
     if (p === '/api/admin/users' && req.method === 'GET') {
       if (!me || !me.isAdmin) return send(res, 403, { message: '관리자만 볼 수 있어요.' });
       const users = (await readCol('users', true)).data;
-      return send(res, 200, { users: Object.entries(users).map(([id, u]) => publicUser(id, u)) });
+      return send(res, 200, { users: members(users).map(([id, u]) => publicUser(id, u)), palette: PALETTE });
     }
     const am = p.match(/^\/api\/admin\/users\/([\w-]+)$/);
     if (am && req.method === 'POST') {
       if (!me || !me.isAdmin) return send(res, 403, { message: '관리자만 할 수 있어요.' });
       const id = am[1];
+      if (id === OWNER_KEY) return send(res, 404, { message: '없는 회원이에요.' });
       const b = await readBody(req);
-      let temp = null, found = true, label = '';
+      let temp = null, found = true, label = '', denied = '';
       if (b.action === 'reset') temp = String(crypto.randomInt(100000, 1000000));
       const reset = temp ? await hashPw(temp) : null;
       await writeCol('users', data => {
         const u = data[id];
         if (!u) { found = false; return false; }
         label = u.name;
+        const n = norm(u);
+        /* 지정된 관리자는: 본인·다른 관리자는 건드릴 수 없고, 관리자 지정도 못 한다 (대표 관리자만 가능) */
+        if (!me.isOwner) {
+          if (id === me.id) { denied = '본인 권한은 바꿀 수 없어요.'; return false; }
+          if (n.canAdmin) { denied = '다른 관리자의 권한은 대표 관리자만 바꿀 수 있어요.'; return false; }
+          if (b.admin !== undefined) { denied = '관리자 지정은 대표 관리자만 할 수 있어요.'; return false; }
+        }
         if (b.action === 'perm') {
-          const n = norm(u);
-          const edit = b.edit !== undefined ? !!b.edit : n.canEdit;
-          const view = b.view !== undefined ? !!b.view : n.canView;
-          u.canEdit = edit; u.canView = view || edit;
-          if (b.view === false) u.canEdit = false;
+          let view = b.view !== undefined ? !!b.view : n.canView;
+          let edit = b.edit !== undefined ? !!b.edit : n.canEdit;
+          let admin = b.admin !== undefined ? !!b.admin : n.canAdmin;
+          if (b.view === false) { edit = false; admin = false; }
+          if (b.edit === false) admin = false;
+          if (admin) { view = true; edit = true; }
+          if (edit) view = true;
+          u.canView = view; u.canEdit = edit; u.canAdmin = admin;
           u.permAt = new Date().toISOString();
           delete u.status; delete u.role; delete u.approvedAt;
           if (!u.username && u.email) u.username = u.email;
-        } else if (b.action === 'delete') { delete data[id]; }
+        } else if (b.action === 'color') { if (!COLOR_RE.test(b.color || '')) return false; u.color = b.color; }
+        else if (b.action === 'delete') { delete data[id]; }
         else if (b.action === 'reset') { u.salt = reset.salt; u.hash = reset.hash; u.pwv = (u.pwv || 1) + 1; }
         else return false;
-      }, `회원 권한 · ${b.action} · ${id}`);
+      }, `회원 권한 · ${b.action} · ${id} · ${me.name}`);
+      if (denied) return send(res, 403, { message: denied });
       if (!found) return send(res, 404, { message: '없는 회원이에요.' });
       return send(res, 200, { ok: true, tempPassword: temp, name: label });
     }
