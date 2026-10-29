@@ -164,5 +164,31 @@
       "en": {},
       "zh": {}
     }
+  },
+  "game-2d209": {
+    "name": "새 게임",
+    "concept": "",
+    "situation": "",
+    "honorific": "",
+    "speakers": [
+      {
+        "who": "",
+        "to": "플레이어",
+        "tone": "",
+        "banned": ""
+      }
+    ],
+    "lang": {
+      "en": "",
+      "ja": "",
+      "zh": ""
+    },
+    "progress": {
+      "en": 0,
+      "ja": 0,
+      "zh": 0
+    },
+    "memo": "",
+    "updatedAt": "2026-10-29T08:03:59.578Z"
   }
 }
