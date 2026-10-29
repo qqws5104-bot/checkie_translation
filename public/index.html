@@ -11,9 +11,11 @@
 :root {
   --bg: #ffffff;
   --panel: #f5f3f1;
-  --line: #ddd6d1;
+  --line: #cfc6c0;
+  --field: #ffffff;
+  --on-accent: #ffffff;
   --fg: #231f1c;
-  --muted: #625953;
+  --muted: #5a514b;
   --accent: #d24a16;
   --accent-soft: #fdece4;
   --ok: #24764a;
@@ -24,13 +26,13 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #171412; --panel: #221e1b; --line: #3d3532; --fg: #f3eee9; --muted: #b9aea6;
-    --accent: #ff8352; --accent-soft: #3b251b; --ok: #74cf9b; --ok-soft: #1d3326; --code-bg: #1c1917; color-scheme: dark;
+    --bg: #151311; --panel: #221e1b; --line: #5a4f49; --field: #221e1b; --fg: #f6f2ee; --muted: #cbc0b8; --on-accent: #1a0e08;
+    --accent: #ff8352; --accent-soft: #46291c; --ok: #74cf9b; --ok-soft: #1f3a2a; --code-bg: #1c1917; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #171412; --panel: #221e1b; --line: #3d3532; --fg: #f3eee9; --muted: #b9aea6;
-  --accent: #ff8352; --accent-soft: #3b251b; --ok: #74cf9b; --ok-soft: #1d3326; --code-bg: #1c1917; color-scheme: dark;
+  --bg: #151311; --panel: #221e1b; --line: #5a4f49; --field: #221e1b; --fg: #f6f2ee; --muted: #cbc0b8; --on-accent: #1a0e08;
+  --accent: #ff8352; --accent-soft: #46291c; --ok: #74cf9b; --ok-soft: #1f3a2a; --code-bg: #1c1917; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -47,14 +49,14 @@ button { font: inherit; cursor: pointer; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 .btn { border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 10px; padding: 9px 16px; font-size: 15px; min-height: 42px; }
 .btn:hover { border-color: var(--accent); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
 .btn.danger { color: var(--accent); }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 
 /* Main tabs */
 .mainnav { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 20px 0 16px; }
 .mainnav button { border: 2px solid var(--line); background: var(--bg); border-radius: 12px; padding: 12px 8px; font-size: 17px; font-weight: 700; color: var(--muted); }
-.mainnav button span { display: block; font-size: 13px; font-weight: 400; }
+.mainnav button span { display: block; font-size: 14px; font-weight: 400; }
 .mainnav button[aria-selected="true"] { border-color: var(--accent); color: var(--fg); background: var(--accent-soft); }
 
 /* Game picker */
@@ -67,19 +69,22 @@ button { font: inherit; cursor: pointer; }
 /* Sections */
 .section { border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 16px; }
 .section > h2 { font-size: 18px; margin: 0 0 4px; }
-.section > .hint { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+.section > .hint { color: var(--muted); font-size: 15px; margin: 0 0 14px; }
 .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
 .field { display: grid; gap: 6px; }
-.field > span { font-size: 14px; font-weight: 700; }
-.field > small { font-size: 13px; color: var(--muted); }
-input, textarea, select { font: inherit; font-size: 15px; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; width: 100%; min-height: 42px; }
-textarea { resize: vertical; min-height: 72px; }
+.field > span { font-size: 15px; font-weight: 700; }
+.field > small { font-size: 14px; color: var(--muted); }
+input, textarea, select { font: inherit; font-size: 16px; color: var(--fg); background: var(--field); border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; width: 100%; min-height: 42px; }
+textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+textarea.grow { min-height: 42px; resize: none; overflow: hidden; field-sizing: content; }
+::placeholder { color: var(--muted); opacity: .75; }
 input:hover, textarea:hover, select:hover { border-color: var(--muted); }
 input:disabled, textarea:disabled, select:disabled { background: var(--panel); }
 
 /* Speakers */
-.sp { display: grid; grid-template-columns: 1fr 1fr 2fr 2fr auto; gap: 8px; align-items: end; padding: 10px 0; border-top: 1px solid var(--line); }
+.sp { display: grid; grid-template-columns: 1fr 1fr 2fr 2fr auto; gap: 8px; align-items: start; padding: 10px 0; border-top: 1px solid var(--line); }
 .sp:first-of-type { border-top: 0; padding-top: 0; }
+.sp > .del { margin-top: 30px; }
 @media (max-width: 760px) { .sp { grid-template-columns: 1fr 1fr; } .sp .del { grid-column: 1 / -1; justify-self: end; } }
 .addrow { width: 100%; margin-top: 12px; border: 2px dashed var(--line); background: none; border-radius: 10px; padding: 10px; color: var(--accent); font-weight: 700; font-size: 15px; }
 .addrow:hover { border-color: var(--accent); background: var(--accent-soft); }
@@ -89,15 +94,19 @@ input:disabled, textarea:disabled, select:disabled { background: var(--panel); }
 .prow { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; align-items: center; }
 .prow b { font-size: 15px; }
 .steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
-.steps button { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 8px 4px; font-size: 14px; color: var(--muted); min-height: 40px; }
-.steps button.past { background: var(--accent-soft); border-color: transparent; color: var(--accent); }
-.steps button.cur { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+.steps button { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 8px 4px; font-size: 15px; color: var(--muted); min-height: 40px; }
+.steps button.past { background: var(--ok-soft); border-color: transparent; color: var(--fg); }
+.steps button.past:not(.by)::before { content: '✓ '; color: var(--ok); }
+.steps button.past.first { background: transparent; border-color: var(--line); color: var(--muted); }
+.steps button.past.first::before { content: none; }
+.steps button.cur { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
 .steps button.cur.final { background: var(--ok); border-color: var(--ok); }
+.steps button.cur.zero { background: var(--panel); border: 2px solid var(--muted); color: var(--fg); }
 .steps button.by { background: var(--by); border-color: var(--by); color: #fff; line-height: 1.25; }
 .steps button.by.cur { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--by); font-weight: 700; }
-.steps button .who { display: block; font-size: 11px; font-weight: 400; opacity: .92; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.steps button .who { display: block; font-size: 12px; font-weight: 400; opacity: .92; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; vertical-align: -2px; border: 0; padding: 0; }
-button.dot { width: 22px; height: 22px; vertical-align: -6px; cursor: pointer; box-shadow: 0 0 0 1px var(--line); }
+button.dot { width: 22px; height: 22px; vertical-align: -6px; cursor: pointer; box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--muted); }
 .swatches { display: grid; grid-template-columns: repeat(6, 44px); gap: 10px; margin: 6px 0 4px; }
 .swatches button { width: 44px; height: 44px; border-radius: 50%; border: 0; }
 .swatches button[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--fg); }
@@ -106,7 +115,7 @@ button.dot { width: 22px; height: 22px; vertical-align: -6px; cursor: pointer; b
 /* Prompts */
 .langseg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 14px; flex-wrap: wrap; }
 .langseg button { border: 0; background: var(--bg); padding: 9px 18px; font-size: 15px; color: var(--muted); min-height: 42px; }
-.langseg button[aria-pressed="true"] { background: var(--accent); color: #fff; font-weight: 700; }
+.langseg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 700; }
 .pcard { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
 .pcard > summary { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 14px 16px; cursor: pointer; }
 .pcard > summary::-webkit-details-marker { display: none; }
@@ -134,7 +143,7 @@ pre.ptext { margin: 0; padding: 16px; background: var(--code-bg); border-top: 1p
 .gstats b { color: var(--fg); font-variant-numeric: tabular-nums; }
 body.wide .wrap { max-width: 1320px; }
 .tbl { border: 1px solid var(--line); border-radius: 12px; }
-table.g { border-collapse: collapse; width: 100%; table-layout: fixed; font-size: 14px; }
+table.g { border-collapse: collapse; width: 100%; table-layout: fixed; font-size: 15px; }
 table.g td input, table.g td select { width: 100%; min-width: 0; }
 .kind { display: grid; gap: 4px; }
 .racts { display: grid; gap: 4px; justify-items: stretch; }
@@ -150,16 +159,18 @@ table.g td input, table.g td select { width: 100%; min-width: 0; }
   table.g td.c-acts .racts { grid-template-columns: 1fr 1fr; }
   table.g tr.detail td { padding: 6px; }
 }
-table.g th { background: var(--panel); text-align: left; font-size: 13px; color: var(--muted); font-weight: 700; padding: 10px 8px; white-space: nowrap; position: sticky; top: 0; }
+table.g th { background: var(--panel); text-align: left; font-size: 14px; color: var(--muted); font-weight: 700; padding: 10px 8px; white-space: nowrap; position: sticky; top: 0; }
 table.g td { padding: 6px; border-top: 1px solid var(--line); vertical-align: top; }
-table.g td input, table.g td select { min-height: 36px; padding: 6px 7px; font-size: 14px; }
+table.g td input, table.g td select, table.g td textarea { min-height: 38px; padding: 7px 8px; font-size: 15px; }
+table.g tbody tr:nth-child(even):not(.detail) td { background: color-mix(in srgb, var(--panel) 45%, transparent); }
+table.g tbody tr.draft td { background: var(--accent-soft); }
 .lcell { display: grid; gap: 4px; }
 .lcell .st { white-space: normal; text-align: left; max-width: 100%; }
-.st { border: 1px solid var(--line); background: var(--bg); border-radius: 99px; font-size: 12px; padding: 2px 10px; color: var(--muted); justify-self: start; min-height: 28px; }
+.st { border: 1px solid var(--line); background: var(--bg); border-radius: 99px; font-size: 13px; padding: 2px 10px; color: var(--muted); justify-self: start; min-height: 28px; }
 .st.cand { border-color: var(--accent); color: var(--accent); }
-.st.ok { background: var(--ok); border-color: var(--ok); color: #fff; }
+.st.ok { background: var(--ok); border-color: var(--ok); color: var(--on-accent); }
 .iconbtn { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; min-width: 38px; min-height: 38px; color: var(--muted); font-size: 14px; }
-.iconbtn.warn { background: var(--accent); color: #fff; border-color: var(--accent); }
+.iconbtn.warn { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 tr.detail td { background: var(--panel); }
 .dgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; padding: 6px 4px; }
 .dgrid .field > span { font-size: 13px; }
@@ -187,10 +198,11 @@ dialog .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14
 .tabs2 button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--fg); font-weight: 700; }
 .fstack { display: grid; gap: 10px; }
 .ok-msg { color: var(--ok); font-size: 14px; min-height: 1.4em; margin: 6px 0 0; }
-.who { font-size: 14px; }
+.who { font-size: 15px; }
+.themebtn { min-width: 0; }
 .who b { font-weight: 700; }
 .mainnav .badge { display: inline-block; }
-.badge { display: inline-block; min-width: 20px; padding: 0 6px; border-radius: 99px; background: var(--accent); color: #fff; font-size: 12px; margin-left: 6px; vertical-align: 2px; }
+.badge { display: inline-block; min-width: 20px; padding: 0 6px; border-radius: 99px; background: var(--accent); color: var(--on-accent); font-size: 12px; margin-left: 6px; vertical-align: 2px; }
 .ulist { display: grid; gap: 8px; }
 .urow { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.6fr) auto; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
 .urow .meta { font-size: 13px; color: var(--muted); }
@@ -219,7 +231,7 @@ dialog .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14
       <h1>체키 번역 프롬프트 카드</h1>
       <p class="sub">게임 카드에 컨셉과 말투를 적고, 용어집을 채우면, 프롬프트 탭에서 바로 복사해 쓸 수 있어요. 입력한 내용은 자동으로 저장됩니다.</p>
     </div>
-    <div class="auth"><span class="saved" id="saved" aria-live="polite"></span><span class="who" id="who"></span><button type="button" class="btn" id="pw-btn" hidden>비밀번호 변경</button><button type="button" class="btn" id="auth-btn">로그아웃</button></div>
+    <div class="auth"><span class="saved" id="saved" aria-live="polite"></span><span class="who" id="who"></span><button type="button" class="btn" id="pw-btn" hidden>비밀번호 변경</button><button type="button" class="btn themebtn" id="theme-btn" title="화면 밝기 바꾸기">화면: 자동</button><button type="button" class="btn" id="auth-btn">로그아웃</button></div>
   </div>
   <nav class="mainnav" role="tablist" aria-label="화면">
     <button type="button" role="tab" data-view="card" aria-selected="true">게임 카드<span>컨셉·말투·진행 상황</span></button>
@@ -554,8 +566,8 @@ function renderPicker() {
 function stageOf(t, k) { return Math.max(0, Math.min(STAGES.length - 1, Number(t.progress?.[k] ?? 0))); }
 function fld(label, path, value, opts = {}) {
   const dis = readOnly ? 'disabled' : '';
-  const ctl = opts.area
-    ? `<textarea data-path="${path}" ${dis} placeholder="${esc(opts.ph || '')}">${esc(value)}</textarea>`
+  const ctl = opts.area || opts.grow
+    ? `<textarea ${opts.grow ? 'class="grow" rows="1"' : ''} data-path="${path}" ${dis} placeholder="${esc(opts.ph || '')}">${esc(value)}</textarea>`
     : `<input data-path="${path}" value="${esc(value)}" ${dis} placeholder="${esc(opts.ph || '')}">`;
   return `<label class="field"><span>${label}</span>${ctl}${opts.help ? `<small>${opts.help}</small>` : ''}</label>`;
 }
@@ -578,7 +590,7 @@ function cardHTML({ id, data: t }) {
     <h2>진행 상황</h2><p class="hint">순서는 영어 → 일본어 → 중국어(간체). 현재 단계를 누르세요. 누른 사람의 색과 이름이 버튼에 남아요.</p>
     <div class="prog">${LANGS.map(l => { const s = stageOf(t, l.key); return `
       <div class="prow"><b>${l.label}</b>
-        <div class="steps" role="group" aria-label="${l.label} 진행 단계">${STAGES.map((st, i) => { const by = i > 0 && i <= s ? (t.progressBy?.[l.key]?.[i]) : null; const cls = (i < s ? 'past' : i === s ? 'cur' + (i === STAGES.length - 1 ? ' final' : '') : '') + (by ? ' by' : ''); return `<button type="button" data-prog="${l.key}:${i}" aria-pressed="${i === s}" class="${cls}" ${by ? `style="--by:${esc(by.c)}" title="${esc(by.n)} · ${esc(fmtDate(by.at))}"` : ''} ${readOnly ? 'disabled' : ''}>${st}${by ? `<span class="who">${esc(by.n)}</span>` : ''}</button>`; }).join('')}</div>
+        <div class="steps" role="group" aria-label="${l.label} 진행 단계">${STAGES.map((st, i) => { const by = i > 0 && i <= s ? (t.progressBy?.[l.key]?.[i]) : null; const cls = (i < s ? 'past' + (i === 0 ? ' first' : '') : i === s ? 'cur' + (i === STAGES.length - 1 ? ' final' : '') + (i === 0 ? ' zero' : '') : '') + (by ? ' by' : ''); return `<button type="button" data-prog="${l.key}:${i}" aria-pressed="${i === s}" class="${cls}" ${by ? `style="--by:${esc(by.c)}" title="${esc(by.n)} · ${esc(fmtDate(by.at))}"` : ''} ${readOnly ? 'disabled' : ''}>${st}${by ? `<span class="who">${esc(by.n)}</span>` : ''}</button>`; }).join('')}</div>
       </div>`; }).join('')}</div>
   </section>
 
@@ -588,8 +600,8 @@ function cardHTML({ id, data: t }) {
       <div class="sp">
         ${fld('화자', `speakers.${i}.who`, s.who, { ph: '예: 비서 메리' })}
         ${fld('누구에게', `speakers.${i}.to`, s.to, { ph: '예: 플레이어' })}
-        ${fld('말투 규칙', `speakers.${i}.tone`, s.tone)}
-        ${fld('금지 말투', `speakers.${i}.banned`, s.banned)}
+        ${fld('말투 규칙', `speakers.${i}.tone`, s.tone, { grow: true })}
+        ${fld('금지 말투', `speakers.${i}.banned`, s.banned, { grow: true })}
         ${readOnly ? '' : `<button type="button" class="btn danger del" data-sp-del="${i}" aria-label="${esc(s.who || '화자')} 삭제">삭제</button>`}
       </div>`).join('') : '<p class="hint">아직 화자가 없어요.</p>'}</div>
     ${readOnly ? '' : '<button type="button" class="addrow" id="sp-add">+ 화자 추가</button>'}
@@ -643,19 +655,19 @@ function termRowHTML(id, d, isDraft) {
   const gv = gameValue(d);
   return `
   <tr class="${isDraft ? 'draft' : ''}" data-${k}="${esc(id)}">
-    <td class="c-ko" data-label="원문"><input data-f="ko" value="${esc(d.ko)}" placeholder="원문" aria-label="원문" ${dis}></td>
-    <td class="c-intent" data-label="의도"><input data-f="intent" value="${esc(d.intent)}" placeholder="플레이어가 하는 행동" aria-label="의도" ${dis}></td>
+    <td class="c-ko" data-label="원문"><textarea class="grow" rows="1" data-f="ko" placeholder="원문" aria-label="원문" ${dis}>${esc(d.ko)}</textarea></td>
+    <td class="c-intent" data-label="의도"><textarea class="grow" rows="1" data-f="intent" placeholder="플레이어가 하는 행동" aria-label="의도" ${dis}>${esc(d.intent)}</textarea></td>
     <td class="c-kind" data-label="유형 · 사용 게임"><div class="kind"><select data-f="type" aria-label="유형" ${dis}>${TYPES.map(x => `<option ${d.type === x ? 'selected' : ''}>${x}</option>`).join('')}</select>
     <select data-f="game" aria-label="사용 게임" ${dis}><option value="common" ${gv === 'common' ? 'selected' : ''}>모든 게임 공통</option>${themes.map(t => `<option value="${esc(t.id)}" ${gv === t.id ? 'selected' : ''}>${esc(t.data.name || '(이름 없음)')}</option>`).join('')}<option value="" ${gv === '' ? 'selected' : ''}>미지정</option></select></div></td>
     ${LANGS.map(l => { const x = trOf(d, l.key), st = statusOf(d, l.key); return `
-    <td data-label="${l.label}"><div class="lcell"><input data-f="tr.${l.key}.text" value="${esc(x.text)}" placeholder="${l.label}" aria-label="${l.label} 번역" ${dis}>
+    <td data-label="${l.label}"><div class="lcell"><textarea class="grow" rows="1" data-f="tr.${l.key}.text" placeholder="${l.label}" aria-label="${l.label} 번역" ${dis}>${esc(x.text)}</textarea>
       <button type="button" class="st ${st === '확정' ? 'ok' : st === '후보' ? 'cand' : ''}" data-st="${l.key}" ${readOnly || !x.text || isDraft ? 'disabled' : ''} title="누르면 후보 ↔ 확정">${st}${x.avoid ? ' · 금지 있음' : ''}</button></div></td>`; }).join('')}
     <td class="c-acts"><div class="racts">
       <button type="button" class="iconbtn" data-more="${esc(id)}" aria-expanded="${expanded.has(id)}" title="금지 번역·메모">${expanded.has(id) ? '접기' : '더보기'}</button>
       ${readOnly ? '' : `<button type="button" class="iconbtn ${armedDelete === id ? 'warn' : ''}" data-del="${esc(id)}" title="삭제" aria-label="삭제">${armedDelete === id ? '삭제?' : '✕ 삭제'}</button>`}
     </div></td>
   </tr>
-  ${expanded.has(id) ? `<tr class="detail" data-${k}="${esc(id)}"><td colspan="8"><div class="dgrid">
+  ${expanded.has(id) ? `<tr class="detail" data-${k}="${esc(id)}"><td colspan="7"><div class="dgrid">
     ${LANGS.map(l => { const x = trOf(d, l.key); return `<label class="field"><span>${l.label} 금지 번역</span><input data-f="tr.${l.key}.avoid" value="${esc(x.avoid)}" placeholder="쓰면 안 되는 번역" ${dis}></label><label class="field"><span>${l.label} 금지 이유</span><input data-f="tr.${l.key}.avoidWhy" value="${esc(x.avoidWhy)}" ${dis}></label>`; }).join('')}
     <label class="field" style="grid-column:1/-1"><span>메모</span><input data-f="memo" value="${esc(d.memo)}" ${dis}></label>
   </div></td></tr>` : ''}`;
@@ -677,9 +689,9 @@ function glossaryHTML() {
     <tbody>
       ${list.map(x => termRowHTML(x.id, x.data, false)).join('')}
       ${drafts.map(d => termRowHTML(d.id, d.data, true)).join('')}
-      ${!list.length && !drafts.length ? `<tr><td colspan="8"><div class="empty" style="border:0">${total ? '조건에 맞는 용어가 없어요.' : '아직 용어가 없어요. 아래 + 를 눌러 추가하세요.'}</div></td></tr>` : ''}
+      ${!list.length && !drafts.length ? `<tr><td colspan="7"><div class="empty" style="border:0">${total ? '조건에 맞는 용어가 없어요.' : '아직 용어가 없어요. 아래 + 를 눌러 추가하세요.'}</div></td></tr>` : ''}
     </tbody>
-    ${readOnly ? '' : `<tfoot><tr><td colspan="8"><button type="button" class="addrow" id="g-add">+ 용어 추가</button></td></tr></tfoot>`}
+    ${readOnly ? '' : `<tfoot><tr><td colspan="7"><button type="button" class="addrow" id="g-add">+ 용어 추가</button></td></tr></tfoot>`}
   </table></div>
   <p class="hint" style="color:var(--muted);font-size:14px;margin-top:10px">칸을 고치고 다른 곳을 누르면 저장돼요. 번역 아래 버튼으로 <b>후보 ↔ 확정</b>을 바꿀 수 있어요. ‘모든 게임 공통’ 용어는 모든 게임의 프롬프트에 들어갑니다.</p>`;
 }
@@ -750,7 +762,7 @@ document.addEventListener('input', e => {
   if (e.target.id === 'g-q') { gf.q = e.target.value; const pos = e.target.selectionStart; render(true); const n = $('#g-q'); n.focus(); n.setSelectionRange(pos, pos); }
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && e.target.matches('table.g input')) { e.preventDefault(); e.target.blur(); }
+  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && e.target.matches('table.g input, table.g textarea')) { e.preventDefault(); e.target.blur(); }
 });
 
 document.addEventListener('click', async e => {
@@ -767,7 +779,7 @@ document.addEventListener('click', async e => {
     const [k, v] = b.dataset.prog.split(':'); const c = cur();
     const n = +v, byAll = JSON.parse(JSON.stringify(c.data.progressBy || {})), by = byAll[k] || {};
     Object.keys(by).forEach(i => { if (+i >= n) delete by[i]; });
-    if (n > 0 && meNow) by[n] = { n: meNow.isOwner ? (meNow.username || '관리자') : meNow.name, c: meNow.color || '#343a40', at: new Date().toISOString() };
+    if (n > 0 && meNow) by[n] = { n: meNow.isOwner ? (meNow.username || '관리자') : meNow.name, c: meNow.color || '#5f3dc4', at: new Date().toISOString() };
     byAll[k] = by;
     const next = Object.assign(JSON.parse(JSON.stringify(c.data)), { progress: { ...(c.data.progress || {}), [k]: n }, progressBy: byAll });
     try { await db.doc('themes/' + c.id).set(next); savedMark(); } catch (err) { writeErr(err); }
@@ -847,7 +859,7 @@ function setAdminBadge(n) {
 }
 function setupAuth(me) {
   meNow = me;
-  const dot = me.loggedIn ? `<button type="button" class="dot" id="my-color" style="background:${esc(me.color || '#343a40')}" title="내 색 바꾸기" aria-label="내 색 바꾸기"></button> ` : '';
+  const dot = me.loggedIn ? `<button type="button" class="dot" id="my-color" style="background:${esc(me.color || '#5f3dc4')}" title="내 색 바꾸기" aria-label="내 색 바꾸기"></button> ` : '';
   $('#who').innerHTML = !me.loggedIn ? '' : dot + (me.isOwner ? `<b>대표 관리자</b> (${esc(me.username)})` : `<b>${esc(me.name)}</b> · ${me.isAdmin ? '관리자' : me.canEdit ? '편집 가능' : '보기 전용'}`);
   $('#pw-btn').hidden = !me.loggedIn || me.isOwner;
   $('#admin-tab').hidden = !me.isAdmin;
@@ -980,6 +992,24 @@ document.addEventListener('click', async e => {
 });
 window.addEventListener('store-save-error', e => { const err = e.detail || {}; if (err.code === 'invalid_argument') { readOnly = true; render(true); } toast(err.message || '저장하지 못했어요.'); });
 window.addEventListener('store-need-view', () => location.reload());
+
+/* ---------- 화면 밝기 · 칸 자동 높이 ---------- */
+const THEMES = [['', '화면: 자동'], ['light', '화면: 밝게'], ['dark', '화면: 어둡게']];
+function applyTheme(t) {
+  if (t) document.documentElement.dataset.theme = t; else delete document.documentElement.dataset.theme;
+  const b = $('#theme-btn'); if (b) b.textContent = (THEMES.find(x => x[0] === t) || THEMES[0])[1];
+}
+let themePref = ''; try { themePref = localStorage.getItem('checkie_theme') || ''; } catch {}
+applyTheme(themePref);
+$('#theme-btn').onclick = () => {
+  const i = THEMES.findIndex(x => x[0] === themePref); themePref = THEMES[(i + 1) % THEMES.length][0];
+  try { localStorage.setItem('checkie_theme', themePref); } catch {}
+  applyTheme(themePref);
+};
+const NATIVE_GROW = window.CSS && CSS.supports && CSS.supports('field-sizing', 'content');
+function growAll(root) { if (NATIVE_GROW) return; (root || document).querySelectorAll('textarea.grow').forEach(t => { t.style.height = 'auto'; t.style.height = t.scrollHeight + 2 + 'px'; }); }
+document.addEventListener('input', e => { if (!NATIVE_GROW && e.target.matches && e.target.matches('textarea.grow')) growAll(e.target.parentNode); });
+new MutationObserver(() => growAll()).observe(document.getElementById('content'), { childList: true, subtree: true });
 
 /* ================= boot ================= */
 (async () => {

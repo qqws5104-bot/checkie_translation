@@ -150,7 +150,7 @@ async function currentUser(req) {
   const s = m ? verify(decodeURIComponent(m[1])) : null;
   if (!s) return null;
   const users = (await readCol('users')).data;
-  if (s.uid === 'admin') { const oc = (users[OWNER_KEY] || {}).color; return { id: 'admin', username: ADMIN_ID, name: '관리자', color: COLOR_RE.test(oc || '') ? oc : '#343a40', canView: true, canEdit: true, isAdmin: true, isOwner: true }; }
+  if (s.uid === 'admin') { const oc = (users[OWNER_KEY] || {}).color; return { id: 'admin', username: ADMIN_ID, name: '관리자', color: COLOR_RE.test(oc || '') ? oc : '#5f3dc4', canView: true, canEdit: true, isAdmin: true, isOwner: true }; }
   if (s.uid === OWNER_KEY) return null;
   const u = users[s.uid];
   if (!u || (u.pwv || 1) !== s.pwv) return null;
