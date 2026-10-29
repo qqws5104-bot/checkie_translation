@@ -72,7 +72,10 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-10-29T07:00:57.516Z"
+    "updatedAt": "2026-10-29T07:00:57.516Z",
+    "progressBy": {
+      "en": {}
+    }
   },
   "game-ynr8w": {
     "name": "Memorize",
