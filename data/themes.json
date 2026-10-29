@@ -88,5 +88,31 @@
     },
     "memo": "",
     "updatedAt": "2026-10-29T05:25:00.494Z"
+  },
+  "game-c4dl2": {
+    "name": "새 게임",
+    "concept": "",
+    "situation": "",
+    "honorific": "",
+    "speakers": [
+      {
+        "who": "",
+        "to": "플레이어",
+        "tone": "",
+        "banned": ""
+      }
+    ],
+    "lang": {
+      "en": "",
+      "ja": "",
+      "zh": ""
+    },
+    "progress": {
+      "en": 0,
+      "ja": 0,
+      "zh": 0
+    },
+    "memo": "",
+    "updatedAt": "2026-10-29T05:25:03.773Z"
   }
 }
