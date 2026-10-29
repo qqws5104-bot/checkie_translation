@@ -16,7 +16,7 @@
   --on-accent: #ffffff;
   --fg: #231f1c;
   --muted: #5a514b;
-  --accent: #d24a16;
+  --accent: #c2410c;
   --accent-soft: #fdece4;
   --ok: #24764a;
   --ok-soft: #e4f3ea;
@@ -128,6 +128,13 @@ button.dot { width: 22px; height: 22px; vertical-align: -6px; cursor: pointer; b
 .pname { font-weight: 700; font-size: 16px; }
 .ptool { font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 1px 10px; }
 .pcard .spacer { flex: 1; }
+.ttools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+.upl { cursor: pointer; display: inline-flex; align-items: center; }
+.tprev { max-height: 380px; overflow: auto; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 6px; }
+.tprev table { border-collapse: collapse; font-size: 14px; width: max-content; min-width: 100%; }
+.tprev th { position: sticky; top: 0; background: var(--panel); text-align: left; padding: 7px 10px; white-space: nowrap; font-size: 13px; color: var(--muted); }
+.tprev td { padding: 7px 10px; border-top: 1px solid var(--line); vertical-align: top; max-width: 320px; }
+.tprev td.flag { background: var(--accent-soft); color: var(--fg); font-weight: 700; }
 .tablebox { font-family: var(--font-mono); font-size: 13px; line-height: 1.5; white-space: pre; overflow: auto; min-height: 180px; tab-size: 4; }
 .tablebox.small { min-height: 100px; }
 .tstat { margin: 6px 0 14px; font-size: 14px; color: var(--muted); }
@@ -136,6 +143,29 @@ button.dot { width: 22px; height: 22px; vertical-align: -6px; cursor: pointer; b
 .subh { font-size: 16px; margin: 4px 0 6px; }
 .subh small { font-size: 13px; color: var(--muted); font-weight: 400; margin-left: 6px; }
 .pwarn { background: var(--accent-soft); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
+.setup { border: 1px dashed var(--line); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; }
+.setup > summary { cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.setup > summary::-webkit-details-marker { display: none; }
+.setup > summary::before { content: '＋'; color: var(--muted); }
+.setup[open] > summary::before { content: '－'; }
+.setup > summary span { font-size: 14px; color: var(--muted); }
+.setup .pcard:last-child { margin-bottom: 0; }
+.pcard { margin-bottom: 10px; }
+.pcard > summary { gap: 12px; flex-wrap: nowrap; }
+.ptitle { display: grid; gap: 2px; min-width: 0; flex: 1; }
+.ptitle .pname { font-size: 16px; font-weight: 700; }
+.psum { font-size: 13px; color: var(--muted); line-height: 1.4; }
+.pstate { font-size: 12px; border-radius: 99px; padding: 1px 10px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.pstate.done { color: var(--ok); border-color: var(--ok); }
+.pstate.done::before { content: '✓ '; }
+.pstate.now { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+.pstate.opt, .pstate.setup { border-style: dashed; }
+.pcard.now { border-color: var(--accent); border-width: 2px; }
+.pcard.done .pname { color: var(--muted); }
+.pcopy { min-width: 72px; }
+@media (max-width: 640px) { .pstate { display: none; } .psum { display: none; } }
+.ptag { display: inline-grid; place-items: center; min-width: 28px; height: 28px; border-radius: 50%; background: var(--fg); color: var(--bg); font-weight: 700; font-size: 14px; }
+.ptag.s { background: transparent; color: var(--muted); border: 2px solid var(--line); }
 .flow { list-style: none; margin: 0 0 16px; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
 .flow li { position: relative; background: var(--panel); border-radius: 10px; padding: 8px 6px; text-align: center; line-height: 1.3; }
 .flow li b { display: block; font-size: 15px; }
@@ -174,13 +204,16 @@ pre.ptext { margin: 0; padding: 16px; background: var(--code-bg); border-top: 1p
 .gtools select { width: auto; }
 .gtools .chk { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; }
 .gtools .chk input { width: 20px; min-height: 20px; }
-.gstats { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--muted); margin-bottom: 12px; }
-.gstats b { color: var(--fg); font-variant-numeric: tabular-nums; }
+.gstats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+.gstats > div { background: var(--panel); border-radius: 10px; padding: 8px 12px; }
+.gstats span { display: block; font-size: 12px; color: var(--muted); }
+.gstats b { font-size: 22px; color: var(--fg); font-variant-numeric: tabular-nums; }
+.gstats small { font-size: 13px; color: var(--muted); margin-left: 4px; }
+@media (max-width: 560px) { .gstats { grid-template-columns: 1fr 1fr; } }
 body.wide .wrap { max-width: 1320px; }
-.gmode { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; max-width: 560px; }
-.gmode button { border: 2px solid var(--line); background: var(--bg); color: var(--muted); border-radius: 12px; padding: 10px 12px; font-size: 16px; font-weight: 700; text-align: left; }
-.gmode button span { display: block; font-size: 13px; font-weight: 400; }
-.gmode button[aria-pressed="true"] { border-color: var(--fg); color: var(--fg); background: var(--panel); }
+.subtabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.subtabs button { border: 0; background: none; color: var(--muted); font-size: 15px; font-weight: 700; padding: 8px 14px; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.subtabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
 .gvhead, .gv { display: grid; grid-template-columns: minmax(0, 1.25fr) repeat(3, minmax(0, 1fr)); gap: 20px; }
 .gvhead { font-size: 13px; color: var(--muted); font-weight: 700; padding: 0 16px 6px; border-bottom: 2px solid var(--line); }
 .gvgroup { margin-top: 18px; }
@@ -199,6 +232,7 @@ body.wide .wrap { max-width: 1320px; }
 .sbadge { display: inline-block; font-size: 12px; border-radius: 99px; padding: 0 8px; border: 1px solid var(--line); color: var(--muted); }
 .sbadge.ok { background: var(--ok); border-color: var(--ok); color: var(--on-accent); font-weight: 700; }
 .sbadge.cand { border-color: var(--accent); color: var(--accent); }
+.sbadge.empty, .st.empty { border-style: dashed; color: var(--muted); background: transparent; }
 .gv-lang > .sbadge-wrap { display: block; }
 .gv-avoid { font-size: 13px; color: var(--muted); margin-top: 4px; }
 .gv-avoid span { color: var(--accent); font-weight: 700; }
@@ -227,16 +261,23 @@ table.g td input, table.g td select { width: 100%; min-width: 0; }
   table.g td.c-acts .racts { grid-template-columns: 1fr 1fr; }
   table.g tr.detail td { padding: 6px; }
 }
-table.g th { background: var(--panel); text-align: left; font-size: 14px; color: var(--muted); font-weight: 700; padding: 10px 8px; white-space: nowrap; position: sticky; top: 0; }
-table.g td { padding: 6px; border-top: 1px solid var(--line); vertical-align: top; }
+table.g th { background: var(--panel); text-align: left; font-size: 13px; font-weight: 500; color: var(--muted); font-weight: 700; padding: 10px 8px; white-space: nowrap; position: sticky; top: 0; }
+table.g td { padding: 10px 6px; border-top: 1px solid color-mix(in srgb, var(--line) 70%, var(--fg) 30%); vertical-align: top; }
+table.g td.c-ko textarea { font-weight: 700; color: var(--fg); }
+table.g td.c-intent textarea { font-size: 13px; color: var(--muted); line-height: 1.45; }
+table.g td.c-intent textarea:not(:focus) { max-height: 3.4em; overflow: hidden; }
+table.g td .kind select[data-f="type"] { color: var(--fg); }
+table.g tbody tr.sel td { background: color-mix(in srgb, var(--accent-soft) 70%, transparent); }
+table.g tbody tr.sel td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
 table.g td input, table.g td select, table.g td textarea { min-height: 36px; padding: 6px 8px; font-size: 15px; border-color: transparent; background: transparent; }
 table.g td :is(input, textarea, select):hover { border-color: var(--line); }
 table.g td :is(input, textarea, select):focus { border-color: var(--accent); background: var(--field); outline: none; }
 table.g td select { color: var(--muted); font-size: 14px; min-height: 30px; padding: 3px 6px; }
 table.g tbody tr:not(.detail):hover td { background: var(--accent-soft); }
 table.g td .lcell .st { margin-left: 8px; min-height: 24px; padding: 0 9px; }
-.racts .iconbtn { border-color: transparent; background: transparent; opacity: .55; min-height: 30px; }
-table.g tr:hover .racts .iconbtn, .racts .iconbtn:focus-visible, .racts .iconbtn.warn { opacity: 1; }
+.racts .iconbtn { border-color: transparent; background: transparent; opacity: 0; min-height: 30px; white-space: nowrap; }
+table.g tr:hover .racts .iconbtn, table.g tr.sel .racts .iconbtn, .racts .iconbtn:focus-visible, .racts .iconbtn.warn, .racts .iconbtn[aria-expanded="true"] { opacity: 1; }
+@media (hover: none) { .racts .iconbtn { opacity: 1; } }
 .racts .iconbtn:hover { border-color: var(--line); }
 table.g ::placeholder { opacity: .4; }
 table.g tbody tr:nth-child(even):not(.detail) td { background: color-mix(in srgb, var(--panel) 45%, transparent); }
@@ -387,7 +428,8 @@ let gmode = 'view';            // 용어집 화면: 'view' 보기 / 'edit' 추�
 try { gmode = localStorage.getItem('checkie_gmode') === 'edit' ? 'edit' : 'view'; } catch {}
 let drafts = [];               // unsaved new term rows
 const expanded = new Set();    // term ids with detail row open
-let armedDelete = null;        // id armed for delete
+let armedDelete = null;
+let selRow = null;             // 용어집 추가·수정: 선택한 줄        // id armed for delete
 let csvText = '';
 let pending = false;           // a render waits for the user to leave a field
 
@@ -407,6 +449,8 @@ function writeErr(err) {
 
 function termsFor(themeId) { return terms.filter(x => x.data.common || (x.data.games || []).includes(themeId)); }
 function trOf(term, k) { return (term.tr && term.tr[k]) || { text: '', status: '미정', avoid: '', avoidWhy: '' }; }
+const stLabel = st => st === '미정' ? '미입력' : st;
+const stClass = st => st === '확정' ? 'ok' : st === '후보' ? 'cand' : 'empty';
 function statusOf(term, k) { const r = trOf(term, k); return r.text ? (r.status === '확정' ? '확정' : '후보') : '미정'; }
 function themeName(id) { const t = themes.find(x => x.id === id); return t ? (t.data.name || '(이름 없음)') : ''; }
 const cur = () => themes.find(t => t.id === gameId);
@@ -425,10 +469,38 @@ function cardText(t) {
 }
 
 /* 게임 카드에 저장한 번역 입력표·영어 확정본 */
-function tableStats(txt) {
-  const lines = String(txt || '').split(/\r?\n/).filter(l => l.trim() && !/^\s*\|?\s*:?-{3,}/.test(l));
-  return { rows: Math.max(0, lines.length - 1), unresolved: (String(txt || '').match(/확인 필요/g) || []).length };
+/* 표 텍스트(탭·CSV·마크다운·| 구분) → 2차원 배열 */
+function parseTable(text) {
+  const src = String(text || '').replace(/^\uFEFF/, '').trim(); if (!src) return [];
+  const lines = src.split(/\r?\n/).filter(l => l.trim());
+  const isSep = l => /^\s*\|?\s*:?-{3,}/.test(l);
+  if (lines.filter(l => l.trim().startsWith('|')).length >= Math.max(2, lines.length * 0.6))
+    return lines.filter(l => l.trim().startsWith('|') && !isSep(l)).map(l => l.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim()));
+  if (src.includes('\t')) return lines.map(l => l.split('\t').map(c => c.trim()));
+  if (lines.filter(l => l.includes('|')).length >= lines.length * 0.6) return lines.filter(l => !isSep(l)).map(l => l.split('|').map(c => c.trim()));
+  const rows = []; let row = [], cell = '', q = false;
+  for (let i = 0; i < src.length; i++) {
+    const ch = src[i];
+    if (q) { if (ch === '"') { if (src[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ',') { row.push(cell.trim()); cell = ''; }
+    else if (ch === '\n' || ch === '\r') { if (ch === '\r' && src[i + 1] === '\n') i++; row.push(cell.trim()); rows.push(row); row = []; cell = ''; }
+    else cell += ch;
+  }
+  row.push(cell.trim()); rows.push(row);
+  return rows.filter(r => r.some(c => c));
 }
+const rowsToTSV = rows => rows.map(r => r.map(c => String(c ?? '').replace(/\t/g, ' ').replace(/\r?\n/g, ' / ').trim()).join('\t')).join('\n');
+function tableStats(txt) {
+  const rows = parseTable(txt);
+  return { rows: Math.max(0, rows.length - 1), unresolved: (String(txt || '').match(/확인 필요|판독 불확실/g) || []).length, hasId: !!(rows[0] && rows[0].some(h => /^id$/i.test(String(h).trim()))) };
+}
+function tablePreviewHTML(txt) {
+  const rows = parseTable(txt); if (!rows.length) return '';
+  const cell = c => { const v = esc(c); return /확인 필요|판독 불확실/.test(c) ? `<td class="flag">${v}</td>` : `<td>${v}</td>`; };
+  return `<div class="tprev"><table><thead><tr>${rows[0].map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.slice(1).map(r => `<tr>${r.map(cell).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+function abbrOf(t) { return (String(t.name || '').match(/[A-Za-z]/g) || ['G', 'M']).slice(0, 2).join('').toUpperCase(); }
 function inputTableBlock(t) {
   return t.inputTable && t.inputTable.trim()
     ? `[번역 입력표]\n${t.inputTable.trim()}`
@@ -453,7 +525,7 @@ function buildPrompts(t, lk, themeId) {
   const glossAll = glossaryText(themeId);
   const isEn = lk === 'en';
   return [
-    { id: 'P1-1', name: '원문 분석 담당자 설정', tool: 'ChatGPT 프로젝트 지침', when: '처음 한 번 등록', text:
+    { id: 'P1-1', tag: 'A', setup: true, sum: '분석 담당자의 역할과 규칙을 ChatGPT 프로젝트에 등록', name: '원문 분석 담당자 등록', tool: 'ChatGPT 프로젝트 지침', when: '처음 한 번 등록', text:
 `[역할]
 너는 오프라인 게임의 현지화 사전 분석 담당자다.
 번역은 하지 않는다. 번역문과 번역 후보도 쓰지 않는다.
@@ -476,7 +548,8 @@ function buildPrompts(t, lk, themeId) {
 - 화면 캡처에 보이지 않는 동작이나 규칙은 사실처럼 쓰지 않는다.
 
 [출력 1. 번역 입력표]
-원문 표의 모든 행을 ID 순서대로 유지한다. ID·화면 원문·사용 위치·글자 수는 고치지 않는다.
+원문 표가 오면 모든 행을 ID 순서대로 유지하고, ID·화면 원문·사용 위치·글자 수는 고치지 않는다.
+원문 표 없이 PNG만 오면, 요청의 [원문 읽기] 방법대로 캡처에서 원문을 읽어 표를 만든다.
 열: ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문
 
 - 화자: 컨텍스트 카드의 화자 이름, 또는 ‘시스템 안내’·‘버튼’. 모르면 ‘미확인’.
@@ -511,20 +584,32 @@ function buildPrompts(t, lk, themeId) {
 표가 길면 행을 빼지 말고 ID 순서대로 나누어 출력한다.
 
 [입력]
-요청마다 게임 컨텍스트 카드, 용어집, 원문 표, 화면 캡처가 함께 온다.
+요청마다 게임 컨텍스트 카드, 용어집, 화면 캡처(PNG)가 함께 온다. 원문 표는 있을 때만 온다.
 요청에 없는 다른 게임의 내용은 섞지 않는다.` },
-    { id: 'P1-2', name: '원문 분석 요청', tool: 'ChatGPT 프로젝트 · 새 대화', when: '게임마다', text:
+    { id: 'P1-2', tag: '1', sum: 'PNG에서 원문을 읽고 의도·판정 기준·질문을 정리', name: '원문 분석', tool: 'ChatGPT 프로젝트 · 새 대화', when: '게임마다', text:
 `${t.name || '[게임명]'} 원문을 분석해 줘. 번역은 하지 마.
-지침의 출력 1(번역 입력표), 출력 2(기획 확인 질문), 출력 3(용어집 후보) 형식으로 줘.
+원문 표는 따로 없어. 첨부한 PNG 화면 캡처에서 원문을 직접 읽어.
+
+[원문 읽기]
+1. PNG를 파일 이름 순서대로 본다.
+2. 화면에 보이는 한국어 문구를 하나도 빼지 않고 적는다. 버튼, 안내문, 대사, 효과 글자 모두 포함한다.
+3. ID는 ‘파일 이름-순번’으로 붙인다. 예: ${abbrOf(t)}-01.png의 문구 → ${abbrOf(t)}-01-1, ${abbrOf(t)}-01-2
+   순번은 화면 위에서 아래로, 왼쪽에서 오른쪽 순서다.
+4. 사용 위치는 ‘파일 이름 · 화면 속 위치’로 쓴다. 예: ${abbrOf(t)}-01 · 아래 왼쪽 버튼
+5. 글자 수 열에는 지금 화면 원문의 글자 수(공백 포함)를 쓴다. 칸이 좁아 보이면 맥락 설명에 ‘[공간] 좁음’이라고 적는다.
+6. 흐리거나 잘려서 확실히 읽을 수 없는 글자는 ‘판독 불확실:’을 붙이고 출력 2에 질문으로 올린다.
+7. 로고나 장식 글자는 맥락 설명에 ‘로고’ 또는 ‘장식’이라고 적는다.
+
+그다음 지침의 출력 1(번역 입력표), 출력 2(기획 확인 질문), 출력 3(용어집 후보) 형식으로 줘.
+출력 1은 같은 내용을 ‘${abbrOf(t)}_input_table.xlsx’ 파일로도 만들어 줘. 첫 행은 열 이름이고, 한 칸 안에 줄바꿈을 넣지 않는다.
 용어집 후보는 아래 용어집에 이미 있는 용어와 겹치지 않게 해.
 
 ${card}
 
 ${glossAll}
 
-[원문 표: ID | 화면 원문 | 사용 위치 | 글자 수 제한]
-(여기에 원문 표를 붙여 넣고, 화면 캡처를 첨부한다)` },
-    { id: 'P2-1', name: '번역 AI 공통 규칙', tool: '초벌 번역 AI', when: '프로젝트 지침에 한 번 등록', text:
+[첨부: 화면 캡처 PNG]` },
+    { id: 'P2-1', tag: 'B', setup: true, sum: '번역 규칙을 언어별 번역 프로젝트에 등록', name: `번역 규칙 등록 — ${L.label}`, tool: '번역 AI 프로젝트 지침', when: '언어별 한 번 등록', text:
 `[역할] 너는 오프라인 게임 매장의 ${L.target} 현지화 담당자다.
 [대상] 한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객
 [우선순위] ① 규칙·정답·행동 보존 ② 화자별 말투 ③ 자연스러운 표현 ④ 글자 수
@@ -540,8 +625,9 @@ ${glossAll}
 - 한국 한자어를 그대로 옮기지 않는다.
 - 번역문도 짧게 쓴다. 한 문장에 한 동작만 담는다.${lk === 'zh' ? '\n- 중국 본토용 간체로만 쓴다.' : ''}
 
-${gloss}` },
-    isEn ? { id: 'P2-2', name: '초벌 번역 — 영어', tool: '초벌 번역 AI · 새 대화창', when: '번역', text:
+[입력] 요청마다 게임 컨텍스트 카드, 용어집, 번역 입력표, 화면 캡처(PNG)가 함께 온다.
+요청에 없는 다른 게임의 내용은 섞지 않는다.` },
+    isEn ? { id: 'P2-2', tag: '2', sum: '번역 입력표와 PNG로 초벌 번역 (DeepL 비교본도 준비)', name: '번역 — 영어', tool: '초벌 번역 AI · 새 대화창', when: '번역', text:
 `${t.name || '[게임명]'} 문구를 영어로 번역해 줘.
 아래 컨텍스트 카드를 먼저 읽고, 표의 맥락 설명·정리 원문·의도를 반영해.
 번역 기준은 화면 원문이야. 뜻은 맥락 설명과 정리 원문으로 확인해.
@@ -551,11 +637,14 @@ ${gloss}` },
 
 같은 표에 아래 열을 추가해서 줘.
 번역문 | 적용한 말투 | 현지화 이유 | 정답·판정 위험 | 확신 낮은 부분 | 축약안 | 기획 확인 질문
+결과 표는 ‘${abbrOf(t)}_translation_EN.xlsx’ 파일로도 만들어 줘.
 
 ${card}
 
+${gloss}
+
 ${inputTableBlock(t)}` }
-    : { id: 'P2-3', name: `초벌 번역 — ${L.label}`, tool: '초벌 번역 AI · 새 대화창', when: '번역 · 영어 확정본 함께 제공', text:
+    : { id: 'P2-3', tag: '2', sum: '영어 확정본을 참고해 초벌 번역 (DeepL 비교본도 준비)', name: `번역 — ${L.label}`, tool: '초벌 번역 AI · 새 대화창', when: '번역 · 영어 확정본 함께 제공', text:
 `${t.name || '[게임명]'} 문구를 ${L.target}로 번역해 줘. 아래 컨텍스트 카드를 먼저 읽어.
 
 1. 번역 기준은 한국어 화면 원문이다.
@@ -569,13 +658,16 @@ ${inputTableBlock(t)}` }
 
 같은 표에 아래 열을 추가해서 줘.
 번역문 | 적용한 말투 | 해석 불일치 | 현지화 이유 | 정답·판정 위험 | 확신 낮은 부분 | 축약안 | 기획 확인 질문
+결과 표는 ‘${abbrOf(t)}_translation_${L.short}.xlsx’ 파일로도 만들어 줘.
 
 ${card}
+
+${gloss}
 
 ${inputTableBlock(t)}
 
 ${t.enFinal && t.enFinal.trim() ? `[영어 확정본: ID | 영어]\n${t.enFinal.trim()}` : '[영어 확정본: ID | 영어]\n(게임 카드의 ‘영어 확정본’ 칸이 비어 있어요. 영어를 확정한 뒤 붙여 넣으세요.)'}` },
-    { id: 'P3', name: '오류 검수', tool: 'Claude 새 대화창', when: '검수 · 번역 AI가 Claude면 ChatGPT', text:
+    { id: 'P3', tag: '3', sum: '오역·누락·규칙 위반을 PASS / REVIEW / FAIL로 판정', name: '오류 검수', tool: 'Claude 새 대화창', when: '검수 · 번역 AI가 Claude면 ChatGPT', text:
 `너는 번역자가 아니라 독립적인 현지화 QA 담당자다. 문제를 찾는 것이 목적이다.
 [자료] 컨텍스트 카드, 용어집, 원문 표, 번역문 A(초벌), 번역문 B(DeepL), 화면 캡처
 [목표 언어] ${L.target}
@@ -595,28 +687,33 @@ PASS여도 번역이 완벽하다고 단정하지 마라.
 
 ${card}
 
-${gloss}` },
-    { id: 'P4', name: '행동 테스트', tool: 'Gemini 새 대화창', when: '검수 · 원문은 주지 않음', text:
-`너는 한국어를 모르는 ${L.region} 출신 관광객이고, 이 게임을 처음 해 본다.
-화면 캡처와 아래 문구만 보고 문구마다 답하라.
+${gloss}
 
-1. 이 문구를 보고 다음에 무엇을 하겠는가
-2. 누가 말하는 것 같은가, 말투는 어떤 인상인가
-3. 헷갈리거나 두 가지로 읽히는 부분
+${inputTableBlock(t)}
 
-원래 뜻을 추측하지 말고, 처음 보는 사람의 반응만 적어라.
-[화면 캡처] [ID | 번역문]` },
-    { id: 'P5', name: '재수정 요청', tool: '초벌 번역 AI · 새 대화창', when: '최대 2회', text:
+[번역문: ID | 번역문 A(초벌) | 번역문 B(DeepL)]
+(여기에 붙여 넣고, 화면 캡처 PNG를 첨부한다)` },
+    { id: 'P4', tag: '4', sum: '원문 없이 읽혀서 뜻과 행동이 그대로 전달되는지 확인', name: '테스트 (원문 없이)', tool: 'Gemini 새 대화창', when: '검수 · 원문은 주지 않음', text:
+`아래 ${L.label} 문구를 이 게임을 처음 보는 ${L.region} 플레이어 입장에서 읽어 줘.
+한국어 원문은 모른다고 가정한다. 화면 캡처와 문구만 보고 문구마다 답해.
+
+1. 직역: 한국어로 그대로 옮긴다. 다듬거나 뜻을 보충하지 않는다. 어색하면 어색한 그대로 쓴다.
+2. 행동: 이 문구를 보고 다음에 무엇을 하겠는가
+3. 인상: 누가 말하는 것 같은가, 말투는 어떤 인상인가
+4. 헷갈림: 두 가지로 읽히거나 막히는 부분 (없으면 ‘없음’)
+
+원래 뜻을 추측하지 말고, 처음 보는 사람의 반응만 적어.
+출력: ID | 직역 | 행동 | 인상 | 헷갈림
+
+[ID | 번역문]
+(여기에 붙여 넣고, 화면 캡처 PNG를 첨부한다)` },
+    { id: 'P5', tag: '5', sum: '검수·테스트에서 걸린 문구만 근거와 함께 고치기', name: '재수정 (걸린 문구만)', tool: '초벌 번역 AI · 새 대화창', when: '최대 2회', text:
 `아래 문구는 검수에서 걸렸다. 걸린 이유에 해당하는 부분만 고쳐라.
 말투는 ${t.name || '이 게임'}의 컨텍스트 카드를 그대로 따른다.
 
 [ID | 원문 | 의도 | 현재 번역문 | 걸린 항목 | 근거]
 
 출력: ID | 수정 번역문 | 바꾼 내용과 이유 | 판정 기준 유지 여부` },
-    { id: 'P6', name: '블라인드 역번역', tool: '번역기 (또는 AI 새 대화창)', when: '검수 · 원문은 주지 않음', text:
-`다음 ${L.label} 문장을 한국어로 직역해 줘.
-다듬거나 뜻을 보충하지 마. 어색하면 어색한 그대로 옮겨.
-[번역문 목록]` },
   ];
 }
 
@@ -625,33 +722,31 @@ ${gloss}` },
 function usageFor(id, t, L) {
   const abbr = (String(t.name || '').match(/[A-Za-z]/g) || ['G', 'M']).slice(0, 2).join('').toUpperCase();
   const U = {
-    'P1-1': { tool: 'ChatGPT 프로젝트', input: '이 카드 전체', output: '— (지침 등록만)', next: 'P1-2 원문 분석 요청',
+    'P1-1': { tool: 'ChatGPT 프로젝트', input: '이 카드 전체', output: '— (지침 등록만)', next: '1 원문 분석',
       steps: ['ChatGPT 왼쪽 메뉴 → <b>새 프로젝트</b><small>이름: 체키 원문 분석</small>', '프로젝트 설정 → <b>지침</b> 칸에 붙여 넣고 저장', '규칙을 바꿀 때만 다시 붙여 넣기'],
-      warn: ['게임 카드·용어집은 지침에 넣지 않아요. 게임마다 달라서 P1-2에 자동으로 들어가요.', '번역용 프로젝트와 섞어 쓰지 않아요. 분석 담당자는 번역을 하지 않아요.'] },
-    'P1-2': { tool: '‘체키 원문 분석’ 프로젝트 · 새 대화', input: '원문 표 + 화면 캡처', output: '번역 입력표 · 질문 · 용어 후보', next: '게임 카드에 붙여 넣기 → P2',
-      steps: ['원문 표 준비<small>ID · 화면 원문 · 사용 위치 · 글자 수</small>', '복사 → 프로젝트 안에서 새 대화', '맨 아래에 원문 표·캡처 넣고 보내기', '기획 답변 → 표 수정<small>게임 카드 ‘번역 입력표’에 붙여 넣기</small>'],
-      warn: [`ID는 게임 약자+번호로 정해요. 예: ${abbr}-001`, '번역 후보가 나오면 “분석만 다시 출력해”라고 요청해요.', '‘확인 필요’가 남은 채로 번역에 넘기지 않아요.', '정리 원문은 설명용이에요. 화면 문구는 바꾸지 않아요.', '용어 후보는 용어집에 등록하고, 진행 상황에서 ‘원문 정리’를 눌러요.'] },
-    'P2-1': { tool: `${L.label}용 번역 AI 프로젝트`, input: '이 카드 전체', output: '— (지침 등록만)', next: 'P2 초벌 번역',
-      steps: [`${L.label} 프로젝트 만들기`, '복사 → 프로젝트 ‘지침’에 붙여 넣기', '용어집·게임이 바뀌면 다시 붙여 넣기'],
+      warn: ['게임 카드·용어집은 지침에 넣지 않아요. 게임마다 달라서 1 원문 분석에 자동으로 들어가요.', '번역용 프로젝트와 섞어 쓰지 않아요. 분석 담당자는 번역을 하지 않아요.'] },
+    'P1-2': { tool: '‘체키 원문 분석’ 프로젝트 · 새 대화', input: 'PNG 캡처만', output: '번역 입력표 · 질문 · 용어 후보', next: '게임 카드에 붙여 넣기 → 2 번역',
+      steps: [`PNG 파일 이름 정하기<small>예: ${abbr}-01.png, ${abbr}-02.png</small>`, '복사 → 붙여 넣고 PNG 첨부해서 보내기', '화면 원문이 캡처와 같은지 확인<small>한국어라 바로 확인돼요</small>', '표 파일(xlsx) 받기 → 게임 카드에서 <b>파일 올리기</b><small>질문 답은 엑셀이나 사이트에서 고쳐요</small>'],
+      warn: ['캡처가 많으면 10장 안팎씩 나눠서 “이어서 다음 캡처”로 보내요.', '글씨가 작으면 그 부분만 확대해서 따로 캡처해요.', '‘판독 불확실’이나 ‘확인 필요’가 남은 채로 번역에 넘기지 않아요. 사이트 표에서 주황색 칸으로 보여요.',
+        '파일이 안 나오면 “출력 1을 xlsx 파일로 만들어 줘”라고 다시 요청해요.', '번역 후보가 나오면 “분석만 다시 출력해”라고 요청해요.', '용어 후보는 용어집에 등록하고, 진행 상황에서 ‘원문 정리’를 눌러요.'] },
+    'P2-1': { tool: `${L.label}용 번역 AI 프로젝트`, input: '이 카드 전체', output: '— (지침 등록만)', next: '2 번역',
+      steps: [`${L.label} 프로젝트 만들기<small>이름: 체키 번역 — ${L.label}</small>`, '복사 → 프로젝트 ‘지침’에 붙여 넣기', '규칙을 바꿀 때만 다시 붙여 넣기'],
       warn: ['대화창이 아니라 프로젝트 지침에 넣어요.', '언어마다 프로젝트를 따로 써요.'] },
-    'P2-2': { tool: '영어 프로젝트 새 대화', input: 'PNG 캡처만 (표는 자동 포함)', output: '번역문 A', next: 'P3 오류 검수',
+    'P2-2': { tool: '영어 프로젝트 새 대화', input: 'PNG 캡처만 (표는 자동 포함)', output: '번역문 A', next: '3 검수',
       steps: ['복사 → 영어 프로젝트 새 대화에 붙여 넣기', 'PNG 캡처 첨부하고 보내기<small>파일 이름에 ID</small>', '정리 원문을 DeepL로 번역 → 번역문 B', '진행 상황 ‘번역’ 누르기'],
       warn: ['한 대화에는 한 게임만 넣어요.', '기획 확인 질문이 나온 행은 답을 받고 넘어가요.'] },
-    'P2-3': { tool: `${L.label} 프로젝트 새 대화`, input: 'PNG 캡처만 (표·영어 자동 포함)', output: '번역문 A · 해석 불일치', next: 'P3 오류 검수',
+    'P2-3': { tool: `${L.label} 프로젝트 새 대화`, input: 'PNG 캡처만 (표·영어 자동 포함)', output: '번역문 A · 해석 불일치', next: '3 검수',
       steps: ['게임 카드에 영어 확정본 붙여 넣기', `복사 → ${L.label} 프로젝트 새 대화에 붙여 넣기`, 'PNG 캡처 첨부하고 보내기', `정리 원문을 DeepL로 번역 → 번역문 B`],
       warn: ['‘해석 불일치’ 행은 기획이 뜻을 정한 뒤 그 행만 다시 번역해요.', '“영어 기준으로 번역해”라고 따로 말하지 않아요.'].concat(L.key === 'zh' ? ['결과가 간체인지 확인해요.'] : []) },
-    'P3': { tool: 'Claude 새 대화', input: '원문·의도·판정 기준·A·B 표 + 캡처', output: 'PASS · REVIEW · FAIL', next: 'FAIL → P5 / PASS → P6·P4',
-      steps: ['복사 → Claude 새 대화', '아래에 표 붙이기<small>ID · 원문 · 의도 · 판정 기준 · A · B</small>', 'FAIL은 P5로, PASS는 P6·P4로', '진행 상황 ‘검수’ 누르기'],
+    'P3': { tool: 'Claude 새 대화', input: 'PNG + 번역문 A·B (원문 표는 자동)', output: 'PASS · REVIEW · FAIL', next: 'FAIL → 5 / PASS → 4 테스트',
+      steps: ['복사 → Claude 새 대화', '맨 아래에 번역문 붙이고 PNG 첨부<small>ID · 번역문 A · 번역문 B</small>', 'FAIL은 5 재수정, PASS는 4 테스트로', '진행 상황 ‘검수’ 누르기'],
       warn: ['번역을 Claude로 했다면 검수는 ChatGPT로 해요.', 'PASS는 확정이 아니에요.'] },
-    'P4': { tool: 'Gemini 새 대화', input: '캡처 + ID · 번역문 (원문 없이)', output: '처음 보는 사람의 행동', next: '의도와 다르면 P5',
-      steps: ['복사 → Gemini 새 대화', '캡처와 ID · 번역문만 넣기', '답한 행동을 ‘의도’와 비교'],
-      warn: ['원문이나 의도를 같이 주면 테스트가 의미 없어요.'] },
-    'P5': { tool: `${L.label} 프로젝트 새 대화`, input: '걸린 행 + 근거', output: '수정 번역문', next: '다시 P3 → 확정',
-      steps: ['걸린 행과 근거 모으기<small>P3 · P4 · P6 결과</small>', '복사 → 붙여 넣고 보내기', '고친 행만 다시 검수', '통과하면 ‘확정’ 누르고 용어집도 확정으로'],
+    'P4': { tool: 'Gemini 새 대화', input: 'PNG 캡처 + ID · 번역문 (원문 없이)', output: '직역 · 행동 · 인상 · 헷갈림', next: '다르면 5 재수정',
+      steps: ['복사 → Gemini 새 대화', 'PNG 첨부, 맨 아래에 ID · 번역문 붙이기', '직역은 정리 원문과, 행동은 의도와 비교'],
+      warn: ['원문이나 의도를 같이 주면 테스트가 의미 없어요.', '직역이 어색한 건 정상이에요. 뜻이 바뀌었는지만 봐요.', '번역을 만든 대화창에서 하지 않아요.'] },
+    'P5': { tool: `${L.label} 프로젝트 새 대화`, input: '걸린 행 + 근거', output: '수정 번역문', next: '다시 3 검수 → 확정',
+      steps: ['걸린 행과 근거 모으기<small>검수 · 테스트 결과</small>', '복사 → 붙여 넣고 보내기', '고친 행만 다시 검수', `통과하면 ‘확정’ 누르고 용어집도 확정으로${L.key === 'en' ? '<small>최종 영어 표는 게임 카드 ‘영어 확정본’에 파일 올리기</small>' : ''}`],
       warn: ['최대 2회. 그래도 걸리면 기획 회의로 가요.', '통과한 행은 넣지 않아요.'] },
-    'P6': { tool: '번역기 또는 AI 새 대화', input: 'ID · 번역문 (원문 없이)', output: '한국어 직역', next: '뜻이 바뀌면 P5',
-      steps: ['복사 → 새 대화 (또는 DeepL·파파고)', 'ID · 번역문만 붙이기', '정리 원문과 뜻 비교'],
-      warn: ['어색한 건 정상이에요. 뜻이 바뀌었는지만 봐요.', '번역을 만든 대화창에서 하지 않아요.'] },
   };
   return U[id] || null;
 }
@@ -672,7 +767,7 @@ function designFor(id, L, t) {
     'P1-1': [
       ['고정 등록', '역할과 분석 규칙은 게임이 바뀌어도 같으므로 ChatGPT 프로젝트 지침에 한 번만 등록하여, 매번 긴 규칙을 붙이지 않아도 같은 기준으로 분석하게 하였다.'],
       ['역할 부여', 'ChatGPT에게 ‘오프라인 게임의 현지화 사전 분석 담당자’ 역할을 부여하고, 번역문과 번역 후보를 쓰지 않도록 명시하여 원문 분석에만 집중하게 하였다.'],
-      ['산출물 연결', '결과표의 열을 번역 단계(P2)의 입력표와 같게 맞추어, 기획이 질문에 답한 뒤 표를 고쳐 쓰지 않고 그대로 번역에 넘길 수 있게 하였다.'],
+      ['산출물 연결', '결과표의 열을 번역 단계의 입력표와 같게 맞추어, 기획이 질문에 답한 뒤 표를 고쳐 쓰지 않고 그대로 번역에 넘길 수 있게 하였다.'],
       ['자료 위계', '기획 확정 규칙 → 컨텍스트 카드 → 용어집 → 원문 → 화면 캡처 → 추론 순으로 신뢰 순서를 정하고, 자료끼리 다르면 하나를 고르지 말고 ‘충돌’로 적게 하였다.'],
       ['불확실성 표시', '사실, ‘추측’, ‘확인 필요(Q번호)’를 구분하게 하여, 기획이 확인할 부분을 질문 번호로 바로 찾을 수 있게 하였다.'],
       ['출력 분리', `${game}의 문구별 분석은 표 하나로, 기획 질문과 용어집 후보는 별도 목록으로 나누어, 행마다 ‘없음’이 반복되는 넓은 표를 피하고 담당자별로 볼 곳을 나누었다.`],
@@ -680,10 +775,12 @@ function designFor(id, L, t) {
       ['누락 방지', '모든 ID 유지, 빈칸 금지, 길면 ID 순서대로 나누어 출력하는 규칙과 마지막 점검 항목을 두어, 긴 표에서 행이 빠지지 않게 하였다.'],
     ],
     'P1-2': [
+      ['입력 단순화', '원문 표를 따로 만들지 않고 PNG 캡처만 첨부하면 AI가 원문을 읽어 ID와 사용 위치를 붙이게 하였다. 읽은 원문은 한국어라 기획이 바로 대조할 수 있어, 이미지 판독 오류를 이 단계에서 걸러낸다.'],
+      ['판독 표시', '흐리거나 잘린 글자는 ‘판독 불확실’로 표시하고 질문 목록에 올리게 하여, 잘못 읽은 원문이 그대로 번역으로 넘어가지 않게 하였다.'],
       ['과업 지시', `${game}의 원문을 분석하되 번역은 하지 말라고 다시 짧게 적어, 지침의 역할을 요청 단위에서도 확인하게 하였다.`],
       ['맥락 제공', `${game}의 게임 컨텍스트 카드와 화면 캡처를 함께 주어, 문구가 어느 화면에서 누구의 말로 쓰이는지 파악하게 하였다.`],
       ['중복 방지', '현재 용어집을 함께 주어, 이미 등록된 용어를 후보로 다시 올리지 않게 하였다.'],
-      ['출력 형식 지정', '지침의 출력 1~3 형식을 그대로 쓰게 하여, 결과표를 번역(P2)에 바로 넘길 수 있게 하였다.'],
+      ['출력 형식 지정', '지침의 출력 1~3 형식을 그대로 쓰게 하여, 결과표를 번역 단계에 바로 넘길 수 있게 하였다.'],
     ],
     'P2-1': [
       ['역할 부여', `‘오프라인 게임 매장의 ${L.target} 현지화 담당자’ 역할을 부여하였다. 단순 번역가가 아니라 현지화 담당자로 설정하여, 직역보다 현지 플레이어가 이해하는 표현을 우선하게 하였다.`],
@@ -691,7 +788,7 @@ function designFor(id, L, t) {
       ['우선순위 제시', '규칙·정답 보존 → 화자별 말투 → 자연스러운 표현 → 글자 수 순으로 우선순위를 정하여, 조건이 충돌할 때의 판단 기준을 주었다.'],
       ['제약 조건', '용어집의 확정 번역 사용과 금지 번역 배제, 원문에 없는 조건·힌트 추가 금지, 게임명·변수·줄바꿈 유지를 명시하여 번역 중 생길 수 있는 변형을 막았다.'],
       ['문화 지침', '한국 문화 요소는 몰라도 플레이할 수 있으면 살리고, 한국 한자어는 그대로 옮기지 않도록 하였다.'],
-      ['고정 등록', '이 규칙은 번역 AI의 프로젝트 지침에 한 번만 등록하여, 매 요청마다 반복해서 붙이지 않아도 자동으로 적용되게 하였다.'],
+      ['고정 등록', '게임과 상관없는 규칙만 번역 AI의 프로젝트 지침에 언어별로 한 번 등록하고, 게임마다 다른 카드·용어집은 요청에 자동으로 넣어 지침을 다시 바꿀 일이 없게 하였다.'],
     ],
     'P2-2': [
       ['과업 지시', `${game}의 문구를 한 문장씩이 아니라 게임 단위 표로 한 번에 요청하여, 같은 게임 안에서 용어와 말투가 일관되게 하였다.`],
@@ -717,9 +814,10 @@ function designFor(id, L, t) {
       ['과신 방지', 'PASS여도 번역이 완벽하다고 단정하지 않도록 하여, AI 검수의 한계를 분명히 하였다.'],
     ],
     'P4': [
-      ['역할 부여', `Gemini에게 ‘한국어를 모르는 ${L.region} 출신 관광객’ 역할을 부여하여, 실제 손님의 입장에서 문구를 읽게 하였다.`],
-      ['정보 차단', '원문을 주지 않고 화면 캡처와 번역문만 제공하여, 번역문만으로 의도한 행동이 전달되는지 확인하였다.'],
-      ['질문 설계', '다음 행동, 화자와 말투의 인상, 헷갈리는 부분의 3가지를 묻도록 질문을 구체화하였다.'],
+      ['역할 부여', `Gemini에게 ‘이 게임을 처음 보는 ${L.region} 플레이어’ 입장을 주어, 실제 손님처럼 문구를 읽게 하였다.`],
+      ['정보 차단', '원문과 맥락을 주지 않고 새 대화에서 화면 캡처와 번역문만 제공하여, 번역문만으로 뜻과 행동이 전달되는지 확인하였다.'],
+      ['한 번에 두 검증', '직역(역번역)과 행동·인상 질문을 한 대화에서 함께 받아, 뜻이 바뀌었는지와 행동이 바뀌었는지를 한 번에 확인하게 하였다.'],
+      ['직역 지시', '다듬거나 뜻을 보충하지 말고 어색한 그대로 직역하게 하여, 오역이 가려지지 않게 하였다.'],
       ['추측 금지', '원래 뜻을 추측하지 말고 처음 보는 사람의 반응만 적게 하여, 결과가 실제 반응에 가깝도록 하였다.'],
     ],
     'P5': [
@@ -727,10 +825,6 @@ function designFor(id, L, t) {
       ['수정 범위 제한', '걸린 이유에 해당하는 부분만 고치게 하여, 이미 통과한 부분이 바뀌지 않도록 하였다.'],
       ['말투 유지', `수정할 때도 ${game}의 컨텍스트 카드 말투를 그대로 따르게 하였다.`],
       ['출력 형식 지정', '수정 번역문과 함께 바꾼 내용·이유, 판정 기준 유지 여부를 적게 하였다.'],
-    ],
-    'P6': [
-      ['직역 지시', '다듬거나 뜻을 보충하지 말고 어색한 그대로 직역하게 하여, 번역문의 오역이 드러나도록 하였다.'],
-      ['정보 차단', '원문과 맥락을 주지 않고 새 대화창에서 진행하여, AI가 원래 뜻을 기억해 오역을 보정해 읽는 것을 막았다.'],
     ],
   };
   return D[id] || [];
@@ -770,6 +864,19 @@ function fld(label, path, value, opts = {}) {
     ? `<textarea ${opts.grow ? 'class="grow" rows="1"' : ''} data-path="${path}" ${dis} placeholder="${esc(opts.ph || '')}">${esc(value)}</textarea>`
     : `<input data-path="${path}" value="${esc(value)}" ${dis} placeholder="${esc(opts.ph || '')}">`;
   return `<label class="field"><span>${label}</span>${ctl}${opts.help ? `<small>${opts.help}</small>` : ''}</label>`;
+}
+function tableEditorHTML(path, txt, fname, ph) {
+  const has = !!String(txt || '').trim();
+  return `
+    <div class="ttools">
+      ${readOnly ? '' : `<label class="btn primary upl">파일 올리기<input type="file" hidden data-upload="${path}" accept=".xlsx,.xls,.csv,.tsv,.txt,.md"></label>`}
+      ${has ? `<button type="button" class="btn" data-dl="${path}" data-fname="${esc(fname)}">엑셀(CSV)로 내려받기</button>` : ''}
+      <span class="hint" style="font-size:13px;color:var(--muted)">xlsx · csv · 표 텍스트</span>
+    </div>
+    ${tablePreviewHTML(txt)}
+    <details class="more"${has ? '' : ' open'}><summary>${has ? '텍스트로 보기 · 직접 고치기' : '붙여 넣기'}</summary>
+      <textarea class="tablebox${path === 'enFinal' ? ' small' : ''}" data-path="${path}" ${readOnly ? 'disabled' : ''} placeholder="${esc(ph)}" spellcheck="false">${esc(txt || '')}</textarea>
+    </details>`;
 }
 function cardHTML({ id, data: t }) {
   const sp = t.speakers || [];
@@ -814,11 +921,11 @@ function cardHTML({ id, data: t }) {
 
   ${(() => { const st = tableStats(t.inputTable), en = tableStats(t.enFinal); return `
   <section class="section">
-    <h2>번역 입력표</h2><p class="hint">P1 원문 분석 결과(출력 1)를 기획이 고친 뒤 붙여 넣으세요. 엑셀이나 ChatGPT 표를 그대로 붙여 넣으면 돼요. 번역 프롬프트(P2)에 자동으로 들어가서, 번역할 때는 <b>PNG 캡처만 첨부</b>하면 돼요.</p>
-    <textarea class="tablebox" data-path="inputTable" ${readOnly ? 'disabled' : ''} placeholder="ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문" spellcheck="false">${esc(t.inputTable || '')}</textarea>
-    <p class="tstat">${st.rows ? `<b>${st.rows}행</b>` : '아직 비어 있어요'}${st.unresolved ? ` · <span class="bad">‘확인 필요’ ${st.unresolved}곳 남음 — 번역 전에 기획 답을 반영하세요</span>` : st.rows ? ' · <span class="good">확인 필요 없음</span>' : ''}</p>
-    <h3 class="subh">영어 확정본 <small>영어가 확정되면 붙여 넣기 · 일본어·중국어 번역(P2-3)에 들어가요</small></h3>
-    <textarea class="tablebox small" data-path="enFinal" ${readOnly ? 'disabled' : ''} placeholder="ID | 영어" spellcheck="false">${esc(t.enFinal || '')}</textarea>
+    <h2>번역 입력표</h2><p class="hint">1 원문 분석에서 받은 표 파일(엑셀·CSV)을 <b>파일 올리기</b>로 올리세요. 2 번역 프롬프트에 자동으로 들어가서, 번역할 때는 <b>PNG 캡처만 첨부</b>하면 돼요.</p>
+    ${tableEditorHTML('inputTable', t.inputTable, `${abbrOf(t)}_input_table`, 'ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문')}
+    <p class="tstat">${st.rows ? `<b>${st.rows}행</b>` : '아직 비어 있어요'}${st.rows && !st.hasId ? ' · <span class="bad">첫 행에 ID 열이 없어요</span>' : ''}${st.unresolved ? ` · <span class="bad">‘확인 필요·판독 불확실’ ${st.unresolved}곳 남음 — 번역 전에 기획 답을 반영하세요</span>` : st.rows ? ' · <span class="good">확인 필요 없음</span>' : ''}</p>
+    <h3 class="subh">영어 확정본 <small>영어가 확정되면 올리기 · 일본어·중국어 번역에 들어가요</small></h3>
+    ${tableEditorHTML('enFinal', t.enFinal, `${abbrOf(t)}_en_final`, 'ID | 영어')}
     <p class="tstat">${en.rows ? `<b>${en.rows}행</b>${st.rows && en.rows < st.rows ? ` · 번역 입력표보다 ${st.rows - en.rows}행 적어요 (현지화·재설계로 비운 행이면 괜찮아요)` : ''}` : '아직 비어 있어요'}</p>
   </section>`; })()}
 
@@ -835,24 +942,40 @@ function cardHTML({ id, data: t }) {
 /* ---------- prompts ---------- */
 function promptsHTML({ id, data: t }) {
   const L = LANGS.find(l => l.key === promptLang);
-  const ps = buildPrompts(t, promptLang, id);
-  return `
-    <div class="langseg" role="group" aria-label="번역할 언어">${LANGS.map(l => `<button type="button" data-lang="${l.key}" aria-pressed="${promptLang === l.key}">${l.label}</button>`).join('')}</div>
-    <ol class="flow" aria-label="전체 순서">
-      <li><b>원문 분석</b><span>P1-1 · P1-2</span></li><li><b>번역</b><span>P2</span></li><li><b>검수</b><span>P3</span></li><li><b>테스트</b><span>P6 · P4</span></li><li><b>재수정</b><span>P5</span></li><li class="end"><b>확정</b><span>영어 → 일·중</span></li>
-    </ol>
-    ${ps.map((p, i) => { const u = usageFor(p.id, t, L); return `
-      <details class="pcard">
-        <summary><span class="pid">${p.id}</span><span class="pname">${esc(p.name)}</span><span class="ptool">${esc(p.tool)}</span><span class="spacer"></span><button type="button" class="btn primary" data-copy="${i}">복사</button></summary>
+  const ps = buildPrompts(t, promptLang, id).map((p, i) => Object.assign(p, { i }));
+  /* 게임 카드 진행 상황 → 지금 할 단계 (미착수 1 · 원문 정리 2 · 번역 3 · 검수 4 · 확정 없음) */
+  const stage = stageOf(t, L.key), curStep = stage >= 4 ? 0 : stage + 1;
+  const enWait = L.key !== 'en' && stageOf(t, 'en') < 4;
+  const stateOf = p => {
+    if (p.setup) return { cls: 'setup', txt: '처음 한 번' };
+    const n = +p.tag;
+    if (n === 5) return stage >= 4 ? { cls: 'done', txt: '완료' } : { cls: 'opt', txt: '걸리면' };
+    if (n === 2 && enWait && stage < 2) return { cls: 'wait', txt: '영어 확정 후' };
+    if (n < curStep || curStep === 0) return { cls: 'done', txt: '완료' };
+    if (n === curStep) return { cls: 'now', txt: '지금 할 차례' };
+    return { cls: 'wait', txt: '대기' };
+  };
+  const card = p => { const u = usageFor(p.id, t, L), stt = stateOf(p), now = stt.cls === 'now'; return `
+      <details class="pcard ${stt.cls}"${now ? ' open' : ''}>
+        <summary><span class="ptag${p.setup ? ' s' : ''}">${esc(p.tag)}</span><span class="ptitle"><span class="pname">${esc(p.name)}</span><span class="psum">${esc(p.sum || '')} · ${esc(p.tool)}</span></span><span class="pstate ${stt.cls}">${stt.txt}</span><button type="button" class="btn${now ? ' primary' : ''} pcopy" data-copy="${p.i}">복사</button></summary>
         <div class="pbody">
-          ${/^P2-[23]$/.test(p.id) ? (() => { const st = tableStats(t.inputTable); const en = tableStats(t.enFinal); const msgs = []; if (!st.rows) msgs.push('게임 카드의 ‘번역 입력표’가 비어 있어요.'); else if (st.unresolved) msgs.push(`번역 입력표에 ‘확인 필요’가 ${st.unresolved}곳 남아 있어요.`); if (p.id === 'P2-3' && !en.rows) msgs.push('게임 카드의 ‘영어 확정본’이 비어 있어요.'); return msgs.length ? `<div class="pwarn">⚠ ${msgs.join(' ')}</div>` : `<div class="pwarn" style="background:var(--ok-soft)">✓ 번역 입력표 ${st.rows}행이 자동으로 들어가 있어요. PNG만 첨부하세요.</div>`; })() : ''}
+          ${/^P2-[23]$/.test(p.id) ? (() => { const st = tableStats(t.inputTable); const en = tableStats(t.enFinal); const msgs = []; if (!st.rows) msgs.push('게임 카드의 ‘번역 입력표’가 비어 있어요.'); else if (st.unresolved) msgs.push(`번역 입력표에 ‘확인 필요·판독 불확실’이 ${st.unresolved}곳 남아 있어요.`); if (p.id === 'P2-3' && !en.rows) msgs.push('게임 카드의 ‘영어 확정본’이 비어 있어요.'); return msgs.length ? `<div class="pwarn">⚠ ${msgs.join(' ')}</div>` : `<div class="pwarn" style="background:var(--ok-soft)">✓ 번역 입력표 ${st.rows}행이 자동으로 들어가 있어요. PNG만 첨부하세요.</div>`; })() : ''}
           ${usageHTML(u)}
           ${u && u.warn ? `<details class="more"><summary>주의할 점 <small>${u.warn.length}</small></summary><ul>${u.warn.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
-          <details class="more"><summary>프롬프트 내용 보기</summary><pre class="ptext" id="pt-${i}">${esc(p.text)}</pre></details>
+          <details class="more"><summary>프롬프트 내용 보기</summary><pre class="ptext" id="pt-${p.i}">${esc(p.text)}</pre></details>
           <details class="more"><summary>설계 설명</summary><dl class="why">${designFor(p.id, L, t).map(([k, v]) => `<div class="r"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></details>
         </div>
-      </details>`; }).join('')}
-    <p class="hint" style="margin:10px 0 0;color:var(--muted);font-size:14px">「${esc(t.name)}」의 게임 카드와 용어집은 프롬프트에 자동으로 들어가 있어요.</p>`;
+      </details>`; };
+  const setup = ps.filter(p => p.setup), main = ps.filter(p => !p.setup);
+  return `
+    <div class="langseg" role="group" aria-label="번역할 언어">${LANGS.map(l => `<button type="button" data-lang="${l.key}" aria-pressed="${promptLang === l.key}">${l.label}</button>`).join('')}</div>
+    <details class="setup">
+      <summary><b>처음 한 번만 설정</b><span>A 분석 담당자 등록 · B ${esc(L.label)} 번역 규칙 등록</span></summary>
+      <p class="hint" style="margin:8px 0 10px;color:var(--muted);font-size:14px">AI 프로젝트의 ‘지침’ 칸에 한 번 넣어 두면 끝이에요. 게임이 바뀌어도 다시 할 필요 없어요.</p>
+      ${setup.map(card).join('')}
+    </details>
+    ${main.map(card).join('')}
+    <p class="hint" style="margin:10px 0 0;color:var(--muted);font-size:14px">단계 표시는 게임 카드의 <b>진행 상황</b>(${esc(L.label)}: ${STAGES[stage]})을 따라 바뀌어요. 5번은 걸린 문구가 있을 때만 해요. 영어를 먼저 확정한 뒤 일본어·중국어를 진행해요.<br>「${esc(t.name)}」의 게임 카드와 용어집은 프롬프트에 자동으로 들어가 있어요.</p>`;
 }
 
 /* ---------- glossary ---------- */
@@ -872,16 +995,16 @@ function termRowHTML(id, d, isDraft) {
   const k = isDraft ? 'draft' : 'term';
   const gv = gameValue(d);
   return `
-  <tr class="${isDraft ? 'draft' : ''}" data-${k}="${esc(id)}">
+  <tr class="${isDraft ? 'draft' : ''}${selRow === id ? ' sel' : ''}" data-${k}="${esc(id)}">
     <td class="c-ko" data-label="원문"><textarea class="grow" rows="1" data-f="ko" placeholder="원문" aria-label="원문" ${dis}>${esc(d.ko)}</textarea></td>
     <td class="c-intent" data-label="의도"><textarea class="grow" rows="1" data-f="intent" placeholder="플레이어가 하는 행동" aria-label="의도" ${dis}>${esc(d.intent)}</textarea></td>
     <td class="c-kind" data-label="유형 · 사용 게임"><div class="kind"><select data-f="type" aria-label="유형" ${dis}>${TYPES.map(x => `<option ${d.type === x ? 'selected' : ''}>${x}</option>`).join('')}</select>
     <select data-f="game" aria-label="사용 게임" ${dis}><option value="common" ${gv === 'common' ? 'selected' : ''}>모든 게임 공통</option>${themes.map(t => `<option value="${esc(t.id)}" ${gv === t.id ? 'selected' : ''}>${esc(t.data.name || '(이름 없음)')}</option>`).join('')}<option value="" ${gv === '' ? 'selected' : ''}>미지정</option></select></div></td>
     ${LANGS.map(l => { const x = trOf(d, l.key), st = statusOf(d, l.key); return `
-    <td data-label="${l.label}"><div class="lcell"><textarea class="grow" rows="1" data-f="tr.${l.key}.text" placeholder="${l.label}" aria-label="${l.label} 번역" ${dis}>${esc(x.text)}</textarea>
-      ${x.text || x.avoid ? `<button type="button" class="st ${st === '확정' ? 'ok' : st === '후보' ? 'cand' : ''}" data-st="${l.key}" ${readOnly || !x.text || isDraft ? 'disabled' : ''} title="누르면 후보 ↔ 확정">${st}${x.avoid ? ' · 금지 있음' : ''}</button>` : ''}</div></td>`; }).join('')}
+    <td data-label="${l.label}"><div class="lcell"><textarea class="grow" rows="1" data-f="tr.${l.key}.text" placeholder="번역 입력" aria-label="${l.label} 번역" ${dis}>${esc(x.text)}</textarea>
+      <button type="button" class="st ${stClass(st)}" data-st="${l.key}" ${readOnly || !x.text || isDraft ? 'disabled' : ''} title="${x.text ? '누르면 후보 ↔ 확정' : '번역을 입력하면 후보가 돼요'}">${stLabel(st)}${x.avoid ? ' · 금지 있음' : ''}</button></div></td>`; }).join('')}
     <td class="c-acts"><div class="racts">
-      <button type="button" class="iconbtn" data-more="${esc(id)}" aria-expanded="${expanded.has(id)}" title="금지 번역·메모">${expanded.has(id) ? '접기' : '더보기'}</button>
+      <button type="button" class="iconbtn" data-more="${esc(id)}" aria-expanded="${expanded.has(id)}" title="금지 번역·메모">${expanded.has(id) ? '접기' : '금지·메모'}</button>
       ${readOnly ? '' : `<button type="button" class="iconbtn ${armedDelete === id ? 'warn' : ''}" data-del="${esc(id)}" title="삭제" aria-label="삭제">${armedDelete === id ? '삭제?' : '✕ 삭제'}</button>`}
     </div></td>
   </tr>
@@ -894,21 +1017,21 @@ function glossaryHTML() {
   const list = filtered(), total = terms.length;
   const mode = readOnly ? 'view' : gmode;
   return `
-  ${readOnly ? '' : `<div class="gmode" role="group" aria-label="용어집 화면 고르기"><button type="button" data-gmode="view" aria-pressed="${mode === 'view'}">보기<span>확정 상태를 깔끔하게 읽기</span></button><button type="button" data-gmode="edit" aria-pressed="${mode === 'edit'}">추가·수정<span>용어를 입력하고 고치기</span></button></div>`}
+  ${readOnly ? '' : `<div class="subtabs" role="tablist" aria-label="용어집 화면"><button type="button" role="tab" data-gmode="view" aria-selected="${mode === 'view'}">보기</button><button type="button" role="tab" data-gmode="edit" aria-selected="${mode === 'edit'}">추가 · 수정</button></div>`}
   <div class="gtools">
     <input type="search" id="g-q" placeholder="원문·번역·금지 번역 검색" value="${esc(gf.q)}" aria-label="용어 검색">
     <select id="g-game" aria-label="게임 필터"><option value="all">모든 용어</option><option value="common" ${gf.game === 'common' ? 'selected' : ''}>공통 용어만</option>${themes.map(t => `<option value="${esc(t.id)}" ${gf.game === t.id ? 'selected' : ''}>${esc(t.data.name || '(이름 없음)')}</option>`).join('')}</select>
     <label class="chk"><input type="checkbox" id="g-open" ${gf.open ? 'checked' : ''}> 미확정만</label>
     <button type="button" class="btn" id="g-csv">엑셀(CSV)로 내보내기</button>
   </div>
-  <div class="gstats"><span>전체 <b>${total}</b>개</span>${LANGS.map(l => `<span>${l.label} 확정 <b>${terms.filter(x => statusOf(x.data, l.key) === '확정').length}</b></span>`).join('')}</div>
+  <div class="gstats"><div><span>전체</span><b>${total}</b></div>${LANGS.map(l => { const n = terms.filter(x => statusOf(x.data, l.key) === '확정').length; return `<div><span>${l.label} 확정</span><b>${n}</b><small>/ ${total}</small></div>`; }).join('')}</div>
   ${csvText ? `<div class="section"><h2>CSV 텍스트</h2><p class="hint">전체 선택(Ctrl+A) 후 복사해서 엑셀에 붙여 넣으세요.</p><textarea class="csvbox" id="csv-text" readonly>${esc(csvText)}</textarea><div class="dangerzone" style="margin-top:8px"><button type="button" class="btn" id="csv-close">닫기</button></div></div>` : ''}
   ${mode === 'view' ? glossaryViewHTML(list, total) : glossaryEditHTML(list, total)}`;
 }
 function glossaryEditHTML(list, total) {
   return `
   <div class="tbl"><table class="g">
-    <colgroup><col style="width:13%"><col style="width:15%"><col style="width:14%">${LANGS.map(() => '<col>').join('')}<col style="width:76px"></colgroup>
+    <colgroup><col style="width:13%"><col style="width:15%"><col style="width:14%">${LANGS.map(() => '<col>').join('')}<col style="width:92px"></colgroup>
     <thead><tr><th>원문</th><th>의도</th><th>유형 · 사용 게임</th>${LANGS.map(l => `<th>${l.label}</th>`).join('')}<th></th></tr></thead>
     <tbody>
       ${list.map(x => termRowHTML(x.id, x.data, false)).join('')}
@@ -937,19 +1060,20 @@ function glossaryViewHTML(list, total) {
         <div class="gv-chips"><span class="chip">${esc(d.type || '기타')}</span></div>
         ${d.intent ? `<p class="gv-intent">${esc(d.intent)}</p>` : ''}
         ${d.memo ? `<p class="gv-memo">메모: ${esc(d.memo)}</p>` : ''}
-        ${readOnly ? '' : `<button type="button" class="linkbtn" data-gedit="${esc(id)}">고치기</button>`}
+        ${LANGS.every(l => !trOf(d, l.key).text) ? '<span class="sbadge empty" style="margin-top:6px">번역 미입력</span>' : ''}
+        ${readOnly ? '' : `<button type="button" class="linkbtn" data-gedit="${esc(id)}">수정하기 →</button>`}
       </div>
       ${LANGS.map(l => { const x = trOf(d, l.key), st = statusOf(d, l.key); return `
       <div class="gv-lang">
-        <div class="gv-lab">${l.label} <span class="sbadge ${st === '확정' ? 'ok' : st === '후보' ? 'cand' : ''}">${st}</span></div>
-        <div class="gv-tx ${x.text ? '' : 'none'}">${x.text ? esc(x.text) : '아직 없음'}</div>
+        <div class="gv-lab">${l.label} <span class="sbadge ${stClass(st)}">${stLabel(st)}</span></div>
+        <div class="gv-tx ${x.text ? '' : 'none'}">${x.text ? esc(x.text) : '—'}</div>
         ${x.avoid ? `<div class="gv-avoid"><span>쓰지 않음</span> <s>${esc(x.avoid)}</s>${x.avoidWhy ? ` — ${esc(x.avoidWhy)}` : ''}</div>` : ''}
       </div>`; }).join('')}
     </article>`;
   return `
   <div class="gvhead" aria-hidden="true"><span>원문 · 의도</span>${LANGS.map(l => `<span>${l.label}</span>`).join('')}</div>
   ${groups.map(([name, g]) => `<section class="gvgroup">${name ? `<h2 class="gvgname">${esc(name)} <small>${g.length}개</small></h2>` : ''}${g.map(item).join('')}</section>`).join('')}
-  <p class="hint" style="color:var(--muted);font-size:14px;margin-top:10px"><b>확정</b>은 번역할 때 그대로 써야 하는 번역이고, <b>후보</b>는 참고용이에요. 용어를 넣거나 고치려면 위의 <b>추가·수정</b>을 누르세요.</p>`;
+  <p class="hint" style="color:var(--muted);font-size:14px;margin-top:10px"><b>확정</b>은 번역할 때 그대로 써야 하는 번역, <b>후보</b>는 참고용, <b>미입력</b>은 아직 번역이 없는 상태예요. 용어를 넣거나 고치려면 위의 <b>추가·수정</b>을 누르세요.</p>`;
 }
 function blankTerm() {
   const g = gf.game !== 'all' && gf.game !== 'common' ? gf.game : '';
@@ -1232,6 +1356,58 @@ document.addEventListener('click', async e => {
     await loadAdmin(); setAdminBadge(adminUsers ? adminUsers.filter(u => !u.canView).length : 0);
   } catch (err) { toast(err.message); b.disabled = false; }
 });
+/* ---------- 표 파일 올리기 · 내려받기 ---------- */
+function loadXLSX() {
+  return window.XLSX ? Promise.resolve(window.XLSX) : new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = 'vendor/xlsx.full.min.js'; sc.onload = () => res(window.XLSX); sc.onerror = () => rej(new Error('엑셀 읽기 도구를 불러오지 못했어요.')); document.head.appendChild(sc); });
+}
+async function readTableFile(file) {
+  if (/\.xlsx?$/i.test(file.name)) {
+    const X = await loadXLSX();
+    const wb = X.read(await file.arrayBuffer(), { type: 'array' });
+    const sheets = wb.SheetNames.map(n => X.utils.sheet_to_json(wb.Sheets[n], { header: 1, defval: '', raw: false }).filter(r => r.some(c => String(c).trim())));
+    return sheets.find(r => r[0] && r[0].some(h => /^id$/i.test(String(h).trim()))) || sheets[0] || [];
+  }
+  const buf = await file.arrayBuffer(); let text;
+  try { text = new TextDecoder('utf-8', { fatal: true }).decode(buf); } catch { text = new TextDecoder('euc-kr').decode(buf); }
+  return parseTable(text);
+}
+function pickEnglish(rows) {
+  const h = (rows[0] || []).map(x => String(x).trim());
+  const idI = h.findIndex(x => /^id$/i.test(x));
+  const col = ['수정 번역문', '영어 확정본', '번역문', '영어', 'English'].map(n => h.findIndex(x => x.toLowerCase() === n.toLowerCase())).find(i => i >= 0);
+  if (idI < 0 || col === undefined || h.length <= 2) return rows;
+  return [['ID', '영어'], ...rows.slice(1).map(r => [r[idI], r[col]])];
+}
+document.addEventListener('change', async e => {
+  const inp = e.target.closest && e.target.closest('[data-upload]'); if (!inp || !inp.files || !inp.files[0]) return;
+  const path = inp.dataset.upload, file = inp.files[0];
+  try {
+    let rows = await readTableFile(file);
+    if (path === 'enFinal') rows = pickEnglish(rows);
+    if (rows.length < 2) { toast('표를 찾지 못했어요. 첫 행이 열 이름인 표 파일인지 확인해 주세요.'); return; }
+    const had = !!String((cur() || {}).data?.[path] || '').trim();
+    await saveGameField(path, rowsToTSV(rows));
+    render(true);
+    toast(`${file.name}에서 ${rows.length - 1}행을 올렸어요.${had ? ' 이전 내용은 수정 기록에 남아 있어요.' : ''}`);
+  } catch (err) { toast(err.message || '파일을 읽지 못했어요.'); }
+  finally { inp.value = ''; }
+});
+document.addEventListener('focusin', e => {
+  const tr = e.target.closest && e.target.closest('table.g tbody tr[data-term], table.g tbody tr[data-draft]');
+  if (!tr || tr.classList.contains('detail')) return;
+  const id = tr.dataset.term || tr.dataset.draft;
+  if (selRow === id) return;
+  document.querySelectorAll('table.g tr.sel').forEach(x => x.classList.remove('sel'));
+  selRow = id; document.querySelectorAll(`table.g tr[data-term="${CSS.escape(id)}"]:not(.detail), table.g tr[data-draft="${CSS.escape(id)}"]:not(.detail)`).forEach(x => x.classList.add('sel'));
+});
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-dl]'); if (!b) return;
+  const rows = parseTable((cur() || {}).data?.[b.dataset.dl]); if (!rows.length) return;
+  const q = v => { const x = String(v ?? ''); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; };
+  const csv = '\uFEFF' + rows.map(r => r.map(q).join(',')).join('\r\n');
+  try { if (downloads) await downloads.save({ filename: b.dataset.fname + '.csv', data: csv }); } catch { toast('내려받지 못했어요.'); }
+});
+
 /* ---------- 색 고르기 ---------- */
 let colorTarget = null;
 function openColor(target, title, current) {
