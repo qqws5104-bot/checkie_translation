@@ -11,6 +11,7 @@
  *   GITHUB_REPO      필수. "계정/저장소" 형식 (예: xphobia/checkie-translation)
  *   ADMIN_ID         선택. 관리자 아이디 (기본값 yeun)
  *   ADMIN_PASSWORD   선택. 관리자 비밀번호 (기본값 05197) — Render Environment에서 바꾸는 것을 권장
+ *   ADMIN_NAME       선택. 관리자 이름 기본값 (기본값 김예은, 사이트의 ‘내 정보’에서도 바꿀 수 있음)
  *   SESSION_SECRET   선택. 로그인 유지용 서명 키 (없으면 GITHUB_TOKEN으로 만듦)
  *   DATA_BRANCH      선택. 기본값 data
  *   BASE_BRANCH      선택. 기본값 main
@@ -25,6 +26,7 @@ const REPO = env.GITHUB_REPO || '';
 const TOKEN = env.GITHUB_TOKEN || '';
 const ADMIN_ID = (env.ADMIN_ID || 'yeun').trim().toLowerCase();
 const ADMIN_PW = env.ADMIN_PASSWORD || '05197';
+const ADMIN_NAME = (env.ADMIN_NAME || '김예은').trim();
 const DATA_BRANCH = env.DATA_BRANCH || 'data';
 const BASE_BRANCH = env.BASE_BRANCH || 'main';
 const SECRET = env.SESSION_SECRET || crypto.createHash('sha256').update('checkie-session:' + TOKEN + ':' + ADMIN_PW).digest('hex');
@@ -150,7 +152,7 @@ async function currentUser(req) {
   const s = m ? verify(decodeURIComponent(m[1])) : null;
   if (!s) return null;
   const users = (await readCol('users')).data;
-  if (s.uid === 'admin') { const oc = (users[OWNER_KEY] || {}).color; return { id: 'admin', username: ADMIN_ID, name: '관리자', color: COLOR_RE.test(oc || '') ? oc : '#5f3dc4', canView: true, canEdit: true, isAdmin: true, isOwner: true }; }
+  if (s.uid === 'admin') { const ow = users[OWNER_KEY] || {}, oc = ow.color; return { id: 'admin', username: ADMIN_ID, name: ow.name || ADMIN_NAME, color: COLOR_RE.test(oc || '') ? oc : '#5f3dc4', canView: true, canEdit: true, isAdmin: true, isOwner: true }; }
   if (s.uid === OWNER_KEY) return null;
   const u = users[s.uid];
   if (!u || (u.pwv || 1) !== s.pwv) return null;
@@ -260,12 +262,13 @@ http.createServer(async (req, res) => {
     }
 
     /* ----- 내 색 바꾸기 ----- */
-    if (p === '/api/color' && req.method === 'POST') {
+    if ((p === '/api/color' || p === '/api/profile') && req.method === 'POST') {
       if (!me) return send(res, 401, { message: '로그인이 필요해요.' });
-      const b = await readBody(req);
-      if (!COLOR_RE.test(b.color || '')) return send(res, 400, { message: '색 값이 올바르지 않아요.' });
-      await writeCol('users', data => { const key = me.isOwner ? OWNER_KEY : me.id; data[key] = Object.assign(data[key] || {}, { color: b.color }); }, `색 변경 · ${me.name}`);
-      return send(res, 200, { ok: true, color: b.color });
+      const b = await readBody(req), patch = {};
+      if (b.color !== undefined) { if (!COLOR_RE.test(b.color || '')) return send(res, 400, { message: '색 값이 올바르지 않아요.' }); patch.color = b.color; }
+      if (b.name !== undefined) { const n = String(b.name).trim().slice(0, 30); if (!n) return send(res, 400, { message: '이름을 입력해 주세요.' }); patch.name = n; }
+      await writeCol('users', data => { const key = me.isOwner ? OWNER_KEY : me.id; data[key] = Object.assign(data[key] || {}, patch); }, `내 정보 변경 · ${patch.name || me.name}`);
+      return send(res, 200, Object.assign({ ok: true }, patch));
     }
 
     /* ----- 관리자: 회원 권한 ----- */
