@@ -127,9 +127,12 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-10-29T05:25:11.391Z",
+    "updatedAt": "2026-10-29T08:02:23.719Z",
     "progressBy": {
       "en": {}
+    },
+    "ai": {
+      "en": "ChatGPT"
     }
   },
   "game-it5mm": {
