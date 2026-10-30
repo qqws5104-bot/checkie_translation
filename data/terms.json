@@ -104,8 +104,8 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "미정",
-        "text": ""
+        "status": "후보",
+        "text": "THIS!"
       },
       "ja": {
         "avoid": "",
@@ -121,7 +121,7 @@
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-10-29T00:00:00Z"
+    "updatedAt": "2026-10-30T03:23:23.180Z"
   },
   "ui-front": {
     "common": false,
