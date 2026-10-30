@@ -712,6 +712,20 @@ h1 { font-size: 22px; }
 .lead { font-size: 15.5px; }
 .memo-banner h3 { font-size: 20px; }
 .toast { font-size: 15.5px; padding: 12px 20px; }
+.who-chip { font-style: normal; font-size: 13px; color: var(--ok); border: 1px solid color-mix(in srgb, var(--ok) 45%, transparent); border-radius: 99px; padding: 1px 9px; margin-left: 6px; white-space: nowrap; display: inline-block; }
+.who-chip.off { color: var(--muted); border-color: var(--line); }
+.ck-h span { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px; white-space: normal; }
+.btn.force { font-size: 14px; min-height: 36px; }
+.gfoot { align-items: center; }
+.gfoot .spacer { flex: 1; }
+.btn.reset { color: var(--warn); }
+.btn.reset.danger { background: var(--warn); color: #fff; }
+.dwho { color: var(--muted); font-size: 12.5px; }
+.resetdlg { max-width: 460px; }
+.resetdlg h2 { font-size: 19px; }
+.reset-box { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; display: grid; gap: 6px; font-size: 15px; }
+.reset-box p { margin: 0; }
+.btn.danger-fill { background: var(--warn); border-color: var(--warn); color: #fff; font-weight: 700; }
 .toast.busy::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; margin-right: 8px; vertical-align: -1px; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
@@ -810,6 +824,17 @@ h1 { font-size: 22px; }
 </dialog>
 <dialog id="imgdlg" class="wide imgdlg">
   <div class="fstack"><p id="img-cap" style="margin:0"></p><img id="img-view" alt="원본 캡처"><div class="row"><button type="button" class="btn primary" data-close>닫기</button></div></div>
+</dialog>
+<dialog id="resetdlg" class="resetdlg">
+  <div class="fstack">
+    <h2 id="reset-title">처음부터 다시?</h2>
+    <div class="reset-box">
+      <p><b>지워지는 것</b> · 엑셀 내용, 검수 결과, 단계별 확인 기록, 확정 상태</p>
+      <p><b>남는 것</b> · 게임 정보, 올린 원본 엑셀, 리셋 기록(누가 언제)</p>
+    </div>
+    <p class="sb" style="margin:0">되돌릴 수 없음.</p>
+    <div class="row"><button type="button" class="btn" data-close>아니요</button><button type="button" class="btn danger-fill" id="reset-yes">예, 처음부터 다시</button></div>
+  </div>
 </dialog>
 <dialog id="pwdlg">
   <form id="pw-form" class="fstack">
@@ -1674,7 +1699,7 @@ document.addEventListener('click', async e => {
     next.progress = { ...(next.progress || {}), [promptLang]: 4 };
     const by = JSON.parse(JSON.stringify(next.progressBy || {})); by[promptLang] = { ...(by[promptLang] || {}), 4: { n: meName(), c: meNow.color || '#5f3dc4', at: nowISO() } }; next.progressBy = by;
     if (promptLang === 'en') { const it = workOf(c.data, 'en'); next.enFinal = tsv(['ID', '영어'], srcRows(c.data).filter(r => isDirect(r) && it[r.id] && it[r.id].tr).map(r => [r.id, it[r.id].tr])); }
-    try { await db.doc('themes/' + c.id).set(next); toast(promptLang === 'en' ? '영어를 확정함. 일본어·중국어를 시작할 수 있음.' : '확정함.'); render(true); } catch (err) { writeErr(err); }
+    try { await db.doc('themes/' + c.id).set(next); toast('확정함. 누가 했는지 기록됨.'); render(true); } catch (err) { writeErr(err); }
   }
 });
 
@@ -1856,9 +1881,8 @@ function simpleStep(t, lk) {
   if (stageOf(t, lk) >= 5) return 'applied';
   if (stageOf(t, lk) >= 4) return 'confirmed';
   const F = flowState(t, lk);
-  if (!F.N) return 'translate';
-  if (!signOf(t, lk, 'excel')) return 'excel';
-  if (F.openAuto || F.filesTodo || F.rvTodo || F.human || F.memos || !signOf(t, lk, 'auto') || !signOf(t, lk, 'files') || !signOf(t, lk, 'cross')) return 'review';
+  if (!isDone(t, lk, 'excel', F)) return F.N ? 'excel' : 'translate';
+  if (F.memos || !isDone(t, lk, 'auto', F) || !isDone(t, lk, 'files', F) || !isDone(t, lk, 'cross', F)) return 'review';
   return 'done';
 }
 const SIMPLE_LABEL = { translate: '엑셀 올리기', excel: '엑셀 확인', review: '검수', done: '확정 가능', confirmed: '확정됨', applied: '적용 완료' };
@@ -2124,12 +2148,49 @@ function resultXlsx(t, lk) {
 
 /* ---------- 단계별 확인(서명) ---------- */
 const signOf = (t, lk, key) => key === 'info' ? ((t.sign || {}).info || null) : ((((t.work || {})[lk] || {}).sign || {})[key] || null);
+/* 단계 완료 여부: 확인을 눌렀고 (조건을 채웠거나 ‘완료로 처리’했으면) 완료 */
+function stepConds(t, lk, F) { return { info: infoDone(t), excel: F.N > 0, auto: !F.openAuto, files: !F.filesTodo, cross: !F.rvTodo && !F.human }; }
+function isDone(t, lk, key, F) { const sg = signOf(t, lk, key); return !!sg && (!!sg.forced || stepConds(t, lk, F)[key]); }
+const whoOf = sg => sg ? `${sg.by} · ${fmtShort(sg.at)}` : '';
+const fmtShort = s => { if (!s) return ''; const d = new Date(s); return `${d.getMonth() + 1}/${d.getDate()}`; };
 function signRow(t, lk, key, cond, what, why) {
   const sg = signOf(t, lk, key);
-  if (sg && cond) return `<div class="signrow ok"><span class="sg-ok">✓ ${esc(what)} 확인 완료</span><small>${esc(sg.by)} · ${fmtDate(sg.at)}</small>${readOnly ? '' : `<button type="button" class="linkbtn" data-unsign="${key}">취소</button>`}</div>`;
-  return `<div class="signrow${cond ? ' ready' : ''}">${readOnly ? '' : `<button type="button" class="btn ${cond ? 'primary' : ''}" data-sign="${key}" ${cond ? '' : 'disabled'}>${esc(what)} 확인 완료</button>`}<small>${cond ? (sg ? '내용이 바뀌어 다시 확인 필요' : '다 봤으면 누르기') : esc(why)}</small></div>`;
+  if (sg && (cond || sg.forced)) return `<div class="signrow ok"><span class="sg-ok">✓ ${esc(what)} ${sg.forced ? '완료 처리' : '확인 완료'}</span><small>${esc(sg.by)} · ${fmtDate(sg.at)}${sg.forced ? ' · 직접 완료 처리' : ''}</small>${readOnly ? '' : `<button type="button" class="linkbtn" data-unsign="${key}">취소</button>`}</div>`;
+  return `<div class="signrow${cond ? ' ready' : ''}">${readOnly ? '' : `<button type="button" class="btn ${cond ? 'primary' : ''}" data-sign="${key}" ${cond ? '' : 'disabled'}>${esc(what)} 확인 완료</button>`}<small>${cond ? (sg ? '내용이 바뀌어 다시 확인 필요' : '다 봤으면 누르기') : esc(why)}</small>${!cond && !readOnly ? `<button type="button" class="btn ghost force" data-force="${key}" title="이미 다른 곳에서 끝냈는데 사이트에 반영이 안 됐을 때">이미 끝났으면 완료 처리</button>` : ''}</div>`;
 }
 document.addEventListener('click', async e => {
+  const fb = e.target.closest('[data-force]');
+  if (fb) {
+    if (!confirmOnce('force-' + fb.dataset.force)) { fb.textContent = '한 번 더 누르면 완료 처리'; return; }
+    const key = fb.dataset.force;
+    await saveGameField(key === 'info' ? 'sign.info' : `work.${promptLang}.sign.${key}`, { by: meName(), at: nowISO(), forced: true });
+    render(true); toast('완료 처리함. 누가 했는지 기록됨.'); return;
+  }
+  const fc = e.target.closest('[data-forceconfirm]');
+  if (fc) {
+    if (!confirmOnce('forceconfirm')) { fc.textContent = '한 번 더 누르면 확정 처리'; return; }
+    const c = cur(), lk = promptLang, next = JSON.parse(JSON.stringify(c.data));
+    next.progress = { ...(next.progress || {}), [lk]: 4 };
+    next.progressBy = { ...(next.progressBy || {}), [lk]: { ...((next.progressBy || {})[lk] || {}), 4: { n: meName(), c: (meNow && meNow.color) || '#5f3dc4', at: nowISO(), forced: true } } };
+    await db.doc('themes/' + c.id).set(next); render(true); toast('확정 처리함. 누가 했는지 기록됨.'); return;
+  }
+  const rs = e.target.closest('[data-reset]');
+  if (rs) {
+    $('#reset-title').textContent = `${themeName(gameId)} · ${LANGS.find(l => l.key === promptLang).label} 진행을 처음부터 다시?`;
+    $('#resetdlg').showModal(); $('#resetdlg [data-close]').focus(); return;
+  }
+  if (e.target.closest('#reset-yes')) {
+    $('#resetdlg').close();
+    const c = cur(), lk = promptLang, next = JSON.parse(JSON.stringify(c.data)), w = (next.work || {})[lk] || {};
+    next.work = next.work || {};
+    next.work[lk] = { uploads: w.uploads || [], resets: [...(w.resets || []), { by: meName(), at: nowISO() }] };
+    next.progress = { ...(next.progress || {}), [lk]: 0 };
+    next.progressBy = { ...(next.progressBy || {}), [lk]: {} };
+    next.updatedAt = nowISO();
+    await db.doc('themes/' + c.id).set(next);
+    const vk = c.id + ':' + lk; delete viewStep[vk]; rvTab = 'auto';
+    render(true); toast(`${LANGS.find(l => l.key === lk).label} 진행을 처음으로 돌림. 올린 원본 엑셀 기록은 남김.`, 5000); return;
+  }
   const sb = e.target.closest('[data-sign]'), ub = e.target.closest('[data-unsign]'); if (!sb && !ub) return;
   const key = (sb || ub).dataset.sign || (ub && ub.dataset.unsign), val = sb ? { by: meName(), at: nowISO() } : null;
   await saveGameField(key === 'info' ? 'sign.info' : `work.${promptLang}.sign.${key}`, val);
@@ -2141,9 +2202,9 @@ let rvTab = 'auto';
 const pasteBtn = (target, label) => readOnly ? '' : `<button type="button" class="btn" data-paste="${target}">${label}</button>`;
 function workHTML({ id, data: t }) {
   const L = LANGS.find(l => l.key === promptLang), lk = L.key, step = simpleStep(t, lk), F = flowState(t, lk), sh = sheetOf(t, lk);
-  const info = infoDone(t) && !!signOf(t, lk, 'info');
+  const info = isDone(t, lk, 'info', F);
   if (gameFiles[id] === undefined) { gameFiles[id] = []; loadFiles(id, true); }
-  const nowN = !info && !F.N ? 1 : step === 'translate' || step === 'excel' ? 2 : step === 'review' ? 3 : 4;
+  const nowN = !info && step === 'translate' ? 1 : step === 'translate' || step === 'excel' ? 2 : step === 'review' ? 3 : 4;
   const vkey = id + ':' + lk;
   if (!viewStep[vkey] || viewStep[vkey].now !== nowN) viewStep[vkey] = { now: nowN, pick: null };
   const open = viewStep[vkey].pick ?? nowN;
@@ -2162,15 +2223,17 @@ function workHTML({ id, data: t }) {
       ${sh ? `<p class="sb">지금 <b>${esc(sh.src || '')}</b> · ${F.N}줄${(sh.extra || []).length ? ` · 별도 시트 ${sh.extra.map(e => esc(e.name)).join(', ')}` : ''} (${esc(sh.by || '')}, ${fmtDate(sh.at)})</p>` : ''}
       <details class="more"><summary>프롬프트 보기${readOnly ? '' : ' · 번역 AI 바꾸기'}</summary><div class="optbox"><label class="aisel">번역 AI <select id="ai-sel" ${readOnly ? 'disabled' : ''}>${['Claude', 'ChatGPT', 'Gemini'].map(a => `<option ${(aiOf(t, lk) || 'Claude') === a ? 'selected' : ''}>${a}</option>`).join('')}</select></label></div><pre class="ptext" id="pt-p-main">${esc(makePrompt(id, t, lk))}</pre></details>
       ${signRow(t, lk, 'excel', F.N > 0, '번역 엑셀', '엑셀을 올리면 누를 수 있음')}`,
-    3: () => !F.N ? '<p class="sb">번역 엑셀을 먼저 올리기.</p>' : reviewHTML(id, t, lk, F, reviewer),
+    3: () => !F.N && !isDone(t, lk, 'excel', F) ? '<p class="sb">번역 엑셀을 먼저 올리기.</p>' : !F.N ? `<p class="sb">엑셀 없이 완료 처리된 상태. 이미 끝낸 검수는 아래에서 완료 처리.</p>${signRow(t, lk, 'auto', false, '자동 점검', '엑셀이 없음')}${signRow(t, lk, 'files', false, '이미지 대조', '엑셀이 없음')}${signRow(t, lk, 'cross', false, '교차 검수', '엑셀이 없음')}` : reviewHTML(id, t, lk, F, reviewer),
     4: () => (step === 'done' ? `<p class="sb">검수 3가지 모두 확인 완료.</p>${readOnly ? '' : `<button type="button" class="btn primary" data-wact="confirm">${esc(L.label)} 확정하기</button>`}`
       : step === 'confirmed' ? `<p class="sb">${esc(APPLY_CHECK[lk])}</p>${readOnly ? '' : '<button type="button" class="btn primary" data-wact="applied">화면 적용 완료</button>'}`
       : step === 'applied' ? '<p class="sb">화면 적용까지 끝남.</p>'
-      : '<p class="sb">검수 3가지를 마치면 여기서 확정함.</p>'),
+      : `<p class="sb">검수 3가지를 마치면 여기서 확정.</p>${readOnly ? '' : '<div class="signrow"><button type="button" class="btn ghost force" data-forceconfirm>이미 끝났으면 확정 처리</button><small>다른 곳에서 이미 확정했는데 반영이 안 됐을 때</small></div>'}`),
   };
   const TITLES = { 1: '게임 정보', 2: '번역 엑셀', 3: '검수', 4: '확정' };
-  const sgn = k => signOf(t, lk, k) ? '✓' : '○';
-  const SUB = { 1: info ? `확인 · ${esc(signOf(t, lk, 'info').by)}` : '', 2: F.N ? `${F.N}줄${signOf(t, lk, 'excel') ? ' · 확인 완료' : ''}` : '', 3: F.N ? `${sgn('auto')} 자동 점검  ${sgn('files')} 이미지 대조  ${sgn('cross')} 교차 검수` : '', 4: isFinal(step) ? SIMPLE_LABEL[step] : '' };
+  const who = k => isDone(t, lk, k, F) ? `<em class="who-chip">✓ ${esc(whoOf(signOf(t, lk, k)))}</em>` : '';
+  const sub3 = ['auto', 'files', 'cross'].map(k => `<em class="who-chip${isDone(t, lk, k, F) ? '' : ' off'}">${{ auto: '자동 점검', files: '이미지 대조', cross: '교차 검수' }[k]} ${isDone(t, lk, k, F) ? '✓ ' + esc(signOf(t, lk, k).by) : '○'}</em>`).join('');
+  const pb = (t.progressBy || {})[lk] || {}, fin = pb[5] || pb[4];
+  const SUB = { 1: who('info'), 2: `${F.N ? F.N + '줄 ' : ''}${who('excel')}`, 3: F.N || isDone(t, lk, 'excel', F) ? sub3 : '', 4: isFinal(step) ? `<em class="who-chip">✓ ${esc(SIMPLE_LABEL[step])}${fin ? ' · ' + esc(fin.n) + ' · ' + fmtShort(fin.at) : ''}</em>` : '' };
   const stateOf = n => n === 1 ? (info ? 'done' : 'now') : n < nowN || isFinal(step) ? 'done' : n === nowN ? 'now' : '';
   const items = [1, 2, 3, 4].map(n => { const st = stateOf(n), isOpen = open === n; return `<li class="ck ${st}${isOpen ? ' open' : ''}"><button type="button" class="ck-h" data-show="${n}"><i>${st === 'done' ? '✓' : n}</i><b>${TITLES[n]}</b><span>${SUB[n] || ''}</span></button>${isOpen ? `<div class="ck-b">${body[n]()}</div>` : ''}</li>`; }).join('');
   return `
@@ -2183,7 +2246,7 @@ function workHTML({ id, data: t }) {
     ${memoBannerHTML(t, lk)}
     <ol class="checklist">${items}</ol>
     ${filesBoxHTML(id, t, lk, F)}
-    <div class="gfoot"><button type="button" class="btn ghost" id="gp-open">용어집</button></div>`;
+    <div class="gfoot"><button type="button" class="btn ghost" id="gp-open">용어집</button><span class="spacer"></span>${readOnly ? '' : `<button type="button" class="btn ghost reset" data-reset title="이 언어의 엑셀·검수·확인 기록을 지우고 처음부터 시작">${esc(L.label)} 처음부터 다시</button>`}</div>`;
 }
 /* 자료실: 누구나 받아 볼 수 있게 */
 function filesBoxHTML(id, t, lk, F) {
@@ -2206,7 +2269,7 @@ function sheetViewHTML(t, lk) {
 function reviewHTML(id, t, lk, F, reviewer) {
   const tabs = [['auto', '① 자동 점검', F.openAuto ? `${F.openAuto}줄 남음` : '완료'], ['files', '② 이미지 대조', `${F.files.length - F.filesTodo}/${F.files.length}`], ['cross', '③ 교차 검수', `${F.pass}/${F.N}`]];
   const cond = { auto: !F.openAuto, files: !F.filesTodo, cross: !F.rvTodo && !F.human };
-  const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${cond[k] && signOf(t, lk, k) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${cond[k] && signOf(t, lk, k) ? '확인 완료' : c}</small></button>`).join('')}</div>`;
+  const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${isDone(t, lk, k, F) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${isDone(t, lk, k, F) ? '✓ ' + esc(whoOf(signOf(t, lk, k))) : c}</small></button>`).join('')}</div>`;
   let inner = '';
   if (rvTab === 'auto') inner = `<p class="sb">숫자 · 줄 수 · 한글 남음 · 같은 원문 다른 번역 · 길이 · 용어를 사이트가 바로 확인함. 고치거나 ‘문제 없음’을 누르기. (비고에 이유가 있으면 ‘문제 없음’)</p>
     ${F.issues.length ? `<div class="ilist">${F.issues.map(({ r, list }) => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b>${readOnly ? `<div style="white-space:pre-wrap">${esc(r.tr)}</div>` : `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>`}${r.note ? `<small class="sb">비고: ${esc(r.note)}</small>` : ''}${list.map(([k, m]) => `<span class="itag">${esc(m)}${readOnly ? '' : ` <button type="button" class="linkbtn" data-autook="${esc(r.id)}|${k}">문제 없음</button>`}</span>`).join('')}${memoBtn(r)}${memoEditorHTML(r)}</div></div>`).join('')}</div>` : '<p class="okmsg">자동 점검에서 걸린 게 없음.</p>'}`;
@@ -2815,7 +2878,8 @@ function dashHTML() {
       const st = simpleStep(t, l.key), rs = sheetRows(t, l.key), N = rs.length, tr = rs.filter(r => r.x.rv && r.x.rv.v === '통과').length;
       const cls = isFinal(st) || st === 'done' ? 'ok' : st === 'wait' ? 'wait' : 'now';
       const mm = flowState(t, l.key).memos;
-      return `<button type="button" class="dcell ${cls}" data-goto="${esc(id)}|${l.key}"><span class="lab">${l.label}</span><b>${esc(SIMPLE_LABEL[st])}</b>${N && !isFinal(st) ? `<small>검수 ${tr}/${N}줄</small>` : ''}${mm ? `<span class="memo-chip">수정 요청 ${mm}</span>` : ''}</button>`;
+      const sgs = [signOf(t, l.key, 'info'), ...['excel', 'auto', 'files', 'cross'].map(k => signOf(t, l.key, k)), ...Object.values((t.progressBy || {})[l.key] || {}).map(x => x && { by: x.n, at: x.at })].filter(x => x && x.at).sort((a, b) => b.at.localeCompare(a.at))[0];
+      return `<button type="button" class="dcell ${cls}" data-goto="${esc(id)}|${l.key}"><span class="lab">${l.label}</span><b>${esc(SIMPLE_LABEL[st])}</b>${N && !isFinal(st) ? `<small>검수 ${tr}/${N}줄</small>` : ''}${sgs && st !== 'translate' ? `<small class="dwho">최근: ${esc(sgs.by)} · ${fmtShort(sgs.at)}</small>` : ''}${mm ? `<span class="memo-chip">수정 요청 ${mm}</span>` : ''}</button>`;
     }).join('');
     return `<div class="drow"><div class="dgame"><button type="button" data-goto="${esc(id)}|${promptLang}">${esc(t.name || '(이름 없음)')}</button><small>${esc(t.concept || '게임 정보 없음')}</small></div>${cells}</div>`;
   });
