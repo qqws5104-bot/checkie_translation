@@ -91,7 +91,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-10-30T02:59:41.150Z",
+    "updatedAt": "2026-10-30T02:59:45.030Z",
     "progressBy": {
       "en": {
         "4": {
@@ -164,7 +164,8 @@
             "AD-6-2P": true,
             "AD-7-1P": true,
             "AD-7-2P": true,
-            "AD-8-1P": true
+            "AD-8-1P": true,
+            "AD-8-2P": true
           }
         }
       },
