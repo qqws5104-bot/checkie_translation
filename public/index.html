@@ -518,6 +518,119 @@ dialog.wide { max-width: 760px; }
 .setup-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
 .setup-row small { display: block; color: var(--muted); font-size: 13px; }
 @media (max-width: 560px) { .task-steps b { min-width: 0; flex-basis: 100%; } .track button { font-size: 11px; } .task { padding: 14px; } }
+.autop { border: 2px solid var(--accent); border-radius: 16px; padding: 20px; display: grid; gap: 12px; }
+.ap-head { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.ap-head h2 { margin: 0; font-size: 20px; flex: 1 1 240px; }
+.btn.big { min-height: 48px; padding: 10px 22px; font-size: 16px; }
+.ap-p { margin: 0; color: var(--muted); font-size: 15px; }
+.ap-log { list-style: none; margin: 0; padding: 10px 12px; background: var(--panel); border-radius: 10px; font-size: 14px; display: grid; gap: 2px; }
+.ap-log.on li:last-child::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--accent); border-right-color: transparent; margin-right: 8px; vertical-align: -1px; animation: spin .8s linear infinite; }
+.ap-err { margin: 0; color: var(--accent); font-weight: 700; font-size: 15px; }
+.ap-who { margin: 0; font-size: 13px; color: var(--muted); }
+.ap-who .linkbtn { margin: 0 0 0 6px; font-size: 13px; }
+.ap-terms { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 14px; background: var(--panel); border-radius: 10px; padding: 8px 12px; }
+.qlist { display: grid; gap: 8px; }
+.qrow { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 10px; align-items: center; border-top: 1px solid var(--line); padding-top: 8px; }
+.qq { font-size: 15px; }
+.qq small { display: block; color: var(--muted); font-size: 12px; font-family: var(--font-mono); }
+@media (max-width: 640px) { .qrow { grid-template-columns: 1fr; } }
+details.manual { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 10px; }
+details.manual > .task { margin-top: 10px; }
+.flist { display: grid; gap: 8px; max-height: 55vh; overflow: auto; }
+.frow { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; font-size: 14px; }
+.frow img { width: 72px; height: 44px; object-fit: cover; border-radius: 6px; background: var(--panel); }
+.frow span { flex: 1; word-break: break-all; }
+.fpdf { flex: none !important; width: 72px; text-align: center; font-weight: 700; color: var(--muted); }
+.lead { color: var(--muted); margin: 0 0 12px; }
+.dash .drow { grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)); }
+@media (max-width: 760px) { .dash .drow { grid-template-columns: 1fr 1fr 1fr; } }
+.ghead { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 16px; }
+.ghead select { width: auto; font-weight: 700; font-size: 17px; }
+.ghead .spacer { flex: 1; }
+.ghead .langseg { margin: 0; }
+.checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ck { border: 1px solid var(--line); border-radius: 14px; }
+.ck.open { border: 2px solid var(--accent); }
+.ck.done:not(.open) { opacity: .8; }
+.ck-h { width: 100%; display: flex; align-items: center; gap: 12px; border: 0; background: none; padding: 14px 16px; text-align: left; color: var(--fg); }
+.ck-h i { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); font-style: normal; font-weight: 700; font-size: 14px; flex: none; color: var(--muted); }
+.ck.now .ck-h i { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.ck.done .ck-h i { background: var(--ok); border-color: var(--ok); color: var(--on-accent); }
+.ck-h b { font-size: 17px; }
+.ck-h span { margin-left: auto; color: var(--muted); font-size: 14px; text-align: right; }
+.ck-b { padding: 0 16px 16px 58px; display: grid; gap: 12px; }
+@media (max-width: 560px) { .ck-b { padding-left: 16px; } }
+.sb { margin: 0; color: var(--muted); font-size: 15px; }
+.do { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.do li { display: flex; gap: 10px; align-items: center; }
+.do li > i { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--panel); font-style: normal; font-size: 12px; font-weight: 700; flex: none; }
+.do li > div { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 15px; }
+.nextrow { display: flex; justify-content: flex-end; }
+.notes { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
+.notes h4 { margin: 0; font-size: 15px; }
+.notes h4 small { font-weight: 400; color: var(--muted); font-size: 13px; margin-left: 6px; }
+.note { display: flex; gap: 10px; align-items: center; border-top: 1px solid var(--line); padding-top: 8px; }
+.note code { font-size: 12px; color: var(--muted); flex: none; }
+.note > div { flex: 1; }
+.note small { display: block; color: var(--muted); font-size: 13px; }
+.gfoot { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 16px; }
+.tprev textarea.grow { min-width: 220px; }
+.fchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.fchip { border: 1px solid var(--line); border-radius: 99px; padding: 3px 10px; font-size: 13px; color: var(--muted); }
+.fchip b { color: var(--fg); }
+.fchip.wait { border-style: dashed; }
+.fchip.ref { opacity: .7; }
+.fchip .linkbtn { margin: 0 0 0 4px; font-size: 12px; }
+.sumrow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.fbtn { border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 99px; padding: 4px 12px; font-size: 14px; }
+.fbtn.on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.fbtn.warn:not(.on) { border-color: var(--accent); color: var(--accent); }
+.sumrow select { width: auto; min-height: 34px; padding: 3px 8px; font-size: 14px; }
+.srct { max-height: 520px; }
+.srct td { vertical-align: top; }
+.srct td.mono { font-family: var(--font-mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+.srct tr.unc td { background: color-mix(in srgb, var(--accent-soft) 80%, transparent); }
+.srct tr.dup td { background: color-mix(in srgb, #fff2cc 55%, transparent); }
+.srct small { display: block; font-size: 12px; }
+.srct .flag { color: var(--accent); font-weight: 700; }
+.srct .dupf { color: #9a6700; }
+.srct .edf { color: var(--ok); }
+.srct input[type=checkbox] { width: 20px; min-height: 20px; }
+.nextrow.spread { justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.nextrow.spread > span:last-child { display: flex; gap: 6px; }
+.ck-h em { font-style: normal; font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 0 8px; }
+.imgdlg img { max-width: 100%; max-height: 70vh; border-radius: 8px; background: var(--panel); }
+.rtabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 6px; }
+.rtabs button { border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 10px; padding: 8px 10px; font-weight: 700; font-size: 15px; display: grid; gap: 2px; text-align: left; }
+.rtabs button small { font-weight: 400; color: var(--muted); font-size: 13px; }
+.rtabs button.on { border: 2px solid var(--accent); background: var(--accent-soft); }
+.rtabs button.ok small::before { content: '✓ '; color: var(--ok); }
+.rpane { display: grid; gap: 10px; }
+.okmsg { margin: 0; color: var(--ok); font-weight: 700; }
+.ilist { display: grid; gap: 8px; }
+.irow { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 10px; border-top: 1px solid var(--line); padding-top: 8px; }
+.irow code { font-size: 12px; color: var(--muted); }
+.ibody { display: grid; gap: 6px; }
+.itag { font-size: 13px; color: var(--accent); font-weight: 700; }
+.itag .linkbtn { margin: 0 0 0 6px; font-weight: 400; font-size: 13px; }
+.vtag { display: inline-block; margin-top: 4px; font-size: 11px; font-weight: 700; border-radius: 99px; padding: 0 6px; color: var(--on-accent); background: var(--accent); }
+.vtag.rev { background: #9a6700; }
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 15px; }
+.cmp span { display: block; font-size: 12px; color: var(--muted); }
+.iacts { display: flex; flex-wrap: wrap; gap: 6px; }
+.fcard { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+.fcard.done { opacity: .75; }
+.fcard > summary { cursor: pointer; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; list-style: none; }
+.fcard > summary::-webkit-details-marker { display: none; }
+.fcard > summary span { color: var(--muted); font-size: 13px; }
+.fcard input[type=checkbox] { width: 20px; min-height: 20px; }
+.fgrid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 12px; margin-top: 10px; }
+.fgrid img { width: 100%; border-radius: 8px; border: 1px solid var(--line); }
+.fgrid ol { margin: 0; padding-left: 20px; font-size: 15px; display: grid; gap: 4px; align-content: start; }
+.fgrid .exw { color: var(--muted); }
+.fgrid .exw small { font-size: 12px; }
+.noimg { border: 1px dashed var(--line); border-radius: 8px; display: grid; place-items: center; min-height: 140px; color: var(--muted); font-size: 14px; padding: 10px; text-align: center; }
+@media (max-width: 700px) { .fgrid, .cmp { grid-template-columns: 1fr; } .irow { grid-template-columns: 1fr; } }
 .toast.busy::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; margin-right: 8px; vertical-align: -1px; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
@@ -534,11 +647,9 @@ dialog.wide { max-width: 760px; }
     <div class="auth"><span class="saved" id="saved" aria-live="polite"></span><span class="who" id="who"></span><button type="button" class="btn" id="pw-btn" hidden>비밀번호 변경</button><button type="button" class="btn themebtn" id="theme-btn" title="화면 밝기 바꾸기">화면: 자동</button><button type="button" class="btn" id="auth-btn">로그아웃</button></div>
   </div>
   <nav class="mainnav" role="tablist" aria-label="화면">
-    <button type="button" role="tab" data-view="dash" aria-selected="true">현황판<span>모든 게임 한눈에</span></button>
-    <button type="button" role="tab" data-view="prompts" aria-selected="false">번역 작업<span>지금 할 일 · 결과 올리기</span></button>
-    <button type="button" role="tab" data-view="card" aria-selected="false">게임 설정<span>컨셉·말투·원문 표</span></button>
-    <button type="button" role="tab" data-view="glossary" aria-selected="false">용어집<span>모든 게임 공용</span></button>
-    <button type="button" role="tab" data-view="admin" aria-selected="false" id="admin-tab" hidden>회원 관리<span id="admin-sub">보기·편집 허용</span></button>
+    <button type="button" role="tab" data-view="dash" aria-selected="true">게임 번역</button>
+    <button type="button" role="tab" data-view="glossary" aria-selected="false">용어집</button>
+    <button type="button" role="tab" data-view="admin" aria-selected="false" id="admin-tab" hidden>회원 관리<span id="admin-sub" hidden></span></button>
   </nav>
   <div id="picker" class="picker"></div>
   <div id="content"><div class="empty">불러오는 중…</div></div>
@@ -607,6 +718,17 @@ dialog.wide { max-width: 760px; }
     <div id="rules-body"></div>
     <div class="row"><button type="button" class="btn primary" data-close>닫기</button></div>
   </div>
+</dialog>
+<dialog id="filesdlg" class="wide">
+  <div class="fstack">
+    <h2 id="files-title">자료</h2>
+    <p class="hint" style="margin:0;color:var(--muted);font-size:14px">자동 진행 때 AI에게 함께 보내는 화면 캡처·PDF예요. 파일 이름 앞부분(예: LG-01)이 원문 ID와 맞는 자료만 골라 보내요.</p>
+    <div id="files-list" class="flist"></div>
+    <div class="row"><label class="btn upl">자료 더 올리기<input type="file" hidden multiple data-src accept=".png,.jpg,.jpeg,.webp,.pdf,.docx,.xlsx,.xls,.csv,.txt"></label><button type="button" class="btn primary" data-close>닫기</button></div>
+  </div>
+</dialog>
+<dialog id="imgdlg" class="wide imgdlg">
+  <div class="fstack"><p id="img-cap" style="margin:0"></p><img id="img-view" alt="원본 캡처"><div class="row"><button type="button" class="btn primary" data-close>닫기</button></div></div>
 </dialog>
 <dialog id="pwdlg">
   <form id="pw-form" class="fstack">
@@ -1126,7 +1248,7 @@ function render(force) {
   if (!force && a && a.matches && a.matches('#content input, #content textarea, #content select')) { pending = true; return; }
   pending = false;
   document.body.classList.toggle('wide', view === 'glossary');
-  document.querySelectorAll('.mainnav button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === view)));
+  document.querySelectorAll('.mainnav button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === view || (b.dataset.view === 'dash' && (view === 'prompts' || view === 'card')))));
   renderPicker();
   const c = $('#content');
   if (!db) { c.innerHTML = '<div class="empty">데이터를 불러오지 못했어요. 잠시 후 새로고침해 주세요.</div>'; return; }
@@ -1141,7 +1263,8 @@ document.addEventListener('focusout', () => setTimeout(() => { if (pending) rend
 
 function renderPicker() {
   const p = $('#picker');
-  if (view === 'glossary' || view === 'admin' || view === 'dash') { p.innerHTML = ''; return; }
+  if (view === 'card') { p.innerHTML = `<button type="button" class="btn ghost" data-view-go="prompts">← ${esc(themeName(gameId))} 번역으로</button>`; return; }
+  p.innerHTML = ''; return;
   p.innerHTML = `<span class="label">게임 선택</span>` + themes.map(t => `<button type="button" class="gbtn" data-game="${esc(t.id)}" aria-pressed="${t.id === gameId}">${esc(t.data.name || '(이름 없음)')}</button>`).join('')
     + (readOnly ? '' : `<button type="button" class="gbtn add" id="add-game">+ 게임 추가</button>`);
 }
@@ -1359,26 +1482,21 @@ function enFinalText(t) {
 }
 
 /* ---- 결과 올리기 ---- */
+let autoCtx = null;   // 자동 진행 중에는 시작한 게임·언어에 저장한다 (화면을 옮겨도 섞이지 않게)
+const wGame = () => autoCtx ? themes.find(x => x.id === autoCtx.id) : cur();
+const wLang = () => autoCtx ? autoCtx.lk : promptLang;
 async function saveWork(mutate, msg) {
-  const c = cur(); if (!c) return;
+  const c = wGame(); if (!c) return; const LK = wLang();
   const next = JSON.parse(JSON.stringify(c.data));
-  next.work = next.work || {}; next.work[promptLang] = next.work[promptLang] || { items: {} };
-  const items = next.work[promptLang].items = next.work[promptLang].items || {};
-  const prev = currentStep(c.data, promptLang);
+  next.work = next.work || {}; next.work[LK] = next.work[LK] || { items: {} };
+  const items = next.work[LK].items = next.work[LK].items || {};
+  const prev = simpleStep(c.data, LK);
   const n = mutate(items, next);
-  // 진행 상황 자동 반영
-  const step = currentStep(next, promptLang), stg = stepStage(step);
-  if (stg !== undefined && stg !== stageOf(next, promptLang)) {
-    next.progress = { ...(next.progress || {}), [promptLang]: stg };
-    const by = JSON.parse(JSON.stringify(next.progressBy || {})), m = by[promptLang] || {};
-    Object.keys(m).forEach(i => { if (+i > stg) delete m[i]; });
-    if (stg > 0 && meNow) m[stg] = { n: meNow.name || meNow.username, c: meNow.color || '#5f3dc4', at: new Date().toISOString() };
-    by[promptLang] = m; next.progressBy = by;
-  }
+  const step = simpleStep(next, LK);
   next.updatedAt = new Date().toISOString();
   try {
     await db.doc('themes/' + c.id).set(next); render(true);
-    toast(msg(n) + (step !== prev ? ` 다음: ${stepLabel(step)}` : ''), 3500);
+    if (!autoCtx && msg(n)) toast(msg(n) + (step !== prev ? ` 다음: ${SIMPLE_LABEL[step]}` : ''), 3500);
     if (step !== prev) { const el = document.querySelector('.track'); if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   } catch (err) { writeErr(err); }
 }
@@ -1386,13 +1504,13 @@ const nowISO = () => new Date().toISOString();
 const meName = () => (meNow && (meNow.name || meNow.username)) || '';
 async function applyUpload(kind, rows) {
   rows = cleanRows(rows);
-  const valid = new Set(srcRows(cur().data).map(r => r.id));
+  const valid = new Set(srcRows(wGame().data).map(r => r.id));
   /* ID 열을 맨 앞으로 옮기고, ID를 번역 입력표의 표기에 맞춘다 */
   const canon = new Map([...valid].map(id => [normId(id), id]));
   const ic = Math.max(0, (rows[0] || []).findIndex(isIdHead));
   const miss = [];
   rows = rows.map((r, i) => { const rest = r.filter((_, j) => j !== ic); if (!i) return [r[ic] || 'ID', ...rest]; const id = canon.get(normId(r[ic])); if (!id && String(r[ic] || '').trim()) miss.push(String(r[ic]).trim()); return [id || '', ...rest]; });
-  if (miss.length) setTimeout(() => toast(`번역 입력표에 없는 ID ${miss.length}개는 건너뛰었어요. (예: ${miss.slice(0, 3).join(', ')})`, 6000), 3600);
+  if (miss.length && !autoCtx) setTimeout(() => toast(`번역 입력표에 없는 ID ${miss.length}개는 건너뛰었어요. (예: ${miss.slice(0, 3).join(', ')})`, 6000), 3600);
   if (kind === 'b') {   // DeepL 결과: 첫 열 ID, 둘째 열 번역 (열 이름이 번역돼도 위치로 읽는다)
     const body = rows.slice(1).filter(r => valid.has(String(r[0]).trim()));
     return saveWork(items => { body.forEach(r => { const id = String(r[0]).trim(); items[id] = items[id] || {}; items[id].b = String(r[1] ?? '').trim(); }); return body.length; }, n => `DeepL 번역 ${n}행을 저장했어요.`);
@@ -1452,10 +1570,13 @@ document.addEventListener('click', async e => {
     if (downloads) await downloads.save({ filename: `${abbrOf(t)}_for_DeepL.csv`, data: csv([['ID', 'Source'], ...rows]) }); return;
   }
   if (act === 'export') {
-    const head = ['ID', '화면 원문', '사용 위치', '글자 수'];
+    const head = ['번호', '한글 원문', '파일명', '글자 수'];
     LANGS.forEach(l => head.push(`${l.label} 번역`, `${l.label} 상태`, `${l.label} 수정 이력`));
     const rows = allRows(t).map(r => { const out = [r.id, r.ko, r.where, r.len]; LANGS.forEach(l => { const x = workOf(t, l.key)[r.id] || {}; out.push(x.tr || '', isExcluded(r) ? '제외' : stageOf(t, l.key) >= 4 && x.tr ? '확정' : x.rv ? (VLABEL[x.rv.v] || x.rv.v) : x.tr ? '검수 전' : '미번역', (x.hist || []).map(h => `${h.at.slice(0, 10)} ${h.by}: ${h.from} → ${h.to}${h.why ? ' (' + h.why + ')' : ''}`).join(' | ')); }); return out; });
-    if (downloads) await downloads.save({ filename: `${abbrOf(t)}_final.csv`, data: csv([head, ...rows]) }); return;
+    const w = [14, 32, 18, 8, ...LANGS.flatMap(() => [32, 10, 30])];
+    const sheets = [{ name: '번역 결과', rows: [head, ...rows], widths: w, filter: true, style: (ri, ci, r) => LANGS.some((l, k) => r[5 + k * 3] === 'REVIEW' || r[5 + k * 3] === 'FAIL') ? 2 : 0 }];
+    if ((t.excluded || []).length) sheets.push({ name: '제외 단어', rows: [['파일명', '단어', '제외 이유'], ...t.excluded], widths: [24, 16, 24], style: () => 5 });
+    saveBlob(XS(sheets), `${abbrOf(t)}_translation.xlsx`); return;
   }
   if (act === 'pass' || act === 'needfix') return saveWork(items => { const x = items[id]; if (!x) return 0; x.rv = Object.assign({}, x.rv || {}, { v: act === 'pass' ? '통과' : '수정 필요', by: meName(), at: nowISO(), kind: (x.rv && x.rv.kind) || '사람 확인' }); return 1; }, () => act === 'pass' ? '통과로 처리했어요.' : '수정 필요로 보냈어요.');
   if (act === 'match' || act === 'diff') return saveWork(items => { const x = items[id]; if (!x || !x.ts) return 0; x.ts.match = act === 'match';
@@ -1507,90 +1628,486 @@ function compareListHTML(t, lk) {
         ${testFlagged(x.ts) ? `<div class="hwarn">${x.ts.conf && x.ts.conf !== '없음' ? '헷갈림: ' + esc(x.ts.conf) : ''}${x.ts.fit && !/들어감/.test(x.ts.fit) ? ' 화면: ' + esc(x.ts.fit) : ''}</div>` : ''}</div>
       ${readOnly ? '' : `<div class="hacts"><button type="button" class="btn" data-wact="match" data-id="${esc(r.id)}">일치</button><button type="button" class="btn" data-wact="diff" data-id="${esc(r.id)}">다름</button></div>`}</div>`; }).join('')}</div>`;
 }
+/* ================= 간단 흐름: 게임 정보 → 번역(PNG 첨부, 프롬프트 한 번) → 검수(다른 AI) → 확정 =================
+ * 번역 프롬프트는 짧은 항목형(읽는 사람·말투·그대로 둘 것·지킬 용어·결과 형식)으로, 화면 캡처 PNG만 첨부하면 된다.
+ */
+const enConfirmed = t => stageOf(t, 'en') >= 4;
+
+/* 프롬프트 재료 */
+function toneLines(t, lk) {
+  const out = [];
+  if (t.honorific) out.push(t.honorific);
+  (t.speakers || []).filter(s => s.who && (s.tone || s.banned)).forEach(s => out.push(`${s.who}${s.to ? ` → ${s.to}` : ''}: ${s.tone || ''}${s.banned ? ` (쓰지 말 것: ${s.banned})` : ''}`));
+  if (t.lang && t.lang[lk]) out.push(`${LANGS.find(l => l.key === lk).label} 방향: ${t.lang[lk]}`);
+  return out.length ? out.map(x => '- ' + x).join('\n') : '- 짧고 친절하게';
+}
+function termLines(gameIdx, lk) {
+  const list = termsFor(gameIdx).map(x => x.data).filter(d => d.ko);
+  const keep = list.filter(d => trOf(d, lk).text && statusOf(d, lk) === '확정').map(d => `- ${d.ko} → ${trOf(d, lk).text}`);
+  const avoid = list.filter(d => trOf(d, lk).avoid).map(d => `- ${d.ko}: ‘${trOf(d, lk).avoid}’ 쓰지 말 것${trOf(d, lk).avoidWhy ? ` (${trOf(d, lk).avoidWhy})` : ''}`);
+  return (keep.length ? keep.join('\n') : '- (아직 없음)') + (avoid.length ? '\n' + avoid.join('\n') : '');
+}
+function translatePrompt(id, t, lk) {
+  const L = LANGS.find(l => l.key === lk), ab = abbrOf(t);
+  const src = srcAnalysis(t).main;
+  const base = lk === 'en' ? (src.length ? `\n번역할 원문은 아래 표야. ID와 화면 원문은 그대로 쓰고, 화면 캡처는 장면과 칸 크기를 보는 데 써.\n\n${tsv(['ID', '화면 원문', '위치', '맥락'], src.map(x => [x.id, x.ko, x.where, x.kind]))}\n` : '') : (() => {
+    const it = workOf(t, 'en');
+    return `\n참고: 아래는 확정된 영어 번역이야. 뜻을 확인하는 데만 쓰고, 영어의 어순·말투·you·please는 따르지 마. 번역 기준은 한국어야.\nID와 화면 원문은 이 표 그대로 쓰고, 화면 캡처는 장면과 칸 크기를 보는 데 써.\n\n${tsv(['ID', '화면 원문', '영어'], srcRows(t).map(r => [r.id, r.ko, (it[r.id] || {}).tr || '']))}\n`;
+  })();
+  return `첨부한 PNG는 오프라인 게임 「${t.name || ''}」의 화면 캡처야. 화면에 보이는 한국어 문구를 ${L.target}로 번역해줘.
+
+읽는 사람: 한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객
+게임: ${[t.concept, t.situation].filter(Boolean).join(' / ') || '(게임 정보 없음)'}
+말투:
+${toneLines(t, lk)}
+그대로 둘 것: 게임 이름, 숫자, { } 안의 값
+지킬 용어:
+${termLines(id, lk)}
+문화:
+${[...CULTURE[lk], CULTURE.common[0]].map(x => '- ' + x).join('\n')}
+${base}
+결과: 표 두 개만 써줘. 파일은 만들지 마.
+1) 번역 표 — 열: ID | 화면 원문 | 번역 | 메모
+${lk === 'en' && src.length ? '- 위 원문 표의 모든 ID를 같은 순서로 빠짐없이 번역해. 로고처럼 번역하지 않을 글자는 번역 칸에 원문 그대로, 메모에 ‘번역 안 함’.' : lk === 'en' ? `- ID는 ‘파일 이름-두 자리 번호’ (예: ${ab}-01.png → ${ab}-01-01, ${ab}-01-02). 화면 위에서 아래, 왼쪽에서 오른쪽 순서.
+- 화면 원문은 보이는 그대로 적어. 흐리거나 잘려서 확실하지 않으면 메모에 ‘판독 불확실’.
+- 로고처럼 번역하지 않을 글자도 적고, 번역 칸에 원문 그대로, 메모에 ‘번역 안 함’.` : '- 위 영어 표의 모든 ID를 같은 순서로 빠짐없이 번역해.'}
+- 버튼·칸이 좁아 보이면 짧게 쓰고 메모에 ‘짧게 줄임’.
+2) 확인 필요 표 — 뜻이 애매해서 확인이 필요한 문구만. 열: ID | 문구 | 왜 애매한지 | 선택지
+- 없으면 ‘없음’ 한 줄만.`;
+}
+function reviewPrompt(id, t, lk) {
+  const L = LANGS.find(l => l.key === lk), it = workOf(t, lk);
+  const rows = srcRows(t).filter(r => it[r.id] && it[r.id].tr && !it[r.id].rv);
+  return `아래 ${L.label} 번역을 검수해줘. 첨부한 PNG는 게임 화면이야. 너는 이 번역을 하지 않은 검수자야.
+
+읽는 사람: 한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객
+말투:
+${toneLines(t, lk)}
+지킬 용어:
+${termLines(id, lk)}
+확인할 것: 뜻이 같은가 · 플레이어가 할 행동이 같은가 · 숫자·정답이 그대로인가 · 용어를 지켰는가 · 말투 · 칸에 들어가는 길이 · 문화 금기
+
+판정: PASS(문제 없음) / FAIL(고칠 것 있음 — 고친 번역을 써) / REVIEW(정답·행동이 바뀔 수 있는데 확신이 없음 — 사람이 봐야 함)
+결과: 표 하나만 써줘. 파일은 만들지 마. 열: ID | 판정 | 고친 번역 | 이유
+- 모든 행을 빠짐없이. PASS면 고친 번역과 이유는 ‘-’.
+
+${tsv(['ID', '화면 원문', '번역'], rows.map(r => [r.id, r.ko, it[r.id].tr]))}`;
+}
+
+/* AI 답(붙여 넣은 글 전체)에서 표 나누기 */
+function splitTables(text) {
+  const out = [];
+  const code = [...String(text).matchAll(/```[^\n]*\n([\s\S]*?)```/g)].map(m => m[1]);
+  const src = code.length ? code : (() => { const blocks = [], cur = []; String(text).split(/\r?\n/).forEach(l => { if (/\t|\|/.test(l)) cur.push(l); else if (cur.length) { blocks.push(cur.join('\n')); cur.length = 0; } }); if (cur.length) blocks.push(cur.join('\n')); return blocks; })();
+  src.forEach(b => { const rows = cleanRows(parseTable(b)); if (rows.length) out.push(rows); });
+  return out;
+}
+const headHas = (rows, re) => (rows[0] || []).some(h => re.test(normHead(h)));
+async function applyTranslation(rowsList) {
+  const c = wGame(), t = c.data, lk = wLang();
+  const tb = rowsList.find(r => headHas(r, /^번역/) && r.some(x => x.some(isIdHead))) || rowsList.find(r => headHas(r, /^번역/));
+  if (!tb || tb.length < 2) { toast('번역 표를 찾지 못했어요. AI 답 전체를 복사해서 붙여 넣어 주세요.', 5000); return; }
+  const qt = rowsList.find(r => r !== tb && headHas(r, /애매|확인|선택지|이유/));
+  const h = tb[0].map(normHead), ci = k => h.findIndex(x => x.startsWith(k));
+  const iId = Math.max(0, tb[0].findIndex(isIdHead)), iKo = ci('화면원문') >= 0 ? ci('화면원문') : ci('원문'), iTr = h.findIndex(x => x === '번역' || x.startsWith('번역') && !x.includes('원문')), iMemo = ci('메모');
+  const body = tb.slice(1).filter(r => String(r[iId] || '').trim());
+  if (lk === 'en') {
+    /* 영어 번역 표가 곧 원문 목록: 같은 ID는 바꾸고, 새 ID는 더한다 */
+    const cur0 = parseTable(t.inputTable), head = ['ID', '화면 원문', '사용 위치', '글자 수', '처리 방식', '메모'];
+    const map = new Map(cur0.slice(1).map(r => [normId(r[0]), r]));
+    const srcByNorm = new Map(srcList(t).map(x => [normId(x.id), x]));
+    body.forEach(r => {
+      const sx = srcByNorm.get(normId(r[iId])), id = sx ? sx.id : String(r[iId]).trim(), ko = sx ? sx.ko : iKo >= 0 ? r[iKo] || '' : '', memo = iMemo >= 0 ? r[iMemo] || '' : '';
+      map.set(normId(id), [id, ko, sx ? sx.where : id.replace(/-\d+$/, ''), String([...String(ko)].length), /번역\s*안\s*함/.test(memo) || /로고|장식/.test(sx ? sx.kind : '') && /번역\s*안/.test(memo) ? '제외' : '직접 번역', memo]);
+    });
+    const rows = [...map.values()].sort((a, b) => String(a[0]).localeCompare(String(b[0]), 'ko', { numeric: true }));
+    await saveGameField('inputTable', rowsToTSV([head, ...rows]));
+  }
+  await applyUpload('tr', [['ID', '번역'], ...body.map(r => [r[iId], r[iTr] || ''])]);
+  const qs = qt ? qt.slice(1).filter(r => r.some(x => x && !/^없음$/.test(x))).map(r => ({ id: r[0] || '', ko: r[1] || '', why: r[2] || '', opt: r[3] || '' })) : [];
+  const prev = ((t.notes || {})[lk] || []).filter(q => !body.some(r => normId(r[iId]) === normId(q.id)));
+  await saveGameField('notes.' + lk, prev.concat(qs));
+  render(true);
+  toast(`번역 ${body.length}줄을 넣었어요.${qs.length ? ` 확인 필요 ${qs.length}개가 있어요.` : ''}`, 4000);
+}
+async function applyReview(rowsList) {
+  const tb = rowsList.find(r => headHas(r, /^판정/)) || rowsList[0];
+  if (!tb || tb.length < 2) { toast('검수 표를 찾지 못했어요. AI 답 전체를 복사해서 붙여 넣어 주세요.', 5000); return; }
+  const h = tb[0].map(normHead), iId = Math.max(0, tb[0].findIndex(isIdHead)), iV = h.findIndex(x => x.startsWith('판정')), iFix = h.findIndex(x => x.startsWith('고친')), iWhy = h.findIndex(x => x.startsWith('이유'));
+  const valid = new Map(srcRows(wGame().data).map(r => [normId(r.id), r.id]));
+  let n = 0, fixed = 0, review = 0;
+  await saveWork(items => {
+    tb.slice(1).forEach(r => {
+      const id = valid.get(normId(r[iId])), x = id && items[id]; if (!x || !x.tr) return;
+      const v = String(r[iV] || '').toUpperCase(), fix = iFix >= 0 ? String(r[iFix] || '').trim() : '', why = iWhy >= 0 ? String(r[iWhy] || '').trim() : '';
+      n++;
+      if (/PASS|통과/.test(v)) x.rv = { v: '통과', at: nowISO() };
+      else if (/FAIL|수정/.test(v) && fix && fix !== '-') { (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: fix, why, kind: 'fix' }); x.tr = fix; x.rv = { v: '통과', kind: '검수에서 고침', why, at: nowISO() }; fixed++; }
+      else { x.rv = { v: '사람 확인 필요', issue: why, fix: fix && fix !== '-' ? fix : '', at: nowISO() }; review++; }
+    });
+    return n;
+  }, () => '');
+  render(true);
+  toast(`검수 ${n}줄: 고친 것 ${fixed} · 사람 확인 ${review}`, 4000);
+}
+
+/* ================= 진행 흐름 v3: 게임 정보 → 추출·번역(Claude가 엑셀로) → 검수(자동 점검 · 빠진 문구 · 교차 검수) → 확정 ================= */
+const COMMON_WORDS = ['STOP', 'START', 'EXIT', 'OK', 'YES', 'NO'];
+const LSHORT = { en: 'EN', ja: 'JA', zh: 'ZH' };
+function simpleStep(t, lk) {
+  if (stageOf(t, lk) >= 5) return 'applied';
+  if (stageOf(t, lk) >= 4) return 'confirmed';
+  if (lk !== 'en' && !enConfirmed(t)) return 'wait';
+  const F = flowState(t, lk);
+  if (!F.N || F.nTr < F.N) return 'translate';
+  if (F.openAuto || F.filesTodo || F.rvTodo || F.human) return 'review';
+  return 'done';
+}
+const SIMPLE_LABEL = { wait: '영어 먼저', translate: '추출·번역', review: '검수', human: '검수', done: '확정 가능', confirmed: '확정됨', applied: '적용 완료' };
+
+/* ---------- 자동 점검 (외국어를 몰라도 확인할 수 있는 것만) ---------- */
+const HANGUL = /[가-힣]/, KANA = /[぀-ヿ]/, CJK = /[㐀-鿿]/;
+const digitsOf = s => (String(s).match(/\d+/g) || []).sort().join(',');
+function autoChecks(t, lk, r, x) {
+  const ko = r.ko || '', tr = (x && x.tr) || '', out = [];
+  const note = (x && x.note) || r.memo || '';
+  if (!tr.trim()) return [['empty', '번역이 비어 있어요']];
+  if (HANGUL.test(tr)) out.push(['hangul', '번역에 한글이 남아 있어요']);
+  if (lk === 'en' && (CJK.test(tr) || KANA.test(tr))) out.push(['script', '영어 번역에 한자·일본 글자가 있어요']);
+  if (lk === 'zh' && KANA.test(tr)) out.push(['script', '중국어 번역에 일본 글자(가나)가 있어요']);
+  if (digitsOf(ko) !== digitsOf(tr)) out.push(['num', `숫자가 달라요 (원문 ${digitsOf(ko) || '없음'} / 번역 ${digitsOf(tr) || '없음'})`]);
+  if (tr.trim() === ko.trim() && !/번역\s*안\s*함/.test(note)) out.push(['same', '번역이 원문과 똑같아요']);
+  const kl = [...ko.replace(/\s/g, '')].length, tl = [...tr].length;
+  if (kl && (lk === 'en' ? tl > Math.max(14, kl * 3) : tl > kl * 1.8 + 4)) out.push(['long', `원문보다 많이 길어요 (${kl}자 → ${tl}자) · 칸 넘침 확인`]);
+  if (/판독\s*불확실/.test(note)) out.push(['read', '판독 불확실 — 원문이 이미지와 같은지 확인']);
+  termsFor(cur() ? cur().id : '').map(v => v.data).forEach(d => {
+    const tx = trOf(d, lk);
+    if (d.ko && ko.includes(d.ko) && tx.text && statusOf(d, lk) === '확정' && !tr.toLowerCase().includes(tx.text.toLowerCase())) out.push(['term', `용어 ‘${d.ko}’ → ‘${tx.text}’를 안 썼어요`]);
+    if (d.ko && ko.includes(d.ko) && tx.avoid && tr.toLowerCase().includes(tx.avoid.toLowerCase())) out.push(['avoid', `쓰지 말 것 ‘${tx.avoid}’을 썼어요`]);
+  });
+  return out;
+}
+function flowState(t, lk) {
+  const rows = srcRows(t), it = workOf(t, lk), N = rows.length;
+  const nTr = rows.filter(r => it[r.id] && it[r.id].tr).length;
+  const issues = rows.map(r => { const x = it[r.id] || {}; return { r, x, list: autoChecks(t, lk, r, x).filter(([k]) => !(x.ok || []).includes(k)) }; }).filter(v => v.list.length);
+  const files = lk === 'en' ? fileNames(t) : [];
+  const fchk = t.fileCheck || {};
+  const filesTodo = files.filter(f => !fchk[f]).length;
+  const rvTodo = rows.filter(r => it[r.id] && it[r.id].tr && !it[r.id].rv).length;
+  const human = rows.filter(r => it[r.id] && it[r.id].rv && it[r.id].rv.v !== '통과').length;
+  const pass = rows.filter(r => it[r.id] && it[r.id].rv && it[r.id].rv.v === '통과').length;
+  return { rows, it, N, nTr, issues, openAuto: issues.length, files, filesTodo, rvTodo, human, pass };
+}
+/* 파일 이름: 엑셀 파일명 열 + 파일 목록 시트 + 사이트에 올린 PNG */
+const splitFiles = s => String(s || '').split(/[,،、\n]+/).map(x => x.trim()).filter(Boolean);
+function fileNames(t) {
+  const set = new Set();
+  srcRows(t).forEach(r => splitFiles(r.where).forEach(f => set.add(f)));
+  (t.fileList || []).forEach(r => r[0] && set.add(String(r[0]).trim()));
+  (gameFiles[cur() ? cur().id : ''] || []).forEach(f => set.add(f.name));
+  const byId = new Map(); [...set].forEach(f => { const k = normId(fileIdOf(f)); if (!byId.has(k) || /\.png$/i.test(f)) byId.set(k, f); });
+  return [...byId.values()].sort((a, b) => a.localeCompare(b, 'ko', { numeric: true }));
+}
+
+/* ---------- 프롬프트 ---------- */
+function makePrompt(id, t, lk) {
+  const L = LANGS.find(l => l.key === lk), ab = abbrOf(t), fname = `${ab}_번역문구_${LSHORT[lk]}.xlsx`;
+  const game = `# 게임 정보
+- 게임: ${t.name || ''}${t.concept ? ` — ${t.concept}` : ''}
+- 상황: ${t.situation || '(없음)'}
+- 읽는 사람: 한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객
+- 말투:
+${toneLines(t, lk).split('\n').map(x => '  ' + x).join('\n')}`;
+  const rules = `- 숫자, 게임 이름, { } 안의 값은 그대로 둔다.
+- 버튼처럼 칸이 좁아 보이면 짧게 쓰고 비고에 ‘짧게 줄임’이라고 쓴다.
+- 아래 용어는 반드시 지킨다.
+${termLines(id, lk).split('\n').map(x => '  ' + x).join('\n')}
+- 문화:
+${[...CULTURE[lk], ...CULTURE.common.slice(0, 2)].map(x => '  - ' + x).join('\n')}`;
+  if (lk !== 'en') {
+    const it = workOf(t, 'en');
+    return `# 역할
+너는 오프라인 게임의 다국어 번역 자료를 정리하는 담당자다.
+
+# 작업 목표
+아래 표의 한글 원문을 ${L.target}로 번역해 엑셀로 정리한다. 첨부한 PNG는 장면과 칸 크기를 확인하는 데만 쓴다.
+
+${game}
+
+# 작업 지침
+- 아래 표의 행을 그대로 쓴다. 행을 더하거나 빼거나 합치지 않는다. 번호와 한글 원문은 고치지 않는다.
+- 번역 기준은 한글 원문이다. 영어 확정본은 뜻을 확인하는 데만 쓰고, 영어의 어순·말투·you·please는 따르지 않는다.
+${rules}
+
+# 결과물: 엑셀 파일 \`${fname}\`
+- 시트명: \`번역 대상\`, 첫 행은 제목
+- 열: 번호 | 한글 원문 | 번역문 | 비고
+- 셀 너비와 줄바꿈을 조정해 읽기 쉽게 만든다.
+- 엑셀을 만들 수 없으면 같은 표를 채팅에 표로 쓴다.
+
+# 저장 전 확인
+- 모든 번호가 빠짐없이 있는가?
+- 번역문이 ${L.label}로만 되어 있는가?
+
+# 번역할 표
+${tsv(['번호', '한글 원문', '영어 확정본'], srcRows(t).map(r => [r.id, r.ko, (it[r.id] || {}).tr || '']))}`;
+  }
+  return `# 역할
+너는 오프라인 게임의 다국어 번역 자료를 정리하는 담당자다.
+
+# 작업 목표
+첨부한 PNG 파일에 보이는 모든 문구를 읽고, 번역 대상 문구를 ${L.target}로 번역해 엑셀로 정리한다.
+
+${game}
+
+# 작업 지침
+## 1. 이미지 전체 확인
+- 첨부한 PNG를 모두, 처음부터 끝까지 확인한다.
+- 버튼, 안내문, 제목, 대사, 숫자 옆 문구 등 화면에 보이는 모든 글자가 대상이다.
+- 글자를 생략하거나 추측해서 쓰지 않는다. 판독이 어려우면 비고에 ‘판독 불확실’이라고 쓴다.
+
+## 2. 공용 단어 제외
+- 여러 게임에서 공통으로 쓰는 기본 조작 단어는 번역 대상에서 뺀다. 예: ${COMMON_WORDS.join(', ')}
+- 목록에 없어도 여러 게임에서 똑같이 쓰는 기본 버튼 단어면 뺄 수 있다.
+- 뺀 단어는 지우지 말고 ‘제외 단어’ 시트에 따로 적는다.
+
+## 3. 번역
+- 한글 원문은 이미지에 적힌 그대로 옮긴다. 줄바꿈은 공백 하나로 바꾼다.
+- 번역은 ${L.label} 하나만 쓴다. 게임 상황에 맞게 자연스럽게 쓰고, 원문에 없는 내용은 더하거나 뜻을 바꾸지 않는다.
+${rules}
+
+## 4. 중복 문구
+- 여러 PNG에 같은 한글 문구가 나오면 한 행으로 합치고, 파일명에 나온 파일을 모두 쉼표로 적는다.
+- 글자가 같아도 쓰이는 곳의 뜻이 다르면 따로 적고, 비고에 차이를 쓴다.
+
+# 결과물: 엑셀 파일 \`${fname}\`
+시트 3개. 각 시트의 첫 행은 제목이다.
+1. \`번역 대상\` — 파일명 | 한글 원문 | 번역문 | 비고
+2. \`제외 단어\` — 파일명 | 단어 | 제외 이유
+3. \`파일 목록\` — 파일명 | 문구 수 | 판독 어려운 문구
+- 셀 너비와 줄바꿈을 조정해 읽기 쉽게 만든다.
+- 엑셀을 만들 수 없으면 같은 표 3개를 채팅에 표로 쓴다.
+
+# 저장 전 확인
+- 첨부한 PNG가 모두 ‘파일 목록’에 있는가?
+- 이미지에 있는 문구가 빠지지 않았는가?
+- 공용 단어는 ‘제외 단어’ 시트로 옮겼는가?
+- 같은 문구가 중복 등록되지 않았고, 나온 파일명을 모두 적었는가?
+- 한글 원문이 이미지와 똑같은가?
+- 번역문이 ${L.label}로만 되어 있는가?
+
+마지막에 판독이 어려워 따로 확인해야 할 문구를 짧게 알려줘.`;
+}
+function crossPrompt(id, t, lk) {
+  const L = LANGS.find(l => l.key === lk), it = workOf(t, lk);
+  const rows = srcRows(t).filter(r => it[r.id] && it[r.id].tr && !it[r.id].rv);
+  return `# 역할
+너는 이 번역을 하지 않은 검수자다. 문제를 찾는 것이 목적이다.
+
+# 작업
+첨부한 PNG는 오프라인 게임 「${t.name || ''}」의 화면이다. 아래 표의 ${L.label} 번역을 한 줄씩 검수한다.
+
+# 읽는 사람
+한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객
+
+# 확인할 것
+1. 뜻이 원문과 같은가
+2. 플레이어가 할 행동(누르기, 고르기, 방향 등)이 같은가
+3. 숫자·정답·고유명사가 그대로인가
+4. 용어: ${termLines(id, lk).replace(/\n/g, ' ')}
+5. 말투: ${toneLines(t, lk).replace(/\n/g, ' ')}
+6. 화면 칸에 들어갈 길이인가
+7. 문화 금기: ${CULTURE[lk].join(' ')}
+
+# 판정 (한 줄에 하나)
+- PASS: 문제 없음
+- FAIL: 고칠 것이 분명함 → 고친 번역을 쓴다
+- REVIEW: 정답·행동이 바뀔 수 있는데 확신이 없음 → 사람이 판단
+
+# 역번역
+모든 줄에, 번역문만 보고 다듬지 않은 한국어 직역을 쓴다. 원문을 모르는 사람이 읽은 것처럼 쓴다.
+
+# 결과
+표 하나만 쓴다. 파일은 만들지 않는다. 모든 줄을 빠짐없이 쓴다.
+열: 번호 | 판정 | 역번역 | 고친 번역 | 이유
+- PASS면 고친 번역과 이유는 ‘-’
+
+# 검수할 표
+${tsv(['번호', '한글 원문', '번역문'], rows.map(r => [r.id, r.ko, it[r.id].tr]))}`;
+}
+
+/* ---------- 결과 넣기 ---------- */
+async function readWorkbook(file) {   // 엑셀 시트 전부 → [rows]
+  if (/\.xlsx?$/i.test(file.name)) {
+    const X = await loadXLSX(), wb = X.read(await file.arrayBuffer(), { type: 'array' });
+    return wb.SheetNames.map(n => Object.assign(cleanRows(X.utils.sheet_to_json(wb.Sheets[n], { header: 1, defval: '', raw: false })), { sheet: n })).filter(r => r.length);
+  }
+  if (/\.(txt|md)$/i.test(file.name)) return splitTables(await decodeText(file));
+  return [cleanRows(await readTableFile(file))];
+}
+const findHeadRow = rows => { const i = rows.slice(0, 10).findIndex(r => r.some(c => /원문|단어|문구수/.test(normHead(c)))); return i > 0 ? rows.slice(i) : rows; };
+async function applyResult(tables) {
+  const c = wGame(), t = c.data, lk = wLang();
+  tables = tables.map(r => Object.assign(findHeadRow(r), { sheet: r.sheet }));
+  const hdr = r => (r[0] || []).map(normHead);
+  const main = tables.find(r => r.sheet === '번역 대상') || tables.find(r => hdr(r).some(h => h.includes('원문')) && hdr(r).some(h => h.startsWith('번역')));
+  if (!main || main.length < 2) { toast('‘번역 대상’ 표를 찾지 못했어요. 열: 파일명 | 한글 원문 | 번역문', 6000); return; }
+  const exc = tables.find(r => r !== main && (r.sheet === '제외 단어' || hdr(r).some(h => h === '단어')));
+  const flist = tables.find(r => r !== main && (r.sheet === '파일 목록' || hdr(r).some(h => h.startsWith('문구수'))));
+  const h = hdr(main), ix = f => h.findIndex(f);
+  const iNo = ix(x => x === '번호' || x === 'id'), iF = ix(x => x.startsWith('파일')), iKo = ix(x => x.includes('원문')), iTr = ix(x => x.startsWith('번역') && !x.includes('원문')), iN = ix(x => x.startsWith('비고'));
+  const body = main.slice(1).filter(r => String(r[iKo] || '').trim());
+  const cur0 = parseTable(t.inputTable), head = ['ID', '화면 원문', '사용 위치', '글자 수', '처리 방식', '메모'];
+  const rows = cur0.length > 1 ? cur0.slice(1) : [];
+  const byKo = new Map(rows.map(r => [normKo(r[1]), r])), byId = new Map(rows.map(r => [normId(r[0]), r]));
+  let next = rows.reduce((m, r) => Math.max(m, +(String(r[0]).match(/(\d+)$/) || [, 0])[1]), 0);
+  const pairs = [], missing = [];
+  body.forEach(r => {
+    const ko = String(r[iKo]).trim(), tr = iTr >= 0 ? String(r[iTr] || '').trim() : '', note = iN >= 0 ? String(r[iN] || '').trim() : '';
+    let row = (iNo >= 0 && byId.get(normId(r[iNo]))) || byKo.get(normKo(ko));
+    if (!row) {
+      if (lk !== 'en') { missing.push(ko); return; }
+      row = [`T${String(++next).padStart(3, '0')}`, ko, '', '', '직접 번역', '']; rows.push(row); byKo.set(normKo(ko), row);
+    }
+    if (lk === 'en') { row[1] = ko; if (iF >= 0) row[2] = [...new Set([...splitFiles(row[2]), ...splitFiles(r[iF])])].join(', '); row[3] = String([...ko.replace(/\s/g, '')].length); row[5] = note; }
+    pairs.push([row[0], tr, note]);
+  });
+  if (lk === 'en') await saveGameField('inputTable', rowsToTSV([head, ...rows]));
+  await saveWork(items => { pairs.forEach(([id, tr, note]) => { const x = items[id] = items[id] || {}; if (x.tr && x.tr !== tr) { (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: tr, why: '결과 다시 올림' }); x.rv = null; x.bt = null; x.ok = (x.ok || []).filter(k => k === 'read'); } x.tr = tr; x.note = note; }); return pairs.length; }, () => '');
+  if (exc && exc.length > 1) { const eh = hdr(exc), f = eh.findIndex(x => x.startsWith('파일')), w = eh.findIndex(x => x === '단어' || x.includes('단어')), why = eh.findIndex(x => x.includes('이유')); const prev = (t.excluded || []); const add = exc.slice(1).map(r => [r[f] || '', r[w] || '', r[why] || '']).filter(r => r[1]); await saveGameField('excluded', [...prev.filter(p => !add.some(a => a[1] === p[1] && a[0] === p[0])), ...add]); }
+  if (flist && flist.length > 1) { const fh = hdr(flist), f = fh.findIndex(x => x.startsWith('파일')), n = fh.findIndex(x => x.startsWith('문구수')), u = fh.findIndex(x => x.includes('판독')); const prev = t.fileList || []; const add = flist.slice(1).map(r => [r[f] || '', r[n] || '', r[u] || '']).filter(r => r[0]); await saveGameField('fileList', [...prev.filter(p => !add.some(a => a[0] === p[0])), ...add]); }
+  render(true);
+  toast(`번역 ${pairs.length}줄을 넣었어요.${missing.length ? ` 원문 목록에 없는 ${missing.length}줄은 건너뛰었어요.` : ''}`, 5000);
+}
+async function applyCross(tables) {
+  const tb = tables.find(r => (r[0] || []).some(h => normHead(h).startsWith('판정'))) || tables[0];
+  if (!tb || tb.length < 2) { toast('검수 표를 찾지 못했어요. AI 답 전체를 복사해서 붙여 넣어 주세요.', 5000); return; }
+  const h = tb[0].map(normHead), ix = f => h.findIndex(f);
+  const iNo = Math.max(0, ix(x => x === '번호' || x === 'id')), iV = ix(x => x.startsWith('판정')), iB = ix(x => x.startsWith('역번역')), iFix = ix(x => x.startsWith('고친')), iWhy = ix(x => x.startsWith('이유'));
+  const valid = new Map(srcRows(wGame().data).map(r => [normId(r.id), r.id]));
+  let n = 0, fail = 0, rev = 0;
+  await saveWork(items => {
+    tb.slice(1).forEach(r => {
+      const id = valid.get(normId(r[iNo])), x = id && items[id]; if (!x || !x.tr) return;
+      const v = String(r[iV] || '').toUpperCase(), fix = iFix >= 0 ? String(r[iFix] || '').trim() : '', why = iWhy >= 0 ? String(r[iWhy] || '').trim() : '';
+      if (iB >= 0 && r[iB]) x.bt = [String(r[iB]).trim()];
+      n++;
+      if (/PASS|통과/.test(v)) x.rv = { v: '통과', at: nowISO(), by: 'AI' };
+      else if (/FAIL|수정/.test(v)) { x.rv = { v: '수정 필요', fix: fix === '-' ? '' : fix, why, at: nowISO() }; fail++; }
+      else { x.rv = { v: '사람 확인 필요', fix: fix === '-' ? '' : fix, why, at: nowISO() }; rev++; }
+    });
+    return n;
+  }, () => '');
+  render(true);
+  toast(`교차 검수 ${n}줄: FAIL ${fail} · REVIEW ${rev}`, 4000);
+}
+
+/* ---------- 화면 ---------- */
 function workHTML({ id, data: t }) {
-  const L = LANGS.find(l => l.key === promptLang), lk = L.key;
-  const ps = buildPrompts(t, lk, id).map((p, i) => Object.assign(p, { i }));
-  const s = workStats(t, lk), step = currentStep(t, lk);
-  const okey = id + ':' + lk;
-  if (!openState[okey] || openState[okey].step !== step) openState[okey] = { step, open: new Set(typeof step === 'number' ? [String(step)] : []) };
-  const os = openState[okey];
-  const rv = pkgReview(t, lk), tsP = pkgTest(t, lk), fx = pkgFix(t, lk), bk = pkgBack(t, lk);
-  const N = s.N || 0;
-  const stat = {
-    1: !N ? ['now', '표 없음'] : s.unresolved ? ['now', `확인 필요 ${s.unresolved}`] : ['done', `${N}개 문구`],
-    2: step === 'wait' ? ['wait', '영어 확정 후'] : s.tr >= N && N ? ['done', `번역 ${s.tr}/${N}`] : step === 2 ? ['now', `번역 ${s.tr}/${N}`] : ['wait', '대기'],
-    3: step === 3 ? ['now', s.needReview ? `검수할 ${s.needReview}건${bk.n ? ` · 역번역 ${s.bt}` : ''}` : `REVIEW ${s.human}건`] : s.tr && !s.needReview && !s.human && !s.fix && s.tr >= N ? ['done', `PASS ${s.pass}/${N}`] : ['wait', s.pass ? `PASS ${s.pass}/${N}` : '대기'],
-    4: step === 4 ? ['now', s.needTest ? `테스트할 ${s.needTest}건` : `대조 ${s.compare}건`] : s.tested >= N && N ? ['done', `테스트 ${s.tested}/${N}`] : ['wait', '대기'],
-    5: step === 5 ? ['now', [s.fix ? `FAIL ${s.fix}건` : '', s.plan ? `기획 판단 ${s.plan}건` : ''].filter(Boolean).join(' · ')] : ['opt', s.changed ? `수정 이력 ${s.changed}건` : '걸리면'],
-  };
-  if (isFinal(step) || step === 'done') [1, 2, 3, 4].forEach(n => { if (N || isFinal(step)) stat[n] = ['done', N ? stat[n][1] : '확정됨']; });
-  const row = (label, html) => readOnly ? '' : `<div class="uprow"><span class="uplab">${label}</span>${html}</div>`;
-  const extra = {
-    1: { n: N, label: '번역 입력표', drop: 'step1', ups: readOnly ? '' : `<label class="btn upl" title="캡처·대본에서 원문을 미리 읽어 원문 표를 만들어요 (선택)">원문 파일 읽기<input type="file" hidden multiple data-src accept="${SRC_ACCEPT}"></label><label class="btn upl">결과 표 올리기<input type="file" hidden data-upload="inputTable" accept="${FILE_ACCEPT}"></label><button type="button" class="btn" data-paste="field:inputTable">붙여 넣기</button>`, before: srcMiniHTML(id, t), note: N ? `번역 입력표 <b>${N}행</b> 저장됨${s.unresolved ? ` · <b class="badtxt">확인 필요·판독 불확실 ${s.unresolved}곳</b> — 기획 답을 반영해 다시 올려 주세요` : ''}` : 'ChatGPT가 준 결과 표(xlsx)를 올리면 다음 단계부터 자동으로 들어가요.' },
-    2: { n: N, label: '번역 입력표', drop: 'wup:tr', ups: row('초벌 번역', upl('tr', '번역 결과 올리기')) + row('독립 번역 DeepL', `<button type="button" class="btn" data-wact="deepl">DeepL용 파일 받기</button>${upl('b', 'DeepL 결과 올리기')}`), note: `번역 ${s.tr}/${N}${lk !== 'en' && !enReady(t) ? ' · <b class="badtxt">영어를 먼저 확정해 주세요</b>' : ''}` },
-    3: { n: rv.n, label: rv.again ? '재검수할 행' : '검수할 행', drop: 'wup:rv', ups: (bk.n ? row('① 역번역 (번역기 2종)', `<button type="button" class="btn" data-wact="backdl">역번역용 파일 받기</button>${upl('bt', '역번역 결과 올리기')}`) : '') + row(bk.n ? `② 오류 검수 (${esc(reviewTool(t, lk))})` : `오류 검수 (${esc(reviewTool(t, lk))})`, upl('rv', '검수 결과 올리기')), note: rv.n ? `${rv.again ? '바뀐 문구만 다시 검수해요. ' : ''}검수할 문구 <b>${rv.n}개</b>` : s.human ? `AI 검수는 끝났어요. 아래 <b>REVIEW ${s.human}건</b>만 골라 주세요.` : '지금 검수할 행이 없어요.', after: humanListHTML(t, lk) },
-    4: { n: tsP.n, label: '테스트할 행', drop: 'wup:ts', ups: upl('ts', '테스트 결과 올리기'), note: tsP.n ? `검수를 통과한 ${tsP.n}행이 원문 없이 들어가 있어요.` : s.compare ? `AI 테스트는 끝났어요. 아래 <b>대조 ${s.compare}건</b>만 확인해 주세요.` : '지금 테스트할 행이 없어요.', after: compareListHTML(t, lk) },
-    5: { n: fx.n, label: '수정할 행', drop: 'wup:fx', ups: upl('fx', '수정 결과 올리기'), note: fx.n ? `걸린 ${fx.n}행과 이유가 들어가 있어요. 수정 결과를 올리면 바뀐 문구만 다시 검수 대상이 돼요.` : s.plan ? `재수정 ${MAX_FIX}회를 넘긴 <b>${s.plan}건</b>은 아래에서 기획이 정해 주세요.` : '지금 고칠 행이 없어요.', after: planListHTML(t, lk) },
-  };
-  const inl = ps.find(p => p.inline === 3);
-  const setup = ps.filter(p => p.setup), main = ps.filter(p => !p.setup && !p.inline);
-  /* 보여 줄 단계: 기본은 지금 할 단계. 위 진행 줄에서 다른 단계를 누르면 그 단계 */
+  const L = LANGS.find(l => l.key === promptLang), lk = L.key, step = simpleStep(t, lk), F = flowState(t, lk);
+  const info = infoDone(t);
+  if (gameFiles[id] === undefined) { gameFiles[id] = []; loadFiles(id, true); }
+  const nowN = !info && !F.N ? 1 : step === 'translate' || step === 'wait' ? 2 : step === 'review' ? 3 : 4;
   const vkey = id + ':' + lk;
-  if (!viewStep[vkey] || viewStep[vkey].step !== step) viewStep[vkey] = { step, pick: null };
-  const pk = viewStep[vkey].pick, shown = pk === -1 ? null : (pk || (typeof step === 'number' ? step : null));
-  const ai = aiOf(t, lk) || '번역 AI';
-  const INSTR = {
-    1: 'ChatGPT의 ‘체키 원문 분석’ 프로젝트에서 새 대화를 열어 붙여 넣고, 캡처·대본 파일을 첨부해 보내세요.',
-    2: `${ai}의 ${L.label} 번역 프로젝트에서 새 대화를 열어 붙여 넣고, 캡처를 첨부해 보내세요.`,
-    3: `${reviewTool(t, lk)} 새 대화에 붙여 넣고, 캡처를 첨부해 보내세요.`,
-    4: 'Gemini 새 대화에 붙여 넣고, 캡처를 첨부해 보내세요.',
-    5: `${ai}의 ${L.label} 번역 프로젝트에서 새 대화를 열어 붙여 넣고 보내세요.`,
+  if (!viewStep[vkey] || viewStep[vkey].now !== nowN) viewStep[vkey] = { now: nowN, pick: null };
+  const open = viewStep[vkey].pick ?? nowN;
+  const reviewer = (aiOf(t, lk) || 'Claude') === 'ChatGPT' ? 'Claude' : 'ChatGPT';
+  const body = {
+    1: () => `<p class="sb">AI가 게임 분위기를 알 수 있게 적어 주세요. <b>컨셉·상황</b>은 꼭 채워 주세요.</p>${infoFormHTML(t)}
+      <div class="nextrow"><button type="button" class="btn primary" data-show="2">다음: 추출·번역</button></div>`,
+    2: () => step === 'wait' ? `<p class="sb">일본어·중국어는 영어를 확정한 뒤에 해요. 원문 목록이 영어 때 만든 그대로 들어가요.</p><button type="button" class="btn" data-lang="en">영어로 가기</button>` : `
+      <ol class="do">
+        <li><i>1</i><div><button type="button" class="btn primary" data-copy="p-main">프롬프트 복사</button></div></li>
+        <li><i>2</i><div><b>${esc(aiOf(t, lk) || 'Claude')}</b> 새 대화에 붙여 넣고, 게임 화면 <b>PNG를 모두 첨부</b>해서 보내요.</div></li>
+        <li><i>3</i><div>받은 엑셀을 ${fileBtn('one:res', '엑셀 올리기', true)} ${pasteBtn('one:res', '표로 붙여 넣기')}</div></li>
+        ${lk === 'en' ? `<li><i>4</i><div>같은 PNG를 사이트에도 올려 두세요. 검수 때 이미지와 대조해요. ${readOnly ? '' : `<label class="btn upl">PNG 올리기<input type="file" hidden multiple data-png accept=".png,.jpg,.jpeg,.webp"></label>`}<span class="do-l">${(gameFiles[id] || []).length}개 올림</span></div></li>` : ''}
+      </ol>
+      ${F.N ? `<p class="sb">지금 ${F.nTr}/${F.N}줄${lk === 'en' && (t.excluded || []).length ? ` · 제외 단어 ${(t.excluded || []).length}개` : ''}. 캡처가 더 있으면 같은 방법으로 계속 올리면 합쳐져요.</p>` : ''}
+      <details class="more"><summary>프롬프트 보기${readOnly ? '' : ' · 번역 AI 바꾸기'}</summary><div class="optbox"><label class="aisel">번역 AI <select id="ai-sel" ${readOnly ? 'disabled' : ''}>${['Claude', 'ChatGPT', 'Gemini'].map(a => `<option ${(aiOf(t, lk) || 'Claude') === a ? 'selected' : ''}>${a}</option>`).join('')}</select></label></div><pre class="ptext" id="pt-p-main">${esc(makePrompt(id, t, lk))}</pre></details>
+      ${F.N && F.nTr >= F.N ? `<div class="nextrow"><button type="button" class="btn primary" data-show="3">다음: 검수</button></div>` : ''}`,
+    3: () => !F.N || F.nTr < F.N ? '<p class="sb">추출·번역을 먼저 끝내 주세요.</p>' : reviewHTML(id, t, lk, F, reviewer),
+    4: () => step === 'done' ? `<p class="sb">검수 3가지를 모두 마쳤어요.</p>${readOnly ? '' : `<button type="button" class="btn primary" data-wact="confirm">${esc(L.label)} 확정하기</button>`}`
+      : step === 'confirmed' ? `<p class="sb">${esc(APPLY_CHECK[lk])}</p><button type="button" class="btn" data-wact="export">최종 결과 받기 (엑셀)</button>${readOnly ? '' : '<button type="button" class="btn primary" data-wact="applied">화면 적용 완료</button>'}`
+      : step === 'applied' ? '<p class="sb">화면 적용까지 끝났어요.</p><button type="button" class="btn" data-wact="export">최종 결과 받기 (엑셀)</button>'
+      : '<p class="sb">검수 3가지를 마치면 여기서 확정해요.</p>',
   };
-  const UP = { 1: 'field:inputTable', 2: 'wup:tr', 3: 'wup:rv', 4: 'wup:ts', 5: 'wup:fx' };
-  const upBtns = target => { const [ty, k] = target.split(':'); return readOnly ? '' : `<label class="btn upl">파일 올리기<input type="file" hidden ${ty === 'wup' ? 'data-wup' : 'data-upload'}="${k}" accept="${FILE_ACCEPT}"></label><button type="button" class="btn ghost" data-paste="${target}">붙여 넣기</button>`; };
-  const OPT = {
-    1: readOnly ? '' : `<p class="opt-p">캡처·대본을 사이트가 먼저 읽어 원문 표를 만들어 두면, ChatGPT가 한 번 더 대조해요.</p>${srcMiniHTML(id, t)}<label class="btn upl">원문 파일 읽기<input type="file" hidden multiple data-src accept="${SRC_ACCEPT}"></label>`,
-    2: readOnly ? '' : `<p class="opt-p">DeepL로 따로 번역해 두면 검수 때 비교해요. (지금 ${s.b}/${N})</p><button type="button" class="btn" data-wact="deepl">DeepL용 파일 받기</button>${upBtns('wup:b')}`,
-    3: readOnly || !pkgBack(t, lk).n ? '' : `<p class="opt-p">번역문을 번역기 2종으로 한국어로 되돌려 올리면 검수 패키지에 같이 들어가요. (지금 ${rv.bt}/${rv.n})</p><button type="button" class="btn" data-wact="backdl">역번역용 파일 받기</button>${upBtns('wup:bt')}`,
-  };
-  const OPT_T = { 1: '원문 미리 읽기 (선택)', 2: 'DeepL 비교 번역 (선택)', 3: '역번역 (권장)' };
-  const help = (p, u, extraP) => `<details class="more"><summary>도움말 · 프롬프트 보기</summary>${u ? `<ol class="hsteps">${u.steps.map(x => `<li>${x}</li>`).join('')}</ol>${u.warn && u.warn.length ? `<h4 class="mh">주의할 점</h4><ul>${u.warn.map(w => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}` : ''}
-    <h4 class="mh">프롬프트</h4><pre class="ptext" id="pt-${p.i}">${esc(p.text)}</pre>
-    ${extraP ? `<h4 class="mh">${esc(extraP.name)} <button type="button" class="btn ghost" data-copy="${extraP.i}">복사</button></h4><pre class="ptext" id="pt-${extraP.i}">${esc(extraP.text)}</pre>` : ''}
-    <h4 class="mh">설계 설명</h4><dl class="why">${designFor(p.id, L, t).map(([k, v]) => `<div class="r"><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl></details>`;
-
-  let panel;
-  if (shown) {
-    const n = shown, p = main.find(x => +x.tag === n), x = extra[n], u = usageFor(p.id, t, L);
-    const hasWork = n === 1 || x.n > 0;
-    panel = `<section class="task dropzone" data-drop="${n === 1 ? 'step1' : UP[n]}">
-      <div class="task-head"><span class="task-n">${n}</span><div><h2>${esc(STEP_NAMES[n])}</h2><p>${x.note}</p></div></div>
-      ${hasWork ? `<ol class="task-steps">
-        <li><span class="ts-n">1</span><div><b>복사</b><button type="button" class="btn primary pcopy" data-copy="${p.i}">패키지 복사${n > 1 ? `<small>${x.n}행</small>` : ''}</button></div></li>
-        <li><span class="ts-n">2</span><div><b>AI에 붙여 넣기</b><span>${esc(INSTR[n])}</span></div></li>
-        <li><span class="ts-n">3</span><div><b>결과 올리기</b><span class="ts-acts">${upBtns(UP[n])}</span></div></li>
-      </ol>` : ''}
-      ${x.after || ''}
-      ${OPT[n] ? `<details class="more"><summary>${OPT_T[n]}</summary><div class="optbox">${OPT[n]}</div></details>` : ''}
-      ${help(p, u, n === 3 ? inl : null)}
-    </section>`;
-  } else panel = `<section class="task">${typeof step === 'number' ? `<div class="nowbar flat wait"><div class="nb-txt"><span class="nb-t">아직 확정할 수 없어요</span> <span class="nb-s">모든 문구가 검수와 테스트를 통과하면 여기서 확정해요. 지금은 ${step}단계 ${esc(STEP_NAMES[step])} 차례예요.</span></div></div>` : nowBarHTML(t, lk, L, step, stat, extra, main).replace('class="nowbar', 'class="nowbar flat')}</section>`;
-
-  const track = [1, 2, 3, 4, 5].map(n => { const c = stat[n][0]; return `<li class="${c}${shown === n ? ' sel' : ''}"><button type="button" data-show="${n}" title="${esc(stat[n][1])}"><i></i>${esc(STEP_NAMES[n])}</button></li>`; }).join('')
-    + `<li class="${isFinal(step) ? 'done' : step === 'done' ? 'now' : ''}${!shown ? ' sel' : ''}"><button type="button" data-show="0"><i></i>${step === 'applied' ? '적용 완료' : '확정'}</button></li>`;
-
+  const TITLES = { 1: '게임 정보', 2: '추출·번역', 3: '검수', 4: '확정' };
+  const SUB = { 1: info ? esc(t.concept) : '', 2: step === 'wait' ? '영어 먼저' : F.N ? `${F.nTr}/${F.N}줄` : '', 3: F.N && F.nTr >= F.N ? `자동 ${F.openAuto ? F.openAuto + '건 남음' : '✓'}${lk === 'en' ? ` · 대조 ${F.files.length - F.filesTodo}/${F.files.length}` : ''} · 교차 ${F.pass}/${F.N}` : '', 4: isFinal(step) ? SIMPLE_LABEL[step] : '' };
+  const stateOf = n => n === 1 ? (info ? 'done' : 'now') : n < nowN || isFinal(step) ? 'done' : n === nowN ? 'now' : '';
+  const items = [1, 2, 3, 4].map(n => { const st = stateOf(n), isOpen = open === n; return `<li class="ck ${st}${isOpen ? ' open' : ''}"><button type="button" class="ck-h" data-show="${n}"><i>${st === 'done' ? '✓' : n}</i><b>${TITLES[n]}</b><span>${SUB[n] || ''}</span></button>${isOpen ? `<div class="ck-b">${body[n]()}</div>` : ''}</li>`; }).join('');
   return `
-    <div class="wtop"><div class="langseg" role="group" aria-label="번역할 언어">${LANGS.map(l => `<button type="button" data-lang="${l.key}" aria-pressed="${promptLang === l.key}">${l.label}</button>`).join('')}</div>
-      <span class="spacer"></span><button type="button" class="btn ghost" id="gp-open">용어집</button><button type="button" class="btn ghost" id="rules-open">작업 규칙</button></div>
-    <ol class="track" aria-label="진행 단계">${track}</ol>
-    ${panel}
-    <div class="wfoot2">
-      <details class="more"><summary>처음 한 번만: AI 프로젝트 지침 등록</summary>
-        <div class="setup-list">${setup.map(p => `<div class="setup-row"><div><b>${esc(p.name)}</b><small>${esc(p.tool)}에 붙여 넣기</small></div><button type="button" class="btn" data-copy="${p.i}">지침 복사</button><pre hidden id="pt-${p.i}">${esc(p.text)}</pre></div>`).join('')}</div>
-      </details>
-      <div class="foot-row"><label class="aisel">${esc(L.label)} 번역 AI <select id="ai-sel" ${readOnly ? 'disabled' : ''}><option value="">고르기</option>${AI_OPTIONS.map(a => `<option ${aiOf(t, lk) === a ? 'selected' : ''}>${a}</option>`).join('')}</select></label>
-        <button type="button" class="btn ghost" data-wact="export">최종 결과 내보내기</button></div>
-    </div>`;
+    <div class="ghead">
+      <button type="button" class="btn ghost" data-view-go="dash">← 목록</button>
+      <select id="game-sel" aria-label="게임">${themes.map(g => `<option value="${esc(g.id)}" ${g.id === id ? 'selected' : ''}>${esc(g.data.name || '(이름 없음)')}</option>`).join('')}</select>
+      <span class="spacer"></span>
+      <div class="langseg" role="group" aria-label="언어">${LANGS.map(l => `<button type="button" data-lang="${l.key}" aria-pressed="${promptLang === l.key}">${l.label}</button>`).join('')}</div>
+    </div>
+    <ol class="checklist">${items}</ol>
+    <div class="gfoot"><button type="button" class="btn ghost" id="gp-open">용어집</button><button type="button" class="btn ghost" data-wact="export">최종 결과 받기</button></div>`;
+}
+let rvTab = 'auto';
+const pasteBtn = (target, label) => readOnly ? '' : `<button type="button" class="btn" data-paste="${target}">${label}</button>`;
+const fileBtn = (target, label, primary) => readOnly ? '' : `<label class="btn upl${primary ? ' primary' : ''}">${label}<input type="file" hidden data-one="${target}" accept="${FILE_ACCEPT}"></label>`;
+function reviewHTML(id, t, lk, F, reviewer) {
+  const tabs = [['auto', '① 자동 점검', F.openAuto ? `${F.openAuto}건 남음` : '완료'], ...(lk === 'en' ? [['files', '② 빠진 문구', `${F.files.length - F.filesTodo}/${F.files.length}`]] : []), ['cross', lk === 'en' ? '③ 교차 검수' : '② 교차 검수', `${F.pass}/${F.N}`]];
+  if (!tabs.some(x => x[0] === rvTab)) rvTab = 'auto';
+  const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${(k === 'auto' && !F.openAuto) || (k === 'files' && !F.filesTodo && F.files.length) || (k === 'cross' && F.pass === F.N) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${c}</small></button>`).join('')}</div>`;
+  let inner = '';
+  if (rvTab === 'auto') inner = `<p class="sb">사이트가 숫자·빈칸·한글 남음·용어·길이를 바로 확인했어요. 고치거나 ‘문제 없음’을 눌러 주세요.</p>
+    ${F.issues.length ? `<div class="ilist">${F.issues.map(({ r, x, list }) => `<div class="irow"><code>${esc(r.id)}</code><div class="ibody"><b>${esc(r.ko)}</b>${readOnly ? `<div>${esc(x.tr || '')}</div>` : `<textarea class="grow" rows="1" data-tr="${esc(r.id)}">${esc(x.tr || '')}</textarea>`}${list.map(([k, m]) => `<span class="itag">${esc(m)}${readOnly ? '' : ` <button type="button" class="linkbtn" data-autook="${esc(r.id)}|${k}">문제 없음</button>`}</span>`).join('')}</div></div>`).join('')}</div>` : '<p class="okmsg">자동 점검에서 걸린 게 없어요.</p>'}`;
+  if (rvTab === 'files') {
+    const fchk = t.fileCheck || {}, stored = gameFiles[id] || [], exc = t.excluded || [];
+    inner = `<p class="sb">이미지와 목록을 나란히 보고, <b>빠진 문구가 없으면 체크</b>해 주세요. 회색은 공용 단어로 뺀 것이에요.</p>
+      ${F.files.length ? F.files.map(f => {
+        const fid = normId(fileIdOf(f)), img = stored.find(s => normId(fileIdOf(s.name)) === fid);
+        const ph = F.rows.filter(r => splitFiles(r.where).some(w => normId(fileIdOf(w)) === fid)), ex = exc.filter(e => splitFiles(e[0]).some(w => normId(fileIdOf(w)) === fid));
+        const listed = (t.fileList || []).find(l => normId(fileIdOf(l[0])) === fid);
+        return `<details class="fcard${fchk[f] ? ' done' : ''}"${!fchk[f] && F.files.filter(x => !fchk[x])[0] === f ? ' open' : ''}><summary><input type="checkbox" data-fchk="${esc(f)}" ${fchk[f] ? 'checked' : ''} ${readOnly ? 'disabled' : ''} aria-label="${esc(f)} 확인"> <b>${esc(f)}</b> <span>문구 ${ph.length}${ex.length ? ` · 제외 ${ex.length}` : ''}${listed && listed[1] && +listed[1] !== ph.length ? ` · <b class="badtxt">AI가 센 문구 수 ${esc(listed[1])}와 달라요</b>` : ''}${!img ? ' · <b class="badtxt">이미지 없음</b>' : ''}</span></summary>
+          <div class="fgrid">${img ? `<img src="/api/files/${encodeURIComponent(id)}/${encodeURIComponent(img.name)}" alt="${esc(f)}" loading="lazy">` : `<div class="noimg">이 PNG를 사이트에 올리면 여기서 보여요.</div>`}
+          <ol>${ph.map(r => `<li>${esc(r.ko)}</li>`).join('')}${ex.map(e => `<li class="exw">${esc(e[1])} <small>제외: ${esc(e[2] || '공용 단어')}</small></li>`).join('')}${!ph.length && !ex.length ? '<li class="badtxt">이 파일에서 나온 문구가 없어요</li>' : ''}</ol></div></details>`;
+      }).join('') : '<p class="sb">파일 이름 정보가 없어요. 엑셀에 파일명 열이 있는지 확인해 주세요.</p>'}
+      ${readOnly ? '' : `<p class="sb">빠진 문구가 있으면 그 PNG만 다시 2단계로 보내고 결과를 올리면 합쳐져요. <label class="btn upl">PNG 올리기<input type="file" hidden multiple data-png accept=".png,.jpg,.jpeg,.webp"></label></p>`}`;
+  }
+  if (rvTab === 'cross') {
+    const need = F.rows.filter(r => F.it[r.id] && F.it[r.id].rv && F.it[r.id].rv.v !== '통과');
+    inner = `${F.rvTodo ? `<p class="sb">번역한 AI와 <b>다른 AI</b>가 뜻·행동·숫자·용어를 검사하고, 한국어로 되돌린 <b>역번역</b>을 붙여 줘요.</p>
+      <ol class="do">
+        <li><i>1</i><div><button type="button" class="btn primary" data-copy="p-cross">프롬프트 복사 <small>${F.rvTodo}줄</small></button></div></li>
+        <li><i>2</i><div><b>${esc(reviewer)}</b> 새 대화에 붙여 넣고, 같은 PNG를 첨부해 보내요.</div></li>
+        <li><i>3</i><div>AI 답 전체를 복사해서 ${pasteBtn('one:cross', '붙여 넣기')} ${fileBtn('one:cross', '파일로 올리기')}</div></li>
+      </ol>
+      <details class="more"><summary>프롬프트 보기</summary><pre class="ptext" id="pt-p-cross">${esc(crossPrompt(id, t, lk))}</pre></details>` : ''}
+      ${need.length ? `<h4 class="mh">사람이 볼 것 ${need.length}줄 <small>원문과 역번역(한국어)을 비교해서 골라 주세요</small></h4><div class="ilist">${need.map(r => { const x = F.it[r.id], v = x.rv; return `<div class="irow"><code>${esc(r.id)}<br><span class="vtag ${v.v === '수정 필요' ? 'fail' : 'rev'}">${v.v === '수정 필요' ? 'FAIL' : 'REVIEW'}</span></code><div class="ibody">
+        <div class="cmp"><div><span>원문</span><b>${esc(r.ko)}</b></div><div><span>역번역</span>${esc((x.bt || [])[0] || '-')}</div></div>
+        <div class="cmp"><div><span>지금 번역</span>${xEditing.has(r.id) && !readOnly ? `<textarea class="grow" rows="1" data-tr="${esc(r.id)}">${esc(x.tr)}</textarea>` : esc(x.tr)}</div><div><span>AI가 고친 번역</span>${esc(v.fix || '-')}</div></div>
+        <small>이유: ${esc(v.why || '-')}</small>
+        ${readOnly ? '' : `<div class="iacts">${v.fix ? `<button type="button" class="btn primary" data-xfix="${esc(r.id)}">고친 번역 쓰기</button>` : ''}<button type="button" class="btn" data-xkeep="${esc(r.id)}">지금 번역 유지</button><button type="button" class="btn ghost" data-xedit="${esc(r.id)}">직접 고치기</button></div>`}</div></div>`; }).join('')}</div>
+        ${readOnly || !need.some(r => F.it[r.id].rv.fix) ? '' : '<button type="button" class="btn" data-xfixall>고친 번역 모두 쓰기</button>'}` : ''}
+      ${!F.rvTodo && !need.length ? '<p class="okmsg">교차 검수를 모두 통과했어요.</p>' : ''}
+      ${F.rows.some(r => F.it[r.id] && F.it[r.id].bt) ? `<details class="more"><summary>전체 원문 ↔ 역번역 보기</summary><div class="tprev"><table><thead><tr><th>번호</th><th>원문</th><th>역번역</th><th>판정</th></tr></thead><tbody>${F.rows.map(r => { const x = F.it[r.id] || {}; return `<tr><td>${esc(r.id)}</td><td>${esc(r.ko)}</td><td>${esc((x.bt || [])[0] || '')}</td><td>${x.rv ? esc(VLABEL[x.rv.v] || x.rv.v) : ''}</td></tr>`; }).join('')}</tbody></table></div></details>` : ''}`;
+  }
+  const allDone = !F.openAuto && !F.filesTodo && !F.rvTodo && !F.human;
+  return tabHTML + `<div class="rpane">${inner}</div>` + (allDone ? '<div class="nextrow"><button type="button" class="btn primary" data-show="4">다음: 확정</button></div>' : '');
+}
+
+/* 번역 표: 원문 | 번역 (번역 칸은 바로 고칠 수 있다) */
+function trTableHTML(t, lk) {
+  const it = workOf(t, lk);
+  return `<div class="tprev"><table><thead><tr><th>ID</th><th>화면 원문</th><th>번역</th><th>상태</th></tr></thead><tbody>${srcRows(t).map(r => { const x = it[r.id] || {}; return `<tr><td>${esc(r.id)}</td><td>${esc(r.ko)}</td><td>${readOnly ? esc(x.tr || '') : `<textarea class="grow" rows="1" data-tr="${esc(r.id)}">${esc(x.tr || '')}</textarea>`}</td><td>${x.rv ? esc(VLABEL[x.rv.v] || x.rv.v) : x.tr ? '검수 전' : '-'}</td></tr>`; }).join('')}</tbody></table></div>`;
+}
+
+const SETUP_KEY = 'checkie_setup_done';
+function setupDone() { try { return localStorage.getItem(SETUP_KEY) === '1'; } catch { return false; } }
+const infoDone = t => !!(String(t.concept || '').trim() && String(t.situation || '').trim());
+function infoFormHTML(t) {
+  const sp = t.speakers || [];
+  return `<div class="fields">${fld('게임 이름', 'name', t.name)}${fld('컨셉 한 줄', 'concept', t.concept, { ph: '예: 망가진 파일 복구' })}</div>
+    <div class="fields" style="margin-top:10px">${fld('상황', 'situation', t.situation, { area: true, ph: '플레이어가 놓인 상황과 목표' })}${fld('존댓말·반말', 'honorific', t.honorific, { area: true, ph: '예: 메리는 플레이어에게 존댓말' })}</div>
+    <h4 class="mh">화자별 말투 <small>‘밝게’보다 ‘문장 짧게, 느낌표 사용’처럼 구체적으로</small></h4>
+    ${sp.map((x, i) => `<div class="sp">${fld('화자', `speakers.${i}.who`, x.who, { ph: '예: 비서 메리' })}${fld('누구에게', `speakers.${i}.to`, x.to, { ph: '플레이어' })}${fld('말투', `speakers.${i}.tone`, x.tone, { grow: true })}${fld('쓰면 안 되는 말투', `speakers.${i}.banned`, x.banned, { grow: true })}${readOnly ? '' : `<button type="button" class="btn danger del" data-sp-del="${i}">삭제</button>`}</div>`).join('')}
+    ${readOnly ? '' : '<button type="button" class="addrow" id="sp-add">+ 화자 추가</button>'}
+    <details class="more"><summary>언어별 말투 방향 (선택)</summary><div class="fields" style="margin-top:8px">${LANGS.map(l => fld(l.label, `lang.${l.key}`, t.lang?.[l.key], { area: true })).join('')}</div></details>`;
 }
 
 /* ---------- glossary ---------- */
@@ -1706,7 +2223,7 @@ function setPath(obj, path, v) { const ks = path.split('.'); let o = obj; ks.sli
 function nest(path, v) { const out = {}; setPath(out, path, v); return out; }
 
 async function saveGameField(path, v) {
-  const c = cur(); if (!c) return;
+  const c = wGame(); if (!c) return;
   let patch;
   if (path.startsWith('speakers.')) { const sp = JSON.parse(JSON.stringify(c.data.speakers || [])); setPath({ speakers: sp }, path, v); patch = { speakers: sp }; }
   else patch = nest(path, v);
@@ -1767,7 +2284,7 @@ document.addEventListener('click', async e => {
   if (b.id === 'add-game') {
     const id = makeId('game');
     const data = { name: '새 게임', concept: '', situation: '', honorific: '', speakers: [{ who: '', to: '플레이어', tone: '', banned: '' }], lang: { en: '', ja: '', zh: '' }, progress: { en: 0, ja: 0, zh: 0 }, memo: '', updatedAt: new Date().toISOString() };
-    try { await db.doc('themes/' + id).set(data); gameId = id; view = 'card'; location.hash = id; render(true); const n = document.querySelector('[data-path="name"]'); if (n) { n.focus(); n.select(); } } catch (err) { writeErr(err); }
+    try { await db.doc('themes/' + id).set(data); gameId = id; view = 'prompts'; location.hash = id; render(true); const n = document.querySelector('[data-path="name"]'); if (n) { n.focus(); n.select(); } } catch (err) { writeErr(err); }
     return;
   }
   if (b.dataset.prog) {
@@ -1858,7 +2375,7 @@ async function doLogout() {
   await Store.logout(); location.href = location.pathname;
 }
 function setAdminBadge(n) {
-  $('#admin-sub').innerHTML = n ? `승인 대기<span class="badge">${n}</span>` : '보기·편집 허용';
+  $('#admin-tab').innerHTML = `회원 관리${n ? `<span class="badge">${n}</span>` : ''}<span id="admin-sub" hidden></span>`;
 }
 function setupAuth(me) {
   meNow = me;
@@ -2135,20 +2652,16 @@ function done() { const t = $('#toast'); t.classList.remove('busy'); t.hidden = 
 /* ---------- 현황판 ---------- */
 function dashHTML() {
   if (!themes.length) return `<div class="empty">아직 게임이 없어요.${readOnly ? '' : ' <button type="button" class="btn" id="add-game">+ 게임 추가</button>'}</div>`;
-  const pct = (v, N) => N ? Math.max(0, Math.round(v / N * 100)) : 0;
   const rows = themes.map(({ id, data: t }) => {
-    const st = tableStats(t.inputTable), src = tableStats(t.srcTable);
     const cells = LANGS.map(l => {
-      const step = currentStep(t, l.key), s = workStats(t, l.key), N = s.N;
-      const cls = isFinal(step) || step === 'done' ? 'ok' : step === 'wait' ? 'wait' : 'now';
-      const hot = [s.human ? `REVIEW ${s.human}` : '', s.fix ? `FAIL ${s.fix}` : '', s.plan ? `기획 판단 ${s.plan}` : '', s.compare ? `대조 ${s.compare}` : ''].filter(Boolean).join(' · ');
-      return `<button type="button" class="dcell ${cls}" data-goto="${esc(id)}|${l.key}"><span class="lab">${l.label}</span><b>${esc(stepLabel(step))}</b>${N ? `<div class="bar" title="검수 통과 ${s.pass} · 번역 ${s.tr} / 전체 ${N}"><i style="width:${pct(s.pass, N)}%"></i><i class="tr" style="width:${pct(s.tr - s.pass, N)}%"></i></div><small>번역 ${s.tr}/${N} · PASS ${s.pass}</small>` : ''}${hot ? `<span class="hotline">${hot}</span>` : ''}</button>`;
+      const st = simpleStep(t, l.key), rs = srcRows(t), it = workOf(t, l.key), N = rs.length, tr = rs.filter(r => it[r.id] && it[r.id].tr).length;
+      const cls = isFinal(st) || st === 'done' ? 'ok' : st === 'wait' ? 'wait' : 'now';
+      return `<button type="button" class="dcell ${cls}" data-goto="${esc(id)}|${l.key}"><span class="lab">${l.label}</span><b>${esc(SIMPLE_LABEL[st])}</b>${N && !isFinal(st) && st !== 'wait' ? `<small>${tr}/${N}줄</small>` : ''}</button>`;
     }).join('');
-    return `<div class="drow"><div class="dgame"><button type="button" data-goto="${esc(id)}|card">${esc(t.name || '(이름 없음)')}</button><small>${esc(t.concept || '')}</small></div>
-      <div class="dsrc">${src.rows ? `원문 표 ${src.rows}행<br>` : ''}${st.rows ? `입력표 ${st.rows}행${st.unresolved ? ` · <b class="badtxt">확인 필요 ${st.unresolved}</b>` : ''}` : '<span style="color:var(--muted)">입력표 없음</span>'}</div>${cells}</div>`;
+    return `<div class="drow"><div class="dgame"><button type="button" data-goto="${esc(id)}|${promptLang}">${esc(t.name || '(이름 없음)')}</button><small>${esc(t.concept || '게임 정보 없음')}</small></div>${cells}</div>`;
   });
-  return `<div class="dash"><div class="drow head"><div>게임</div><div>원문</div>${LANGS.map(l => `<div>${l.label}</div>`).join('')}</div>${rows.join('')}</div>
-    <p class="dhint">칸을 누르면 그 게임·언어의 번역 작업으로 바로 가요. 진한 초록 막대는 검수 통과, 연한 초록은 번역만 된 문구예요. 게임 이름을 누르면 게임 설정으로 가요.</p>
+  return `<p class="lead">게임을 누르면 해야 할 일이 순서대로 나와요.</p>
+    <div class="dash"><div class="drow head"><div>게임</div>${LANGS.map(l => `<div>${l.label}</div>`).join('')}</div>${rows.join('')}</div>
     ${readOnly ? '' : '<div style="margin-top:12px"><button type="button" class="btn" id="add-game">+ 게임 추가</button></div>'}`;
 }
 
@@ -2252,46 +2765,88 @@ async function readSourceRows(file) {
     const j = await serverExtract(file, 'source');
     const rows = (j.rows || []).map(r => r.map(c => String(c).replace(/^\|+|\|+$/g, '').trim()));
     const head = rows[0] || [], isHead = /순번|원문/.test(head.join(' '));
-    let iT = head.findIndex(h => /원문/.test(h)), iW = head.findIndex(h => /위치/.test(h)), iN = head.findIndex(h => /비고/.test(h));
-    if (iT < 0) { iT = 1; iW = 2; iN = 3; }
-    return { rows: rows.slice(isHead ? 1 : 0).map(r => [r[iT] || '', r[iW] || '', r[iN] || '']).filter(r => r[0]), cut: j.cut };
+    let iT = head.findIndex(h => /원문/.test(h)), iW = head.findIndex(h => /위치/.test(h)), iN = head.findIndex(h => /비고/.test(h)), iK = head.findIndex(h => /종류/.test(h));
+    if (iT < 0) { iT = 1; iW = 2; iK = 3; iN = 4; }
+    return { rows: rows.slice(isHead ? 1 : 0).map(r => [r[iT] || '', r[iW] || '', r[iN] || '', iK >= 0 ? r[iK] || '' : '']).filter(r => r[0]), cut: j.cut };
   }
   if (e === 'docx') return { rows: docxSource((await serverExtract(file, 'source')).blocks) };
   if (/^(xlsx?|csv|tsv)$/.test(e)) { const rows = await readTableFile(file); return { rows: tableSource(rows) || cellsSource(rows, '') }; }
   return { rows: (await decodeText(file)).split(/\r?\n/).map(l => l.trim()).filter(Boolean).map((l, i) => [l, `${i + 1}번째 줄`, '']) };
 }
 const fileIdOf = name => String(name).replace(/\.[^.]+$/, '').trim().replace(/\s+/g, '-').replace(/[^\p{L}\p{N}_-]/gu, '').slice(0, 24) || 'file';
+/* 원문 표: ID | 화면 원문 | 사용 위치 | 글자 수 | 맥락 설명 | 비고 */
+const SRC_HEAD_ROW = ['ID', '화면 원문', '사용 위치', '글자 수', '맥락 설명', '비고'];
+function srcList(t) {
+  const rows = parseTable(t.srcTable); if (rows.length < 2) return [];
+  const h = rows[0].map(normHead), ix = k => h.findIndex(x => x.startsWith(k));
+  const I = { id: Math.max(0, rows[0].findIndex(isIdHead)), ko: ix('화면원문') >= 0 ? ix('화면원문') : ix('원문'), where: ix('사용위치'), len: ix('글자수'), kind: ix('맥락'), note: ix('비고') };
+  return rows.slice(1).filter(r => String(r[I.id] || '').trim()).map(r => { const id = String(r[I.id]).trim(); return { id, ko: r[I.ko] || '', where: I.where >= 0 ? r[I.where] || '' : '', len: I.len >= 0 ? r[I.len] || '' : '', kind: I.kind >= 0 ? r[I.kind] || '' : '', note: I.note >= 0 ? r[I.note] || '' : '', file: id.replace(/-[TN]\d+$/, '') }; });
+}
+const srcRowsOut = list => [SRC_HEAD_ROW, ...list.map(x => [x.id, x.ko, x.where, String([...String(x.ko).replace(/\s*↵\s*/g, '')].length), x.kind, x.note])];
+/* 파일 하나의 추출 결과를 원문 표에 넣기 (같은 파일은 통째로 바꾼다). rows: [원문, 위치, 비고, 종류] */
+function mergeSource(list, fid, rows) {
+  const keep = list.filter(x => x.file !== fid);
+  rows.forEach((x, i) => { const ko = String(x[0]).replace(/\t/g, ' ').trim(); if (ko) keep.push({ id: `${fid}-T${String(i + 1).padStart(2, '0')}`, ko, where: `${fid} · ${x[1] || '-'}`, kind: x[3] || '', note: x[2] || '', file: fid }); });
+  return keep.sort((a, b) => a.id.localeCompare(b.id, 'ko', { numeric: true }));
+}
+async function saveSource(c, list, msg) {
+  await saveGameField('srcTable', rowsToTSV(srcRowsOut(list)));
+  await saveGameField('srcDone', false);
+  render(true); if (msg) toast(msg, 5000);
+}
+/* 파일 올리기: 이미지·PDF는 자료로 저장하고, AI 키가 있으면 바로 원문을 뽑는다. Word·엑셀·텍스트는 사이트가 바로 읽는다. */
 async function readSourceFiles(list) {
   const c = cur(); if (!c || readOnly) return;
-  let files = [...list];
-  if (!aiOn() && files.some(isAiFile)) {
-    toast('PNG·JPG·PDF 읽기가 아직 꺼져 있어요. 관리자에게 AI 키(ANTHROPIC_API_KEY)를 넣어 달라고 해 주세요.', 6000);
-    files = files.filter(f => !isAiFile(f)); if (!files.length) return;
-  }
-  const head = ['ID', '화면 원문', '사용 위치', '글자 수', '비고'];
-  let body = parseTable(c.data.srcTable).slice(1);
-  const fails = [], cut = []; let added = 0;
+  const files = [...list];
+  let src = srcList(c.data);
+  const fails = [], cut = [], waiting = []; let added = 0;
   for (let k = 0; k < files.length; k++) {
     const f = files[k], fid = fileIdOf(f.name);
-    busy(`${files.length > 1 ? `${k + 1}/${files.length} · ` : ''}${f.name} 읽는 중…${isAiFile(f) ? ' AI가 읽어요 (한 장에 20~40초)' : ''}`);
+    busy(`${files.length > 1 ? `${k + 1}/${files.length} · ` : ''}${f.name} 올리는 중…${isAiFile(f) && aiOn() ? ' AI가 읽어요 (한 장에 20~40초)' : ''}`);
     try {
+      if (isAiFile(f)) { await storeGameFile(c.id, f); if (!aiOn()) { waiting.push(f.name); continue; } }
       const r = await readSourceRows(f); if (r.cut) cut.push(f.name);
-      body = body.filter(x => !String(x[0]).startsWith(fid + '-T'));
-      r.rows.forEach((x, i) => {
-        const txt = String(x[0]).replace(/\t/g, ' ').trim();
-        body.push([`${fid}-T${String(i + 1).padStart(2, '0')}`, txt, `${fid} · ${x[1] || '-'}`, String([...txt.replace(/\s*↵\s*/g, '')].length), x[2] || '']);
-      });
-      added += r.rows.length;
+      src = mergeSource(src, fid, r.rows); added += r.rows.length;
     } catch (e) { fails.push(`${f.name}: ${e.message}`); }
   }
   done();
-  if (added) {
-    body.sort((a, b) => String(a[0]).localeCompare(String(b[0]), 'ko', { numeric: true }));
-    await saveGameField('srcTable', rowsToTSV([head, ...body]));
-    render(true);
-  }
-  const msg = [added ? `원문 ${added}줄을 읽었어요. 표에서 잘못 읽은 글자가 없는지 확인해 주세요.` : '', cut.length ? `${cut.join(', ')}은 문구가 많아 끝까지 못 읽었을 수 있어요. 화면을 나눠 캡처해 주세요.` : '', fails.length ? `못 읽은 파일 — ${fails.join(' / ')}` : ''].filter(Boolean).join(' ');
-  toast(msg || '읽은 원문이 없어요.', fails.length || cut.length ? 8000 : 4000);
+  if (added) await saveSource(c, src);
+  else render(true);
+  const msg = [added ? `원문 ${added}줄을 뽑았어요.` : '', waiting.length ? `이미지 ${waiting.length}개를 올렸어요. 아래 ‘ChatGPT로 뽑기’로 원문을 뽑아 주세요.` : '', cut.length ? `${cut.join(', ')}은 문구가 많아 끝까지 못 읽었을 수 있어요.` : '', fails.length ? `못 올린 파일 — ${fails.join(' / ')}` : ''].filter(Boolean).join(' ');
+  toast(msg || '뽑은 원문이 없어요.', 6000);
+}
+/* ChatGPT에서 받은 추출 답 붙여 넣기: 파일 이름 | 순번 | 화면 원문 | 위치 | 종류 | 비고 */
+async function applyExtraction(tables) {
+  const c = cur(), tb = tables.find(r => headHas(r, /원문/)) || tables[0];
+  if (!tb || tb.length < 2) { toast('표를 찾지 못했어요. AI 답 전체를 복사해서 붙여 넣어 주세요.', 5000); return; }
+  const h = tb[0].map(normHead), ix = k => h.findIndex(x => x.startsWith(k));
+  const iF = ix('파일'), iT = ix('화면원문') >= 0 ? ix('화면원문') : ix('원문'), iW = ix('위치'), iK = ix('종류'), iN = ix('비고');
+  const known = (gameFiles[c.id] || []).map(f => fileIdOf(f.name));
+  const groups = new Map();
+  tb.slice(1).forEach(r => {
+    let fid = iF >= 0 ? fileIdOf(String(r[iF] || '').trim()) : (known[0] || 'file');
+    const hit = known.find(k => normId(k) === normId(fid)); if (hit) fid = hit;
+    if (!groups.has(fid)) groups.set(fid, []);
+    groups.get(fid).push([r[iT] || '', iW >= 0 ? r[iW] : '', iN >= 0 ? r[iN] : '', iK >= 0 ? r[iK] : '']);
+  });
+  let src = srcList(c.data), n = 0;
+  groups.forEach((rows, fid) => { src = mergeSource(src, fid, rows); n += rows.length; });
+  await saveSource(c, src, `원문 ${n}줄을 넣었어요 (파일 ${groups.size}개).`);
+}
+function extractPrompt(t) {
+  const names = (gameFiles[cur().id] || []).filter(f => /\.(png|jpe?g|webp)$/i.test(f.name)).map(f => f.name);
+  return `첨부한 화면 캡처${names.length ? `(${names.join(', ')})` : ''}는 오프라인 게임 「${t.name || ''}」의 화면이야. 플레이어가 보거나 듣는 한국어 문구를 빠짐없이 그대로 옮겨 적어줘. 번역·요약·맞춤법 수정은 하지 마.
+
+- 순서: 파일마다 위에서 아래, 왼쪽에서 오른쪽
+- 한 문구가 줄바꿈돼 있으면 한 줄에 쓰고, 줄바꿈 자리에 ↵
+- 흐리거나 잘려서 확실하지 않으면 비고에 ‘판독 불확실: 이유’
+- 숫자·기호도 보이는 그대로
+
+결과: 표 하나만 써줘. 파일은 만들지 마.
+열: 파일 이름 | 순번 | 화면 원문 | 위치 | 종류 | 비고
+- 파일 이름: 첨부한 파일 이름 그대로 (예: ${abbrOf(t)}-01.png)
+- 위치: ‘위 왼쪽’, ‘가운데 말풍선’처럼 짧게
+- 종류: 버튼 / 안내문 / 대사 / 효과 글자 / 로고 / 기타 중 하나`;
 }
 
 /* ---------- 표 올리기 공통 (파일·붙여 넣기·끌어다 놓기) ---------- */
@@ -2342,16 +2897,22 @@ document.addEventListener('change', e => {
 
 /* 붙여 넣기 */
 let pasteTarget = null;
-const PASTE_TITLES = { tr: '번역 결과', b: 'DeepL 결과', bt: '역번역 결과', rv: '검수 결과', ts: '테스트 결과', fx: '수정 결과', inputTable: '번역 입력표', enFinal: '영어 확정본' };
+const PASTE_TITLES = { 'one:res': '번역 결과 표 붙여 넣기 (표 3개 모두 붙여 넣어도 돼요)', 'one:cross': '교차 검수 답 붙여 넣기', 'one:x': 'AI 원문 추출 답 붙여 넣기', 'one:tr': 'AI 번역 답 붙여 넣기', 'one:rv': 'AI 검수 답 붙여 넣기', tr: '번역 결과', b: 'DeepL 결과', bt: '역번역 결과', rv: '검수 결과', ts: '테스트 결과', fx: '수정 결과', inputTable: '번역 입력표', enFinal: '영어 확정본' };
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-paste]'); if (!b) return;
   pasteTarget = b.dataset.paste;
-  $('#paste-title').textContent = `${PASTE_TITLES[pasteTarget.split(':')[1]] || '표'} 붙여 넣기`;
+  $('#paste-title').textContent = PASTE_TITLES[pasteTarget] || `${PASTE_TITLES[pasteTarget.split(':')[1]] || '표'} 붙여 넣기`;
   $('#paste-text').value = ''; $('#paste-err').textContent = '';
   $('#pastedlg').showModal(); $('#paste-text').focus();
 });
 $('#paste-form').addEventListener('submit', async e => {
   e.preventDefault();
+  if (pasteTarget && pasteTarget.startsWith('one:')) {
+    const tables = splitTables($('#paste-text').value);
+    if (!tables.length) { $('#paste-err').textContent = '표를 찾지 못했어요. AI 답 전체를 복사해서 붙여 넣어 주세요.'; return; }
+    $('#pastedlg').close();
+    return pasteTarget === 'one:res' ? applyResult(tables) : pasteTarget === 'one:cross' ? applyCross(tables) : pasteTarget === 'one:tr' ? applyTranslation(tables) : pasteTarget === 'one:x' ? applyExtraction(tables) : applyReview(tables);
+  }
   const rows = parseTable($('#paste-text').value);
   if (rows.length < 2) { $('#paste-err').textContent = '표를 찾지 못했어요. 첫 행에 열 이름(ID 등)이 있어야 해요.'; return; }
   $('#pastedlg').close();
@@ -2363,8 +2924,7 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-show]'); if (!b) return;
   const key = gameId + ':' + promptLang, v = viewStep[key]; if (!v) return;
   const n = +b.dataset.show;
-  v.pick = n && n !== v.step ? n : null;
-  if (!n) v.pick = typeof v.step === 'number' ? -1 : null;
+  v.pick = (v.pick ?? v.now) === n && !b.closest('.nextrow') ? -1 : n;   // 열린 칸 머리를 다시 누르면 접기
   render(true);
 });
 /* 단계 바로 가기 · 펼침 상태 기억 */
@@ -2385,7 +2945,7 @@ document.addEventListener('click', e => {
   const g = e.target.closest('[data-goto]'); if (!g) return;
   const v = g.dataset.goto, i = v.lastIndexOf('|'), id = v.slice(0, i), target = v.slice(i + 1);
   gameId = id; armedDelete = null;
-  if (target === 'card') view = 'card'; else { view = 'prompts'; promptLang = target; }
+  view = 'prompts'; if (target !== 'card') promptLang = target;
   location.hash = gameId; render(true); window.scrollTo(0, 0);
 });
 
@@ -2432,6 +2992,501 @@ document.addEventListener('change', e => {
   if (e.target.id !== 'ai-sel' || readOnly) return;
   const v = e.target.value; e.target.blur();
   saveGameField('ai.' + promptLang, v).then(() => { render(true); if (v === 'Claude') toast('번역 AI가 Claude라서 오류 검수는 ChatGPT로 바뀌었어요.', 3500); });
+});
+
+
+/* ================= 자동 진행 (AI API) =================
+ * 사이트가 단계별 프롬프트를 만들어 서버에 맡기고(job), 답에서 표를 읽어 결과 올리기와 같은 길로 저장한다.
+ * 사람은 원문 분석 질문 답하기 · REVIEW 고르기 · 테스트 대조(걸린 것만) · 기획 판단 · 확정만 한다.
+ */
+const PROV = () => (meNow && meNow.providers) || {};
+const PNAME = { claude: 'Claude', openai: 'ChatGPT', gemini: 'Gemini' };
+const autoOn = () => { const p = PROV(); return !!(p.claude || p.openai || p.gemini); };
+const firstOf = (list, not) => list.find(p => PROV()[p] && p !== not) || list.find(p => PROV()[p]) || null;
+const AI2P = { ChatGPT: 'openai', Claude: 'claude', Gemini: 'gemini' };
+function roles(t, lk) {
+  const pref = AI2P[aiOf(t, lk)];
+  const translator = PROV()[pref] ? pref : firstOf(['openai', 'claude', 'gemini']);
+  return {
+    analyzer: firstOf(['openai', 'claude', 'gemini']),
+    translator,
+    reviewer: firstOf(['claude', 'openai', 'gemini'], translator),   // 번역한 AI와 다른 AI로 검수
+    tester: firstOf(['gemini', 'openai', 'claude'], translator),
+    backer: firstOf(['gemini', 'claude', 'openai'], translator),
+  };
+}
+const CHUNK = 40;
+const chunks = (a, n = CHUNK) => { const out = []; for (let i = 0; i < a.length; i += n) out.push(a.slice(i, i + n)); return out; };
+/* 일부 행만 담은 게임 카드 (패키지가 그 행만으로 만들어지게) */
+function subGame(t, ids, field = 'inputTable') {
+  const rows = parseTable(t[field]); if (!rows.length) return t;
+  const keep = new Set(ids);
+  return Object.assign({}, t, { [field]: rowsToTSV([rows[0], ...rows.slice(1).filter(r => keep.has(String(r[0]).trim()))]) });
+}
+const AUTO_FMT = `
+
+[답변 형식 — 꼭 지킬 것]
+- 파일(xlsx 등)은 만들지 않는다. 표는 모두 \`\`\`tsv 코드 블록 안에 탭으로 구분해서 쓴다.
+- 각 표 바로 위 줄에 제목을 쓴다. 예: ### 출력 1 (표가 하나면 ### 결과)
+- 표의 첫 행은 열 이름이다. 표 밖의 설명은 짧게 쓴다.
+- 행이 많아도 줄이지 말고 모든 행을 쓴다.`;
+const autoPrompt = text => String(text).split('\n').filter(l => !/xlsx/i.test(l)).join('\n') + AUTO_FMT;
+/* 답에서 표 꺼내기: [{ no: 출력 번호, rows }] */
+function answerTables(text) {
+  const out = [], re = /```[^\n]*\n([\s\S]*?)```/g; let m, last = 0;
+  while ((m = re.exec(text))) {
+    const before = text.slice(last, m.index), h = [...before.matchAll(/출력\s*(\d)/g)].pop();
+    out.push({ no: h ? +h[1] : null, rows: cleanRows(parseTable(m[1])) });
+    last = re.lastIndex;
+  }
+  if (!out.length) { const rows = cleanRows(parseTable(text.split('\n').filter(l => /\t|\|/.test(l)).join('\n'))); if (rows.length > 1) out.push({ no: null, rows }); }
+  return out;
+}
+/* 이 행들에 맞는 자료 파일 (ID 앞부분 = 파일 이름) */
+function filesFor(ids) {
+  const fs = gameFiles[autoCtx.id] || [];
+  const hit = fs.filter(f => { const fid = normId(fileIdOf(f.name)); return ids.some(id => normId(id).startsWith(fid + '-')); });
+  return (hit.length ? hit : fs).slice(0, 12).map(f => f.name);
+}
+async function aiCall(provider, { system, prompt, files }) {
+  const r = await fetch('/api/ai/run', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ provider, system, prompt, files, game: autoCtx.id }) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.message || 'AI를 부르지 못했어요.');
+  const t0 = Date.now();
+  for (;;) {
+    await new Promise(res => setTimeout(res, 2500));
+    if (autoState.stop) throw new Error('멈췄어요.');
+    const q = await fetch('/api/ai/job/' + j.job, { credentials: 'same-origin', cache: 'no-store' }).then(x => x.json()).catch(() => null);
+    if (q && q.status === 'done') { if (q.cut) autoLog('답이 길어서 끝이 잘렸을 수 있어요. 빠진 행은 다음 실행 때 다시 처리해요.'); return q.text; }
+    if (q && (q.status === 'error' || q.message)) throw new Error(q.message || 'AI 호출이 실패했어요.');
+    if (Date.now() - t0 > 12 * 60000) throw new Error('AI 답이 12분 넘게 오지 않아요. 다시 시도해 주세요.');
+  }
+}
+
+/* ---- 진행 상태 ---- */
+let autoState = { running: false, key: '', lines: [], error: '', stop: false };
+function autoLog(m) { autoState.lines.push(m); if (autoState.lines.length > 8) autoState.lines.shift(); render(); }
+let gameFiles = {};   // 게임 id → [{name,size}]
+async function loadFiles(id, force) {
+  if (!id || (gameFiles[id] && !force)) return gameFiles[id] || [];
+  try { const j = await fetch('/api/files/' + encodeURIComponent(id), { credentials: 'same-origin', cache: 'no-store' }).then(r => r.json()); gameFiles[id] = j.files || []; } catch { gameFiles[id] = gameFiles[id] || []; }
+  render(); return gameFiles[id];
+}
+
+/* ---- 단계별 실행 ---- */
+const G = () => wGame().data;
+async function runAnalysis(extraAnswers) {
+  const t = G(), src = parseTable(t.srcTable);
+  if (src.length < 2) throw new Error('원문 표가 없어요. 먼저 이 게임의 화면 캡처·대본을 자료로 올려 주세요.');
+  const R = roles(t, 'en'), ps0 = buildPrompts(t, 'en', autoCtx.id), system = ps0.find(p => p.id === 'P1-1').text;
+  let ids = src.slice(1).map(r => String(r[0]).trim());
+  if (extraAnswers) { const want = new Set(extraAnswers.ids); ids = ids.filter(id => want.has(id)); }
+  const head = [], body = [], qs = [], terms = [], parts = chunks(ids);
+  for (let k = 0; k < parts.length; k++) {
+    autoLog(`원문 분석 ${k + 1}/${parts.length} · ${PNAME[R.analyzer]}`);
+    const st = subGame(t, parts[k], 'srcTable');
+    let prompt = buildPrompts(st, 'en', autoCtx.id).find(p => p.id === 'P1-2').text;
+    if (extraAnswers) prompt += `\n\n[기획 답변]\n아래는 기획이 질문에 답한 내용이다. 답을 반영해서 해당 행을 다시 정리하고 ‘확인 필요’를 없애라. 답이 없거나 애매한 질문만 다시 출력 2에 남긴다.\n번호\t관련 ID\t질문\t답\n${extraAnswers.list.map(q => [q.no, q.ids, q.q, q.a].join('\t')).join('\n')}`;
+    const ans = answerTables(await aiCall(R.analyzer, { system, prompt: autoPrompt(prompt), files: filesFor(parts[k]) }));
+    const t1 = ans.find(x => x.no === 1) || ans.find(x => x.no == null && hasIdHead(x.rows)) || ans[0];
+    if (!t1 || t1.rows.length < 2) throw new Error('AI 답에서 번역 입력표를 찾지 못했어요. 다시 실행해 주세요.');
+    if (!head.length) head.push(...t1.rows[0]);
+    body.push(...t1.rows.slice(1));
+    const t2 = ans.find(x => x.no === 2); if (t2) qs.push(...t2.rows.slice(1).map(r => ({ no: r[0], ids: r[1] || '', q: r[2] || '', cols: r[3] || '', a: '' })).filter(q => q.q));
+    const t3 = ans.find(x => x.no === 3); if (t3) terms.push(...t3.rows.slice(1).filter(r => r[0]).map(r => ({ ko: r[0], ids: r[1] || '', why: r[2] || '', memo: r[3] || '' })));
+  }
+  /* 기존 입력표와 합치기: 다시 분석한 행만 바꾼다 */
+  const cur0 = parseTable(G().inputTable);
+  let rows;
+  if (extraAnswers && cur0.length > 1) {
+    const ic = Math.max(0, cur0[0].findIndex(isIdHead)), nb = new Map(body.map(r => [normId(r[Math.max(0, head.findIndex(isIdHead))]), r]));
+    rows = [cur0[0], ...cur0.slice(1).map(r => nb.get(normId(r[ic])) || r)];
+  } else rows = [head, ...body];
+  await saveGameField('inputTable', rowsToTSV(rows));
+  const prevQ = (G().analysis && G().analysis.questions) || [];
+  const questions = extraAnswers ? prevQ.filter(q => !extraAnswers.list.some(x => x.q === q.q)).concat(qs) : qs;
+  await saveGameField('analysis', { questions: questions.filter((q, i, a) => a.findIndex(x => x.q === q.q) === i), terms: extraAnswers ? ((G().analysis && G().analysis.terms) || []).concat(terms) : terms, at: nowISO() });
+}
+async function runTranslate() {
+  const t = G(), lk = autoCtx.lk, R = roles(t, lk), it = workOf(t, lk);
+  const todo = srcRows(t).filter(r => !(it[r.id] && it[r.id].tr)).map(r => r.id), parts = chunks(todo);
+  const system = buildPrompts(t, lk, autoCtx.id).find(p => p.id === 'P2-1').text;
+  for (let k = 0; k < parts.length; k++) {
+    autoLog(`번역 ${k + 1}/${parts.length} · ${PNAME[R.translator]}`);
+    const p = buildPrompts(subGame(G(), parts[k]), lk, autoCtx.id).find(x => x.id === 'P2-2' || x.id === 'P2-3');
+    const ans = answerTables(await aiCall(R.translator, { system, prompt: autoPrompt(p.text), files: filesFor(parts[k]) }));
+    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 번역 표를 찾지 못했어요.');
+    await applyUpload('tr', tb.rows);
+  }
+  if (PROV().deepl) {
+    const rows = srcRows(G()).filter(r => !(workOf(G(), lk)[r.id] || {}).b);
+    if (rows.length) {
+      autoLog('DeepL 비교 번역');
+      const r = await fetch('/api/ai/deepl', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lang: lk, texts: rows.map(x => /^원문 유지/.test(x.clean) || !x.clean ? x.ko : x.clean) }) });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok) await applyUpload('b', [['ID', 'DeepL'], ...rows.map((x, i) => [x.id, (j.texts || [])[i] || ''])]); else autoLog('DeepL은 건너뛰었어요: ' + (j.message || r.status));
+    }
+  }
+}
+async function runReview() {
+  const t = G(), lk = autoCtx.lk, R = roles(t, lk);
+  const need = pkgBack(t, lk); const it = workOf(t, lk);
+  const noBt = srcRows(t).filter(r => it[r.id] && it[r.id].tr && !it[r.id].rv && !it[r.id].bt).map(r => r.id);
+  if (noBt.length && R.backer) {
+    const parts = chunks(noBt, 80);
+    for (let k = 0; k < parts.length; k++) {
+      autoLog(`역번역 ${k + 1}/${parts.length} · ${PNAME[R.backer]}`);
+      const p = buildPrompts(subGame(G(), parts[k]), lk, autoCtx.id).find(x => x.id === 'P6');
+      const ans = answerTables(await aiCall(R.backer, { prompt: autoPrompt(p.text), files: [] }));
+      const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (tb) await applyUpload('bt', tb.rows);
+    }
+  }
+  const ids = srcRows(G()).filter(r => { const x = workOf(G(), lk)[r.id]; return x && x.tr && !x.rv; }).map(r => r.id), parts = chunks(ids);
+  for (let k = 0; k < parts.length; k++) {
+    autoLog(`오류 검수 ${k + 1}/${parts.length} · ${PNAME[R.reviewer]}`);
+    const p = buildPrompts(subGame(G(), parts[k]), lk, autoCtx.id).find(x => x.id === 'P3');
+    const ans = answerTables(await aiCall(R.reviewer, { prompt: autoPrompt(p.text), files: filesFor(parts[k]) }));
+    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 검수 표를 찾지 못했어요.');
+    await applyUpload('rv', tb.rows);
+  }
+  void need;
+}
+async function runTest() {
+  const t = G(), lk = autoCtx.lk, R = roles(t, lk);
+  const ids = srcRows(t).filter(r => { const x = workOf(t, lk)[r.id]; return x && x.rv && x.rv.v === '통과' && !x.ts; }).map(r => r.id), parts = chunks(ids);
+  for (let k = 0; k < parts.length; k++) {
+    autoLog(`행동 테스트 ${k + 1}/${parts.length} · ${PNAME[R.tester]}`);
+    const p = buildPrompts(subGame(G(), parts[k]), lk, autoCtx.id).find(x => x.id === 'P4');
+    const ans = answerTables(await aiCall(R.tester, { prompt: autoPrompt(p.text), files: filesFor(parts[k]) }));
+    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 테스트 표를 찾지 못했어요.');
+    await applyUpload('ts', tb.rows);
+  }
+  await matchCalm();
+}
+async function matchCalm() {   // 헷갈림 없고 칸에 들어가는 문구는 일치로
+  const it = workOf(G(), autoCtx.lk);
+  if (Object.values(it).some(x => x.ts && x.ts.match == null && !testFlagged(x.ts)))
+    await saveWork(items => { let n = 0; Object.values(items).forEach(x => { if (x.ts && x.ts.match == null && !testFlagged(x.ts)) { x.ts.match = true; n++; } }); return n; }, n => `${n}건 일치`);
+}
+async function runFix() {
+  const t = G(), lk = autoCtx.lk, R = roles(t, lk);
+  const ids = srcRows(t).filter(r => { const x = workOf(t, lk)[r.id]; return x && x.rv && x.rv.v === '수정 필요' && fixCount(x) < MAX_FIX; }).map(r => r.id), parts = chunks(ids);
+  const system = buildPrompts(t, lk, autoCtx.id).find(p => p.id === 'P2-1').text;
+  for (let k = 0; k < parts.length; k++) {
+    autoLog(`재수정 ${k + 1}/${parts.length} · ${PNAME[R.translator]}`);
+    const p = buildPrompts(subGame(G(), parts[k]), lk, autoCtx.id).find(x => x.id === 'P5');
+    const ans = answerTables(await aiCall(R.translator, { system, prompt: autoPrompt(p.text), files: filesFor(parts[k]) }));
+    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 수정 표를 찾지 못했어요.');
+    await applyUpload('fx', tb.rows);
+  }
+}
+/* 사람이 볼 차례가 올 때까지 단계를 이어서 돌린다 */
+async function autoRun(opts = {}) {
+  if (autoState.running || readOnly) return;
+  autoCtx = { id: gameId, lk: promptLang };
+  autoState = { running: true, key: gameId + ':' + promptLang, lines: [], error: '', stop: false };
+  render(true);
+  try {
+    await loadFiles(autoCtx.id);
+    if (opts.answers) { await runAnalysis(opts.answers); }
+    let lastSig = '';
+    for (let guard = 0; guard < 16; guard++) {
+      const t = G(), lk = autoCtx.lk, step = currentStep(t, lk), s = workStats(t, lk);
+      const sig = step + ':' + JSON.stringify(s);
+      if (sig === lastSig) throw new Error('AI 답을 저장하지 못해 진행이 멈췄어요. 다시 실행해 보고, 같으면 ‘직접 하기’로 진행해 주세요.');
+      lastSig = sig;
+      if (step === 1) { if (s.N && s.unresolved && !opts.reanalyze) break; await runAnalysis(); opts.reanalyze = false; if (tableStats(G().inputTable).unresolved) break; continue; }
+      if (step === 2) { await runTranslate(); continue; }
+      if (step === 3) { if (!s.needReview) break; await runReview(); continue; }
+      if (step === 4) { if (!s.needTest) { await matchCalm(); if (workStats(G(), lk).compare) break; continue; } await runTest(); continue; }
+      if (step === 5) { if (!s.fix) break; await runFix(); continue; }
+      break;
+    }
+    autoLog('사람이 볼 차례예요.');
+  } catch (e) { autoState.error = e.message || String(e); }
+  finally { autoState.running = false; autoCtx = null; render(true); }
+}
+document.addEventListener('click', e => {
+  if (e.target.closest('#auto-go')) { autoRun({ reanalyze: !!e.target.closest('#auto-go').dataset.re }); return; }
+  if (e.target.closest('#auto-stop')) { autoState.stop = true; autoLog('멈추는 중…'); return; }
+  if (e.target.closest('#q-rerun')) {
+    const t = cur().data, qs = (t.analysis && t.analysis.questions) || [];
+    const list = qs.map((q, i) => Object.assign({}, q, { a: (document.querySelector(`[data-qa="${i}"]`) || {}).value || '' })).filter(q => q.a.trim());
+    if (!list.length) { toast('답을 하나 이상 적어 주세요.'); return; }
+    const ids = new Set(); list.forEach(q => String(q.ids).split(/[,\s/]+/).forEach(x => { const id = srcIdOf(t, x); if (id) ids.add(id); }));
+    parseTable(t.inputTable).slice(1).forEach(r => { if (/확인 필요|판독 불확실/.test(r.join(' '))) ids.add(String(r[0]).trim()); });
+    autoRun({ answers: { list, ids: [...ids] } });
+    return;
+  }
+  if (e.target.closest('#terms-add')) addTermCands();
+  if (e.target.closest('#terms-skip')) saveGameField('analysis.terms', []).then(() => render(true));
+  if (e.target.closest('#files-open')) openFiles();
+});
+const srcIdOf = (t, x) => { const n = normId(x); const r = parseTable(t.srcTable).slice(1).find(r => normId(r[0]) === n); return r ? String(r[0]).trim() : null; };
+async function addTermCands() {
+  const t = cur(); const cands = (t.data.analysis && t.data.analysis.terms) || [];
+  const have = new Set(terms.map(x => x.data.ko));
+  let n = 0;
+  for (const c of cands) {
+    if (!c.ko || have.has(c.ko)) continue;
+    const d = blankTerm(); d.ko = c.ko; d.common = false; d.games = [t.id]; d.memo = [c.why, c.memo].filter(Boolean).join(' / ');
+    LANGS.forEach(l => { d.tr[l.key].status = '미정'; });
+    d.updatedAt = nowISO();
+    await db.doc('terms/' + makeId(c.ko)).set(d); n++;
+  }
+  await saveGameField('analysis.terms', []);
+  toast(`용어집에 ${n}개를 넣었어요. 번역은 용어집에서 채워 주세요.`); render(true);
+}
+
+/* ---- 자동 진행 패널 ---- */
+function autoPanelHTML(id, t, lk, L, step, s) {
+  const R = roles(t, lk), running = autoState.running && autoState.key === id + ':' + lk;
+  const busyElse = autoState.running && !running;
+  const qs = (t.analysis && t.analysis.questions) || [], tc = (t.analysis && t.analysis.terms) || [];
+  const hasSrc = tableStats(t.srcTable).rows > 0;
+  const nf = (gameFiles[id] || []).length;
+  let head, body = '', go = true, goLabel = '자동으로 진행';
+  if (running) { head = 'AI가 작업하고 있어요'; go = false; }
+  else if (step === 1 && !hasSrc && !tableStats(t.inputTable).rows) { head = '먼저 자료를 올려 주세요'; body = `<p class="ap-p">이 게임의 <b>화면 캡처</b>(PNG·JPG)와 대본(Word·PDF)을 올리면, 사이트가 원문을 읽어 두고 자동 진행을 시작할 수 있어요. 파일 이름은 <b>${esc(abbrOf(t))}-01.png</b>처럼 정해 주세요.</p>${readOnly ? '' : `<label class="btn primary upl big">자료 올리기<input type="file" hidden multiple data-src accept="${SRC_ACCEPT}"></label>`}`; go = false; }
+  else if (step === 1 && s.unresolved && qs.length) { head = `AI가 ${qs.length}가지를 물어봤어요`; body = `<p class="ap-p">답을 적고 <b>답변 반영</b>을 누르면 그 부분만 다시 분석해요. 모르는 건 비워 두면 돼요.</p><div class="qlist">${qs.map((q, i) => `<label class="qrow"><span class="qq"><b>${esc(/^q/i.test(String(q.no)) ? q.no : 'Q' + (q.no || i + 1))}</b> ${esc(q.q)}<small>${esc(q.ids)}</small></span><input data-qa="${i}" placeholder="답" ${readOnly ? 'disabled' : ''}></label>`).join('')}</div>${readOnly ? '' : '<button type="button" class="btn primary big" id="q-rerun">답변 반영해서 다시 분석</button>'}`; go = false; }
+  else if (step === 1 && s.unresolved) { head = '번역 입력표에 확인 필요가 남아 있어요'; body = '<p class="ap-p">게임 설정의 번역 입력표에서 ‘확인 필요’를 직접 고치거나, 처음부터 다시 분석해 주세요.</p>'; goLabel = '처음부터 다시 분석'; }
+  else if (step === 'wait') { head = '영어를 먼저 확정해 주세요'; body = '<p class="ap-p">일본어·중국어는 확정된 영어를 참고해서 번역해요.</p><button type="button" class="btn" data-lang="en">영어로 가기</button>'; go = false; }
+  else if (step === 3 && !s.needReview && s.human) { head = `REVIEW ${s.human}건을 골라 주세요`; go = false; }
+  else if (step === 4 && !s.needTest && s.compare) { head = `테스트에서 걸린 ${s.compare}건을 확인해 주세요`; go = false; }
+  else if (step === 5 && !s.fix && s.plan) { head = `기획 판단 ${s.plan}건이 남았어요`; go = false; }
+  else if (step === 'done') { head = '모든 문구가 통과했어요'; body = readOnly ? '' : `<button type="button" class="btn primary big" data-wact="confirm">${esc(L.label)} 확정하기</button>`; go = false; }
+  else if (step === 'confirmed') { head = '확정됐어요 — 화면에 적용해 주세요'; body = `<p class="ap-p">${esc(APPLY_CHECK[lk])}</p><button type="button" class="btn" data-wact="export">최종 결과 내보내기</button>${readOnly ? '' : '<button type="button" class="btn primary" data-wact="applied">화면 적용 완료</button>'}`; go = false; }
+  else if (step === 'applied') { head = '화면 적용까지 끝났어요'; body = '<button type="button" class="btn" data-wact="export">최종 결과 내보내기</button>'; go = false; }
+  else head = `다음 할 일: ${stepLabel(step)}`;
+  const who = `원문 분석 ${PNAME[R.analyzer] || '-'} · 번역 ${PNAME[R.translator] || '-'} · 검수 ${PNAME[R.reviewer] || '-'} · 테스트 ${PNAME[R.tester] || '-'}`;
+  return `<section class="autop">
+    <div class="ap-head"><h2>${esc(head)}</h2>${go && !readOnly ? `<button type="button" class="btn primary big" id="auto-go" ${goLabel.startsWith('처음') ? 'data-re="1"' : ''} ${busyElse ? 'disabled title="다른 게임을 자동으로 진행하고 있어요"' : ''}>${goLabel}</button>` : ''}${running ? '<button type="button" class="btn" id="auto-stop">멈추기</button>' : ''}</div>
+    ${running ? `<ul class="ap-log on">${autoState.lines.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+    ${autoState.error && autoState.key === id + ':' + lk ? `<p class="ap-err">${esc(autoState.error)}</p>` : ''}
+    ${body}
+    ${tc.length && !running ? `<div class="ap-terms">용어집 후보 ${tc.length}개: ${esc(tc.slice(0, 6).map(x => x.ko).join(', '))}${tc.length > 6 ? ' …' : ''} ${readOnly ? '' : '<button type="button" class="btn" id="terms-add">용어집에 넣기</button><button type="button" class="btn ghost" id="terms-skip">넘기기</button>'}</div>` : ''}
+    <p class="ap-who">${esc(who)} · 자료 ${nf}개 <button type="button" class="linkbtn" id="files-open">자료 보기</button></p>
+  </section>`;
+}
+
+/* ---- 자료 보기 (게임별 캡처·PDF) ---- */
+function openFiles() {
+  const id = gameId, fs = gameFiles[id] || [];
+  $('#files-title').textContent = `자료 · ${themeName(id)}`;
+  $('#files-list').innerHTML = fs.length ? fs.map(f => `<div class="frow">${/\.pdf$/i.test(f.name) ? '<span class="fpdf">PDF</span>' : `<img src="/api/files/${encodeURIComponent(id)}/${encodeURIComponent(f.name)}" alt="" loading="lazy">`}<span>${esc(f.name)}</span>${readOnly ? '' : `<button type="button" class="btn ghost" data-fdel="${esc(f.name)}">삭제</button>`}</div>`).join('') : '<p class="ap-p">아직 자료가 없어요.</p>';
+  $('#filesdlg').showModal();
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-fdel]'); if (!b) return;
+  if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = '한 번 더'; return; }
+  const r = await fetch(`/api/files/${encodeURIComponent(gameId)}/${encodeURIComponent(b.dataset.fdel)}`, { method: 'DELETE', credentials: 'same-origin' }).then(x => x.json()).catch(() => ({}));
+  if (r.files) gameFiles[gameId] = r.files;
+  openFiles(); render(true);
+});
+/* 자료 저장: 이미지는 줄여서 JPG/PNG로, PDF는 그대로 */
+async function storeGameFile(id, file) {
+  let blob = isImgFile(file) ? await shrinkImage(file) : file;
+  let name = fileIdOf(file.name) + (blob.type === 'image/jpeg' ? '.jpg' : blob.type === 'image/png' ? '.png' : '.' + extOf(file));
+  if (blob.size > 4e6) throw new Error(`${file.name}: 4MB보다 커서 자료로 저장하지 못했어요.`);
+  const u8 = new Uint8Array(await blob.arrayBuffer()); let bin = '';
+  for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  const r = await fetch('/api/files/' + encodeURIComponent(id), { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, data: btoa(bin) }) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.message || '자료를 저장하지 못했어요.');
+  gameFiles[id] = j.files || gameFiles[id];
+}
+
+
+/* ---------- 간단 흐름 이벤트 ---------- */
+document.addEventListener('click', async e => {
+  const g = e.target.closest('[data-view-go]');
+  if (g) { view = g.dataset.viewGo; location.hash = view === 'dash' ? '' : (gameId || ''); render(true); window.scrollTo(0, 0); return; }
+  const nd = e.target.closest('[data-note-done]');
+  if (nd) { const t = cur().data, list = ((t.notes || {})[promptLang] || []).slice(); list.splice(+nd.dataset.noteDone, 1); await saveGameField('notes.' + promptLang, list); render(true); }
+});
+document.addEventListener('change', async e => {
+  const el = e.target;
+  if (el.id === 'game-sel') { gameId = el.value; location.hash = gameId; render(true); return; }
+  if (el.matches && el.matches('[data-one]') && el.files && el.files[0]) {
+    const f = el.files[0], target = el.dataset.one; el.value = '';
+    try {
+      const tables = await readWorkbook(f);
+      if (!tables.length || tables[0].length < 2) { toast('표를 찾지 못했어요.'); return; }
+      await (target === 'one:res' ? applyResult(tables) : target === 'one:cross' ? applyCross(tables) : target === 'one:tr' ? applyTranslation(tables) : applyReview(tables));
+    } catch (err) { done(); toast(err.message || '파일을 읽지 못했어요.', 5000); }
+    return;
+  }
+  if (el.matches && el.matches('[data-tr]') && !readOnly) {
+    const id = el.dataset.tr, v = el.value.trim();
+    await saveWork(items => { const x = items[id] = items[id] || {}; if (x.tr === v) return 0; if (x.tr) (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: v, why: '직접 고침' }); x.tr = v; x.rv = null; x.bt = null; x.ok = (x.ok || []).filter(k => k === 'read'); return 1; }, n => n ? '고쳤어요. 이 줄은 자동 점검과 교차 검수를 다시 받아요.' : '');
+  }
+});
+
+
+/* ================= 엑셀(xlsx) 만들기: 색 칠하기·필터·첫 행 고정을 위해 직접 만든다 (외부 라이브러리 없음) =================
+ * sheets: [{ name, rows: [[값]], widths: [글자폭], style: (r, c, row) => 0 기본 | 1 머리글 | 2 주황(판독 불확실) | 3 노랑(중복) | 4 초록(확인) | 5 회색(참고), filter: bool }]
+ */
+const XS = (() => {
+  const CRC = new Uint32Array(256).map((_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
+  const crc32 = u8 => { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  const enc = s => new TextEncoder().encode(s);
+  function zip(files) {   // 압축 없이(stored) 묶기
+    const parts = [], cen = []; let off = 0;
+    files.forEach(([name, data]) => {
+      const nm = enc(name), d = typeof data === 'string' ? enc(data) : data, crc = crc32(d);
+      const lh = new DataView(new ArrayBuffer(30));
+      lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true); lh.setUint16(8, 0, true);
+      lh.setUint32(14, crc, true); lh.setUint32(18, d.length, true); lh.setUint32(22, d.length, true); lh.setUint16(26, nm.length, true);
+      parts.push(new Uint8Array(lh.buffer), nm, d);
+      const ch = new DataView(new ArrayBuffer(46));
+      ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true); ch.setUint16(8, 0x0800, true);
+      ch.setUint32(16, crc, true); ch.setUint32(20, d.length, true); ch.setUint32(24, d.length, true); ch.setUint16(28, nm.length, true); ch.setUint32(42, off, true);
+      cen.push(new Uint8Array(ch.buffer), nm);
+      off += 30 + nm.length + d.length;
+    });
+    const cenLen = cen.reduce((a, b) => a + b.length, 0), end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true); end.setUint32(12, cenLen, true); end.setUint32(16, off, true);
+    return new Blob([...parts, ...cen, new Uint8Array(end.buffer)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  }
+  const x = s => String(s ?? '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const col = n => { let s = ''; n++; while (n) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
+  function sheetXml(sh) {
+    const rows = sh.rows, w = sh.widths || [];
+    const cols = rows[0] ? `<cols>${rows[0].map((_, i) => `<col min="${i + 1}" max="${i + 1}" width="${w[i] || 14}" customWidth="1"/>`).join('')}</cols>` : '';
+    const data = rows.map((r, ri) => `<row r="${ri + 1}">${r.map((v, ci) => {
+      const st = ri === 0 ? 1 : (sh.style ? sh.style(ri, ci, r) : 0) || 0, ref = col(ci) + (ri + 1);
+      return typeof v === 'number' && isFinite(v) ? `<c r="${ref}" s="${st}"><v>${v}</v></c>` : `<c r="${ref}" s="${st}" t="inlineStr"><is><t xml:space="preserve">${x(v)}</t></is></c>`;
+    }).join('')}</row>`).join('');
+    const last = rows[0] ? col(rows[0].length - 1) + rows.length : 'A1';
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>${cols}<sheetData>${data}</sheetData>${sh.filter && rows.length > 1 ? `<autoFilter ref="A1:${last}"/>` : ''}</worksheet>`;
+  }
+  const FILLS = ['', 'E7E6E6', 'FCE4D6', 'FFF2CC', 'E2EFDA', 'EDEDED'];
+  const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<fonts count="2"><font><sz val="11"/><name val="맑은 고딕"/></font><font><b/><sz val="11"/><name val="맑은 고딕"/></font></fonts>
+<fills count="${FILLS.length + 1}"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill>${FILLS.slice(1).map(c => `<fill><patternFill patternType="solid"><fgColor rgb="FF${c}"/><bgColor indexed="64"/></patternFill></fill>`).join('')}</fills>
+<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>
+<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+<cellXfs count="6"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/>${[3, 4, 5, 6].map(f => `<xf numFmtId="0" fontId="0" fillId="${f}" borderId="0" xfId="0" applyFill="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>`).join('')}</cellXfs>
+</styleSheet>`;
+  return function build(sheets) {
+    const wb = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheets.map((s, i) => `<sheet name="${x(s.name).slice(0, 31)}" sheetId="${i + 1}" r:id="rId${i + 1}"/>`).join('')}</sheets>${sheets.some(s => s.filter) ? `<definedNames>${sheets.map((s, i) => s.filter && s.rows.length > 1 ? `<definedName name="_xlnm._FilterDatabase" localSheetId="${i}" hidden="1">'${x(s.name)}'!$A$1:$${col(s.rows[0].length - 1)}$${s.rows.length}</definedName>` : '').join('')}</definedNames>` : ''}</workbook>`;
+    const rels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((s, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i + 1}.xml"/>`).join('')}<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
+    const ct = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>${sheets.map((s, i) => `<Override PartName="/xl/worksheets/sheet${i + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`;
+    const root = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
+    return zip([['[Content_Types].xml', ct], ['_rels/.rels', root], ['xl/workbook.xml', wb], ['xl/_rels/workbook.xml.rels', rels], ['xl/styles.xml', styles], ...sheets.map((s, i) => [`xl/worksheets/sheet${i + 1}.xml`, sheetXml(s)])]);
+  };
+})();
+function saveBlob(blob, filename) {
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 3000);
+}
+
+/* ================= 원문 추출 단계 ================= */
+let srcFilter = 'all';
+const normKo = s => String(s || '').replace(/\s|↵/g, '');
+function srcAnalysis(t) {
+  const list = srcList(t), ref = t.srcRef || {}, chk = t.srcCheck || {};
+  const main = list.filter(x => !ref[x.file]);
+  const byKo = new Map(); main.forEach(x => { const k = normKo(x.ko); if (!k) return; byKo.set(k, (byKo.get(k) || []).concat(x.id)); });
+  main.forEach(x => { x.unc = /판독\s*불확실|확인 필요/.test(x.note + ' ' + x.ko); x.dup = (byKo.get(normKo(x.ko)) || []).filter(i => i !== x.id); x.chk = chk[x.id] || ''; });
+  const files = [...new Set(list.map(x => x.file))];
+  return { list, main, files, ref, n: main.length, unc: main.filter(x => x.unc).length, dup: main.filter(x => x.dup.length).length, ok: main.filter(x => x.chk).length };
+}
+function extractStepHTML(id, t) {
+  const A = srcAnalysis(t), stored = gameFiles[id] || [];
+  const storedIds = stored.map(f => ({ fid: fileIdOf(f.name), name: f.name }));
+  const allFiles = [...new Set([...storedIds.map(f => f.fid), ...A.files])];
+  const countOf = fid => A.list.filter(x => x.file === fid).length;
+  const pending = storedIds.filter(f => /\.(png|jpe?g|webp|pdf)$/i.test(f.name) && !countOf(f.fid));
+  const fileChips = allFiles.length ? `<div class="fchips">${allFiles.map(fid => { const n = countOf(fid), isRef = !!A.ref[fid]; return `<span class="fchip${isRef ? ' ref' : ''}${n ? '' : ' wait'}"><b>${esc(fid)}</b> ${n ? `${n}줄` : '아직 안 뽑음'}${readOnly ? '' : ` <button type="button" class="linkbtn" data-sref="${esc(fid)}" title="기획서처럼 규칙만 설명하는 파일이면 참고 자료로 바꿔요">${isRef ? '참고 자료' : '원문 자료'}</button>`}</span>`; }).join('')}</div>` : '';
+  const flt = [['all', `전체 ${A.n}`], ['unc', `판독 불확실 ${A.unc}`], ['dup', `중복 ${A.dup}`], ['todo', `미확인 ${A.n - A.ok}`]];
+  const shown = A.main.filter(x => srcFilter === 'all' || (srcFilter === 'unc' && x.unc) || (srcFilter === 'dup' && x.dup.length) || (srcFilter === 'todo' && !x.chk) || srcFilter === 'f:' + x.file);
+  const hasImg = fid => storedIds.some(f => f.fid === fid);
+  return `<p class="sb">게임 화면 캡처·대본을 올리면 한국어 원문을 표로 뽑아요. 한국어만 보고 <b>빠진 문구·잘못 읽은 글자</b>를 확인하면 돼요.</p>
+    <ol class="do">
+      <li><i>1</i><div>${readOnly ? '' : `<label class="btn ${A.n ? '' : 'primary'} upl">파일 올리기<input type="file" hidden multiple data-src accept="${SRC_ACCEPT}"></label>`}<span class="do-l">PNG · JPG · PDF · Word · 엑셀 (여러 개, 끌어다 놓기 가능)</span></div></li>
+      ${pending.length && !aiOn() ? `<li><i>2</i><div>${`<button type="button" class="btn primary" data-copy="one-x">프롬프트 복사</button>`} ChatGPT 새 대화에 붙여 넣고, 올린 이미지 ${pending.length}개를 첨부해 보낸 뒤 ${readOnly ? '' : '<button type="button" class="btn" data-paste="one:x">답 붙여 넣기</button>'}<pre hidden id="pt-one-x">${esc(extractPrompt(t))}</pre></div></li>` : ''}
+    </ol>
+    ${fileChips}
+    ${A.n ? `<div class="sumrow">${flt.map(([k, l]) => `<button type="button" class="fbtn${srcFilter === k ? ' on' : ''}${k === 'unc' && A.unc || k === 'dup' && A.dup ? ' warn' : ''}" data-sflt="${k}">${l}</button>`).join('')}${allFiles.length > 1 ? `<select id="sflt-file" aria-label="파일별"><option value="">파일별 보기</option>${allFiles.map(f => `<option value="f:${esc(f)}" ${srcFilter === 'f:' + f ? 'selected' : ''}>${esc(f)}</option>`).join('')}</select>` : ''}</div>
+    <div class="tprev srct"><table><thead><tr><th>확인</th><th>ID</th><th>원문</th><th>위치</th><th>맥락</th><th></th></tr></thead><tbody>${shown.map(x => `<tr class="${x.unc ? 'unc' : x.dup.length ? 'dup' : ''}">
+      <td><input type="checkbox" data-sck="${esc(x.id)}" ${x.chk ? 'checked' : ''} ${readOnly ? 'disabled' : ''} aria-label="${esc(x.id)} 확인"></td>
+      <td class="mono">${esc(x.id)}</td>
+      <td>${readOnly ? esc(x.ko) : `<textarea class="grow" rows="1" data-sko="${esc(x.id)}">${esc(x.ko)}</textarea>`}${x.unc ? `<small class="flag">${esc(x.note || '판독 불확실')}</small>` : ''}${x.dup.length ? `<small class="dupf">중복: ${esc(x.dup.join(', '))}</small>` : ''}${x.chk === 'edited' ? '<small class="edf">사람이 고침</small>' : ''}</td>
+      <td>${esc(String(x.where).replace(/^[^·]*·\s*/, ''))}</td><td>${esc(x.kind)}</td>
+      <td>${hasImg(x.file) ? `<button type="button" class="linkbtn" data-simg="${esc(x.id)}">캡처</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="6">해당하는 문구가 없어요.</td></tr>'}</tbody></table></div>
+    <div class="nextrow spread"><span class="sb">확인 ${A.ok}/${A.n}${readOnly ? '' : ` · <button type="button" class="linkbtn" data-sall>문제 없는 줄 모두 확인</button>`}</span><span><button type="button" class="btn" id="src-xlsx">엑셀 받기</button>${readOnly ? '' : `<button type="button" class="btn primary" id="src-done">${t.srcDone ? '확인 완료됨' : '확인 완료 · 다음: 번역'}</button>`}</span></div>` : ''}`;
+}
+function srcXlsx(t) {
+  const A = srcAnalysis(t), ab = abbrOf(t);
+  const head = ['ID', '원문', '사용 위치', '글자 수', '맥락 설명', '파일', '판독', '중복', '검수 상태', '비고'];
+  const rowOf = x => [x.id, x.ko, x.where, [...normKo(x.ko)].length, x.kind, x.file, x.unc ? '판독 불확실' : '', x.dup.length ? x.dup.join(', ') : '', x.chk === 'edited' ? '사람이 고침' : x.chk ? '사람 확인' : 'AI 추출 (미확인)', x.note];
+  const main = [head, ...A.main.map(rowOf)];
+  const refRows = A.list.filter(x => A.ref[x.file]);
+  const summary = [['파일', '자료 구분', '문구 수', '판독 불확실', '중복', '사람 확인'], ...[...new Set(A.list.map(x => x.file))].map(f => { const m = A.main.filter(x => x.file === f); return A.ref[f] ? [f, '참고 자료', A.list.filter(x => x.file === f).length, '', '', ''] : [f, '원문 자료', m.length, m.filter(x => x.unc).length, m.filter(x => x.dup.length).length, m.filter(x => x.chk).length]; }), ['합계', '', A.n, A.unc, A.dup, A.ok]];
+  const sheets = [
+    { name: '원문 추출', rows: main, widths: [14, 40, 22, 8, 12, 12, 12, 16, 16, 24], filter: true, style: (ri, ci, r) => r[6] ? 2 : r[7] ? 3 : r[8] !== 'AI 추출 (미확인)' && ci === 8 ? 4 : 0 },
+    { name: '요약', rows: summary, widths: [16, 12, 10, 12, 8, 10] },
+  ];
+  if (refRows.length) sheets.push({ name: '참고 자료', rows: [['ID', '내용', '위치'], ...refRows.map(x => [x.id, x.ko, x.where])], widths: [14, 60, 22], style: () => 5 });
+  saveBlob(XS(sheets), `${ab}_source_extract.xlsx`);
+}
+
+
+/* ---------- 원문 추출 단계 이벤트 ---------- */
+async function patchSrc(fn, msg) { const c = cur(); const t = c.data; const out = fn(JSON.parse(JSON.stringify(t.srcCheck || {})), JSON.parse(JSON.stringify(t.srcRef || {}))); if (out.check) await saveGameField('srcCheck', out.check); if (out.ref) await saveGameField('srcRef', out.ref); render(true); if (msg) toast(msg); }
+document.addEventListener('click', async e => {
+  const f = e.target.closest('[data-sflt]'); if (f) { srcFilter = srcFilter === f.dataset.sflt && f.dataset.sflt !== 'all' ? 'all' : f.dataset.sflt; render(true); return; }
+  const r = e.target.closest('[data-sref]'); if (r) { const fid = r.dataset.sref; return patchSrc((chk, ref) => { if (ref[fid]) delete ref[fid]; else ref[fid] = true; return { ref }; }); }
+  if (e.target.closest('[data-sall]')) { const A = srcAnalysis(cur().data); return patchSrc(chk => { A.main.forEach(x => { if (!x.unc && !x.dup.length && !chk[x.id]) chk[x.id] = 'ok'; }); return { check: chk }; }, '판독 불확실·중복이 아닌 줄을 모두 확인으로 표시했어요.'); }
+  if (e.target.closest('#src-xlsx')) { srcXlsx(cur().data); return; }
+  if (e.target.closest('#src-done')) {
+    const A = srcAnalysis(cur().data);
+    if (A.unc && !confirmOnce('src-done')) { toast(`판독 불확실 ${A.unc}곳이 남아 있어요. 그래도 넘어가려면 한 번 더 눌러 주세요.`, 4000); return; }
+    await saveGameField('srcDone', true); render(true); toast('원문 추출을 마쳤어요. 이제 번역해요.'); return;
+  }
+  const im = e.target.closest('[data-simg]'); if (im) {
+    const x = srcList(cur().data).find(v => v.id === im.dataset.simg); if (!x) return;
+    const f = (gameFiles[cur().id] || []).find(g => fileIdOf(g.name) === x.file); if (!f) return;
+    $('#img-cap').innerHTML = `<b>${esc(x.id)}</b> · ${esc(String(x.where).replace(/^[^·]*·\s*/, ''))} — ${esc(x.ko)}`;
+    $('#img-view').src = `/api/files/${encodeURIComponent(cur().id)}/${encodeURIComponent(f.name)}`; $('#imgdlg').showModal();
+  }
+});
+const armed = {}; function confirmOnce(k) { if (armed[k] && Date.now() - armed[k] < 5000) { delete armed[k]; return true; } armed[k] = Date.now(); return false; }
+document.addEventListener('change', async e => {
+  const el = e.target;
+  if (el.id === 'sflt-file') { srcFilter = el.value || 'all'; render(true); return; }
+  if (el.matches && el.matches('[data-sck]')) { const id = el.dataset.sck, on = el.checked; return patchSrc(chk => { if (on) chk[id] = chk[id] || 'ok'; else delete chk[id]; return { check: chk }; }); }
+  if (el.matches && el.matches('[data-sko]') && !readOnly) {
+    const id = el.dataset.sko, v = el.value.trim(), c = cur(), list = srcList(c.data), x = list.find(y => y.id === id);
+    if (!x || x.ko === v) return;
+    x.ko = v; if (/판독\s*불확실/.test(x.note)) x.note = x.note.replace(/판독\s*불확실[^/]*/,'').trim();
+    await saveGameField('srcTable', rowsToTSV(srcRowsOut(list)));
+    const chk = Object.assign({}, c.data.srcCheck || {}, { [id]: 'edited' }); await saveGameField('srcCheck', chk);
+    render(true); toast('고쳤어요. ‘사람이 고침’으로 표시돼요.');
+  }
+});
+
+
+/* ---------- 검수 단계 이벤트 ---------- */
+const xEditing = new Set();
+document.addEventListener('click', async e => {
+  const tb = e.target.closest('[data-rtab]'); if (tb) { rvTab = tb.dataset.rtab; render(true); return; }
+  const ok = e.target.closest('[data-autook]'); if (ok) { const [id, k] = ok.dataset.autook.split('|'); return saveWork(items => { const x = items[id] = items[id] || {}; x.ok = [...new Set([...(x.ok || []), k])]; return 1; }, () => ''); }
+  const fx = e.target.closest('[data-xfix]'); if (fx) { const id = fx.dataset.xfix; return saveWork(items => { const x = items[id]; if (!x || !x.rv || !x.rv.fix) return 0; (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: x.rv.fix, why: x.rv.why || '교차 검수', kind: 'fix' }); x.tr = x.rv.fix; x.rv = null; x.bt = null; x.ok = (x.ok || []).filter(k => k === 'read'); return 1; }, () => '고친 번역을 썼어요. 이 줄은 교차 검수를 한 번 더 받아요.'); }
+  if (e.target.closest('[data-xfixall]')) return saveWork(items => { let n = 0; Object.values(items).forEach(x => { if (x.rv && x.rv.v !== '통과' && x.rv.fix) { (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: x.rv.fix, why: x.rv.why || '교차 검수', kind: 'fix' }); x.tr = x.rv.fix; x.rv = null; x.bt = null; x.ok = (x.ok || []).filter(k => k === 'read'); n++; } }); return n; }, n => `${n}줄을 고친 번역으로 바꿨어요. 바뀐 줄만 교차 검수를 한 번 더 받아요.`);
+  const kp = e.target.closest('[data-xkeep]'); if (kp) { const id = kp.dataset.xkeep; return saveWork(items => { const x = items[id]; if (!x) return 0; x.rv = Object.assign({}, x.rv, { v: '통과', by: meName(), kind: '사람 판단' }); return 1; }, () => '지금 번역으로 통과시켰어요.'); }
+  const ed = e.target.closest('[data-xedit]'); if (ed) { xEditing.add(ed.dataset.xedit); render(true); const ta = document.querySelector(`textarea[data-tr="${CSS.escape(ed.dataset.xedit)}"]`); if (ta) ta.focus(); return; }
+});
+document.addEventListener('change', async e => {
+  const el = e.target;
+  if (el.matches && el.matches('[data-fchk]')) { const f = el.dataset.fchk, on = el.checked; const m = Object.assign({}, cur().data.fileCheck || {}); if (on) m[f] = true; else delete m[f]; await saveGameField('fileCheck', m); render(true); return; }
+  if (el.matches && el.matches('[data-png]') && el.files && el.files.length) {
+    const files = [...el.files], c = cur(); el.value = ''; let n = 0;
+    for (const f of files) { busy(`${f.name} 올리는 중…`); try { await storeGameFile(c.id, f); n++; } catch (err) { toast(err.message, 5000); } }
+    done(); render(true); toast(`PNG ${n}개를 올렸어요.`);
+  }
+  if (el.matches && el.matches('[data-tr]')) xEditing.delete(el.dataset.tr);
 });
 
 /* ================= boot ================= */

@@ -174,9 +174,9 @@ function hit(key) { const l = attempts.get(key) || []; l.push(Date.now()); attem
 const publicUser = (id, u) => Object.assign({ id }, norm(u));
 
 /* ---------- 파일 읽기: Word(docx)는 서버에서 바로, PNG·JPG·PDF는 Claude API로 ---------- */
-const AI_KEY = env.ANTHROPIC_API_KEY || '';
-const AI_BASE = (env.ANTHROPIC_BASE_URL || 'https://api.anthropic.com').replace(/\/$/, '');
-const AI_LIMIT = Number(env.AI_HOURLY_LIMIT) || 60;
+const AI = require('./ai');
+const AI_KEY = AI.anyVision();
+const AI_LIMIT = Number(env.AI_HOURLY_LIMIT) || 200;
 const MAX_FILE = 12 * 1024 * 1024;
 
 /* zip 안의 파일 하나 꺼내기 (docx는 zip) */
@@ -230,16 +230,6 @@ function readDocx(buf) {
   return blocks;
 }
 
-let modelPick = null;
-async function aiModel() {
-  if (env.ANTHROPIC_MODEL) return env.ANTHROPIC_MODEL;
-  if (modelPick) return modelPick;
-  try {
-    const r = await fetch(AI_BASE + '/v1/models?limit=100', { headers: { 'x-api-key': AI_KEY, 'anthropic-version': '2023-06-01' } });
-    if (r.ok) { const ids = ((await r.json()).data || []).map(x => x.id); modelPick = ids.find(i => /sonnet/i.test(i)) || ids[0] || null; }
-  } catch { /* 아래 기본값 */ }
-  return modelPick || 'claude-sonnet-4-5';
-}
 const AI_PROMPTS = {
   source: `이 파일은 한국 오프라인 게임의 화면 캡처 또는 대본·기획 문서다.
 플레이어가 보거나 듣는 한국어 문구를 하나도 빠짐없이 그대로 옮겨 적어라. 번역·요약·맞춤법 수정을 하지 마라.
@@ -247,9 +237,9 @@ const AI_PROMPTS = {
 - 버튼, 안내문, 대사, 효과 글자, 숫자가 섞인 문구를 모두 넣는다. 한 문구가 줄바꿈되어 있으면 한 행에 쓰고 줄바꿈 자리에 ↵ 를 넣는다.
 - 위치: 화면이면 ‘위 왼쪽 버튼’, ‘가운데 말풍선’처럼 짧게. 문서면 ‘2쪽 메리 대사’, ‘3번째 문단’처럼.
 - 흐리거나 잘려서 확실히 읽을 수 없으면 비고에 ‘판독 불확실: 이유’를 쓴다. 추측한 글자는 화면 원문에 쓰되 비고에 꼭 표시한다.
-- 로고·장식 글자는 비고에 ‘로고’ 또는 ‘장식’. 한국어가 아닌 글자는 비고에 ‘외국어’.
+- 종류는 버튼 / 안내문 / 대사 / 효과 글자 / 로고 / 기타 중 하나. 한국어가 아닌 글자는 비고에 ‘외국어’.
 출력은 탭으로 구분한 표 하나만, 코드 블록 하나 안에 쓴다. 다른 설명은 쓰지 않는다.
-첫 행은 정확히 다음과 같다: 순번\t화면 원문\t위치\t비고
+첫 행은 정확히 다음과 같다: 순번\t화면 원문\t위치\t종류\t비고
 읽을 문구가 없으면 첫 행만 출력한다.`,
   table: `이 파일 안의 표를 그대로 옮겨 적어라. 내용을 고치거나 번역·요약하지 마라.
 - 첫 행은 표의 열 이름을 그대로 쓴다.
@@ -259,27 +249,61 @@ const AI_PROMPTS = {
 출력은 탭으로 구분한 표 하나만, 코드 블록 하나 안에 쓴다. 다른 설명은 쓰지 않는다.`,
 };
 async function aiRead(buf, mediaType, mode) {
-  const block = mediaType === 'application/pdf'
-    ? { type: 'document', source: { type: 'base64', media_type: mediaType, data: buf.toString('base64') } }
-    : { type: 'image', source: { type: 'base64', media_type: mediaType, data: buf.toString('base64') } };
-  const r = await fetch(AI_BASE + '/v1/messages', {
-    method: 'POST',
-    headers: { 'x-api-key': AI_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-    body: JSON.stringify({ model: await aiModel(), max_tokens: 16000, messages: [{ role: 'user', content: [block, { type: 'text', text: AI_PROMPTS[mode] }] }] }),
-  });
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) {
-    if (r.status === 401) throw new Error('AI 키(ANTHROPIC_API_KEY)가 올바르지 않아요. 관리자에게 알려 주세요.');
-    if (r.status === 404 && !env.ANTHROPIC_MODEL) modelPick = null;
-    if (r.status === 429 || r.status === 529) throw new Error('AI가 지금 바빠요. 1분쯤 뒤에 다시 올려 주세요.');
-    throw new Error('AI가 파일을 읽지 못했어요 (' + r.status + (j.error && j.error.message ? ': ' + j.error.message : '') + ').');
-  }
-  const text = (j.content || []).filter(c => c.type === 'text').map(c => c.text).join('\n');
-  const code = (text.match(/```[^\n]*\n([\s\S]*?)```/) || [, text])[1];
+  const p = AI.anyVision();
+  const out = await AI.call(p, { text: AI_PROMPTS[mode], files: [{ media: mediaType, b64: buf.toString('base64') }], maxTokens: 16000 });
+  const code = (out.text.match(/```[^\n]*\n([\s\S]*?)```/) || [, out.text])[1];
   const rows = code.split(/\r?\n/).filter(l => l.trim()).map(l => l.split('\t').map(c => c.trim()));
-  return { rows, cut: j.stop_reason === 'max_tokens' };
+  return { rows, cut: out.cut };
 }
 const MEDIA = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', pdf: 'application/pdf' };
+
+/* ---------- 게임 자료 파일 저장 (GitHub data 브랜치) ---------- */
+const FILE_RE = /^[\p{L}\p{N}_.-]{1,80}\.(png|jpe?g|webp|pdf)$/iu;
+const mediaOf = n => MEDIA[(String(n).match(/\.([a-z0-9]+)$/i) || [, ''])[1].toLowerCase()] || '';
+const fileCache = new Map();   // "게임/이름" → { sha, buf }
+const filePath = (game, name) => `files/${encodeURIComponent(game)}/${encodeURIComponent(name)}`;
+async function listFiles(game, fresh) {
+  await ensureBranch();
+  const r = await gh(`/contents/files/${encodeURIComponent(game)}?ref=${encodeURIComponent(DATA_BRANCH)}${fresh ? '&t=' + Date.now() : ''}`);
+  if (r.status === 404) return [];
+  if (!r.ok) throw new Error('자료 목록을 읽지 못했어요 (' + r.status + ').');
+  return ((await r.json()) || []).filter(x => x.type === 'file').map(x => ({ name: x.name, size: x.size, sha: x.sha }));
+}
+async function readFileBuf(game, name) {
+  const key = game + '/' + name, c = fileCache.get(key);
+  await ensureBranch();
+  const r = await gh(`/contents/${filePath(game, name)}?ref=${encodeURIComponent(DATA_BRANCH)}`, { headers: {} });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error('자료 파일을 읽지 못했어요 (' + r.status + ').');
+  const j = await r.json();
+  if (c && c.sha === j.sha) return c.buf;
+  let buf = j.content ? Buffer.from(j.content, 'base64') : null;
+  if (!buf || !buf.length) {   // 1MB가 넘는 파일은 내용이 비어서 온다 → blob으로 받기
+    const br = await gh('/git/blobs/' + j.sha);
+    if (!br.ok) throw new Error('자료 파일을 읽지 못했어요 (' + br.status + ').');
+    buf = Buffer.from((await br.json()).content || '', 'base64');
+  }
+  fileCache.set(key, { sha: j.sha, buf });
+  return buf;
+}
+async function writeFileBuf(game, name, buf, message) {
+  await ensureBranch();
+  const cur = await gh(`/contents/${filePath(game, name)}?ref=${encodeURIComponent(DATA_BRANCH)}`);
+  const body = { message, content: buf.toString('base64'), branch: DATA_BRANCH };
+  if (cur.ok) body.sha = (await cur.json()).sha;
+  const r = await gh(`/contents/${filePath(game, name)}`, { method: 'PUT', body: JSON.stringify(body) });
+  if (!r.ok) throw new Error('자료를 저장하지 못했어요 (' + r.status + ').');
+  fileCache.delete(game + '/' + name);
+}
+async function deleteFile(game, name, message) {
+  const cur = await gh(`/contents/${filePath(game, name)}?ref=${encodeURIComponent(DATA_BRANCH)}`);
+  if (!cur.ok) return;
+  const r = await gh(`/contents/${filePath(game, name)}`, { method: 'DELETE', body: JSON.stringify({ message, sha: (await cur.json()).sha, branch: DATA_BRANCH }) });
+  if (!r.ok) throw new Error('자료를 지우지 못했어요 (' + r.status + ').');
+  fileCache.delete(game + '/' + name);
+}
+const jobs = new Map();
+setInterval(() => { const now = Date.now(); for (const [k, j] of jobs) if (now - j.at > 3600000) jobs.delete(k); }, 600000).unref();
 
 /* ---------- HTTP ---------- */
 function send(res, status, obj, headers = {}) {
@@ -322,7 +346,7 @@ http.createServer(async (req, res) => {
     if (p === '/api/me' && req.method === 'GET') {
       let pending = 0;
       if (me && me.isAdmin) pending = members((await readCol('users')).data).filter(([, u]) => !norm(u).canView).length;
-      return send(res, 200, me ? { loggedIn: true, name: me.name, username: me.username, canView: me.canView, canEdit: me.canEdit, isAdmin: me.isAdmin, isOwner: me.isOwner, id: me.id, color: me.color, palette: PALETTE, pending, ai: !!AI_KEY } : { loggedIn: false });
+      return send(res, 200, me ? { loggedIn: true, name: me.name, username: me.username, canView: me.canView, canEdit: me.canEdit, isAdmin: me.isAdmin, isOwner: me.isOwner, id: me.id, color: me.color, palette: PALETTE, pending, ai: !!AI_KEY, providers: AI.available() } : { loggedIn: false });
     }
 
     if (p === '/api/signup' && req.method === 'POST') {
@@ -443,12 +467,73 @@ http.createServer(async (req, res) => {
       if (ext === 'docx') return send(res, 200, { kind: 'docx', blocks: readDocx(buf) });
       const media = (/^image\/(png|jpeg|webp|gif)$/.test(b.type || '') ? b.type : null) || MEDIA[ext];
       if (!media) return send(res, 400, { message: '읽을 수 없는 파일 형식이에요. PNG·JPG·PDF·Word(docx)·엑셀·CSV를 올려 주세요.' });
-      if (!AI_KEY) return send(res, 501, { message: '이미지·PDF 읽기가 아직 켜져 있지 않아요. 관리자가 Render에 ANTHROPIC_API_KEY를 넣어야 해요.' });
+      if (!AI_KEY) return send(res, 501, { message: '이미지·PDF 읽기가 아직 켜져 있지 않아요. 관리자가 Render에 AI API 키(ANTHROPIC_API_KEY 등)를 넣어야 해요.' });
       if (tooMany('ai:' + me.id, AI_LIMIT, 3600000)) return send(res, 429, { message: `AI 파일 읽기는 한 시간에 ${AI_LIMIT}개까지예요. 잠시 뒤 다시 해 주세요.` });
       hit('ai:' + me.id);
       const mode = b.mode === 'table' ? 'table' : 'source';
       const out = await aiRead(buf, media, mode);
       return send(res, 200, Object.assign({ kind: 'ai', mode }, out));
+    }
+
+    /* ----- 게임 자료 파일 (화면 캡처·PDF): data 브랜치 files/<게임>/<이름> ----- */
+    const fm = p.match(/^\/api\/files\/([\w-]+)(?:\/([^/]+))?$/);
+    if (fm) {
+      if (!me || !me.canView) return send(res, 401, { message: '로그인이 필요해요.' });
+      const game = fm[1], fname = fm[2] ? decodeURIComponent(fm[2]) : '';
+      if (fname && !FILE_RE.test(fname)) return send(res, 400, { message: '파일 이름이 올바르지 않아요.' });
+      if (req.method === 'GET' && !fname) return send(res, 200, { files: await listFiles(game) });
+      if (req.method === 'GET') {
+        const buf = await readFileBuf(game, fname);
+        if (!buf) return send(res, 404, { message: '없는 파일이에요.' });
+        res.writeHead(200, { 'Content-Type': mediaOf(fname), 'Cache-Control': 'private, max-age=3600' }); return res.end(buf);
+      }
+      if (!me.canEdit) return send(res, 403, { message: '편집 허용을 받은 사람만 할 수 있어요.' });
+      if (req.method === 'POST' && !fname) {
+        let b; try { b = await readBody(req, 6e6); } catch { return send(res, 413, { message: '파일이 너무 커요. 4MB 이하로 올려 주세요.' }); }
+        const name = String(b.name || '').trim();
+        if (!FILE_RE.test(name) || !mediaOf(name)) return send(res, 400, { message: '이미지(PNG·JPG·WEBP)나 PDF만 올릴 수 있어요. 파일 이름에는 영문·숫자·한글·- _ . 만 써 주세요.' });
+        const buf = Buffer.from(String(b.data || ''), 'base64');
+        if (!buf.length || buf.length > 4.2e6) return send(res, 413, { message: '파일이 너무 커요. 4MB 이하로 올려 주세요.' });
+        await writeFileBuf(game, name, buf, `자료 올림 · ${game}/${name} · ${me.name}`);
+        return send(res, 200, { ok: true, files: await listFiles(game, true) });
+      }
+      if (req.method === 'DELETE' && fname) {
+        await deleteFile(game, fname, `자료 삭제 · ${game}/${fname} · ${me.name}`);
+        return send(res, 200, { ok: true, files: await listFiles(game, true) });
+      }
+    }
+
+    /* ----- AI 자동 실행: 작업을 맡기고(job) 결과를 나중에 받는다 ----- */
+    if (p === '/api/ai/run' && req.method === 'POST') {
+      if (!me || !me.canEdit) return send(res, 403, { message: '편집 허용을 받은 사람만 할 수 있어요.' });
+      const b = await readBody(req, 3e6);
+      const prov = String(b.provider || '');
+      if (!AI.available()[prov] || prov === 'deepl') return send(res, 400, { message: `${AI.NAMES[prov] || 'AI'} API 키가 없어요.` });
+      if (tooMany('ai:' + me.id, AI_LIMIT, 3600000)) return send(res, 429, { message: `AI 호출은 한 사람이 한 시간에 ${AI_LIMIT}번까지예요. 잠시 뒤 다시 해 주세요.` });
+      hit('ai:' + me.id);
+      const id = crypto.randomBytes(8).toString('hex');
+      const job = { status: 'running', at: Date.now(), user: me.id };
+      jobs.set(id, job);
+      (async () => {
+        const files = [];
+        for (const f of (Array.isArray(b.files) ? b.files : []).slice(0, 20)) {
+          const buf = FILE_RE.test(String(f)) ? await readFileBuf(String(b.game || ''), String(f)) : null;
+          if (buf) files.push({ media: mediaOf(f), b64: buf.toString('base64'), name: f });
+        }
+        return AI.call(prov, { system: String(b.system || ''), text: String(b.prompt || ''), files, maxTokens: Math.min(Number(b.maxTokens) || 32000, 64000) });
+      })().then(out => Object.assign(job, { status: 'done', text: out.text, cut: out.cut, model: out.model }), e => Object.assign(job, { status: 'error', message: e.message }));
+      return send(res, 200, { job: id });
+    }
+    const jm = p.match(/^\/api\/ai\/job\/(\w+)$/);
+    if (jm && req.method === 'GET') {
+      const job = jobs.get(jm[1]);
+      if (!me || !job || job.user !== me.id) return send(res, 404, { message: '작업을 찾지 못했어요. 서버가 다시 시작됐을 수 있어요. 다시 실행해 주세요.' });
+      return send(res, 200, job);
+    }
+    if (p === '/api/ai/deepl' && req.method === 'POST') {
+      if (!me || !me.canEdit) return send(res, 403, { message: '편집 허용을 받은 사람만 할 수 있어요.' });
+      const b = await readBody(req);
+      return send(res, 200, { texts: await AI.deepl((b.texts || []).map(String).slice(0, 500), String(b.lang || 'en')) });
     }
 
     /* ----- 게임 카드·용어집 ----- */
