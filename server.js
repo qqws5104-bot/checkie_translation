@@ -255,10 +255,10 @@ async function aiRead(buf, mediaType, mode) {
   const rows = code.split(/\r?\n/).filter(l => l.trim()).map(l => l.split('\t').map(c => c.trim()));
   return { rows, cut: out.cut };
 }
-const MEDIA = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', pdf: 'application/pdf' };
+const MEDIA = { xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', pdf: 'application/pdf' };
 
 /* ---------- 게임 자료 파일 저장 (GitHub data 브랜치) ---------- */
-const FILE_RE = /^[\p{L}\p{N}_.-]{1,80}\.(png|jpe?g|webp|pdf)$/iu;
+const FILE_RE = /^[\p{L}\p{N}_.-]{1,100}\.(png|jpe?g|webp|pdf|xlsx)$/iu;
 const mediaOf = n => MEDIA[(String(n).match(/\.([a-z0-9]+)$/i) || [, ''])[1].toLowerCase()] || '';
 const fileCache = new Map();   // "게임/이름" → { sha, buf }
 const filePath = (game, name) => `files/${encodeURIComponent(game)}/${encodeURIComponent(name)}`;
@@ -301,6 +301,28 @@ async function deleteFile(game, name, message) {
   const r = await gh(`/contents/${filePath(game, name)}`, { method: 'DELETE', body: JSON.stringify({ message, sha: (await cur.json()).sha, branch: DATA_BRANCH }) });
   if (!r.ok) throw new Error('자료를 지우지 못했어요 (' + r.status + ').');
   fileCache.delete(game + '/' + name);
+}
+/* zip 안의 이미지 꺼내기 (폴더는 무시하고 파일 이름만) */
+function zipImages(buf) {
+  let eocd = -1;
+  for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) if (buf.readUInt32LE(i) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) throw new Error('zip 파일을 열지 못했어요.');
+  const count = buf.readUInt16LE(eocd + 10), out = [];
+  let p = buf.readUInt32LE(eocd + 16);
+  for (let k = 0; k < count && p + 46 <= buf.length; k++) {
+    if (buf.readUInt32LE(p) !== 0x02014b50) break;
+    const flags = buf.readUInt16LE(p + 8), method = buf.readUInt16LE(p + 10), csize = buf.readUInt32LE(p + 20);
+    const nlen = buf.readUInt16LE(p + 28), xlen = buf.readUInt16LE(p + 30), clen = buf.readUInt16LE(p + 32), lho = buf.readUInt32LE(p + 42);
+    const raw = buf.subarray(p + 46, p + 46 + nlen), full = (flags & 0x800) ? raw.toString('utf8') : raw.toString('utf8');
+    const base = full.split('/').pop();
+    if (base && !/^\./.test(base) && !full.startsWith('__MACOSX') && /\.(png|jpe?g|webp)$/i.test(base)) {
+      const start = lho + 30 + buf.readUInt16LE(lho + 26) + buf.readUInt16LE(lho + 28), data = buf.subarray(start, start + csize);
+      const name = base.normalize('NFC').replace(/\s+/g, '_').replace(/[^\p{L}\p{N}_.-]/gu, '');
+      if (FILE_RE.test(name)) out.push({ name, data: method === 0 ? Buffer.from(data) : zlib.inflateRawSync(data) });
+    }
+    p += 46 + nlen + xlen + clen;
+  }
+  return out;
 }
 const jobs = new Map();
 setInterval(() => { const now = Date.now(); for (const [k, j] of jobs) if (now - j.at > 3600000) jobs.delete(k); }, 600000).unref();
@@ -480,18 +502,30 @@ http.createServer(async (req, res) => {
     if (fm) {
       if (!me || !me.canView) return send(res, 401, { message: '로그인이 필요해요.' });
       const game = fm[1], fname = fm[2] ? decodeURIComponent(fm[2]) : '';
-      if (fname && !FILE_RE.test(fname)) return send(res, 400, { message: '파일 이름이 올바르지 않아요.' });
+      if (fname && fname !== 'zip' && !FILE_RE.test(fname)) return send(res, 400, { message: '파일 이름이 올바르지 않아요.' });
       if (req.method === 'GET' && !fname) return send(res, 200, { files: await listFiles(game) });
       if (req.method === 'GET') {
         const buf = await readFileBuf(game, fname);
         if (!buf) return send(res, 404, { message: '없는 파일이에요.' });
-        res.writeHead(200, { 'Content-Type': mediaOf(fname), 'Cache-Control': 'private, max-age=3600' }); return res.end(buf);
+        const hd = { 'Content-Type': mediaOf(fname), 'Cache-Control': 'private, max-age=60' };
+        if (/\.xlsx$/i.test(fname)) hd['Content-Disposition'] = `attachment; filename="file.xlsx"; filename*=UTF-8''${encodeURIComponent(fname)}`;
+        res.writeHead(200, hd); return res.end(buf);
       }
       if (!me.canEdit) return send(res, 403, { message: '편집 허용을 받은 사람만 할 수 있어요.' });
+      /* zip 안의 이미지를 한 번에 저장 */
+      if (req.method === 'POST' && fm[2] === 'zip') {
+        let b; try { b = await readBody(req, 36e6); } catch { return send(res, 413, { message: 'zip이 너무 커요. 25MB 이하로 나눠 주세요.' }); }
+        const zbuf = Buffer.from(String(b.data || ''), 'base64');
+        let entries; try { entries = zipImages(zbuf); } catch (e) { return send(res, 400, { message: e.message }); }
+        if (!entries.length) return send(res, 400, { message: 'zip 안에서 PNG·JPG를 찾지 못했어요.' });
+        let added = 0;
+        for (const en of entries) { if (en.data.length > 4.2e6) continue; await writeFileBuf(game, en.name, en.data, `자료 올림(zip) · ${game}/${en.name} · ${me.name}`); added++; }
+        return send(res, 200, { ok: true, added, files: await listFiles(game, true) });
+      }
       if (req.method === 'POST' && !fname) {
         let b; try { b = await readBody(req, 6e6); } catch { return send(res, 413, { message: '파일이 너무 커요. 4MB 이하로 올려 주세요.' }); }
         const name = String(b.name || '').trim();
-        if (!FILE_RE.test(name) || !mediaOf(name)) return send(res, 400, { message: '이미지(PNG·JPG·WEBP)나 PDF만 올릴 수 있어요. 파일 이름에는 영문·숫자·한글·- _ . 만 써 주세요.' });
+        if (!FILE_RE.test(name) || !mediaOf(name)) return send(res, 400, { message: '이미지(PNG·JPG·WEBP)·PDF·엑셀만 올릴 수 있어요. 파일 이름에는 영문·숫자·한글·- _ . 만 써 주세요.' });
         const buf = Buffer.from(String(b.data || ''), 'base64');
         if (!buf.length || buf.length > 4.2e6) return send(res, 413, { message: '파일이 너무 커요. 4MB 이하로 올려 주세요.' });
         await writeFileBuf(game, name, buf, `자료 올림 · ${game}/${name} · ${me.name}`);
