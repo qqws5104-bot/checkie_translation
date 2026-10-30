@@ -126,7 +126,7 @@
   "ui-front": {
     "common": false,
     "games": [
-      "chris-mas"
+      "fix-pix"
     ],
     "intent": "앞쪽 방향 안내",
     "ko": "FRONT",
@@ -152,7 +152,7 @@
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-29T05:38:32.453Z"
+    "updatedAt": "2026-10-30T03:23:52.412Z"
   },
   "ui-goal": {
     "common": false,
