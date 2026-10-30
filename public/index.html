@@ -726,6 +726,9 @@ h1 { font-size: 22px; }
 .reset-box { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; display: grid; gap: 6px; font-size: 15px; }
 .reset-box p { margin: 0; }
 .btn.danger-fill { background: var(--warn); border-color: var(--warn); color: #fff; font-weight: 700; }
+.xextra { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+.xpri { border: 2px solid var(--accent); border-radius: 10px; padding: 10px 12px; display: grid; gap: 6px; }
+.tprev tr.hi td { background: color-mix(in srgb, var(--warn) 10%, transparent) !important; font-weight: 700; }
 .toast.busy::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; margin-right: 8px; vertical-align: -1px; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
@@ -2006,15 +2009,33 @@ function crossPrompt(id, t, lk) {
 # 판정 (한 줄에 하나)
 - PASS: 문제 없음
 - FAIL: 고칠 것이 분명함 → 고친 번역을 쓴다
-- REVIEW: 정답·행동이 바뀔 수 있는데 확신이 없음 → 사람이 판단
+- REVIEW: 정답·행동이 바뀔 수 있는데 확신이 없음, 또는 말장난·아이콘처럼 기획이 정해야 함 → 사람이 판단
+- 원문과 다른 문제로 의도적으로 바꾼 줄(퍼즐 재설계 등)은 번역 오류가 아니다. 뜻과 정답이 맞으면 PASS로 두고 이유에 ‘의도된 재설계’라고 쓴다.
 
 # 역번역
 모든 줄에, 번역문만 보고 다듬지 않은 한국어 직역을 쓴다. 원문을 모르는 사람이 읽은 것처럼 쓴다.
 
-# 결과
-표 하나를 쓴다. 파일은 만들지 않는다. 모든 줄을 빠짐없이 쓴다.
-열: 번호 | 판정 | 역번역 | 고친 번역 | 이유 (PASS면 고친 번역과 이유는 ‘-’)
-${extra ? '\n별도 시트(대응표·퍼즐 등)에서 정답이 안 맞거나 겹치는 문제가 있으면 표 아래에 따로 적는다.\n' : ''}
+# 결과물: 엑셀 파일 \`${abbrOf(t)}_${LSHORT[lk]}_교차검수.xlsx\`
+시트 순서와 이름, 열 이름을 아래와 똑같이 쓴다. 각 시트의 첫 행은 제목이다.
+
+1. \`줄 검수\` — 번호 | 판정 | 역번역 | 고친 번역 | 이유
+   - 아래 표의 모든 번호를 같은 순서로 빠짐없이 쓴다. 번호는 고치지 않는다.
+   - 판정 칸에는 PASS, FAIL, REVIEW 중 하나만 쓴다.
+   - PASS면 고친 번역과 이유는 ‘-’. 칸 안 줄바꿈은 ‘ / ’로 쓴다.
+   - 같은 이유가 반복돼도 ‘R040과 동일’처럼 줄이지 말고 이유를 짧게 다시 쓴다.
+${extra ? `2. \`별도 시트 검수\` — 시트 | 항목 | 한국어 | 번역 | 판정 | 이유
+   - 아래 ‘별도 시트’의 내용을 한 행씩 검수한다. (대응표는 행마다, 퍼즐은 문항·정답마다)
+   - 퍼즐은 칸 수, 겹치는 글자 위치, 두 줄을 합친 문장이 맞는지 확인하고 이유에 적는다.
+   - 판정은 PASS, FAIL, REVIEW 중 하나.
+3.` : '2.'} \`수정 우선순위\` — 우선순위 | 대상 | 조치
+   - FAIL·REVIEW와 기획이 정해야 할 것(아이콘 교체 등)만 쓴다. PASS는 쓰지 않는다.
+   - 우선순위는 높음 / 중간 / 낮음. 대상은 번호(여러 개면 쉼표)나 시트·항목 이름.
+${extra ? '4.' : '3.'} \`의견\` — 구분 | 내용
+   - 최종 의견, 의도된 재설계로 분류한 줄, 화면에서 따로 확인할 것(글자 크기·폰트 등)을 한 행에 하나씩.
+
+- 셀 너비와 줄바꿈을 조정해 읽기 쉽게 만든다.
+- 엑셀을 만들 수 없으면 같은 표들을 위 순서대로 채팅에 표로 쓰고, 각 표 바로 위에 시트 이름을 쓴다.
+
 # 검수할 표
 ${tsv(['번호', '파일', '화면', '요소', '한국어 원문', LHEAD[lk], '비고'], rows.map(r => [r.id, r.file, r.screen, r.elem, r.ko.replace(/\n/g, ' / '), r.tr.replace(/\n/g, ' / '), r.note]))}
 ${extra ? '\n# 별도 시트\n' + extra : ''}`;
@@ -2108,7 +2129,13 @@ async function uploadImages(list) {
   done(); render(true); toast(`이미지 ${n}개를 올림.`);
 }
 async function applyCross(tables) {
-  const tb = tables.find(r => (r[0] || []).some(h => normHead(h).startsWith('판정'))) || tables.find(r => r.slice(0, 5).some(row => row.some(h => normHead(h).startsWith('판정')))) || tables[0];
+  const hasNoV = r => r.slice(0, 5).some(row => row.some(h => normHead(h).startsWith('판정')) && row.some(h => /^(번호|id)$/.test(normHead(h))));
+  const tb = tables.find(r => r.sheet === '줄 검수') || tables.find(hasNoV) || tables.find(r => (r[0] || []).some(h => normHead(h).startsWith('판정'))) || tables[0];
+  /* 나머지 표(별도 시트 검수·수정 우선순위·의견)는 보관해서 보여 주고 결과 엑셀에 넣는다 */
+  const NAMES = ['별도 시트 검수', '수정 우선순위', '의견'];
+  const guess = r => { const h = (r[0] || []).map(normHead); return h.includes('우선순위') ? '수정 우선순위' : h.includes('시트') && h.some(x => x.startsWith('판정')) ? '별도 시트 검수' : h.includes('구분') && h.includes('내용') ? '의견' : ''; };
+  const extraX = tables.filter(r => r !== tb && r.length).map((r, i) => ({ name: r.sheet || guess(r) || `추가 표 ${i + 1}`, rows: r.slice(0, 300).map(x => x.slice(0, 10)) }));
+  if (extraX.length) { const lk = promptLang; await saveGameField(`work.${lk}.crossExtra`, extraX.sort((a, b) => (NAMES.indexOf(a.name) + 9) % 9 - (NAMES.indexOf(b.name) + 9) % 9)); }
   if (!tb || tb.length < 2) { toast('검수 표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.', 5000); return; }
   const hi = Math.max(0, tb.findIndex(r => r.some(h => normHead(h).startsWith('판정'))));
   const h = tb[hi].map(normHead), ix = f => h.findIndex(f);
@@ -2132,6 +2159,18 @@ async function applyCross(tables) {
   toast(`교차 검수 ${n}줄: FAIL ${fail} · REVIEW ${rev}`, 4000);
 }
 
+/* 교차 검수 AI가 준 추가 표: 수정 우선순위는 펼쳐서, 나머지는 접어서 */
+function crossExtraHTML(t, lk) {
+  const ex = ((t.work || {})[lk] || {}).crossExtra || []; if (!ex.length) return '';
+  const tbl = (rows, hl) => `<div class="tprev"><table><thead><tr>${(rows[0] || []).map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.slice(1).map(r => `<tr class="${hl && hl(r) ? 'hi' : ''}">${r.map(c => `<td style="white-space:pre-wrap">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const pri = ex.find(e => e.name === '수정 우선순위'), rest = ex.filter(e => e !== pri);
+  const vi = rows => (rows[0] || []).findIndex(h => normHead(h).startsWith('판정'));
+  return `<div class="xextra"><h4 class="mh">AI 추가 검수 결과 <small>교차 검수 엑셀의 다른 시트</small></h4>
+    ${pri ? `<div class="xpri"><b>수정 우선순위</b>${tbl(pri.rows, r => /높음/.test(r[0]))}</div>` : ''}
+    ${rest.map(e => { const v = vi(e.rows); return `<details class="more"><summary>${esc(e.name)}${v >= 0 ? ` <small>${e.rows.slice(1).filter(r => /FAIL|REVIEW/i.test(r[v])).length ? 'FAIL·REVIEW ' + e.rows.slice(1).filter(r => /FAIL|REVIEW/i.test(r[v])).length + '건' : '모두 PASS'}</small>` : ''}</summary>${tbl(e.rows, v >= 0 ? r => /FAIL|REVIEW/i.test(r[v]) : null)}</details>`; }).join('')}
+    <p class="sb">기획이 정해야 할 항목(아이콘 교체 등)은 해당 줄에 수정 요청 메모로 남기기.</p></div>`;
+}
+
 /* ---------- 내려받기 ---------- */
 function resultXlsx(t, lk) {
   const sh = sheetOf(t, lk); if (!sh) return;
@@ -2142,6 +2181,7 @@ function resultXlsx(t, lk) {
   const vi = sh.head.length + 1;
   const sheets = [{ name: sh.name || '번역', rows: [head, ...body], widths: [...sh.head.map((_, i) => i === sh.cols.ko || i === trCol ? 36 : i === sh.cols.note ? 30 : 12), 36, 12, 30, 30, 30], filter: true, style: (ri, ci, r) => r[vi - 1] ? 2 : /FAIL|REVIEW/.test(r[vi]) ? 2 : r[vi + 3] ? 3 : 0 }];
   (sh.extra || []).forEach(e => sheets.push({ name: e.name, rows: e.rows.length ? e.rows : [['']], widths: e.rows[0] ? e.rows[0].map(() => 20) : [20] }));
+  ((((t.work || {})[lk] || {}).crossExtra) || []).forEach(e => { const v = (e.rows[0] || []).findIndex(h => normHead(h).startsWith('판정')); sheets.push({ name: ('교차_' + e.name).slice(0, 31), rows: e.rows.length ? e.rows : [['']], widths: e.rows[0] ? e.rows[0].map((_, i) => i === e.rows[0].length - 1 ? 50 : 18) : [20], style: (ri, ci, r) => (v >= 0 && /FAIL|REVIEW/i.test(r[v])) || /높음/.test(r[0]) ? 2 : 0 }); });
   saveBlob(XS(sheets), `${abbrOf(t)}_${LSHORT[lk]}_checked.xlsx`);
   void L;
 }
@@ -2253,7 +2293,7 @@ function filesBoxHTML(id, t, lk, F) {
   const sh = sheetOf(t, lk), ups = (((t.work || {})[lk] || {}).uploads || []).slice().reverse();
   if (!sh) return '';
   return `<section class="libbox"><h3>자료 · ${esc(LANGS.find(l => l.key === lk).label)}</h3>
-    <div class="librow"><span><b>검수 결과 엑셀</b><small>원래 열 + 검수 판정 · 역번역 · 검수 메모 · 처음 번역, 별도 시트 포함</small></span><button type="button" class="btn primary" data-xres>받기</button></div>
+    <div class="librow"><span><b>검수 결과 엑셀</b><small>원래 열 + 수정 요청 메모 · 검수 판정 · 역번역 · 처음 번역, 별도 시트 · 교차 검수 시트 포함</small></span><button type="button" class="btn primary" data-xres>받기</button></div>
     ${ups.map((u, i) => `<div class="librow"><span><b>${esc(u.name)}</b>${i === 0 ? ' <em class="chip">최신</em>' : ''}<small>${esc(u.by || '')} · ${fmtDate(u.at)} · ${u.rows}줄</small></span>${u.file ? `<a class="btn" href="/api/files/${encodeURIComponent(id)}/${encodeURIComponent(u.file)}" download="${esc(u.name)}">원본 받기</a>` : '<small class="sb">원본 없음</small>'}</div>`).join('')}
     <details class="more"${memoEditing ? ' open' : ''}><summary>번역 표 보기 · 수정 요청 메모 남기기</summary>${sheetViewHTML(t, lk)}</details>
   </section>`;
@@ -2295,7 +2335,7 @@ function reviewHTML(id, t, lk, F, reviewer) {
       <ol class="do">
         <li><i>1</i><div><button type="button" class="btn primary" data-copy="p-cross">프롬프트 복사 <small>${F.rvTodo}줄</small></button></div></li>
         <li><i>2</i><div><b>${esc(reviewer)}</b> 새 대화에 붙여 넣고, 같은 PNG(또는 zip)를 첨부해 보냄.</div></li>
-        <li><i>3</i><div>AI 답 전체를 복사해서 ${pasteBtn('one:cross', '붙여 넣기')}${readOnly ? '' : `<label class="btn upl">파일로 올리기<input type="file" hidden data-one="one:cross" accept="${FILE_ACCEPT}"></label>`}</div></li>
+        <li><i>3</i><div>받은 엑셀을 ${readOnly ? '' : `<label class="btn upl primary">엑셀 올리기<input type="file" hidden data-one="one:cross" accept="${FILE_ACCEPT}"></label>`}<span class="do-l">엑셀이 안 나왔으면</span>${pasteBtn('one:cross', '답 붙여 넣기')}</div></li>
       </ol>
       <details class="more"><summary>프롬프트 보기</summary><pre class="ptext" id="pt-p-cross">${esc(crossPrompt(id, t, lk))}</pre></details>` : ''}
       ${need.length ? `<h4 class="mh">사람이 볼 것 ${need.length}줄 <small>원문과 역번역(한국어)을 비교해서 고르기</small></h4><div class="ilist">${need.map(r => { const x = r.x, v = x.rv; return `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}<br><span class="vtag ${v.v === '수정 필요' ? 'fail' : 'rev'}">${v.v === '수정 필요' ? 'FAIL' : 'REVIEW'}</span></code><div class="ibody">
@@ -2305,6 +2345,7 @@ function reviewHTML(id, t, lk, F, reviewer) {
         ${readOnly ? '' : `<div class="iacts">${v.fix ? `<button type="button" class="btn primary" data-xfix="${esc(r.id)}">고친 번역 쓰기</button>` : ''}<button type="button" class="btn" data-xkeep="${esc(r.id)}">지금 번역 유지</button><button type="button" class="btn ghost" data-xedit="${esc(r.id)}">직접 고치기</button>${memoBtn(r)}</div>`}${memoEditorHTML(r)}</div></div>`; }).join('')}</div>
         ${readOnly || !need.some(r => r.x.rv.fix) ? '' : '<button type="button" class="btn" data-xfixall>고친 번역 모두 쓰기</button>'}` : ''}
       ${!F.rvTodo && !need.length ? '<p class="okmsg">교차 검수를 모두 통과함.</p>' : ''}
+      ${crossExtraHTML(t, lk)}
       ${F.rows.some(r => r.x.bt) ? `<details class="more"><summary>전체 원문 ↔ 역번역 보기</summary><div class="tprev"><table><thead><tr><th>번호</th><th>파일</th><th>원문</th><th>역번역</th><th>판정</th></tr></thead><tbody>${F.rows.map(r => `<tr><td>${esc(r.id)}</td><td>${esc(r.file)}</td><td style="white-space:pre-wrap">${esc(r.ko)}</td><td>${esc((r.x.bt || [])[0] || '')}</td><td>${r.x.rv ? esc(VLABEL[r.x.rv.v] || r.x.rv.v) : ''}</td></tr>`).join('')}</tbody></table></div></details>` : ''}`;
   }
   const WHY = { auto: '걸린 줄을 고치거나 ‘문제 없음’ 처리하면 누를 수 있음', files: '모든 파일을 체크하면 누를 수 있음', cross: '교차 검수 결과를 넣고 FAIL·REVIEW를 처리하면 누를 수 있음' };
