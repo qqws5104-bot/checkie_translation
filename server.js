@@ -29,12 +29,12 @@ const env = process.env;
 const REPO = env.GITHUB_REPO || '';
 const TOKEN = env.GITHUB_TOKEN || '';
 const ADMIN_ID = (env.ADMIN_ID || 'yeun').trim().toLowerCase();
-const ADMIN_PW = env.ADMIN_PASSWORD || '05197';
+const ADMIN_PW = env.ADMIN_PASSWORD || '';   // 기본 비밀번호 없음: Render Environment에 꼭 넣기
 const ADMIN_NAME = (env.ADMIN_NAME || '김예은').trim();
 const DATA_BRANCH = env.DATA_BRANCH || 'data';
 const BASE_BRANCH = env.BASE_BRANCH || 'main';
 const SECRET = env.SESSION_SECRET || crypto.createHash('sha256').update('checkie-session:' + TOKEN + ':' + ADMIN_PW).digest('hex');
-const DATA_COLS = ['themes', 'terms'];
+const DATA_COLS = ['themes', 'terms', 'fonts'];
 const PUBLIC = path.join(__dirname, 'public');
 const PORT = env.PORT || 3000;
 const configured = !!(REPO && TOKEN);
@@ -52,8 +52,9 @@ function freeColor(data) {
 }
 
 /* ---------- GitHub ---------- */
+let tokenExp = null;   // GitHub 토큰 만료일 (응답 헤더에서 읽음, 만료일 없는 토큰이면 null)
 async function gh(p, opts = {}) {
-  return fetch((env.GITHUB_API_URL || 'https://api.github.com') + '/repos/' + REPO + p, Object.assign({}, opts, {
+  const r = await fetch((env.GITHUB_API_URL || 'https://api.github.com') + '/repos/' + REPO + p, Object.assign({}, opts, {
     headers: Object.assign({
       Authorization: 'Bearer ' + TOKEN,
       Accept: 'application/vnd.github+json',
@@ -61,6 +62,9 @@ async function gh(p, opts = {}) {
       'User-Agent': 'checkie-translation',
     }, opts.body ? { 'Content-Type': 'application/json' } : {}),
   }));
+  const ex = r.headers.get('github-authentication-token-expiration');
+  if (ex) { const d = Date.parse(ex.replace(' UTC', 'Z').replace(' ', 'T')); if (!isNaN(d)) tokenExp = new Date(d).toISOString(); }
+  return r;
 }
 let branchReady = null;
 function ensureBranch() {
@@ -86,7 +90,17 @@ async function readCol(col, fresh) {
   let out;
   if (r.status === 404) out = { data: {}, sha: null };
   else if (!r.ok) throw new Error('GitHub에서 데이터를 읽지 못함 (' + r.status + ').');
-  else { const j = await r.json(); out = { data: JSON.parse(Buffer.from(j.content, 'base64').toString('utf8') || '{}'), sha: j.sha }; }
+  else {
+    const j = await r.json();
+    let text = j.content ? Buffer.from(j.content, 'base64').toString('utf8') : '';
+    if (!text && j.size > 0) {   // 1MB가 넘으면 content가 비어서 온다 → blob으로 받기 (안 하면 빈 데이터로 덮어쓸 위험)
+      const br = await gh('/git/blobs/' + j.sha);
+      if (!br.ok) throw new Error('GitHub에서 데이터를 읽지 못함 (blob ' + br.status + ').');
+      text = Buffer.from((await br.json()).content || '', 'base64').toString('utf8');
+    }
+    if (!text && j.size > 0) throw new Error('데이터 파일을 읽지 못함. 저장을 멈춤.');
+    out = { data: JSON.parse(text || '{}'), sha: j.sha, size: j.size };
+  }
   out.at = Date.now();
   cache[col] = out;
   return out;
@@ -175,6 +189,8 @@ const publicUser = (id, u) => Object.assign({ id }, norm(u));
 
 /* ---------- 파일 읽기: Word(docx)는 서버에서 바로, PNG·JPG·PDF는 Claude API로 ---------- */
 const AI = require('./ai');
+const Merge = require('./public/merge.js');
+const Retention = require('./public/retention.js');
 const AI_KEY = AI.anyVision();
 const AI_LIMIT = Number(env.AI_HOURLY_LIMIT) || 200;
 const MAX_FILE = 12 * 1024 * 1024;
@@ -255,10 +271,12 @@ async function aiRead(buf, mediaType, mode) {
   const rows = code.split(/\r?\n/).filter(l => l.trim()).map(l => l.split('\t').map(c => c.trim()));
   return { rows, cut: out.cut };
 }
-const MEDIA = { xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', pdf: 'application/pdf' };
+const MEDIA = { xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', pdf: 'application/pdf', ttf: 'font/ttf', otf: 'font/otf', woff: 'font/woff', woff2: 'font/woff2', ttc: 'font/collection', zip: 'application/zip' };
 
 /* ---------- 게임 자료 파일 저장 (GitHub data 브랜치) ---------- */
 const FILE_RE = /^[\p{L}\p{N}_.-]{1,100}\.(png|jpe?g|webp|pdf|xlsx)$/iu;
+const FONT_RE = /^[\p{L}\p{N}_.-]{1,100}\.(ttf|otf|woff2?|ttc|zip)$/iu;
+const FONT_DIR = '_fonts';   // 폰트 보관함 (게임 자료가 아님 → 자동 삭제 대상 아님)
 const mediaOf = n => MEDIA[(String(n).match(/\.([a-z0-9]+)$/i) || [, ''])[1].toLowerCase()] || '';
 const fileCache = new Map();   // "게임/이름" → { sha, buf }
 const filePath = (game, name) => `files/${encodeURIComponent(game)}/${encodeURIComponent(name)}`;
@@ -327,6 +345,107 @@ function zipImages(buf) {
 const jobs = new Map();
 setInterval(() => { const now = Date.now(); for (const [k, j] of jobs) if (now - j.at > 3600000) jobs.delete(k); }, 600000).unref();
 
+/* ---------- 자료 보관 기한: 전체 완료 후 30일 → 게임 정보만 남기고 삭제 ---------- */
+let retLast = 0, retRunning = false;
+async function runRetention(force) {
+  if (!configured || retRunning || (!force && Date.now() - retLast < 3 * 3600e3)) return;
+  retRunning = true; retLast = Date.now();
+  try {
+    const now = Date.now(), { data } = await readCol('themes', true), plan = {}, due = [];
+    for (const [id, t] of Object.entries(data)) {
+      if (!t || t.purgedAt) continue;
+      const p = Retention.planPurge(t, now);
+      if (p === null) { if (t.purgeAt) plan[id] = null; continue; }
+      if (!t.purgeAt) plan[id] = new Date(p).toISOString();
+      else if (Date.parse(t.purgeAt) <= now) due.push(id);
+    }
+    if (Object.keys(plan).length) await writeCol('themes', d => {
+      let ch = false;
+      Object.entries(plan).forEach(([id, v]) => {
+        const t = d[id]; if (!t || t.purgedAt) return;
+        if (v === null) { if (t.purgeAt && Retention.doneAt(t) === null) { delete t.purgeAt; ch = true; } }
+        else if (!t.purgeAt && Retention.doneAt(t) !== null) { t.purgeAt = v; ch = true; }
+      });
+      return ch;
+    }, '자료 보관 기한 표시');
+    for (const id of due) {
+      const fresh = (await readCol('themes', true)).data[id];
+      if (!fresh || fresh.purgedAt || Retention.doneAt(fresh) === null || !fresh.purgeAt || Date.parse(fresh.purgeAt) > Date.now()) continue;
+      for (const f of await listFiles(id, true)) await deleteFile(id, f.name, `보관 기한 지남 · 자료 삭제 · ${id}/${f.name}`);
+      await writeCol('themes', d => {
+        const t = d[id];
+        if (!t || t.purgedAt || Retention.doneAt(t) === null || !t.purgeAt || Date.parse(t.purgeAt) > Date.now()) return false;
+        d[id] = Retention.stripped(t, Date.now());
+      }, `보관 기한 지남 · 게임 정보만 남김 · ${id}`);
+      console.log('retention: purged', id);
+    }
+  } catch (e) { console.error('retention', e.message); retLast = Date.now() - 2.5 * 3600e3; }
+  finally { retRunning = false; }
+}
+setTimeout(() => runRetention(true), Number(env.RETENTION_START_MS) || 20000).unref();
+setInterval(() => runRetention(), 3600e3).unref();
+
+/* 메모 목록 꺼내기: [lk, 항목키, 메모] (항목 메모 + 이미지 메모) */
+function memoList(doc) {
+  const out = [];
+  Object.entries((doc && doc.work) || {}).forEach(([lk, w]) => {
+    if (!w || typeof w !== 'object') return;
+    Object.entries(w.items || {}).forEach(([k, x]) => ((x && x.memos) || []).forEach(mm => out.push([lk, k, mm])));
+    (((w.apply) || {}).fmemos || []).forEach(mm => out.push([lk, '@file', mm]));
+  });
+  return out;
+}
+/* 새로 생긴 메모의 작성자·시간은 서버가 적는다 (이름을 바꿔 적을 수 없게) */
+function stampMemos(before, after, me) {
+  const old = new Set(memoList(before).map(([lk, k, mm]) => lk + '/' + k + '/' + (mm.id || JSON.stringify(mm))));
+  const now = new Date().toISOString();
+  memoList(after).forEach(([lk, k, mm]) => {
+    if (old.has(lk + '/' + k + '/' + (mm.id || JSON.stringify(mm)))) return;
+    if (mm.kind === 'plan' && mm.by) { mm.at = mm.at || now; mm.addedBy = me.name; return; }   // AI 교차 검수가 만든 기획 확인 메모: 올린 사람을 따로 기록
+    mm.by = me.name; mm.at = now;
+  });
+}
+/* 편집 계정도 기존 메모를 지우거나 내용을 바꿀 수 없음 (반영함 표시만 가능). 처음부터 다시(리셋)한 언어는 예외 */
+function memoLost(before, after) {
+  const now = new Map(memoList(after).filter(([, , mm]) => mm.id).map(([lk, k, mm]) => [lk + '/' + k + '/' + mm.id, mm]));
+  const resetLangs = new Set(Object.keys((after && after.work) || {}).filter(lk => (((after.work[lk] || {}).resets) || []).length > ((((before && before.work) || {})[lk] || {}).resets || []).length));
+  if (!after.work && before.work) return '';   // 게임 전체를 비우는 경우(관리 작업)는 따로 막지 않음
+  for (const [lk, k, mm] of memoList(before)) {
+    if (!mm.id || resetLangs.has(lk) || !after.work || !after.work[lk]) { if (mm.id && after.work && !after.work[lk] && !resetLangs.has(lk)) return '기존 수정 요청 메모는 지울 수 없음.'; continue; }
+    const cur = now.get(lk + '/' + k + '/' + mm.id);
+    if (!cur) return '기존 수정 요청 메모는 지울 수 없음. 화면을 새로 고친 뒤 다시 하기.';
+    if (cur.text !== mm.text || cur.by !== mm.by || cur.at !== mm.at) return '기존 수정 요청 메모의 내용·작성자는 바꿀 수 없음.';
+  }
+  return '';
+}
+
+/* 보기 전용 계정의 변경이 '메모 추가'뿐인지 확인 (항목 메모·이미지 메모) */
+function memoAddOnly(before, after) {
+  const lists = [], strip = doc => {
+    const d = Merge.clone(doc || {}); delete d.updatedAt;
+    Object.values(d.work || {}).forEach(w => {
+      if (!w || typeof w !== 'object') return;
+      Object.entries(w.items || {}).forEach(([k, x]) => { if (x && x.memos) { lists.push(x.memos); delete x.memos; } if (x && !Object.keys(x).length) delete w.items[k]; });
+      if (w.apply && w.apply.fmemos) { lists.push(w.apply.fmemos); delete w.apply.fmemos; if (!Object.keys(w.apply).length) delete w.apply; }
+      if (w.items && !Object.keys(w.items).length) delete w.items;
+    });
+    Object.keys(d.work || {}).forEach(k => { if (!Object.keys(d.work[k] || {}).length) delete d.work[k]; });
+    if (d.work && !Object.keys(d.work).length) delete d.work;
+    return d;
+  };
+  const memoMap = doc => {
+    const out = [];
+    Object.entries((doc && doc.work) || {}).forEach(([lk, w]) => {
+      Object.entries((w && w.items) || {}).forEach(([k, x]) => ((x && x.memos) || []).forEach(mm => out.push(lk + '/' + k + '/' + JSON.stringify(mm))));
+      (((w && w.apply) || {}).fmemos || []).forEach(mm => out.push(lk + '/@/' + JSON.stringify(mm)));
+    });
+    return out;
+  };
+  if (!Merge.eq(strip(before), strip(after))) return false;
+  const a = new Set(memoMap(after));
+  return memoMap(before).every(x => a.has(x));   // 기존 메모는 그대로(지우기·반영 표시 불가)
+}
+
 /* ---------- HTTP ---------- */
 function send(res, status, obj, headers = {}) {
   res.writeHead(status, Object.assign({ 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, headers));
@@ -366,9 +485,10 @@ http.createServer(async (req, res) => {
     const me = await currentUser(req);
 
     if (p === '/api/me' && req.method === 'GET') {
+      runRetention();   // 무료 서버가 잠들어 있다 깨어난 경우도 챙김 (3시간에 한 번만 실제 실행)
       let pending = 0;
       if (me && me.isAdmin) pending = members((await readCol('users')).data).filter(([, u]) => !norm(u).canView).length;
-      return send(res, 200, me ? { loggedIn: true, name: me.name, username: me.username, canView: me.canView, canEdit: me.canEdit, isAdmin: me.isAdmin, isOwner: me.isOwner, id: me.id, color: me.color, palette: PALETTE, pending, ai: !!AI_KEY, providers: AI.available() } : { loggedIn: false });
+      return send(res, 200, me ? { loggedIn: true, name: me.name, username: me.username, canView: me.canView, canEdit: me.canEdit, isAdmin: me.isAdmin, isOwner: me.isOwner, id: me.id, color: me.color, palette: PALETTE, pending, ai: !!AI_KEY, providers: AI.available(), tokenExp: me.isAdmin ? tokenExp : undefined } : { loggedIn: false });
     }
 
     if (p === '/api/signup' && req.method === 'POST') {
@@ -395,6 +515,7 @@ http.createServer(async (req, res) => {
       const username = String(b.username || '').trim().toLowerCase(), pw = String(b.password || '');
       if (tooMany('ip:' + ip, 20, 60000) || tooMany('id:' + username, 10, 900000)) return send(res, 429, { message: '로그인 실패가 너무 많음. 15분 뒤 다시 시도 필요.' });
       if (username === ADMIN_ID) {
+        if (!ADMIN_PW) return send(res, 503, { message: '대표 관리자 비밀번호가 설정되지 않음. Render의 Environment에 ADMIN_PASSWORD를 넣고 다시 배포하기.' });
         if (safeEq(pw, ADMIN_PW)) { attempts.delete('id:' + username); return send(res, 200, { ok: true }, session({ uid: 'admin' })); }
         hit('ip:' + ip); hit('id:' + username);
         return send(res, 401, { message: '아이디 또는 비밀번호가 맞지 않음.' });
@@ -477,6 +598,28 @@ http.createServer(async (req, res) => {
       return send(res, 200, { ok: true, tempPassword: temp, name: label });
     }
 
+    /* ----- 관리자: 데이터 백업·복구 (게임·용어집·폰트 목록. 이미지·엑셀 파일은 GitHub data 브랜치 기록에 남음) ----- */
+    if (p === '/api/admin/backup' && req.method === 'GET') {
+      if (!me || !me.isAdmin) return send(res, 403, { message: '관리자만 할 수 있음.' });
+      const out = { kind: 'checkie-backup', version: 1, at: new Date().toISOString(), by: me.name };
+      for (const col of DATA_COLS) out[col] = (await readCol(col, true)).data;
+      const stamp = out.at.slice(0, 16).replace(/[-:T]/g, '');
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Disposition': `attachment; filename="checkie_backup_${stamp}.json"` });
+      return res.end(JSON.stringify(out, null, 1));
+    }
+    if (p === '/api/admin/restore' && req.method === 'POST') {
+      if (!me || !me.isOwner) return send(res, 403, { message: '복구는 대표 관리자만 할 수 있음.' });
+      let b; try { b = await readBody(req, 40e6); } catch { return send(res, 413, { message: '백업 파일이 너무 큼.' }); }
+      if (!b || b.kind !== 'checkie-backup') return send(res, 400, { message: '이 사이트의 백업 파일이 아님.' });
+      const done = [];
+      for (const col of DATA_COLS) {
+        if (!b[col] || typeof b[col] !== 'object' || Array.isArray(b[col])) continue;
+        await writeCol(col, data => { Object.keys(data).forEach(k => delete data[k]); Object.assign(data, b[col]); }, `백업으로 복구 · ${col} · ${b.at || ''} · ${me.name}`);
+        done.push(`${col} ${Object.keys(b[col]).length}개`);
+      }
+      return send(res, 200, { ok: true, restored: done });
+    }
+
     /* ----- 파일 읽기 (편집 권한 필요) ----- */
     if (p === '/api/extract' && req.method === 'POST') {
       if (!me || !me.canEdit) return send(res, 403, { message: me ? '파일 읽기는 편집 허용을 받은 사람만 할 수 있음.' : '로그인이 필요함.' });
@@ -502,17 +645,28 @@ http.createServer(async (req, res) => {
     if (fm) {
       if (!me || !me.canView) return send(res, 401, { message: '로그인이 필요함.' });
       const game = fm[1], fname = fm[2] ? decodeURIComponent(fm[2]) : '';
-      if (fname && fname !== 'zip' && !FILE_RE.test(fname)) return send(res, 400, { message: '파일 이름이 올바르지 않음.' });
+      const isFont = game === FONT_DIR, nameRe = isFont ? FONT_RE : FILE_RE;
+      if (fname && (isFont || fname !== 'zip') && !nameRe.test(fname)) return send(res, 400, { message: '파일 이름이 올바르지 않음.' });
       if (req.method === 'GET' && !fname) return send(res, 200, { files: await listFiles(game) });
       if (req.method === 'GET') {
         const buf = await readFileBuf(game, fname);
         if (!buf) return send(res, 404, { message: '없는 파일임.' });
         const hd = { 'Content-Type': mediaOf(fname), 'Cache-Control': 'private, max-age=60' };
-        if (/\.xlsx$/i.test(fname)) hd['Content-Disposition'] = `attachment; filename="file.xlsx"; filename*=UTF-8''${encodeURIComponent(fname)}`;
+        if (/\.(xlsx|zip|ttc)$/i.test(fname)) hd['Content-Disposition'] = `attachment; filename="file.xlsx"; filename*=UTF-8''${encodeURIComponent(fname)}`;
         res.writeHead(200, hd); return res.end(buf);
       }
       if (!me.canEdit) return send(res, 403, { message: '편집 허용을 받은 사람만 할 수 있음.' });
       /* zip 안의 이미지를 한 번에 저장 */
+      if (req.method === 'POST' && isFont) {
+        if (fname) return send(res, 404, { message: '없는 주소임.' });
+        let b; try { b = await readBody(req, 28e6); } catch { return send(res, 413, { message: '폰트 파일이 너무 큼. 20MB 이하로 올리기.' }); }
+        const name = String(b.name || '').trim();
+        if (!FONT_RE.test(name)) return send(res, 400, { message: 'TTF·OTF·WOFF·ZIP만 올릴 수 있음. 파일 이름에는 영문·숫자·한글·- _ . 만 쓰기.' });
+        const buf = Buffer.from(String(b.data || ''), 'base64');
+        if (!buf.length || buf.length > 20e6) return send(res, 413, { message: '폰트 파일이 너무 큼. 20MB 이하로 올리기.' });
+        await writeFileBuf(FONT_DIR, name, buf, `폰트 올림 · ${name} · ${me.name}`);
+        return send(res, 200, { ok: true, name });
+      }
       if (req.method === 'POST' && fm[2] === 'zip') {
         let b; try { b = await readBody(req, 36e6); } catch { return send(res, 413, { message: 'zip이 너무 큼. 25MB 이하로 나누기.' }); }
         const zbuf = Buffer.from(String(b.data || ''), 'base64');
@@ -578,15 +732,33 @@ http.createServer(async (req, res) => {
         return send(res, 200, { data: (await readCol(m[1])).data });
       }
       if (req.method === 'PUT') {
-        if (!me || !me.canEdit) return send(res, 403, { message: me ? '편집 허용을 받지 않았음. 관리자에게 요청 필요.' : '수정하려면 로그인 필요.' });
-        const changes = await readBody(req);
-        const ids = [...Object.keys(changes.set || {}), ...(changes.del || [])];
+        const memoOnly = me && !me.canEdit && me.canView && m[1] === 'themes';   // 보기 전용: 수정 요청 메모 추가만
+        if (!me || (!me.canEdit && !memoOnly)) return send(res, 403, { message: me ? '편집 허용을 받지 않았음. 관리자에게 요청 필요.' : '수정하려면 로그인 필요.' });
+        let changes; try { changes = await readBody(req, 12e6); } catch { return send(res, 413, { message: '한 번에 저장할 내용이 너무 큼.' }); }
+        const set = changes.set || {}, patch = changes.patch || {}, del = changes.del || [];
+        const ids = [...Object.keys(set), ...Object.keys(patch), ...del];
+        if (memoOnly && (Object.keys(set).length || del.length)) return send(res, 403, { message: '보기 전용 계정은 수정 요청 메모만 남길 수 있음.' });
+        let denied = '', conflicts = {};
         const c = await writeCol(m[1], data => {
+          denied = ''; conflicts = {};
           if (!ids.length) return false;
-          Object.entries(changes.set || {}).forEach(([id, doc]) => { data[id] = doc; });
-          (changes.del || []).forEach(id => { delete data[id]; });
-        }, `${m[1]} 수정 · ${me.name} (${ids.slice(0, 5).join(', ')}${ids.length > 5 ? ' 외' : ''})`);
-        return send(res, 200, { data: c.data });
+          Object.entries(set).forEach(([id, doc]) => { if (m[1] === 'themes') stampMemos(data[id], doc, me); data[id] = doc; });
+          /* 바뀐 부분만 최신본에 합친다 → 동시에 고쳐도 남의 변경을 지우지 않음. 같은 칸이면 먼저 저장된 값을 지키고 알린다 */
+          Object.entries(patch).forEach(([id, d]) => {
+            if (!data[id]) return;   // 그사이 삭제된 항목
+            const before = Merge.clone(data[id]), cf = [];
+            data[id] = Merge.apply(data[id], d, cf);
+            if (cf.length) conflicts[id] = cf;
+            if (m[1] !== 'themes') return;
+            stampMemos(before, data[id], me);
+            if (memoOnly && !memoAddOnly(before, data[id])) denied = '보기 전용 계정은 수정 요청 메모만 남길 수 있음.';
+            else if (!memoOnly) { const lost = memoLost(before, data[id]); if (lost) denied = lost; }
+          });
+          if (denied) return false;
+          del.forEach(id => { delete data[id]; });
+        }, `${m[1]} 수정 · ${me.name}${memoOnly ? ' (메모)' : ''} (${ids.slice(0, 5).join(', ')}${ids.length > 5 ? ' 외' : ''})`);
+        if (denied) return send(res, 403, { message: denied });
+        return send(res, 200, { data: c.data, conflicts });
       }
     }
     return send(res, 404, { message: '없는 주소임.' });

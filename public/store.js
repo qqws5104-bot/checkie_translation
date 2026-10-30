@@ -13,7 +13,7 @@
 
   const stores = {};
   function store(col) {
-    if (!stores[col]) stores[col] = { data: {}, dirty: new Set(), deleted: new Set(), timer: null, saving: null, listeners: [], loaded: false };
+    if (!stores[col]) stores[col] = { data: {}, base: {}, ver: {}, dirty: new Set(), deleted: new Set(), timer: null, saving: null, listeners: [], loaded: false };
     return stores[col];
   }
   function snapshot(col) {
@@ -26,7 +26,7 @@
     const s = store(col);
     try {
       const r = await fetch('/api/data/' + col, { credentials: 'same-origin', cache: 'no-store' });
-      if (r.ok) { const j = await r.json(); if (!s.dirty.size && !s.deleted.size && !s.saving) s.data = j.data || {}; }
+      if (r.ok) { const j = await r.json(); if (!s.saving) absorb(s, j.data || {}, null); }
       else if (r.status === 401) window.dispatchEvent(new CustomEvent('store-need-view'));
     } catch (e) { /* 네트워크 오류: 다음 새로고침에서 다시 시도 */ }
     s.loaded = true; notify(col);
@@ -38,6 +38,20 @@
     const ss = Object.values(stores);
     window.dispatchEvent(new CustomEvent('store-state', { detail: { queued: ss.some(s => s.dirty.size || s.deleted.size), saving: ss.some(s => s.saving), lastSaved, error: lastError } }));
   }
+  /* 서버 최신본을 받아 들인다. 아직 안 보낸 내 변경은 최신본 위에 다시 얹는다(rebase). */
+  function absorb(s, server, sent) {
+    Object.keys(server).forEach(id => {
+      if (s.deleted.has(id)) return;
+      if (s.dirty.has(id)) {
+        const from = (sent && sent[id]) || s.base[id];
+        const mine = from ? Merge.diff(from, s.data[id]) : { $set: s.data[id] };
+        s.data[id] = Merge.apply(clone(server[id]), mine);
+      } else s.data[id] = clone(server[id]);
+      s.base[id] = clone(server[id]);
+    });
+    Object.keys(s.data).forEach(id => { if (!(id in server) && !s.dirty.has(id)) { delete s.data[id]; delete s.base[id]; } });
+  }
+  function touch(s, id) { s.ver[id] = (s.ver[id] || 0) + 1; s.dirty.add(id); }
   function scheduleSave(col) {
     const s = store(col); clearTimeout(s.timer);
     s.timer = setTimeout(() => runSave(col), 1200);
@@ -50,18 +64,28 @@
     const s = store(col);
     if (s.saving) { await s.saving.catch(() => {}); }
     if (!s.dirty.size && !s.deleted.size) return;
-    const dirty = [...s.dirty], deleted = [...s.deleted];
-    const body = { set: Object.fromEntries(dirty.filter(id => s.data[id]).map(id => [id, s.data[id]])), del: deleted };
+    const dirty = [...s.dirty], deleted = [...s.deleted], sentVer = {}, sent = {};
+    const body = { set: {}, patch: {}, del: deleted };
+    dirty.filter(id => s.data[id]).forEach(id => {
+      sentVer[id] = s.ver[id]; sent[id] = clone(s.data[id]);
+      if (s.base[id]) { const d = Merge.diff(s.base[id], s.data[id]); if (d) body.patch[id] = d; }
+      else body.set[id] = sent[id];
+    });
     s.saving = (async () => {
       emit();
       const r = await fetch('/api/data/' + col, { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const j = await r.json().catch(() => ({}));
-      if (r.status === 403 || r.status === 401) throw err('invalid_argument', j.message || '수정하려면 로그인 필요.');
+      if (r.status === 403 || r.status === 401) {
+        /* 권한 없는 변경은 되돌린다 (그래야 다음 저장이 막히지 않음) */
+        dirty.forEach(id => { if (s.base[id]) s.data[id] = clone(s.base[id]); else delete s.data[id]; s.dirty.delete(id); });
+        deleted.forEach(id => s.deleted.delete(id)); notify(col);
+        throw err('invalid_argument', j.message || '수정하려면 로그인 필요.');
+      }
       if (!r.ok) throw err('unavailable', j.message || '저장하지 못함.');
-      dirty.forEach(id => s.dirty.delete(id)); deleted.forEach(id => s.deleted.delete(id));
-      const merged = j.data || {};
-      Object.keys(merged).forEach(id => { if (!s.dirty.has(id) && !s.deleted.has(id)) s.data[id] = merged[id]; });
-      Object.keys(s.data).forEach(id => { if (!(id in merged) && !s.dirty.has(id)) delete s.data[id]; });
+      dirty.forEach(id => { if (s.ver[id] === sentVer[id] || !s.data[id]) s.dirty.delete(id); });
+      deleted.forEach(id => { s.deleted.delete(id); delete s.base[id]; });
+      absorb(s, j.data || {}, sent);
+      if (j.conflicts && Object.keys(j.conflicts).length) window.dispatchEvent(new CustomEvent('store-conflict', { detail: { col, conflicts: j.conflicts } }));
       lastSaved = new Date();
       notify(col);
     })();
@@ -89,10 +113,10 @@
     },
     doc(p) {
       const [col, id] = p.split('/'); const s = store(col);
-      const guard = () => { if (!me.canEdit) throw err('invalid_argument', me.loggedIn ? '보기 전용 계정임. 수정 권한은 관리자에게 요청 필요.' : '수정하려면 로그인 필요.'); };
+      const guard = () => { if (!me.canEdit && !me.canView) throw err('invalid_argument', me.loggedIn ? '보기 전용 계정임. 수정 권한은 관리자에게 요청 필요.' : '수정하려면 로그인 필요.'); };
       return {
-        async set(d) { guard(); s.data[id] = clone(d); s.dirty.add(id); s.deleted.delete(id); notify(col); scheduleSave(col); },
-        async update(d) { guard(); if (!s.data[id]) throw err('invalid_argument', '없는 항목임.'); deepMerge(s.data[id], d); s.dirty.add(id); notify(col); scheduleSave(col); },
+        async set(d) { guard(); s.data[id] = clone(d); touch(s, id); s.deleted.delete(id); notify(col); scheduleSave(col); },
+        async update(d) { guard(); if (!s.data[id]) throw err('invalid_argument', '없는 항목임.'); deepMerge(s.data[id], d); touch(s, id); notify(col); scheduleSave(col); },
         async delete() { guard(); delete s.data[id]; s.dirty.delete(id); s.deleted.add(id); notify(col); scheduleSave(col); },
       };
     },
