@@ -92,37 +92,6 @@
     "type": "게임명",
     "updatedAt": "2026-10-29T00:00:00Z"
   },
-  "left-right": {
-    "common": false,
-    "games": [
-      "chris-mas"
-    ],
-    "intent": "방향 버튼 라벨",
-    "ko": "왼쪽! / 오른쪽!",
-    "memo": "아이콘으로 대체할지 함께 결정",
-    "tr": {
-      "en": {
-        "avoid": "",
-        "avoidWhy": "",
-        "status": "미정",
-        "text": ""
-      },
-      "ja": {
-        "avoid": "",
-        "avoidWhy": "",
-        "status": "미정",
-        "text": ""
-      },
-      "zh": {
-        "avoid": "",
-        "avoidWhy": "",
-        "status": "미정",
-        "text": ""
-      }
-    },
-    "type": "버튼 라벨",
-    "updatedAt": "2026-10-29T00:00:00Z"
-  },
   "this-one": {
     "common": false,
     "games": [
