@@ -152,7 +152,7 @@
     "name": "Memorize",
     "concept": "15초동안 기억력 대결을 하는 게임",
     "situation": "",
-    "honorific": "",
+    "honorific": "게임 스타일의 말투.",
     "speakers": [
       {
         "who": "",
@@ -172,7 +172,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-10-30T03:25:45.020Z"
+    "updatedAt": "2026-10-30T03:25:58.801Z"
   },
   "game-c4dl2": {
     "name": "Qbrick",
