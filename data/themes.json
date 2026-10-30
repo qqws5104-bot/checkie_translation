@@ -63,7 +63,7 @@
   },
   "fix-pix": {
     "concept": "망가진 파일 복구",
-    "honorific": "",
+    "honorific": "반말. 무엇을 해라. 짤고 간단하게.",
     "lang": {
       "en": "시스템 메시지 톤, 마침표로 끝냄 (예: File damaged. Select the corrupted area.)",
       "ja": "「〜してください。」 또는 명사로 끝맺음 (예: ファイルが破損しています。)",
@@ -91,7 +91,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-10-30T02:34:11.326Z",
+    "updatedAt": "2026-10-30T02:34:51.446Z",
     "progressBy": {
       "en": {},
       "ja": {}
