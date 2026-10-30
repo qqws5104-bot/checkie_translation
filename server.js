@@ -67,13 +67,13 @@ function ensureBranch() {
   if (!branchReady) branchReady = (async () => {
     const b = await gh('/branches/' + encodeURIComponent(DATA_BRANCH));
     if (b.ok) return;
-    if (b.status === 401) throw new Error('GitHub 토큰이 올바르지 않거나 만료됐어요 (401). Render의 GITHUB_TOKEN을 다시 넣어 주세요.');
-    if (b.status !== 404) throw new Error('GitHub 저장소에 접근하지 못했어요 (' + b.status + '). 토큰 권한(Contents: Read and write)을 확인해 주세요.');
+    if (b.status === 401) throw new Error('GitHub 토큰이 올바르지 않거나 만료됨 (401). Render의 GITHUB_TOKEN을 다시 넣기.');
+    if (b.status !== 404) throw new Error('GitHub 저장소에 접근하지 못함 (' + b.status + '). 토큰 권한(Contents: Read and write)을 확인 필요.');
     const base = await gh('/git/ref/heads/' + encodeURIComponent(BASE_BRANCH));
-    if (!base.ok) throw new Error(base.status === 404 ? `저장소 ${REPO}의 ${BASE_BRANCH} 브랜치를 찾지 못했어요 (404). GITHUB_REPO 이름(밑줄·하이픈까지)과, 토큰에 이 저장소가 선택돼 있는지 확인해 주세요.` : 'GitHub 저장소에 접근하지 못했어요 (' + base.status + ').');
+    if (!base.ok) throw new Error(base.status === 404 ? `저장소 ${REPO}의 ${BASE_BRANCH} 브랜치를 찾지 못함 (404). GITHUB_REPO 이름(밑줄·하이픈까지)과, 토큰에 이 저장소가 선택돼 있는지 확인 필요.` : 'GitHub 저장소에 접근하지 못함 (' + base.status + ').');
     const sha = (await base.json()).object.sha;
     const c = await gh('/git/refs', { method: 'POST', body: JSON.stringify({ ref: 'refs/heads/' + DATA_BRANCH, sha }) });
-    if (!c.ok && c.status !== 422) throw new Error(DATA_BRANCH + ' 브랜치를 만들지 못했어요 (' + c.status + ').');
+    if (!c.ok && c.status !== 422) throw new Error(DATA_BRANCH + ' 브랜치를 만들지 못함 (' + c.status + ').');
   })().catch(e => { branchReady = null; throw e; });
   return branchReady;
 }
@@ -85,7 +85,7 @@ async function readCol(col, fresh) {
   const r = await gh(`/contents/data/${col}.json?ref=${encodeURIComponent(DATA_BRANCH)}`);
   let out;
   if (r.status === 404) out = { data: {}, sha: null };
-  else if (!r.ok) throw new Error('GitHub에서 데이터를 읽지 못했어요 (' + r.status + ').');
+  else if (!r.ok) throw new Error('GitHub에서 데이터를 읽지 못함 (' + r.status + ').');
   else { const j = await r.json(); out = { data: JSON.parse(Buffer.from(j.content, 'base64').toString('utf8') || '{}'), sha: j.sha }; }
   out.at = Date.now();
   cache[col] = out;
@@ -104,12 +104,12 @@ function writeCol(col, mutate, message) {
       if (cur.sha) body.sha = cur.sha;
       const r = await gh(`/contents/data/${col}.json`, { method: 'PUT', body: JSON.stringify(body) });
       if (r.status === 409 || r.status === 422) continue;
-      if (!r.ok) throw new Error('GitHub에 저장하지 못했어요 (' + r.status + ').');
+      if (!r.ok) throw new Error('GitHub에 저장하지 못함 (' + r.status + ').');
       const j = await r.json();
       cache[col] = { data, sha: j.content.sha, at: Date.now() };
       return cache[col];
     }
-    throw new Error('동시에 저장되어 충돌했어요. 다시 시도해 주세요.');
+    throw new Error('동시에 저장되어 충돌함. 다시 시도 필요.');
   };
   const p = (queues[col] || Promise.resolve()).then(run, run);
   queues[col] = p.catch(() => {});
@@ -183,7 +183,7 @@ const MAX_FILE = 12 * 1024 * 1024;
 function unzipEntry(buf, name) {
   let eocd = -1;
   for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) if (buf.readUInt32LE(i) === 0x06054b50) { eocd = i; break; }
-  if (eocd < 0) throw new Error('Word 파일을 열지 못했어요. 파일이 손상됐거나 예전 형식(.doc)일 수 있어요. .docx로 다시 저장해 주세요.');
+  if (eocd < 0) throw new Error('Word 파일을 열지 못함. 파일이 손상됐거나 예전 형식(.doc)일 수 있음. .docx로 다시 저장 필요.');
   const count = buf.readUInt16LE(eocd + 10);
   let p = buf.readUInt32LE(eocd + 16);
   for (let k = 0; k < count && p + 46 <= buf.length; k++) {
@@ -209,7 +209,7 @@ const paras = xml => (xml.replace(/<w:p\b[^>]*\/>/g, '').match(/<w:p\b[^>]*>[\s\
 /* docx → 순서대로 [{type:'p', text}] / [{type:'table', rows}] */
 function readDocx(buf) {
   const doc = unzipEntry(buf, 'word/document.xml');
-  if (!doc) throw new Error('Word 문서 내용을 찾지 못했어요.');
+  if (!doc) throw new Error('Word 문서 내용을 찾지 못함.');
   const xml = doc.toString('utf8');
   const body = (xml.match(/<w:body>([\s\S]*)<\/w:body>/) || [, xml])[1];
   /* 바깥 표만 따로 떼어 낸다 (표 안의 표는 칸 글자로 합쳐짐) */
@@ -266,7 +266,7 @@ async function listFiles(game, fresh) {
   await ensureBranch();
   const r = await gh(`/contents/files/${encodeURIComponent(game)}?ref=${encodeURIComponent(DATA_BRANCH)}${fresh ? '&t=' + Date.now() : ''}`);
   if (r.status === 404) return [];
-  if (!r.ok) throw new Error('자료 목록을 읽지 못했어요 (' + r.status + ').');
+  if (!r.ok) throw new Error('자료 목록을 읽지 못함 (' + r.status + ').');
   return ((await r.json()) || []).filter(x => x.type === 'file').map(x => ({ name: x.name, size: x.size, sha: x.sha }));
 }
 async function readFileBuf(game, name) {
@@ -274,13 +274,13 @@ async function readFileBuf(game, name) {
   await ensureBranch();
   const r = await gh(`/contents/${filePath(game, name)}?ref=${encodeURIComponent(DATA_BRANCH)}`, { headers: {} });
   if (r.status === 404) return null;
-  if (!r.ok) throw new Error('자료 파일을 읽지 못했어요 (' + r.status + ').');
+  if (!r.ok) throw new Error('자료 파일을 읽지 못함 (' + r.status + ').');
   const j = await r.json();
   if (c && c.sha === j.sha) return c.buf;
   let buf = j.content ? Buffer.from(j.content, 'base64') : null;
   if (!buf || !buf.length) {   // 1MB가 넘는 파일은 내용이 비어서 온다 → blob으로 받기
     const br = await gh('/git/blobs/' + j.sha);
-    if (!br.ok) throw new Error('자료 파일을 읽지 못했어요 (' + br.status + ').');
+    if (!br.ok) throw new Error('자료 파일을 읽지 못함 (' + br.status + ').');
     buf = Buffer.from((await br.json()).content || '', 'base64');
   }
   fileCache.set(key, { sha: j.sha, buf });
@@ -292,21 +292,21 @@ async function writeFileBuf(game, name, buf, message) {
   const body = { message, content: buf.toString('base64'), branch: DATA_BRANCH };
   if (cur.ok) body.sha = (await cur.json()).sha;
   const r = await gh(`/contents/${filePath(game, name)}`, { method: 'PUT', body: JSON.stringify(body) });
-  if (!r.ok) throw new Error('자료를 저장하지 못했어요 (' + r.status + ').');
+  if (!r.ok) throw new Error('자료를 저장하지 못함 (' + r.status + ').');
   fileCache.delete(game + '/' + name);
 }
 async function deleteFile(game, name, message) {
   const cur = await gh(`/contents/${filePath(game, name)}?ref=${encodeURIComponent(DATA_BRANCH)}`);
   if (!cur.ok) return;
   const r = await gh(`/contents/${filePath(game, name)}`, { method: 'DELETE', body: JSON.stringify({ message, sha: (await cur.json()).sha, branch: DATA_BRANCH }) });
-  if (!r.ok) throw new Error('자료를 지우지 못했어요 (' + r.status + ').');
+  if (!r.ok) throw new Error('자료를 지우지 못함 (' + r.status + ').');
   fileCache.delete(game + '/' + name);
 }
 /* zip 안의 이미지 꺼내기 (폴더는 무시하고 파일 이름만) */
 function zipImages(buf) {
   let eocd = -1;
   for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) if (buf.readUInt32LE(i) === 0x06054b50) { eocd = i; break; }
-  if (eocd < 0) throw new Error('zip 파일을 열지 못했어요.');
+  if (eocd < 0) throw new Error('zip 파일을 열지 못함.');
   const count = buf.readUInt16LE(eocd + 10), out = [];
   let p = buf.readUInt32LE(eocd + 16);
   for (let k = 0; k < count && p + 46 <= buf.length; k++) {
@@ -347,7 +347,7 @@ function serveStatic(req, res, pathname) {
   const file = path.join(PUBLIC, p);
   if (!file.startsWith(PUBLIC)) { res.writeHead(403); return res.end(); }
   fs.readFile(file, (err, buf) => {
-    if (err) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('없는 페이지예요.'); }
+    if (err) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('없는 페이지임.'); }
     res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
     res.end(buf);
   });
@@ -362,7 +362,7 @@ http.createServer(async (req, res) => {
   const session = (payload) => ({ 'Set-Cookie': cookie(encodeURIComponent(sign(Object.assign({ exp: Date.now() + 30 * 864e5 }, payload))), 30 * 86400) });
   try {
     if (!p.startsWith('/api/')) return serveStatic(req, res, p);
-    if (!configured) return send(res, 500, { error: 'setup', message: '서버 설정이 끝나지 않았어요. Render의 Environment에 GITHUB_TOKEN과 GITHUB_REPO를 넣어 주세요.' });
+    if (!configured) return send(res, 500, { error: 'setup', message: '서버 설정이 끝나지 않았음. Render의 Environment에 GITHUB_TOKEN과 GITHUB_REPO를 넣기.' });
     const me = await currentUser(req);
 
     if (p === '/api/me' && req.method === 'GET') {
@@ -372,20 +372,20 @@ http.createServer(async (req, res) => {
     }
 
     if (p === '/api/signup' && req.method === 'POST') {
-      if (tooMany('signup:' + ip, 5, 600000)) return send(res, 429, { message: '가입 신청이 너무 많아요. 잠시 뒤 다시 시도해 주세요.' });
+      if (tooMany('signup:' + ip, 5, 600000)) return send(res, 429, { message: '가입 신청이 너무 많음. 잠시 뒤 다시 시도 필요.' });
       const b = await readBody(req);
       const username = String(b.username || '').trim().toLowerCase(), name = String(b.name || '').trim().slice(0, 30), pw = String(b.password || '');
-      if (!ID_RE.test(username)) return send(res, 400, { message: '아이디는 영문 소문자·숫자·. _ - 로 3~20자로 정해 주세요.' });
-      if (!name) return send(res, 400, { message: '이름을 입력해 주세요.' });
-      if (pw.length < PW_MIN) return send(res, 400, { message: `비밀번호는 ${PW_MIN}자 이상으로 정해 주세요.` });
-      if (username === ADMIN_ID) return send(res, 409, { message: '이미 사용 중인 아이디예요.' });
+      if (!ID_RE.test(username)) return send(res, 400, { message: '아이디는 영문 소문자·숫자·. _ - 로 3~20자로 정하기.' });
+      if (!name) return send(res, 400, { message: '이름을 입력 필요.' });
+      if (pw.length < PW_MIN) return send(res, 400, { message: `비밀번호는 ${PW_MIN}자 이상으로 정하기.` });
+      if (username === ADMIN_ID) return send(res, 409, { message: '이미 사용 중인 아이디임.' });
       const { salt, hash } = await hashPw(pw);
       let dup = false, uid = 'u-' + crypto.randomBytes(6).toString('hex');
       await writeCol('users', data => {
         if (members(data).some(([, u]) => norm(u).username === username)) { dup = true; return false; }
         data[uid] = { username, name, color: freeColor(data), salt, hash, pwv: 1, canView: false, canEdit: false, createdAt: new Date().toISOString() };
       }, `회원가입 · ${name} (${username})`);
-      if (dup) return send(res, 409, { message: '이미 사용 중인 아이디예요.' });
+      if (dup) return send(res, 409, { message: '이미 사용 중인 아이디임.' });
       hit('signup:' + ip);
       return send(res, 200, { ok: true }, session({ uid, pwv: 1 }));
     }
@@ -393,26 +393,26 @@ http.createServer(async (req, res) => {
     if (p === '/api/login' && req.method === 'POST') {
       const b = await readBody(req);
       const username = String(b.username || '').trim().toLowerCase(), pw = String(b.password || '');
-      if (tooMany('ip:' + ip, 20, 60000) || tooMany('id:' + username, 10, 900000)) return send(res, 429, { message: '로그인 실패가 너무 많아요. 15분 뒤 다시 시도해 주세요.' });
+      if (tooMany('ip:' + ip, 20, 60000) || tooMany('id:' + username, 10, 900000)) return send(res, 429, { message: '로그인 실패가 너무 많음. 15분 뒤 다시 시도 필요.' });
       if (username === ADMIN_ID) {
         if (safeEq(pw, ADMIN_PW)) { attempts.delete('id:' + username); return send(res, 200, { ok: true }, session({ uid: 'admin' })); }
         hit('ip:' + ip); hit('id:' + username);
-        return send(res, 401, { message: '아이디 또는 비밀번호가 맞지 않아요.' });
+        return send(res, 401, { message: '아이디 또는 비밀번호가 맞지 않음.' });
       }
       const users = (await readCol('users', true)).data;
       const entry = members(users).find(([, u]) => norm(u).username === username);
-      if (!entry || !(await checkPw(pw, entry[1]))) { hit('ip:' + ip); hit('id:' + username); return send(res, 401, { message: '아이디 또는 비밀번호가 맞지 않아요.' }); }
+      if (!entry || !(await checkPw(pw, entry[1]))) { hit('ip:' + ip); hit('id:' + username); return send(res, 401, { message: '아이디 또는 비밀번호가 맞지 않음.' }); }
       attempts.delete('id:' + username);
       return send(res, 200, { ok: true }, session({ uid: entry[0], pwv: entry[1].pwv || 1 }));
     }
     if (p === '/api/logout' && req.method === 'POST') return send(res, 200, { ok: true }, { 'Set-Cookie': cookie('', 0) });
 
     if (p === '/api/password' && req.method === 'POST') {
-      if (!me || me.isOwner) return send(res, 403, { message: me ? '대표 관리자 비밀번호는 Render의 ADMIN_PASSWORD에서 바꿔 주세요.' : '로그인이 필요해요.' });
+      if (!me || me.isOwner) return send(res, 403, { message: me ? '대표 관리자 비밀번호는 Render의 ADMIN_PASSWORD에서 바꾸기.' : '로그인이 필요함.' });
       const b = await readBody(req);
-      if (String(b.next || '').length < PW_MIN) return send(res, 400, { message: `새 비밀번호는 ${PW_MIN}자 이상으로 정해 주세요.` });
+      if (String(b.next || '').length < PW_MIN) return send(res, 400, { message: `새 비밀번호는 ${PW_MIN}자 이상으로 정하기.` });
       const users = (await readCol('users', true)).data;
-      if (!(await checkPw(String(b.current || ''), users[me.id]))) return send(res, 401, { message: '지금 비밀번호가 맞지 않아요.' });
+      if (!(await checkPw(String(b.current || ''), users[me.id]))) return send(res, 401, { message: '지금 비밀번호가 맞지 않음.' });
       const { salt, hash } = await hashPw(String(b.next));
       let pwv;
       await writeCol('users', data => { const u = data[me.id]; u.salt = salt; u.hash = hash; u.pwv = (u.pwv || 1) + 1; pwv = u.pwv; }, `비밀번호 변경 · ${me.name}`);
@@ -421,25 +421,25 @@ http.createServer(async (req, res) => {
 
     /* ----- 내 색 바꾸기 ----- */
     if ((p === '/api/color' || p === '/api/profile') && req.method === 'POST') {
-      if (!me) return send(res, 401, { message: '로그인이 필요해요.' });
+      if (!me) return send(res, 401, { message: '로그인이 필요함.' });
       const b = await readBody(req), patch = {};
-      if (b.color !== undefined) { if (!COLOR_RE.test(b.color || '')) return send(res, 400, { message: '색 값이 올바르지 않아요.' }); patch.color = b.color; }
-      if (b.name !== undefined) { const n = String(b.name).trim().slice(0, 30); if (!n) return send(res, 400, { message: '이름을 입력해 주세요.' }); patch.name = n; }
+      if (b.color !== undefined) { if (!COLOR_RE.test(b.color || '')) return send(res, 400, { message: '색 값이 올바르지 않음.' }); patch.color = b.color; }
+      if (b.name !== undefined) { const n = String(b.name).trim().slice(0, 30); if (!n) return send(res, 400, { message: '이름을 입력 필요.' }); patch.name = n; }
       await writeCol('users', data => { const key = me.isOwner ? OWNER_KEY : me.id; data[key] = Object.assign(data[key] || {}, patch); }, `내 정보 변경 · ${patch.name || me.name}`);
       return send(res, 200, Object.assign({ ok: true }, patch));
     }
 
     /* ----- 관리자: 회원 권한 ----- */
     if (p === '/api/admin/users' && req.method === 'GET') {
-      if (!me || !me.isAdmin) return send(res, 403, { message: '관리자만 볼 수 있어요.' });
+      if (!me || !me.isAdmin) return send(res, 403, { message: '관리자만 볼 수 있음.' });
       const users = (await readCol('users', true)).data;
       return send(res, 200, { users: members(users).map(([id, u]) => publicUser(id, u)), palette: PALETTE });
     }
     const am = p.match(/^\/api\/admin\/users\/([\w-]+)$/);
     if (am && req.method === 'POST') {
-      if (!me || !me.isAdmin) return send(res, 403, { message: '관리자만 할 수 있어요.' });
+      if (!me || !me.isAdmin) return send(res, 403, { message: '관리자만 할 수 있음.' });
       const id = am[1];
-      if (id === OWNER_KEY) return send(res, 404, { message: '없는 회원이에요.' });
+      if (id === OWNER_KEY) return send(res, 404, { message: '없는 회원임.' });
       const b = await readBody(req);
       let temp = null, found = true, label = '', denied = '';
       if (b.action === 'reset') temp = String(crypto.randomInt(100000, 1000000));
@@ -451,9 +451,9 @@ http.createServer(async (req, res) => {
         const n = norm(u);
         /* 지정된 관리자는: 본인·다른 관리자는 건드릴 수 없고, 관리자 지정도 못 한다 (대표 관리자만 가능) */
         if (!me.isOwner) {
-          if (id === me.id) { denied = '본인 권한은 바꿀 수 없어요.'; return false; }
-          if (n.canAdmin) { denied = '다른 관리자의 권한은 대표 관리자만 바꿀 수 있어요.'; return false; }
-          if (b.admin !== undefined) { denied = '관리자 지정은 대표 관리자만 할 수 있어요.'; return false; }
+          if (id === me.id) { denied = '본인 권한은 바꿀 수 없음.'; return false; }
+          if (n.canAdmin) { denied = '다른 관리자의 권한은 대표 관리자만 바꿀 수 있음.'; return false; }
+          if (b.admin !== undefined) { denied = '관리자 지정은 대표 관리자만 할 수 있음.'; return false; }
         }
         if (b.action === 'perm') {
           let view = b.view !== undefined ? !!b.view : n.canView;
@@ -473,24 +473,24 @@ http.createServer(async (req, res) => {
         else return false;
       }, `회원 권한 · ${b.action} · ${id} · ${me.name}`);
       if (denied) return send(res, 403, { message: denied });
-      if (!found) return send(res, 404, { message: '없는 회원이에요.' });
+      if (!found) return send(res, 404, { message: '없는 회원임.' });
       return send(res, 200, { ok: true, tempPassword: temp, name: label });
     }
 
     /* ----- 파일 읽기 (편집 권한 필요) ----- */
     if (p === '/api/extract' && req.method === 'POST') {
-      if (!me || !me.canEdit) return send(res, 403, { message: me ? '파일 읽기는 편집 허용을 받은 사람만 할 수 있어요.' : '로그인이 필요해요.' });
+      if (!me || !me.canEdit) return send(res, 403, { message: me ? '파일 읽기는 편집 허용을 받은 사람만 할 수 있음.' : '로그인이 필요함.' });
       let b;
-      try { b = await readBody(req, MAX_FILE * 1.4 + 1e5); } catch { return send(res, 413, { message: '파일이 너무 커요. 12MB 이하로 올려 주세요.' }); }
+      try { b = await readBody(req, MAX_FILE * 1.4 + 1e5); } catch { return send(res, 413, { message: '파일이 너무 큼. 12MB 이하로 올리기.' }); }
       const name = String(b.name || ''), ext = (name.match(/\.([a-z0-9]+)$/i) || [, ''])[1].toLowerCase();
       const buf = Buffer.from(String(b.data || ''), 'base64');
-      if (!buf.length) return send(res, 400, { message: '빈 파일이에요.' });
-      if (buf.length > MAX_FILE) return send(res, 413, { message: '파일이 너무 커요. 12MB 이하로 올려 주세요.' });
+      if (!buf.length) return send(res, 400, { message: '빈 파일임.' });
+      if (buf.length > MAX_FILE) return send(res, 413, { message: '파일이 너무 큼. 12MB 이하로 올리기.' });
       if (ext === 'docx') return send(res, 200, { kind: 'docx', blocks: readDocx(buf) });
       const media = (/^image\/(png|jpeg|webp|gif)$/.test(b.type || '') ? b.type : null) || MEDIA[ext];
-      if (!media) return send(res, 400, { message: '읽을 수 없는 파일 형식이에요. PNG·JPG·PDF·Word(docx)·엑셀·CSV를 올려 주세요.' });
-      if (!AI_KEY) return send(res, 501, { message: '이미지·PDF 읽기가 아직 켜져 있지 않아요. 관리자가 Render에 AI API 키(ANTHROPIC_API_KEY 등)를 넣어야 해요.' });
-      if (tooMany('ai:' + me.id, AI_LIMIT, 3600000)) return send(res, 429, { message: `AI 파일 읽기는 한 시간에 ${AI_LIMIT}개까지예요. 잠시 뒤 다시 해 주세요.` });
+      if (!media) return send(res, 400, { message: '읽을 수 없는 파일 형식임. PNG·JPG·PDF·Word(docx)·엑셀·CSV를 올리기.' });
+      if (!AI_KEY) return send(res, 501, { message: '이미지·PDF 읽기가 아직 켜져 있지 않음. 관리자가 Render에 AI API 키(ANTHROPIC_API_KEY 등)를 넣어야 함.' });
+      if (tooMany('ai:' + me.id, AI_LIMIT, 3600000)) return send(res, 429, { message: `AI 파일 읽기는 한 시간에 ${AI_LIMIT}개까지임. 잠시 뒤 다시 하기.` });
       hit('ai:' + me.id);
       const mode = b.mode === 'table' ? 'table' : 'source';
       const out = await aiRead(buf, media, mode);
@@ -500,34 +500,34 @@ http.createServer(async (req, res) => {
     /* ----- 게임 자료 파일 (화면 캡처·PDF): data 브랜치 files/<게임>/<이름> ----- */
     const fm = p.match(/^\/api\/files\/([\w-]+)(?:\/([^/]+))?$/);
     if (fm) {
-      if (!me || !me.canView) return send(res, 401, { message: '로그인이 필요해요.' });
+      if (!me || !me.canView) return send(res, 401, { message: '로그인이 필요함.' });
       const game = fm[1], fname = fm[2] ? decodeURIComponent(fm[2]) : '';
-      if (fname && fname !== 'zip' && !FILE_RE.test(fname)) return send(res, 400, { message: '파일 이름이 올바르지 않아요.' });
+      if (fname && fname !== 'zip' && !FILE_RE.test(fname)) return send(res, 400, { message: '파일 이름이 올바르지 않음.' });
       if (req.method === 'GET' && !fname) return send(res, 200, { files: await listFiles(game) });
       if (req.method === 'GET') {
         const buf = await readFileBuf(game, fname);
-        if (!buf) return send(res, 404, { message: '없는 파일이에요.' });
+        if (!buf) return send(res, 404, { message: '없는 파일임.' });
         const hd = { 'Content-Type': mediaOf(fname), 'Cache-Control': 'private, max-age=60' };
         if (/\.xlsx$/i.test(fname)) hd['Content-Disposition'] = `attachment; filename="file.xlsx"; filename*=UTF-8''${encodeURIComponent(fname)}`;
         res.writeHead(200, hd); return res.end(buf);
       }
-      if (!me.canEdit) return send(res, 403, { message: '편집 허용을 받은 사람만 할 수 있어요.' });
+      if (!me.canEdit) return send(res, 403, { message: '편집 허용을 받은 사람만 할 수 있음.' });
       /* zip 안의 이미지를 한 번에 저장 */
       if (req.method === 'POST' && fm[2] === 'zip') {
-        let b; try { b = await readBody(req, 36e6); } catch { return send(res, 413, { message: 'zip이 너무 커요. 25MB 이하로 나눠 주세요.' }); }
+        let b; try { b = await readBody(req, 36e6); } catch { return send(res, 413, { message: 'zip이 너무 큼. 25MB 이하로 나누기.' }); }
         const zbuf = Buffer.from(String(b.data || ''), 'base64');
         let entries; try { entries = zipImages(zbuf); } catch (e) { return send(res, 400, { message: e.message }); }
-        if (!entries.length) return send(res, 400, { message: 'zip 안에서 PNG·JPG를 찾지 못했어요.' });
+        if (!entries.length) return send(res, 400, { message: 'zip 안에서 PNG·JPG를 찾지 못함.' });
         let added = 0;
         for (const en of entries) { if (en.data.length > 4.2e6) continue; await writeFileBuf(game, en.name, en.data, `자료 올림(zip) · ${game}/${en.name} · ${me.name}`); added++; }
         return send(res, 200, { ok: true, added, files: await listFiles(game, true) });
       }
       if (req.method === 'POST' && !fname) {
-        let b; try { b = await readBody(req, 6e6); } catch { return send(res, 413, { message: '파일이 너무 커요. 4MB 이하로 올려 주세요.' }); }
+        let b; try { b = await readBody(req, 6e6); } catch { return send(res, 413, { message: '파일이 너무 큼. 4MB 이하로 올리기.' }); }
         const name = String(b.name || '').trim();
-        if (!FILE_RE.test(name) || !mediaOf(name)) return send(res, 400, { message: '이미지(PNG·JPG·WEBP)·PDF·엑셀만 올릴 수 있어요. 파일 이름에는 영문·숫자·한글·- _ . 만 써 주세요.' });
+        if (!FILE_RE.test(name) || !mediaOf(name)) return send(res, 400, { message: '이미지(PNG·JPG·WEBP)·PDF·엑셀만 올릴 수 있음. 파일 이름에는 영문·숫자·한글·- _ . 만 쓰기.' });
         const buf = Buffer.from(String(b.data || ''), 'base64');
-        if (!buf.length || buf.length > 4.2e6) return send(res, 413, { message: '파일이 너무 커요. 4MB 이하로 올려 주세요.' });
+        if (!buf.length || buf.length > 4.2e6) return send(res, 413, { message: '파일이 너무 큼. 4MB 이하로 올리기.' });
         await writeFileBuf(game, name, buf, `자료 올림 · ${game}/${name} · ${me.name}`);
         return send(res, 200, { ok: true, files: await listFiles(game, true) });
       }
@@ -539,11 +539,11 @@ http.createServer(async (req, res) => {
 
     /* ----- AI 자동 실행: 작업을 맡기고(job) 결과를 나중에 받는다 ----- */
     if (p === '/api/ai/run' && req.method === 'POST') {
-      if (!me || !me.canEdit) return send(res, 403, { message: '편집 허용을 받은 사람만 할 수 있어요.' });
+      if (!me || !me.canEdit) return send(res, 403, { message: '편집 허용을 받은 사람만 할 수 있음.' });
       const b = await readBody(req, 3e6);
       const prov = String(b.provider || '');
-      if (!AI.available()[prov] || prov === 'deepl') return send(res, 400, { message: `${AI.NAMES[prov] || 'AI'} API 키가 없어요.` });
-      if (tooMany('ai:' + me.id, AI_LIMIT, 3600000)) return send(res, 429, { message: `AI 호출은 한 사람이 한 시간에 ${AI_LIMIT}번까지예요. 잠시 뒤 다시 해 주세요.` });
+      if (!AI.available()[prov] || prov === 'deepl') return send(res, 400, { message: `${AI.NAMES[prov] || 'AI'} API 키가 없음.` });
+      if (tooMany('ai:' + me.id, AI_LIMIT, 3600000)) return send(res, 429, { message: `AI 호출은 한 사람이 한 시간에 ${AI_LIMIT}번까지임. 잠시 뒤 다시 하기.` });
       hit('ai:' + me.id);
       const id = crypto.randomBytes(8).toString('hex');
       const job = { status: 'running', at: Date.now(), user: me.id };
@@ -561,11 +561,11 @@ http.createServer(async (req, res) => {
     const jm = p.match(/^\/api\/ai\/job\/(\w+)$/);
     if (jm && req.method === 'GET') {
       const job = jobs.get(jm[1]);
-      if (!me || !job || job.user !== me.id) return send(res, 404, { message: '작업을 찾지 못했어요. 서버가 다시 시작됐을 수 있어요. 다시 실행해 주세요.' });
+      if (!me || !job || job.user !== me.id) return send(res, 404, { message: '작업을 찾지 못함. 서버가 다시 시작됐을 수 있음. 다시 실행 필요.' });
       return send(res, 200, job);
     }
     if (p === '/api/ai/deepl' && req.method === 'POST') {
-      if (!me || !me.canEdit) return send(res, 403, { message: '편집 허용을 받은 사람만 할 수 있어요.' });
+      if (!me || !me.canEdit) return send(res, 403, { message: '편집 허용을 받은 사람만 할 수 있음.' });
       const b = await readBody(req);
       return send(res, 200, { texts: await AI.deepl((b.texts || []).map(String).slice(0, 500), String(b.lang || 'en')) });
     }
@@ -574,11 +574,11 @@ http.createServer(async (req, res) => {
     const m = p.match(/^\/api\/data\/(\w+)$/);
     if (m && DATA_COLS.includes(m[1])) {
       if (req.method === 'GET') {
-        if (!me || !me.canView) return send(res, 401, { message: me ? '아직 보기 허용을 받지 않았어요.' : '로그인이 필요해요.' });
+        if (!me || !me.canView) return send(res, 401, { message: me ? '아직 보기 허용을 받지 않았음.' : '로그인이 필요함.' });
         return send(res, 200, { data: (await readCol(m[1])).data });
       }
       if (req.method === 'PUT') {
-        if (!me || !me.canEdit) return send(res, 403, { message: me ? '편집 허용을 받지 않았어요. 관리자에게 요청해 주세요.' : '수정하려면 로그인해 주세요.' });
+        if (!me || !me.canEdit) return send(res, 403, { message: me ? '편집 허용을 받지 않았음. 관리자에게 요청 필요.' : '수정하려면 로그인 필요.' });
         const changes = await readBody(req);
         const ids = [...Object.keys(changes.set || {}), ...(changes.del || [])];
         const c = await writeCol(m[1], data => {
@@ -589,10 +589,10 @@ http.createServer(async (req, res) => {
         return send(res, 200, { data: c.data });
       }
     }
-    return send(res, 404, { message: '없는 주소예요.' });
+    return send(res, 404, { message: '없는 주소임.' });
   } catch (e) {
     console.error(e);
-    const msg = /fetch failed|ENOTFOUND|ECONNREFUSED|ETIMEDOUT/.test(String(e.message)) ? 'GitHub에 연결하지 못했어요. 잠시 뒤 다시 시도해 주세요.' : (e.message || '서버 오류가 났어요.');
+    const msg = /fetch failed|ENOTFOUND|ECONNREFUSED|ETIMEDOUT/.test(String(e.message)) ? 'GitHub에 연결하지 못함. 잠시 뒤 다시 시도 필요.' : (e.message || '서버 오류가 남.');
     return send(res, 500, { error: 'server', message: msg });
   }
 }).listen(PORT, () => console.log('checkie-translation listening on ' + PORT + (configured ? '' : ' (환경 변수 설정 필요)')));

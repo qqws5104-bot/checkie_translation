@@ -8,7 +8,7 @@
   function err(code, message) { const e = new Error(message); e.code = code; return e; }
   let me = { loggedIn: false, canEdit: false, canView: false, isAdmin: false, name: '', username: '', pending: 0 };
   const meReady = fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' })
-    .then(r => r.json()).then(j => { if (!j.error && 'loggedIn' in j) me = j; else me.setupError = j.message || '서버에서 알 수 없는 오류가 났어요.'; return me; })
+    .then(r => r.json()).then(j => { if (!j.error && 'loggedIn' in j) me = j; else me.setupError = j.message || '서버에서 알 수 없는 오류가 남.'; return me; })
     .catch(() => { me.offline = true; return me; });
 
   const stores = {};
@@ -56,8 +56,8 @@
       emit();
       const r = await fetch('/api/data/' + col, { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const j = await r.json().catch(() => ({}));
-      if (r.status === 403 || r.status === 401) throw err('invalid_argument', j.message || '수정하려면 로그인해 주세요.');
-      if (!r.ok) throw err('unavailable', j.message || '저장하지 못했어요.');
+      if (r.status === 403 || r.status === 401) throw err('invalid_argument', j.message || '수정하려면 로그인 필요.');
+      if (!r.ok) throw err('unavailable', j.message || '저장하지 못함.');
       dirty.forEach(id => s.dirty.delete(id)); deleted.forEach(id => s.deleted.delete(id));
       const merged = j.data || {};
       Object.keys(merged).forEach(id => { if (!s.dirty.has(id) && !s.deleted.has(id)) s.data[id] = merged[id]; });
@@ -89,10 +89,10 @@
     },
     doc(p) {
       const [col, id] = p.split('/'); const s = store(col);
-      const guard = () => { if (!me.canEdit) throw err('invalid_argument', me.loggedIn ? '보기 전용 계정이에요. 수정 권한은 관리자에게 요청해 주세요.' : '수정하려면 로그인해 주세요.'); };
+      const guard = () => { if (!me.canEdit) throw err('invalid_argument', me.loggedIn ? '보기 전용 계정임. 수정 권한은 관리자에게 요청 필요.' : '수정하려면 로그인 필요.'); };
       return {
         async set(d) { guard(); s.data[id] = clone(d); s.dirty.add(id); s.deleted.delete(id); notify(col); scheduleSave(col); },
-        async update(d) { guard(); if (!s.data[id]) throw err('invalid_argument', '없는 항목이에요.'); deepMerge(s.data[id], d); s.dirty.add(id); notify(col); scheduleSave(col); },
+        async update(d) { guard(); if (!s.data[id]) throw err('invalid_argument', '없는 항목임.'); deepMerge(s.data[id], d); s.dirty.add(id); notify(col); scheduleSave(col); },
         async delete() { guard(); delete s.data[id]; s.dirty.delete(id); s.deleted.add(id); notify(col); scheduleSave(col); },
       };
     },
@@ -118,7 +118,7 @@
   async function post(url, body) {
     const r = await fetch(url, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok) throw err('failed', j.message || '요청을 처리하지 못했어요.');
+    if (!r.ok) throw err('failed', j.message || '요청을 처리하지 못함.');
     return j;
   }
   window.Store = {
@@ -136,7 +136,7 @@
     async adminUsers() {
       const r = await fetch('/api/admin/users', { credentials: 'same-origin', cache: 'no-store' });
       const j = await r.json().catch(() => ({}));
-      if (!r.ok) throw err('failed', j.message || '회원 목록을 불러오지 못했어요.');
+      if (!r.ok) throw err('failed', j.message || '회원 목록을 불러오지 못함.');
       return j.users || [];
     },
     adminAction: (id, action, extra) => post('/api/admin/users/' + encodeURIComponent(id), Object.assign({ action }, extra || {})),

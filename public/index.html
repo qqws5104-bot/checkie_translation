@@ -15,7 +15,9 @@
   --field: #ffffff;
   --on-accent: #ffffff;
   --fg: #231f1c;
-  --muted: #5a514b;
+  --muted: #4f4842;
+  --link: #1d4ed8;
+  --warn: #b42318;
   --accent: #c2410c;
   --accent-soft: #fdece4;
   --ok: #24764a;
@@ -28,9 +30,11 @@
   :root:not([data-theme="light"]) {
     --bg: #151311; --panel: #221e1b; --line: #5a4f49; --field: #221e1b; --fg: #f6f2ee; --muted: #cbc0b8; --on-accent: #1a0e08;
     --accent: #ff8352; --accent-soft: #46291c; --ok: #74cf9b; --ok-soft: #1f3a2a; --code-bg: #1c1917; color-scheme: dark;
+    --link: #9bb8ff; --warn: #ff8a80;
   }
 }
 :root[data-theme="dark"] {
+  --link: #9bb8ff; --warn: #ff8a80;
   --bg: #151311; --panel: #221e1b; --line: #5a4f49; --field: #221e1b; --fg: #f6f2ee; --muted: #cbc0b8; --on-accent: #1a0e08;
   --accent: #ff8352; --accent-soft: #46291c; --ok: #74cf9b; --ok-soft: #1f3a2a; --code-bg: #1c1917; color-scheme: dark;
 }
@@ -655,6 +659,59 @@ tr.has-memo td { background: color-mix(in srgb, #d62828 9%, transparent); }
 .fgrid li small { display: block; color: var(--muted); font-size: 12px; }
 .clist { margin: 8px 0 0; padding-left: 20px; font-size: 14px; }
 @media (max-width: 700px) { .memo-row { grid-template-columns: 1fr; } }
+/* ===== 가독성 ===== */
+body { line-height: 1.65; letter-spacing: -0.005em; }
+.wrap { max-width: 1040px; }
+h1 { font-size: 22px; }
+.sb { color: color-mix(in srgb, var(--fg) 78%, var(--bg)); font-size: 15.5px; line-height: 1.6; }
+.linkbtn, .btn.ghost { color: var(--link); }
+.btn.ghost:hover { background: color-mix(in srgb, var(--link) 8%, transparent); border-color: transparent; }
+.badtxt, .itag, .ap-err { color: var(--warn); }
+.checklist { gap: 12px; }
+.ck { background: var(--bg); }
+.ck-h { padding: 16px 18px; }
+.ck-h b { font-size: 18px; }
+.ck-h span { font-size: 14px; white-space: pre; }
+.ck.open { box-shadow: 0 4px 18px -12px rgba(0,0,0,.35); }
+.ck-b { gap: 16px; padding: 4px 20px 20px 62px; }
+.do { gap: 12px; }
+.do li > div { font-size: 16px; }
+.do li > i { width: 26px; height: 26px; font-size: 13px; background: var(--fg); color: var(--bg); }
+.rtabs { gap: 8px; }
+.rtabs button { padding: 10px 14px; font-size: 16px; }
+.rtabs button small { font-size: 13.5px; }
+.rtabs button.ok { border-color: var(--ok); }
+.rtabs button.ok small { color: var(--ok); font-weight: 700; }
+.ilist { gap: 10px; }
+.irow { border: 1px solid var(--line); border-top: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; grid-template-columns: 80px minmax(0, 1fr); }
+.irow code { font-size: 12.5px; line-height: 1.5; }
+.ibody { gap: 8px; }
+.ibody > b { font-size: 16px; }
+.itag { font-size: 14px; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.itag::before { content: '!'; display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--warn); color: #fff; font-size: 12px; font-weight: 700; }
+.cmp { gap: 8px 16px; font-size: 16px; }
+.cmp > div { background: var(--panel); border-radius: 8px; padding: 8px 10px; }
+.cmp span { font-size: 12.5px; margin-bottom: 2px; }
+.tprev table { font-size: 15px; }
+.tprev th { font-size: 13.5px; padding: 9px 12px; }
+.tprev td { padding: 9px 12px; }
+.tprev tbody tr:nth-child(even) td { background: color-mix(in srgb, var(--panel) 55%, transparent); }
+.fcard { padding: 10px 14px; }
+.fcard > summary { font-size: 16px; }
+.fgrid ol { font-size: 16px; gap: 8px; }
+.okmsg { font-size: 16px; }
+.signrow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; border-top: 2px dashed var(--line); padding-top: 14px; margin-top: 4px; }
+.signrow small { color: var(--muted); font-size: 14px; }
+.signrow.ok { border-top-style: solid; border-top-color: var(--ok); }
+.sg-ok { color: var(--ok); font-weight: 700; font-size: 16px; }
+.signrow .btn:disabled { opacity: .45; }
+.libbox { gap: 10px; }
+.librow { padding-top: 10px; }
+.dcell b { font-size: 16px; }
+.dgame button { font-size: 18px; }
+.lead { font-size: 15.5px; }
+.memo-banner h3 { font-size: 20px; }
+.toast { font-size: 15.5px; padding: 12px 20px; }
 .toast.busy::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; margin-right: 8px; vertical-align: -1px; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>
@@ -666,7 +723,7 @@ tr.has-memo td { background: color-mix(in srgb, #d62828 9%, transparent); }
   <div class="topline">
     <div>
       <h1>체키 번역 프롬프트 카드</h1>
-      <p class="sub">현황판에서 게임을 고르고, 번역 작업의 ‘지금 할 일’만 따라가면 돼요. 결과는 엑셀·Word·PDF·이미지 파일로 올리거나 붙여 넣을 수 있어요.</p>
+      <p class="sub">현황판에서 게임을 고르고, 번역 작업의 ‘지금 할 일’만 따라가면 됨. 결과는 엑셀·Word·PDF·이미지 파일로 올리거나 붙여 넣을 수 있음.</p>
     </div>
     <div class="auth"><span class="saved" id="saved" aria-live="polite"></span><span class="who" id="who"></span><button type="button" class="btn" id="pw-btn" hidden>비밀번호 변경</button><button type="button" class="btn themebtn" id="theme-btn" title="화면 밝기 바꾸기">화면: 자동</button><button type="button" class="btn" id="auth-btn">로그아웃</button></div>
   </div>
@@ -683,7 +740,7 @@ tr.has-memo td { background: color-mix(in srgb, #d62828 9%, transparent); }
 <main class="authpage" id="auth-page" hidden>
   <div class="authcard">
     <h1>체키 번역 프롬프트 카드</h1>
-    <p class="sub">팀 전용 사이트예요. 로그인해 주세요.</p>
+    <p class="sub">팀 전용 사이트임. 로그인 필요.</p>
     <p class="err" id="setup-err" hidden></p>
     <div class="tabs2" role="group" aria-label="로그인 또는 회원가입"><button type="button" id="tab-login" aria-pressed="true">로그인</button><button type="button" id="tab-signup" aria-pressed="false">회원가입</button></div>
     <form id="login-form" class="fstack">
@@ -693,9 +750,9 @@ tr.has-memo td { background: color-mix(in srgb, #d62828 9%, transparent); }
       <button type="submit" class="btn primary">로그인</button>
     </form>
     <form id="signup-form" class="fstack" hidden>
-      <p style="margin:0;font-size:14px;color:var(--muted)">가입하면 관리자가 보기·편집 권한을 줄 때까지 기다리는 화면이 나와요. 허용되면 바로 들어가져요.</p>
+      <p style="margin:0;font-size:14px;color:var(--muted)">가입하면 관리자가 보기·편집 권한을 줄 때까지 기다리는 화면이 나옴. 허용되면 바로 들어감.</p>
       <label class="field"><span>아이디 (영문 소문자·숫자 3~20자)</span><input id="su-id" autocomplete="username" autocapitalize="off" spellcheck="false"></label>
-      <label class="field"><span>이름</span><input id="su-name" autocomplete="name" placeholder="수정 기록에 표시돼요"></label>
+      <label class="field"><span>이름</span><input id="su-name" autocomplete="name" placeholder="수정 기록에 표시됨"></label>
       <label class="field"><span>비밀번호 (4자 이상)</span><input id="su-pw" type="password" autocomplete="new-password"></label>
       <label class="field"><span>비밀번호 확인</span><input id="su-pw2" type="password" autocomplete="new-password"></label>
       <p class="err" id="su-err"></p><p class="ok-msg" id="su-ok"></p>
@@ -705,7 +762,7 @@ tr.has-memo td { background: color-mix(in srgb, #d62828 9%, transparent); }
       <div class="big" aria-hidden="true">⏳</div>
       <h2 style="margin:0">승인 대기 중</h2>
       <p id="wait-who" style="margin:0"></p>
-      <p class="hint" style="margin:0">관리자가 ‘보기 허용’을 주면 이 화면이 자동으로 바뀌어요. 창을 열어 두기만 하면 돼요.</p>
+      <p class="hint" style="margin:0">관리자가 ‘보기 허용’을 주면 이 화면이 자동으로 바뀜. 창을 열어 두기만 하면 됨.</p>
       <button type="button" class="btn" id="wait-logout">로그아웃</button>
     </div>
   </div>
@@ -713,8 +770,8 @@ tr.has-memo td { background: color-mix(in srgb, #d62828 9%, transparent); }
 <dialog id="colordlg">
   <div class="fstack">
     <h2 id="color-title">내 정보</h2>
-    <label class="field" id="name-field"><span>이름 (화면과 수정 기록에 표시돼요)</span><input id="my-name" maxlength="30" autocomplete="name"></label>
-    <p class="hint" style="margin:0" id="color-hint">색: 진행 단계 버튼을 누르면 이 색으로 표시돼요.</p>
+    <label class="field" id="name-field"><span>이름 (화면과 수정 기록에 표시됨)</span><input id="my-name" maxlength="30" autocomplete="name"></label>
+    <p class="hint" style="margin:0" id="color-hint">색: 진행 단계 버튼을 누르면 이 색으로 표시됨.</p>
     <div class="swatches" id="swatches"></div>
     <div class="row"><button type="button" class="btn" data-close>닫기</button><button type="button" class="btn primary" id="name-save">이름 저장</button></div>
   </div>
@@ -722,7 +779,7 @@ tr.has-memo td { background: color-mix(in srgb, #d62828 9%, transparent); }
 <dialog id="pastedlg" class="wide">
   <form id="paste-form" class="fstack">
     <h2 id="paste-title">표 붙여 넣기</h2>
-    <p class="hint" style="margin:0;color:var(--muted);font-size:14px">AI 대화창의 표를 드래그해서 복사한 뒤 붙여 넣으세요. 엑셀 칸 복사, CSV, 마크다운 표(| 구분) 모두 돼요. 첫 행은 열 이름이어야 해요.</p>
+    <p class="hint" style="margin:0;color:var(--muted);font-size:14px">AI 대화창의 표를 드래그해서 복사한 뒤 붙여 넣기. 엑셀 칸 복사, CSV, 마크다운 표(| 구분) 모두 됨. 첫 행은 열 이름이어야 함.</p>
     <textarea id="paste-text" spellcheck="false" placeholder="ID	번역문	…"></textarea>
     <p class="err" id="paste-err"></p>
     <div class="row"><button type="button" class="btn" data-close>닫기</button><button type="submit" class="btn primary">올리기</button></div>
@@ -746,7 +803,7 @@ tr.has-memo td { background: color-mix(in srgb, #d62828 9%, transparent); }
 <dialog id="filesdlg" class="wide">
   <div class="fstack">
     <h2 id="files-title">자료</h2>
-    <p class="hint" style="margin:0;color:var(--muted);font-size:14px">자동 진행 때 AI에게 함께 보내는 화면 캡처·PDF예요. 파일 이름 앞부분(예: LG-01)이 원문 ID와 맞는 자료만 골라 보내요.</p>
+    <p class="hint" style="margin:0;color:var(--muted);font-size:14px">자동 진행 때 AI에게 함께 보내는 화면 캡처·PDF임. 파일 이름 앞부분(예: LG-01)이 원문 ID와 맞는 자료만 골라 보냄.</p>
     <div id="files-list" class="flist"></div>
     <div class="row"><label class="btn upl">자료 더 올리기<input type="file" hidden multiple data-src accept=".png,.jpg,.jpeg,.webp,.pdf,.docx,.xlsx,.xls,.csv,.txt"></label><button type="button" class="btn primary" data-close>닫기</button></div>
   </div>
@@ -796,9 +853,9 @@ function makeId(name) {
   return (base || 'item') + '-' + Math.random().toString(36).slice(2, 7);
 }
 function writeErr(err) {
-  if (err && err.code === 'invalid_argument') { readOnly = true; toast((err && err.message) || '수정 권한이 없어요. 오른쪽 위에서 로그인해 주세요.'); render(true); return; }
-  if (err && err.code === 'quota_exceeded') { toast('저장 공간이 가득 찼어요. 쓰지 않는 항목을 지워 주세요.'); return; }
-  toast('저장하지 못했어요. 잠시 후 다시 시도해 주세요.');
+  if (err && err.code === 'invalid_argument') { readOnly = true; toast((err && err.message) || '수정 권한이 없음. 오른쪽 위에서 로그인 필요.'); render(true); return; }
+  if (err && err.code === 'quota_exceeded') { toast('저장 공간이 가득 참. 쓰지 않는 항목을 지우기.'); return; }
+  toast('저장하지 못함. 잠시 후 다시 시도 필요.');
 }
 
 function termsFor(themeId) { return terms.filter(x => x.data.common || (x.data.games || []).includes(themeId)); }
@@ -861,7 +918,7 @@ function inputTableBlock(t) {
   const cut = rows.length - kept.length;
   return t.inputTable && t.inputTable.trim()
     ? `[번역 입력표${cut ? ` · 처리 방식 ‘제외’ ${cut}행은 뺐음` : ''}]\n${rowsToTSV(kept)}`
-    : `[번역 입력표: ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문]\n(게임 카드의 ‘번역 입력표’ 칸이 비어 있어요. 사이트에 붙여 넣은 뒤 다시 복사하세요.)`;
+    : `[번역 입력표: ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문]\n(게임 카드의 ‘번역 입력표’ 칸이 비어 있음. 사이트에 붙여 넣은 뒤 다시 복사하기.)`;
 }
 function glossaryText(themeId, langKey) {
   const list = termsFor(themeId).map(x => x.data).filter(r => r.ko);
@@ -1059,7 +1116,7 @@ ${gloss}
 
 ${inputTableBlock(t)}
 
-${enTxt ? `[영어 확정본]\n${enTxt}` : '[영어 확정본]\n(아직 없어요. 영어를 먼저 확정해 주세요.)'}` },
+${enTxt ? `[영어 확정본]\n${enTxt}` : '[영어 확정본]\n(아직 없음. 영어를 먼저 확정 필요.)'}` },
     { id: 'P3', tag: '3', sum: '역번역을 붙여 다른 AI가 의미·정답·말투·용어·문화를 PASS / REVIEW / FAIL로 판정', name: '오류 검수', tool: `${reviewTool(t, lk)} 새 대화창`, when: '검수 · 항상 새 대화창', text:
 `너는 번역자가 아니라 독립적인 현지화 검수 담당자다. 문제를 찾는 것이 목적이다.
 [목표 언어] ${L.target}
@@ -1098,7 +1155,7 @@ ${card}
 ${gloss}
 
 [검수 표 · ${rvP.again ? '바뀐 문구만' : '전체'} ${rvP.n}행]
-${rvP.text || '(검수할 행이 없어요. 번역 결과를 먼저 올려 주세요.)'}
+${rvP.text || '(검수할 행이 없음. 번역 결과를 먼저 올리기.)'}
 
 (화면 캡처를 첨부한다)` },
     { id: 'P6', tag: '6', inline: 3, sum: '번역기 대신 AI로 역번역할 때', name: '역번역 (AI용)', tool: '번역기 2종 또는 AI 새 대화창', when: '검수 전', text:
@@ -1111,7 +1168,7 @@ ${rvP.text || '(검수할 행이 없어요. 번역 결과를 먼저 올려 주�
 표의 모든 행을 ID 순서대로 빠짐없이 적고, 열 이름을 바꾸지 마.
 
 [역번역할 표 · ${btP.n}행]
-${btP.text || '(역번역할 행이 없어요. 번역 결과를 먼저 올려 주세요.)'}` },
+${btP.text || '(역번역할 행이 없음. 번역 결과를 먼저 올리기.)'}` },
     { id: 'P4', tag: '4', sum: '원문 없이 읽혀서 뜻·행동·화면 길이가 맞는지 확인', name: '화면·행동 테스트', tool: 'Gemini 새 대화창', when: '검수 통과 후 · 원문은 주지 않음', text:
 `아래 ${L.label} 문구를 이 게임을 처음 보는 ${L.region} 플레이어 입장에서 읽어 줘.
 한국어 원문은 모른다고 가정한다. 첨부한 화면 캡처와 문구만 보고 문구마다 답해.
@@ -1127,7 +1184,7 @@ ${btP.text || '(역번역할 행이 없어요. 번역 결과를 먼저 올려 �
 표의 모든 행을 빠짐없이 적고 열 이름을 바꾸지 마. 같은 표를 ‘${ab}_test_${L.short}.xlsx’ 파일로도 만들어 줘.
 
 [테스트 표 · ${tsP.n}행]
-${tsP.text || '(테스트할 행이 없어요. 검수를 먼저 통과해야 해요.)'}
+${tsP.text || '(테스트할 행이 없음. 검수를 먼저 통과해야 함.)'}
 
 (화면 캡처를 첨부한다)` },
     { id: 'P5', tag: '5', sum: '걸린 문구만 고치고, 바뀐 문구만 다시 검수로 보내기', name: '재수정 (걸린 문구만)', tool: `${aiOf(t, lk) || '초벌 번역 AI'} · 새 대화창`, when: `최대 ${MAX_FIX}회`, text:
@@ -1143,7 +1200,7 @@ ${card}
 ${gloss}
 
 [수정할 표 · ${fxP.n}행]
-${fxP.text || '(고칠 행이 없어요.)'}` },
+${fxP.text || '(고칠 행이 없음.)'}` },
   ];
 }
 
@@ -1154,29 +1211,29 @@ function usageFor(id, t, L) {
   const U = {
     'P1-1': { tool: 'ChatGPT 프로젝트', input: '이 카드 전체', output: '— (지침 등록만)', next: '1 원문 분석',
       steps: ['ChatGPT 왼쪽 메뉴 → <b>새 프로젝트</b><small>이름: 체키 원문 분석</small>', '프로젝트 설정 → <b>지침</b> 칸에 붙여 넣고 저장', '규칙을 바꿀 때만 다시 붙여 넣기'],
-      warn: ['게임 카드·용어집은 지침에 넣지 않아요. 게임마다 달라서 1 원문 분석에 자동으로 들어가요.', '번역용 프로젝트와 섞어 쓰지 않아요. 분석 담당자는 번역을 하지 않아요.'] },
+      warn: ['게임 카드·용어집은 지침에 넣지 않음. 게임마다 달라서 1 원문 분석에 자동으로 들어감.', '번역용 프로젝트와 섞어 쓰지 않음. 분석 담당자는 번역을 하지 않음.'] },
     'P1-2': { tool: '‘체키 원문 분석’ 프로젝트 · 새 대화', input: '캡처·대본·기획서 등 파일 첨부', output: '번역 입력표 · 질문 · 용어 후보', next: '게임 카드에 붙여 넣기 → 2 번역',
-      steps: [`파일 이름 정하기<small>예: ${abbr}-01.png, ${abbr}-script.docx</small>`, '(선택) <b>파일에서 원문 읽기</b>로 원문 표 먼저 만들기<small>사이트가 읽은 원문을 ChatGPT가 다시 대조해요</small>', '복사 → 붙여 넣고 파일 첨부해서 보내기', '[읽은 파일] 목록과 원문 확인<small>빠진 파일 · 잘못 읽은 글자</small>', '결과 표(xlsx)를 아래 <b>결과 표 올리기</b><small>질문 답은 엑셀이나 게임 카드에서 고쳐요</small>'],
-      warn: ['PNG·JPG, Word, PDF, 엑셀·CSV 모두 돼요. 한글(HWP)은 못 읽는 경우가 많아 Word나 PDF로 바꿔서 첨부해요.', '기획서 같은 참고 자료도 같이 첨부하면 의도·판정 기준이 더 정확해져요.', '파일이 많으면 10개 안팎씩 나눠서 “이어서 다음 파일”로 보내요.', '글씨가 작으면 그 부분만 확대해서 따로 캡처해요.', '‘판독 불확실’이나 ‘확인 필요’가 남은 채로 번역에 넘기지 않아요. 사이트 표에서 주황색 칸으로 보여요.',
-        '파일이 안 나오면 “출력 1을 xlsx 파일로 만들어 줘”라고 다시 요청해요.', '번역 후보가 나오면 “분석만 다시 출력해”라고 요청해요.', '용어 후보는 용어집에 등록하고, 진행 상황에서 ‘원문 정리’를 눌러요.'] },
+      steps: [`파일 이름 정하기<small>예: ${abbr}-01.png, ${abbr}-script.docx</small>`, '(선택) <b>파일에서 원문 읽기</b>로 원문 표 먼저 만들기<small>사이트가 읽은 원문을 ChatGPT가 다시 대조함</small>', '복사 → 붙여 넣고 파일 첨부해서 보내기', '[읽은 파일] 목록과 원문 확인<small>빠진 파일 · 잘못 읽은 글자</small>', '결과 표(xlsx)를 아래 <b>결과 표 올리기</b><small>질문 답은 엑셀이나 게임 카드에서 고침</small>'],
+      warn: ['PNG·JPG, Word, PDF, 엑셀·CSV 모두 됨. 한글(HWP)은 못 읽는 경우가 많아 Word나 PDF로 바꿔서 첨부함.', '기획서 같은 참고 자료도 같이 첨부하면 의도·판정 기준이 더 정확해짐.', '파일이 많으면 10개 안팎씩 나눠서 “이어서 다음 파일”로 보냄.', '글씨가 작으면 그 부분만 확대해서 따로 캡처함.', '‘판독 불확실’이나 ‘확인 필요’가 남은 채로 번역에 넘기지 않음. 사이트 표에서 주황색 칸으로 보임.',
+        '파일이 안 나오면 “출력 1을 xlsx 파일로 만들어 줘”라고 다시 요청함.', '번역 후보가 나오면 “분석만 다시 출력해”라고 요청함.', '용어 후보는 용어집에 등록하고, 진행 상황에서 ‘원문 정리’를 누름.'] },
     'P2-1': { tool: `${L.label}용 번역 AI 프로젝트`, input: '이 카드 전체', output: '— (지침 등록만)', next: '2 번역',
       steps: [`${L.label} 프로젝트 만들기<small>이름: 체키 번역 — ${L.label}</small>`, '복사 → 프로젝트 ‘지침’에 붙여 넣기', '규칙을 바꿀 때만 다시 붙여 넣기'],
-      warn: ['대화창이 아니라 프로젝트 지침에 넣어요.', '언어마다 프로젝트를 따로 써요.'] },
+      warn: ['대화창이 아니라 프로젝트 지침에 넣음.', '언어마다 프로젝트를 따로 씀.'] },
     'P2-2': { tool: `${aiOf(t, 'en') || '영어 확정 AI'} · 영어 프로젝트 새 대화`, input: '패키지 + 캡처 파일', output: '번역 결과 표 (ID · 번역문)', next: '3 오류 검수',
       steps: ['<b>패키지 복사</b> → 영어 프로젝트 새 대화에 붙여 넣기', '캡처 첨부하고 보내기', '결과 xlsx를 <b>번역 결과 올리기</b>', '<b>DeepL용 파일 받기</b> → DeepL 문서 번역 → <b>DeepL 결과 올리기</b><small>독립 번역 · 검수 비교용</small>'],
-      warn: ['한 대화에는 한 게임만 넣어요.', '기획 확인 질문이 나온 행은 답을 받고 다시 번역해요.', '처리 방식이 ‘제외’인 행은 패키지에서 자동으로 빠져요.', '영어가 확정되면 고친 프롬프트도 같이 정리해 두세요. 일본어·중국어에 그대로 쓰여요.'] },
+      warn: ['한 대화에는 한 게임만 넣음.', '기획 확인 질문이 나온 행은 답을 받고 다시 번역함.', '처리 방식이 ‘제외’인 행은 패키지에서 자동으로 빠짐.', '영어가 확정되면 고친 프롬프트도 같이 정리해 두기. 일본어·중국어에 그대로 쓰임.'] },
     'P2-3': { tool: `${aiOf(t, L.key) || L.label + ' 확정 AI'} · ${L.label} 프로젝트 새 대화`, input: '패키지(한국어 원문 + 영어 확정본) + 캡처', output: '번역 결과 표 · 해석 불일치', next: '3 오류 검수',
       steps: ['영어가 ‘확정됨’인지 확인', `<b>패키지 복사</b> → ${L.label} 프로젝트 새 대화 + 캡처 첨부`, '결과 xlsx를 <b>번역 결과 올리기</b>', '<b>DeepL용 파일 받기</b> → DeepL → <b>DeepL 결과 올리기</b>'],
-      warn: ['한국어가 기준이고, 영어는 해석 확인용이에요. 영어 어순·말투는 따르지 않아요.', '영어 확정본은 직접 번역 문구만 들어가요. 말장난·현지화·재설계 문구는 자동으로 빠져요.', '‘해석 불일치’ 행은 기획이 뜻을 정한 뒤 그 행만 다시 번역해요.'].concat(L.key === 'ja' ? ['한자어·폰트 기준을 같이 확정해요. 한국 한자어 직역이 없는지, 폰트에 없는 한자가 없는지 봐요.'] : L.key === 'zh' ? ['결과가 간체인지 확인해요.'] : []) },
+      warn: ['한국어가 기준이고, 영어는 해석 확인용임. 영어 어순·말투는 따르지 않음.', '영어 확정본은 직접 번역 문구만 들어감. 말장난·현지화·재설계 문구는 자동으로 빠짐.', '‘해석 불일치’ 행은 기획이 뜻을 정한 뒤 그 행만 다시 번역함.'].concat(L.key === 'ja' ? ['한자어·폰트 기준을 같이 확정함. 한국 한자어 직역이 없는지, 폰트에 없는 한자가 없는지 봄.'] : L.key === 'zh' ? ['결과가 간체인지 확인함.'] : []) },
     'P3': { tool: `${reviewTool(t, L.key)} 새 대화`, input: '역번역 + 패키지(검수할 행만) + 캡처', output: 'PASS · REVIEW · FAIL', next: 'FAIL → 5 / 모두 PASS → 4',
       steps: ['<b>역번역용 파일 받기</b> → 번역기 2종에 넣기<small>예: 파파고·구글, 일본어는 みらい翻訳</small>', '번역기 결과를 <b>역번역 결과 올리기</b><small>ID | 번역기1 | 번역기2</small>', `<b>패키지 복사</b> → ${reviewTool(t, L.key)} 새 대화 + 캡처 첨부`, '결과 xlsx를 <b>검수 결과 올리기</b>', '<b>REVIEW</b>만 직접 보고 PASS·FAIL 고르기'],
-      warn: ['검수·역번역은 항상 새 대화창에서 해요.', `번역 AI가 Claude인 언어는 검수를 ChatGPT로 해요. 위의 ‘번역 AI’를 고르면 자동으로 바뀌어요.`, '역번역은 다듬지 않은 직역이에요. 어색한 건 정상이고, 뜻이 다르게 읽히는지만 봐요.', '고친 뒤에는 바뀐 문구만 패키지에 들어가요. 전체를 다시 검수하지 않아요.', 'PASS는 확정이 아니에요. 정답·승패가 걸린 문구는 행동 테스트까지 거쳐요.'] },
+      warn: ['검수·역번역은 항상 새 대화창에서 함.', `번역 AI가 Claude인 언어는 검수를 ChatGPT로 함. 위의 ‘번역 AI’를 고르면 자동으로 바뀜.`, '역번역은 다듬지 않은 직역임. 어색한 건 정상이고, 뜻이 다르게 읽히는지만 봄.', '고친 뒤에는 바뀐 문구만 패키지에 들어감. 전체를 다시 검수하지 않음.', 'PASS는 확정이 아님. 정답·승패가 걸린 문구는 행동 테스트까지 거침.'] },
     'P4': { tool: 'Gemini 새 대화', input: '패키지(번역문만, 원문 없음) + 캡처', output: '직역 · 행동 · 헷갈림 · 화면 적합', next: '다르면 5 / 모두 일치 → 확정',
       steps: ['<b>패키지 복사</b> → Gemini 새 대화 + 캡처 첨부', '결과 xlsx를 <b>테스트 결과 올리기</b>', '아래 대조에서 <b>일치 · 다름</b> 고르기<small>문제 없는 건 한 번에 처리</small>'],
-      warn: ['패키지에는 원문이 들어가지 않아요. “다음에 무엇을 하겠는가”만 받아요.', '직역이 어색한 건 정상이에요. 뜻과 행동이 바뀌었는지만 봐요.', '실제 화면 적용은 확정 뒤 기획팀이 해요. 여기서는 길이 위험만 미리 걸러요.'] },
+      warn: ['패키지에는 원문이 들어가지 않음. “다음에 무엇을 하겠는가”만 받음.', '직역이 어색한 건 정상임. 뜻과 행동이 바뀌었는지만 봄.', '실제 화면 적용은 확정 뒤 기획팀이 함. 여기서는 길이 위험만 미리 거름.'] },
     'P5': { tool: `${aiOf(t, L.key) || '초벌 번역 AI'} · ${L.label} 프로젝트 새 대화`, input: '패키지(걸린 행 + 이유)', output: '수정 번역문 · 영향받는 ID', next: '바뀐 문구만 3 재검수',
-      steps: ['<b>패키지 복사</b> → 번역 프로젝트 새 대화', '결과 xlsx를 <b>수정 결과 올리기</b>', '3 오류 검수로 돌아가기<small>바뀐 문구만 들어가요</small>'],
-      warn: [`재수정은 문구마다 최대 ${MAX_FIX}회예요. 그래도 FAIL이면 패키지에서 빠지고 ‘기획 판단’ 목록에 올라가요.`, '수정 이력은 자동으로 남고, 최종 결과 내보내기에 들어가요.'] },
+      steps: ['<b>패키지 복사</b> → 번역 프로젝트 새 대화', '결과 xlsx를 <b>수정 결과 올리기</b>', '3 오류 검수로 돌아가기<small>바뀐 문구만 들어감</small>'],
+      warn: [`재수정은 문구마다 최대 ${MAX_FIX}회임. 그래도 FAIL이면 패키지에서 빠지고 ‘기획 판단’ 목록에 올라감.`, '수정 이력은 자동으로 남고, 최종 결과 내보내기에 들어감.'] },
   };
   return U[id] || null;
 }
@@ -1194,7 +1251,7 @@ function moreHTML(p, u, L, t, extraP) {
 function srcMiniHTML(id, t) {
   const st = tableStats(t.srcTable); if (!st.rows) return '';
   const unc = (String(t.srcTable || '').match(/판독 불확실/g) || []).length;
-  return `<div class="srcmini">원문 표 <b>${st.rows}행</b> 준비됨${unc ? ` · <b class="badtxt">판독 불확실 ${unc}곳</b>` : ''} — 패키지에 자동으로 들어가요. <button type="button" class="linkbtn" data-goto="${esc(id)}|card">게임 설정에서 보기·고치기</button></div>`;
+  return `<div class="srcmini">원문 표 <b>${st.rows}행</b> 준비됨${unc ? ` · <b class="badtxt">판독 불확실 ${unc}곳</b>` : ''} — 패키지에 자동으로 들어감. <button type="button" class="linkbtn" data-goto="${esc(id)}|card">게임 설정에서 보기·고치기</button></div>`;
 }
 function designFor(id, L, t) {
   const game = t.name || '이 게임';
@@ -1267,7 +1324,12 @@ function designFor(id, L, t) {
 
 
 /* ================= render ================= */
+/* 버튼을 누르는 도중(칸에서 빠져나와 저장되는 순간)에는 화면을 다시 그리지 않는다 → 첫 클릭이 사라지지 않게 */
+let pointerDown = false;
+document.addEventListener('pointerdown', () => { pointerDown = true; }, true);
+document.addEventListener('pointerup', () => { pointerDown = false; setTimeout(() => { if (pending) render(); }, 30); }, true);
 function render(force) {
+  if (!force && pointerDown) { pending = true; return; }
   const a = document.activeElement;
   if (!force && a && a.matches && a.matches('#content input, #content textarea, #content select')) { pending = true; return; }
   pending = false;
@@ -1275,11 +1337,11 @@ function render(force) {
   document.querySelectorAll('.mainnav button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.view === view || (b.dataset.view === 'dash' && (view === 'prompts' || view === 'card')))));
   renderPicker();
   const c = $('#content');
-  if (!db) { c.innerHTML = '<div class="empty">데이터를 불러오지 못했어요. 잠시 후 새로고침해 주세요.</div>'; return; }
+  if (!db) { c.innerHTML = '<div class="empty">데이터를 불러오지 못함. 잠시 후 새로고침 필요.</div>'; return; }
   if (view === 'admin') { c.innerHTML = adminHTML(); return; }
   if (view === 'dash') { c.innerHTML = dashHTML(); updateSaveBar(); return; }
   if (view === 'glossary') c.innerHTML = glossaryHTML();
-  else if (!cur()) c.innerHTML = `<div class="empty">아직 게임이 없어요. 위의 <b>+ 게임 추가</b>를 눌러 첫 게임을 만들어 주세요.</div>`;
+  else if (!cur()) c.innerHTML = `<div class="empty">아직 게임이 없음. 위의 <b>+ 게임 추가</b>를 눌러 첫 게임을 만들기.</div>`;
   else c.innerHTML = view === 'card' ? cardHTML(cur()) : workHTML(cur());
   updateSaveBar();
 }
@@ -1326,12 +1388,12 @@ function cardHTML({ id, data: t }) {
     </div>
     <div class="fields" style="margin-top:14px">
       ${fld('상황', 'situation', t.situation, { area: true, ph: '플레이어가 놓인 상황과 목표' })}
-      ${fld('존댓말·반말', 'honorific', t.honorific, { area: true, ph: '예: 메리는 플레이어에게 존댓말', help: '번역 전에 기획이 정해 주세요.' })}
+      ${fld('존댓말·반말', 'honorific', t.honorific, { area: true, ph: '예: 메리는 플레이어에게 존댓말', help: '번역 전에 기획이 정하기.' })}
     </div>
   </section>
 
   <section class="section">
-    <h2>화자별 말투</h2><p class="hint">‘밝게’ 같은 형용사보다 문장 길이, 어미, 느낌표 사용처럼 구체적으로 적어 주세요.</p>
+    <h2>화자별 말투</h2><p class="hint">‘밝게’ 같은 형용사보다 문장 길이, 어미, 느낌표 사용처럼 구체적으로 적기.</p>
     <div id="sp-list">${sp.length ? sp.map((s, i) => `
       <div class="sp">
         ${fld('화자', `speakers.${i}.who`, s.who, { ph: '예: 비서 메리' })}
@@ -1339,29 +1401,29 @@ function cardHTML({ id, data: t }) {
         ${fld('말투 규칙', `speakers.${i}.tone`, s.tone, { grow: true })}
         ${fld('금지 말투', `speakers.${i}.banned`, s.banned, { grow: true })}
         ${readOnly ? '' : `<button type="button" class="btn danger del" data-sp-del="${i}" aria-label="${esc(s.who || '화자')} 삭제">삭제</button>`}
-      </div>`).join('') : '<p class="hint">아직 화자가 없어요.</p>'}</div>
+      </div>`).join('') : '<p class="hint">아직 화자가 없음.</p>'}</div>
     ${readOnly ? '' : '<button type="button" class="addrow" id="sp-add">+ 화자 추가</button>'}
   </section>
 
   <section class="section">
-    <h2>언어별 말투 방향</h2><p class="hint">예문은 말투를 보여 주는 참고용이에요.</p>
+    <h2>언어별 말투 방향</h2><p class="hint">예문은 말투를 보여 주는 참고용임.</p>
     <div class="fields">${LANGS.map(l => fld(l.label, `lang.${l.key}`, t.lang?.[l.key], { area: true })).join('')}</div>
   </section>
 
   <section class="section dropzone" data-drop="src">
     <h2>원문 표 <small style="font-size:14px;font-weight:400;color:var(--muted)">선택 · 파일에서 사이트가 미리 읽기</small></h2>
-    <p class="hint">화면 캡처(PNG·JPG)·대본(Word)·PDF를 올리면 한국어 원문을 ID와 함께 표로 만들어요. 1 원문 분석 패키지에 자동으로 들어가서, ChatGPT가 첨부 파일과 한 번 더 대조해요.</p>
+    <p class="hint">화면 캡처(PNG·JPG)·대본(Word)·PDF를 올리면 한국어 원문을 ID와 함께 표로 만듦. 1 원문 분석 패키지에 자동으로 들어가서, ChatGPT가 첨부 파일과 한 번 더 대조함.</p>
     ${srcBoxHTML(t)}
   </section>
 
   ${(() => { const st = tableStats(t.inputTable), en = tableStats(t.enFinal); return `
   <section class="section dropzone" data-drop="field:inputTable">
-    <h2>번역 입력표</h2><p class="hint">1 원문 분석에서 받은 표 파일(엑셀·CSV)을 <b>파일 올리기</b>로 올리세요. 2 번역 프롬프트에 자동으로 들어가서, 번역할 때는 <b>캡처·대본 같은 파일만 첨부</b>하면 돼요.</p>
+    <h2>번역 입력표</h2><p class="hint">1 원문 분석에서 받은 표 파일(엑셀·CSV)을 <b>파일 올리기</b>로 올리기. 2 번역 프롬프트에 자동으로 들어가서, 번역할 때는 <b>캡처·대본 같은 파일만 첨부</b>하면 됨.</p>
     ${tableEditorHTML('inputTable', t.inputTable, `${abbrOf(t)}_input_table`, 'ID | 화면 원문 | 사용 위치 | 글자 수 | 화자 | 의도 | 판정 기준 | 처리 방식 | 맥락 설명 | 정리 원문')}
-    <p class="tstat">${st.rows ? `<b>${st.rows}행</b>` : '아직 비어 있어요'}${st.rows && !st.hasId ? ' · <span class="bad">첫 행에 ID 열이 없어요</span>' : ''}${st.unresolved ? ` · <span class="bad">‘확인 필요·판독 불확실’ ${st.unresolved}곳 남음 — 번역 전에 기획 답을 반영하세요</span>` : st.rows ? ' · <span class="good">확인 필요 없음</span>' : ''}</p>
-    <h3 class="subh dropzone" data-drop="field:enFinal">영어 확정본 <small>영어가 확정되면 올리기 · 일본어·중국어 번역에 들어가요</small></h3>
+    <p class="tstat">${st.rows ? `<b>${st.rows}행</b>` : '아직 비어 있음'}${st.rows && !st.hasId ? ' · <span class="bad">첫 행에 ID 열이 없음</span>' : ''}${st.unresolved ? ` · <span class="bad">‘확인 필요·판독 불확실’ ${st.unresolved}곳 남음 — 번역 전에 기획 답을 반영하기</span>` : st.rows ? ' · <span class="good">확인 필요 없음</span>' : ''}</p>
+    <h3 class="subh dropzone" data-drop="field:enFinal">영어 확정본 <small>영어가 확정되면 올리기 · 일본어·중국어 번역에 들어감</small></h3>
     ${tableEditorHTML('enFinal', t.enFinal, `${abbrOf(t)}_en_final`, 'ID | 영어')}
-    <p class="tstat">${en.rows ? `<b>${en.rows}행</b>${st.rows && en.rows < st.rows ? ` · 번역 입력표보다 ${st.rows - en.rows}행 적어요 (현지화·재설계로 비운 행이면 괜찮아요)` : ''}` : '아직 비어 있어요'}</p>
+    <p class="tstat">${en.rows ? `<b>${en.rows}행</b>${st.rows && en.rows < st.rows ? ` · 번역 입력표보다 ${st.rows - en.rows}행 적음 (현지화·재설계로 비운 행이면 괜찮음)` : ''}` : '아직 비어 있음'}</p>
   </section>`; })()}
 
   <section class="section">
@@ -1370,7 +1432,7 @@ function cardHTML({ id, data: t }) {
   </section>
 
   <section class="section">
-    <h2>진행 상황</h2><p class="hint">번역 작업에서 결과를 올리면 자동으로 바뀌어요. 손으로 바꿔야 할 때만 누르세요. 누른 사람의 색과 이름이 버튼에 남아요.</p>
+    <h2>진행 상황</h2><p class="hint">번역 작업에서 결과를 올리면 자동으로 바뀜. 손으로 바꿔야 할 때만 누르기. 누른 사람의 색과 이름이 버튼에 남음.</p>
     <div class="prog">${LANGS.map(l => { const s = stageOf(t, l.key); return `
       <div class="prow"><b>${l.label}</b>
         <div class="steps" role="group" aria-label="${l.label} 진행 단계">${STAGES.map((st, i) => { const by = i > 0 && i <= s ? (t.progressBy?.[l.key]?.[i]) : null; const cls = (i < s ? 'past' + (i === 0 ? ' first' : '') : i === s ? 'cur' + (i === STAGES.length - 1 ? ' final' : '') + (i === 0 ? ' zero' : '') : '') + (by ? ' by' : ''); return `<button type="button" data-prog="${l.key}:${i}" aria-pressed="${i === s}" class="${cls}" ${by ? `style="--by:${esc(by.c)}" title="${esc(by.n)} · ${esc(fmtDate(by.at))}"` : ''} ${readOnly ? 'disabled' : ''}>${st}${by ? `<span class="who">${esc(by.n)}</span>` : ''}</button>`; }).join('')}</div>
@@ -1379,7 +1441,7 @@ function cardHTML({ id, data: t }) {
 
 
   ${readOnly ? '' : `<div class="dangerzone">${armedDelete === 'game:' + id
-    ? `<span>이 게임 카드를 삭제할까요? 용어집은 남아요.</span><button type="button" class="btn danger" id="game-del-yes">삭제</button><button type="button" class="btn" id="game-del-no">취소</button>`
+    ? `<span>이 게임 카드를 삭제?? 용어집은 남음.</span><button type="button" class="btn danger" id="game-del-yes">삭제</button><button type="button" class="btn" id="game-del-no">취소</button>`
     : `<button type="button" class="btn danger" id="game-del">이 게임 삭제</button>`}</div>`}`;
 }
 
@@ -1534,36 +1596,36 @@ async function applyUpload(kind, rows) {
   const ic = Math.max(0, (rows[0] || []).findIndex(isIdHead));
   const miss = [];
   rows = rows.map((r, i) => { const rest = r.filter((_, j) => j !== ic); if (!i) return [r[ic] || 'ID', ...rest]; const id = canon.get(normId(r[ic])); if (!id && String(r[ic] || '').trim()) miss.push(String(r[ic]).trim()); return [id || '', ...rest]; });
-  if (miss.length && !autoCtx) setTimeout(() => toast(`번역 입력표에 없는 ID ${miss.length}개는 건너뛰었어요. (예: ${miss.slice(0, 3).join(', ')})`, 6000), 3600);
+  if (miss.length && !autoCtx) setTimeout(() => toast(`번역 입력표에 없는 ID ${miss.length}개는 건너뜀. (예: ${miss.slice(0, 3).join(', ')})`, 6000), 3600);
   if (kind === 'b') {   // DeepL 결과: 첫 열 ID, 둘째 열 번역 (열 이름이 번역돼도 위치로 읽는다)
     const body = rows.slice(1).filter(r => valid.has(String(r[0]).trim()));
-    return saveWork(items => { body.forEach(r => { const id = String(r[0]).trim(); items[id] = items[id] || {}; items[id].b = String(r[1] ?? '').trim(); }); return body.length; }, n => `DeepL 번역 ${n}행을 저장했어요.`);
+    return saveWork(items => { body.forEach(r => { const id = String(r[0]).trim(); items[id] = items[id] || {}; items[id].b = String(r[1] ?? '').trim(); }); return body.length; }, n => `DeepL 번역 ${n}행을 저장함.`);
   }
   if (kind === 'bt') {  // 역번역: 첫 열 ID, 그 뒤 열들 = 번역기 1·2 (열 이름은 상관없음, ‘번역문’ 열은 건너뜀)
     const head = (rows[0] || []).map(h => String(h).trim());
     const cols = head.map((h, i) => i).filter(i => i > 0 && !/^번역문$|^translation$/i.test(head[i]));
     const body = rows.slice(1).filter(r => valid.has(String(r[0]).trim()));
-    return saveWork(items => { let n = 0; body.forEach(r => { const id = String(r[0]).trim(), x = items[id]; if (!x || !x.tr) return; const v = cols.map(i => String(r[i] ?? '').trim()).filter(Boolean); if (!v.length) return; if (v.length >= 2) x.bt = v.slice(0, 2); else if (x.bt && x.bt.length === 1 && x.bt[0] !== v[0]) x.bt = [x.bt[0], v[0]]; else x.bt = [v[0]]; n++; }); return n; }, n => `역번역 ${n}행을 저장했어요. 검수 패키지에 함께 들어가요.`);
+    return saveWork(items => { let n = 0; body.forEach(r => { const id = String(r[0]).trim(), x = items[id]; if (!x || !x.tr) return; const v = cols.map(i => String(r[i] ?? '').trim()).filter(Boolean); if (!v.length) return; if (v.length >= 2) x.bt = v.slice(0, 2); else if (x.bt && x.bt.length === 1 && x.bt[0] !== v[0]) x.bt = [x.bt[0], v[0]]; else x.bt = [v[0]]; n++; }); return n; }, n => `역번역 ${n}행을 저장함. 검수 패키지에 함께 들어감.`);
   }
   const keys = { tr: ['id', 'tr'], rv: ['id', 'verdict', 'sev', 'kind', 'issue', 'fix', 'why'], ts: ['id', 'back', 'act', 'imp', 'conf', 'fit'], fx: ['id', 'tr', 'why', 'affected'] }[kind];
   const objs = tableObjects(rows, keys).filter(o => valid.has(o.id));
-  if (!objs.length) { toast('ID가 번역 입력표와 맞는 행을 찾지 못했어요. 첫 행에 ID 열이 있는지 확인해 주세요.'); return; }
+  if (!objs.length) { toast('ID가 번역 입력표와 맞는 행을 찾지 못함. 첫 행에 ID 열이 있는지 확인 필요.'); return; }
   if (kind === 'tr') return saveWork(items => {
     let n = 0; objs.forEach(o => { if (!o.tr) return; const x = items[o.id] = items[o.id] || {};
       if (x.tr && x.tr !== o.tr) { (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: o.tr, why: '번역 다시 올림' }); x.rv = null; x.ts = null; x.bt = null; }
-      x.tr = o.tr; n++; }); return n; }, n => `번역 ${n}행을 저장했어요.`);
+      x.tr = o.tr; n++; }); return n; }, n => `번역 ${n}행을 저장함.`);
   if (kind === 'rv') return saveWork(items => {
     let n = 0; objs.forEach(o => { const x = items[o.id]; if (!x || !x.tr) return; x.rv = { v: normVerdict(o.verdict), sev: o.sev, kind: o.kind, issue: o.issue, fix: o.fix, why: o.why, at: nowISO() }; n++; }); return n; },
-    n => `검수 결과 ${n}행을 저장했어요.`);
+    n => `검수 결과 ${n}행을 저장함.`);
   if (kind === 'ts') return saveWork(items => {
     let n = 0; objs.forEach(o => { const x = items[o.id]; if (!x || !x.tr) return; x.ts = { back: o.back, act: o.act, imp: o.imp, conf: o.conf, fit: o.fit, match: null, at: nowISO() }; n++; }); return n; },
-    n => `테스트 결과 ${n}행을 저장했어요. 아래에서 뜻과 행동을 대조해 주세요.`);
+    n => `테스트 결과 ${n}행을 저장함. 아래에서 뜻과 행동을 대조 필요.`);
   if (kind === 'fx') return saveWork(items => {
     let n = 0; objs.forEach(o => { const x = items[o.id]; if (!x || !o.tr) return;
       (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: o.tr, why: o.why || (x.rv && x.rv.issue) || '', kind: 'fix' });
       x.tr = o.tr; x.rv = null; x.ts = null; x.bt = null; n++;
       String(o.affected || '').split(/[,\s/]+/).map(s => s.trim()).filter(id => id && items[id] && id !== o.id).forEach(id => { items[id].rv = null; items[id].ts = null; });
-    }); return n; }, n => `수정 ${n}행을 반영했어요. 바뀐 문구만 다시 검수하면 돼요.`);
+    }); return n; }, n => `수정 ${n}행을 반영함. 바뀐 문구만 다시 검수하면 됨.`);
 }
 document.addEventListener('change', async e => {
   const inp = e.target.closest && e.target.closest('[data-wup]'); if (!inp || !inp.files || !inp.files[0]) return;
@@ -1577,16 +1639,16 @@ document.addEventListener('click', async e => {
   const csv = rows => '﻿' + rows.map(r => r.map(q).join(',')).join('\r\n');
   if (act === 'backdl') {   // 역번역용: ID | 번역문 (원문 없음)
     const pk = pkgBack(t, promptLang);
-    if (!pk.n) { toast('역번역할 행이 없어요.'); return; }
+    if (!pk.n) { toast('역번역할 행이 없음.'); return; }
     if (downloads) await downloads.save({ filename: `${abbrOf(t)}_for_backtranslation_${promptLang.toUpperCase()}.csv`, data: csv([['ID', '번역문'], ...pk.rows]) }); return;
   }
-  if (act === 'planpass') return saveWork(items => { const x = items[id]; if (!x) return 0; x.rv = Object.assign({}, x.rv || {}, { v: '통과', kind: '기획 판단', by: meName(), at: nowISO() }); return 1; }, () => '기획 판단으로 통과 처리했어요. 테스트 단계로 넘어가요.');
-  if (act === 'planmore') return saveWork(items => { const x = items[id]; if (!x) return 0; x.fixBase = ((x.hist || []).filter(h => h.kind === 'fix').length) - (MAX_FIX - 1); return 1; }, () => '한 번 더 수정할 수 있게 했어요. 5 수정 패키지에 들어가요.');
+  if (act === 'planpass') return saveWork(items => { const x = items[id]; if (!x) return 0; x.rv = Object.assign({}, x.rv || {}, { v: '통과', kind: '기획 판단', by: meName(), at: nowISO() }); return 1; }, () => '기획 판단으로 통과 처리함. 테스트 단계로 넘어감.');
+  if (act === 'planmore') return saveWork(items => { const x = items[id]; if (!x) return 0; x.fixBase = ((x.hist || []).filter(h => h.kind === 'fix').length) - (MAX_FIX - 1); return 1; }, () => '한 번 더 수정할 수 있게 함. 5 수정 패키지에 들어감.');
   if (act === 'applied') {
     const c = cur(), next = JSON.parse(JSON.stringify(c.data));
     next.progress = { ...(next.progress || {}), [promptLang]: 5 };
     const by = JSON.parse(JSON.stringify(next.progressBy || {})); by[promptLang] = { ...(by[promptLang] || {}), 5: { n: meName(), c: meNow.color || '#5f3dc4', at: nowISO() } }; next.progressBy = by;
-    try { await db.doc('themes/' + c.id).set(next); toast('화면 적용 완료로 표시했어요.'); render(true); } catch (err) { writeErr(err); }
+    try { await db.doc('themes/' + c.id).set(next); toast('화면 적용 완료로 표시함.'); render(true); } catch (err) { writeErr(err); }
     return;
   }
   if (act === 'deepl') {   // DeepL 문서 번역용: ID | 정리 원문(없으면 화면 원문)
@@ -1602,17 +1664,17 @@ document.addEventListener('click', async e => {
     if ((t.excluded || []).length) sheets.push({ name: '제외 단어', rows: [['파일명', '단어', '제외 이유'], ...t.excluded], widths: [24, 16, 24], style: () => 5 });
     saveBlob(XS(sheets), `${abbrOf(t)}_translation.xlsx`); return;
   }
-  if (act === 'pass' || act === 'needfix') return saveWork(items => { const x = items[id]; if (!x) return 0; x.rv = Object.assign({}, x.rv || {}, { v: act === 'pass' ? '통과' : '수정 필요', by: meName(), at: nowISO(), kind: (x.rv && x.rv.kind) || '사람 확인' }); return 1; }, () => act === 'pass' ? '통과로 처리했어요.' : '수정 필요로 보냈어요.');
+  if (act === 'pass' || act === 'needfix') return saveWork(items => { const x = items[id]; if (!x) return 0; x.rv = Object.assign({}, x.rv || {}, { v: act === 'pass' ? '통과' : '수정 필요', by: meName(), at: nowISO(), kind: (x.rv && x.rv.kind) || '사람 확인' }); return 1; }, () => act === 'pass' ? '통과로 처리함.' : '수정 필요로 보냄.');
   if (act === 'match' || act === 'diff') return saveWork(items => { const x = items[id]; if (!x || !x.ts) return 0; x.ts.match = act === 'match';
       if (act === 'diff') x.rv = { v: '수정 필요', kind: '테스트 불일치', issue: '테스트에서 뜻이나 행동이 의도와 다르게 읽힘', why: `직역: ${x.ts.back || '-'} / 행동: ${x.ts.act || '-'}${x.ts.conf && x.ts.conf !== '없음' ? ' / 헷갈림: ' + x.ts.conf : ''}`, at: nowISO(), by: meName() };
-      return 1; }, () => act === 'match' ? '일치로 처리했어요.' : '수정 필요로 보냈어요.');
-  if (act === 'matchall') return saveWork(items => { let n = 0; Object.values(items).forEach(x => { if (x.ts && x.ts.match == null && !testFlagged(x.ts)) { x.ts.match = true; n++; } }); return n; }, n => `문제 없어 보이는 ${n}건을 일치로 처리했어요.`);
+      return 1; }, () => act === 'match' ? '일치로 처리함.' : '수정 필요로 보냄.');
+  if (act === 'matchall') return saveWork(items => { let n = 0; Object.values(items).forEach(x => { if (x.ts && x.ts.match == null && !testFlagged(x.ts)) { x.ts.match = true; n++; } }); return n; }, n => `문제 없어 보이는 ${n}건을 일치로 처리함.`);
   if (act === 'confirm') {
     const c = cur(), next = JSON.parse(JSON.stringify(c.data));
     next.progress = { ...(next.progress || {}), [promptLang]: 4 };
     const by = JSON.parse(JSON.stringify(next.progressBy || {})); by[promptLang] = { ...(by[promptLang] || {}), 4: { n: meName(), c: meNow.color || '#5f3dc4', at: nowISO() } }; next.progressBy = by;
     if (promptLang === 'en') { const it = workOf(c.data, 'en'); next.enFinal = tsv(['ID', '영어'], srcRows(c.data).filter(r => isDirect(r) && it[r.id] && it[r.id].tr).map(r => [r.id, it[r.id].tr])); }
-    try { await db.doc('themes/' + c.id).set(next); toast(promptLang === 'en' ? '영어를 확정했어요. 일본어·중국어를 시작할 수 있어요.' : '확정했어요.'); render(true); } catch (err) { writeErr(err); }
+    try { await db.doc('themes/' + c.id).set(next); toast(promptLang === 'en' ? '영어를 확정함. 일본어·중국어를 시작할 수 있음.' : '확정함.'); render(true); } catch (err) { writeErr(err); }
   }
 });
 
@@ -1622,18 +1684,18 @@ function upl(kind, label, primary) { return readOnly ? '' : `<label class="btn u
 function planListHTML(t, lk) {
   const it = workOf(t, lk), rows = srcRows(t).filter(r => it[r.id] && it[r.id].rv && it[r.id].rv.v === '수정 필요' && fixCount(it[r.id]) >= MAX_FIX);
   if (!rows.length) return '';
-  return `<div class="hlist"><h4>기획 판단 · ${rows.length}건 <small>${MAX_FIX}번 고쳐도 걸린 문구예요. 기획이 정해 주세요</small></h4>${rows.map(r => { const x = it[r.id]; return `
+  return `<div class="hlist"><h4>기획 판단 · ${rows.length}건 <small>${MAX_FIX}번 고쳐도 걸린 문구임. 기획이 정하기</small></h4>${rows.map(r => { const x = it[r.id]; return `
     <div class="hrow flag"><div class="hid">${esc(r.id)}</div>
       <div><div class="hko">${esc(r.ko)}</div><div class="hmeta">의도: ${esc(r.intent || '-')}</div>
         <div class="htr">${esc(x.tr)}</div><div class="hmeta">걸린 이유: ${esc([x.rv.issue, x.rv.fix && '수정안 ' + x.rv.fix, x.rv.why].filter(Boolean).join(' / ') || '-')}</div>
         <div class="hmeta">수정 이력: ${esc((x.hist || []).filter(h => h.kind === 'fix').map(h => h.to).join(' → '))}</div></div>
       ${readOnly ? '' : `<div class="hacts"><button type="button" class="btn" data-wact="planpass" data-id="${esc(r.id)}">이 번역으로 통과</button><button type="button" class="btn" data-wact="planmore" data-id="${esc(r.id)}">한 번 더 수정</button></div>`}</div>`; }).join('')}
-    <p class="hmeta" style="margin:0">문구 자체를 바꿔야 하면 번역 입력표의 처리 방식을 ‘재설계’나 ‘제외’로 고쳐 다시 올려 주세요.</p></div>`;
+    <p class="hmeta" style="margin:0">문구 자체를 바꿔야 하면 번역 입력표의 처리 방식을 ‘재설계’나 ‘제외’로 고쳐 다시 올리기.</p></div>`;
 }
 function humanListHTML(t, lk) {
   const it = workOf(t, lk), rows = srcRows(t).filter(r => it[r.id] && it[r.id].rv && it[r.id].rv.v === '사람 확인 필요');
   if (!rows.length) return '';
-  return `<div class="hlist"><h4>REVIEW · 사람 확인 ${rows.length}건 <small>한국어 원문·역번역·검수 의견을 보고 PASS나 FAIL로 정해 주세요</small></h4>${rows.map(r => { const x = it[r.id]; return `
+  return `<div class="hlist"><h4>REVIEW · 사람 확인 ${rows.length}건 <small>한국어 원문·역번역·검수 의견을 보고 PASS나 FAIL로 정하기</small></h4>${rows.map(r => { const x = it[r.id]; return `
     <div class="hrow"><div class="hid">${esc(r.id)}${x.rv.sev ? ` <span class="sbadge ${/높/.test(x.rv.sev) ? 'cand' : ''}">${esc(x.rv.sev)}</span>` : ''}</div>
       <div><div class="hko">${esc(r.ko)}</div><div class="hmeta">의도: ${esc(r.intent || '-')}${r.judge && !/^없음/.test(r.judge) ? ` · 판정 기준: ${esc(r.judge)}` : ''}</div>
         <div class="htr">${esc(x.tr)}</div>${x.bt ? `<div class="hmeta">역번역: ${esc(x.bt.join(' / '))}</div>` : ''}<div class="hmeta">검수 의견: ${esc([x.rv.issue, x.rv.fix && '수정안 ' + x.rv.fix, x.rv.why].filter(Boolean).join(' / ') || '-')}</div></div>
@@ -1643,7 +1705,7 @@ function compareListHTML(t, lk) {
   const it = workOf(t, lk), rows = srcRows(t).filter(r => it[r.id] && it[r.id].ts && it[r.id].ts.match == null);
   if (!rows.length) return '';
   const flagged = rows.filter(r => testFlagged(it[r.id].ts)), calm = rows.length - flagged.length;
-  return `<div class="hlist"><h4>테스트 대조 · ${rows.length}건 <small>둘 다 한국어라 바로 비교할 수 있어요</small></h4>
+  return `<div class="hlist"><h4>테스트 대조 · ${rows.length}건 <small>둘 다 한국어라 바로 비교할 수 있음</small></h4>
     ${calm && !readOnly ? `<div class="hcalm">헷갈림이 없고 칸에 들어가는 ${calm}건 <button type="button" class="btn" data-wact="matchall">한 번에 일치 처리</button></div>` : ''}
     ${flagged.concat(rows.filter(r => !testFlagged(it[r.id].ts))).map(r => { const x = it[r.id]; return `
     <div class="hrow${testFlagged(x.ts) ? ' flag' : ''}"><div class="hid">${esc(r.id)}</div>
@@ -1730,7 +1792,7 @@ const headHas = (rows, re) => (rows[0] || []).some(h => re.test(normHead(h)));
 async function applyTranslation(rowsList) {
   const c = wGame(), t = c.data, lk = wLang();
   const tb = rowsList.find(r => headHas(r, /^번역/) && r.some(x => x.some(isIdHead))) || rowsList.find(r => headHas(r, /^번역/));
-  if (!tb || tb.length < 2) { toast('번역 표를 찾지 못했어요. AI 답 전체를 복사해서 붙여 넣어 주세요.', 5000); return; }
+  if (!tb || tb.length < 2) { toast('번역 표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.', 5000); return; }
   const qt = rowsList.find(r => r !== tb && headHas(r, /애매|확인|선택지|이유/));
   const h = tb[0].map(normHead), ci = k => h.findIndex(x => x.startsWith(k));
   const iId = Math.max(0, tb[0].findIndex(isIdHead)), iKo = ci('화면원문') >= 0 ? ci('화면원문') : ci('원문'), iTr = h.findIndex(x => x === '번역' || x.startsWith('번역') && !x.includes('원문')), iMemo = ci('메모');
@@ -1752,11 +1814,11 @@ async function applyTranslation(rowsList) {
   const prev = ((t.notes || {})[lk] || []).filter(q => !body.some(r => normId(r[iId]) === normId(q.id)));
   await saveGameField('notes.' + lk, prev.concat(qs));
   render(true);
-  toast(`번역 ${body.length}줄을 넣었어요.${qs.length ? ` 확인 필요 ${qs.length}개가 있어요.` : ''}`, 4000);
+  toast(`번역 ${body.length}줄을 넣음.${qs.length ? ` 확인 필요 ${qs.length}개가 있음.` : ''}`, 4000);
 }
 async function applyReview(rowsList) {
   const tb = rowsList.find(r => headHas(r, /^판정/)) || rowsList[0];
-  if (!tb || tb.length < 2) { toast('검수 표를 찾지 못했어요. AI 답 전체를 복사해서 붙여 넣어 주세요.', 5000); return; }
+  if (!tb || tb.length < 2) { toast('검수 표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.', 5000); return; }
   const h = tb[0].map(normHead), iId = Math.max(0, tb[0].findIndex(isIdHead)), iV = h.findIndex(x => x.startsWith('판정')), iFix = h.findIndex(x => x.startsWith('고친')), iWhy = h.findIndex(x => x.startsWith('이유'));
   const valid = new Map(srcRows(wGame().data).map(r => [normId(r.id), r.id]));
   let n = 0, fixed = 0, review = 0;
@@ -1795,10 +1857,11 @@ function simpleStep(t, lk) {
   if (stageOf(t, lk) >= 4) return 'confirmed';
   const F = flowState(t, lk);
   if (!F.N) return 'translate';
-  if (F.openAuto || F.filesTodo || F.rvTodo || F.human || F.memos) return 'review';
+  if (!signOf(t, lk, 'excel')) return 'excel';
+  if (F.openAuto || F.filesTodo || F.rvTodo || F.human || F.memos || !signOf(t, lk, 'auto') || !signOf(t, lk, 'files') || !signOf(t, lk, 'cross')) return 'review';
   return 'done';
 }
-const SIMPLE_LABEL = { translate: '번역 엑셀 올리기', review: '검수', done: '확정 가능', confirmed: '확정됨', applied: '적용 완료' };
+const SIMPLE_LABEL = { translate: '엑셀 올리기', excel: '엑셀 확인', review: '검수', done: '확정 가능', confirmed: '확정됨', applied: '적용 완료' };
 
 /* ---------- 자동 점검 (외국어를 몰라도 확인할 수 있는 것만) ---------- */
 const HANGUL = /[가-힣]/, KANA = /[぀-ヿ]/, CJK = /[㐀-鿿]/;
@@ -1806,23 +1869,23 @@ const digitsOf = s => (String(s).match(/\d+/g) || []).sort().join(',');
 const lines = s => String(s).split(/\n/).length;
 function autoChecks(t, lk, r, byKo) {
   const ko = r.ko, tr = r.tr || '', out = [];
-  if (!tr.trim()) return [['empty', '번역이 비어 있어요']];
-  if (HANGUL.test(tr)) out.push(['hangul', '번역에 한글이 남아 있어요']);
-  if (lk === 'en' && (CJK.test(tr) || KANA.test(tr))) out.push(['script', '영어 번역에 한자·일본 글자가 있어요']);
-  if (lk === 'zh' && KANA.test(tr)) out.push(['script', '중국어 번역에 일본 글자(가나)가 있어요']);
+  if (!tr.trim()) return [['empty', '번역이 비어 있음']];
+  if (HANGUL.test(tr)) out.push(['hangul', '번역에 한글이 남아 있음']);
+  if (lk === 'en' && (CJK.test(tr) || KANA.test(tr))) out.push(['script', '영어 번역에 한자·일본 글자가 있음']);
+  if (lk === 'zh' && KANA.test(tr)) out.push(['script', '중국어 번역에 일본 글자(가나)가 있음']);
   const trAll = tr.replace(/\D/g, ''), lost = (ko.match(/\d+/g) || []).filter(d => !trAll.includes(d));
-  if (lost.length) out.push(['num', `원문의 숫자 ${lost.join(', ')}이(가) 번역에 없어요`]);
-  if (lines(ko) !== lines(tr)) out.push(['lines', `줄 수가 달라요 (원문 ${lines(ko)}줄 / 번역 ${lines(tr)}줄)`]);
-  if (tr.trim() === ko.trim()) out.push(['same', '번역이 원문과 똑같아요']);
+  if (lost.length) out.push(['num', `원문의 숫자 ${lost.join(', ')}이(가) 번역에 없음`]);
+  if (lines(ko) !== lines(tr)) out.push(['lines', `줄 수가 다름 (원문 ${lines(ko)}줄 / 번역 ${lines(tr)}줄)`]);
+  if (tr.trim() === ko.trim()) out.push(['same', '번역이 원문과 똑같음']);
   const kl = [...ko.replace(/\s/g, '')].length, tl = [...tr.replace(/\s/g, '')].length;
-  if (kl && (lk === 'en' ? tl > Math.max(14, kl * 3) : tl > kl * 1.8 + 4)) out.push(['long', `원문보다 많이 길어요 (${kl}자 → ${tl}자) · 칸 넘침 확인`]);
+  if (kl && (lk === 'en' ? tl > Math.max(14, kl * 3) : tl > kl * 1.8 + 4)) out.push(['long', `원문보다 많이 긺 (${kl}자 → ${tl}자) · 칸 넘침 확인`]);
   if (/판독\s*불확실/.test(r.note)) out.push(['read', '판독 불확실 — 원문이 이미지와 같은지 확인']);
   const same = (byKo.get(normKo(ko)) || []).filter(o => o.id !== r.id && normKo(o.tr) !== normKo(tr));
-  if (same.length) out.push(['incons', `같은 원문인데 번역이 달라요 (${same.map(o => o.id).join(', ')})`]);
+  if (same.length) out.push(['incons', `같은 원문인데 번역이 다름 (${same.map(o => o.id).join(', ')})`]);
   termsFor(cur() ? cur().id : '').map(v => v.data).forEach(d => {
     const tx = trOf(d, lk);
-    if (d.ko && ko.includes(d.ko) && tx.text && statusOf(d, lk) === '확정' && !tr.toLowerCase().includes(tx.text.toLowerCase())) out.push(['term', `용어 ‘${d.ko}’ → ‘${tx.text}’를 안 썼어요`]);
-    if (d.ko && ko.includes(d.ko) && tx.avoid && tr.toLowerCase().includes(tx.avoid.toLowerCase())) out.push(['avoid', `쓰지 말 것 ‘${tx.avoid}’을 썼어요`]);
+    if (d.ko && ko.includes(d.ko) && tx.text && statusOf(d, lk) === '확정' && !tr.toLowerCase().includes(tx.text.toLowerCase())) out.push(['term', `용어 ‘${d.ko}’ → ‘${tx.text}’를 안 씀`]);
+    if (d.ko && ko.includes(d.ko) && tx.avoid && tr.toLowerCase().includes(tx.avoid.toLowerCase())) out.push(['avoid', `쓰지 말 것 ‘${tx.avoid}’을 씀`]);
   });
   return out;
 }
@@ -1959,9 +2022,9 @@ function pickMain(tables, lk) {
 async function uploadSheet(file) {
   const c = cur(), t = c.data, lk = promptLang;
   busy(`${file.name} 읽는 중…`);
-  let tables; try { tables = await readWorkbook(file); } catch (e) { done(); toast(e.message || '엑셀을 읽지 못했어요.', 5000); return; }
+  let tables; try { tables = await readWorkbook(file); } catch (e) { done(); toast(e.message || '엑셀을 읽지 못함.', 5000); return; }
   const m = pickMain(tables, lk);
-  if (!m) { done(); toast(`번역 표를 찾지 못했어요. ‘한국어 원문’ 열과 ${LHEAD[lk]}(또는 번역문) 열이 있어야 해요.`, 7000); return; }
+  if (!m) { done(); toast(`번역 표를 찾지 못함. ‘한국어 원문’ 열과 ${LHEAD[lk]}(또는 번역문) 열이 있어야 함.`, 7000); return; }
   const rows = m.sheet.slice(m.hi + 1).filter(r => String(r[m.cols.ko] || '').trim());
   const extra = tables.filter(tb => tb !== m.sheet).map(tb => ({ name: tb.sheet || '시트', rows: tb.slice(0, 300).map(r => r.slice(0, 12)) }));
   /* 원본 엑셀 파일도 보관해서 다른 사람이 받을 수 있게 */
@@ -1982,22 +2045,22 @@ async function uploadSheet(file) {
     if (o && normKo(o.tr) === normKo(tr)) { items[id] = Object.assign({}, o.x, { tr: null }); delete items[id].tr; kept++; }
     else items[id] = o ? { hist: [...(o.x.hist || []), { at: nowISO(), by: meName(), from: o.tr, to: tr, why: '엑셀 다시 올림' }] } : {};
   });
-  w.items = items;
+  w.items = items; w.sign = {};
   w.uploads = [...(w.uploads || []), { name: file.name, file: stored, rows: rows.length, by: meName(), at: nowISO() }].slice(-20);
   if (stageOf(next, lk) >= 4) { next.progress = { ...(next.progress || {}), [lk]: 3 }; }
   next.updatedAt = nowISO();
   await db.doc('themes/' + c.id).set(next);
   render(true);
-  toast(`${rows.length}줄을 올렸어요${extra.length ? ` (별도 시트 ${extra.length}개 포함)` : ''}.${kept ? ` 그대로인 ${kept}줄은 검수 결과를 이어받았어요.` : ''}`, 5000);
+  toast(`${rows.length}줄을 올림${extra.length ? ` (별도 시트 ${extra.length}개 포함)` : ''}.${kept ? ` 그대로인 ${kept}줄은 검수 결과를 이어받음.` : ''}`, 5000);
 }
 /* 엑셀 원본을 자료로 보관 (이미지 보관과 같은 곳) */
 async function storeRawFile(id, file, name) {
-  if (file.size > 4e6) throw new Error('엑셀이 4MB보다 커서 원본은 보관하지 못했어요. 내용은 올라갔어요.');
+  if (file.size > 4e6) throw new Error('엑셀이 4MB보다 커서 원본은 보관하지 못함. 내용은 올라감.');
   const u8 = new Uint8Array(await file.arrayBuffer()); let bin = '';
   for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
   const r = await fetch('/api/files/' + encodeURIComponent(id), { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, data: btoa(bin) }) });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.message || '원본 엑셀을 보관하지 못했어요.');
+  if (!r.ok) throw new Error(j.message || '원본 엑셀을 보관하지 못함.');
   gameFiles[id] = j.files || gameFiles[id];
   return name;
 }
@@ -2006,23 +2069,23 @@ async function uploadImages(list) {
   const c = cur(); let n = 0;
   for (const f of list) {
     if (/\.zip$/i.test(f.name)) {
-      if (f.size > 25e6) { toast(`${f.name}: 25MB보다 커요. 나눠서 올려 주세요.`, 5000); continue; }
+      if (f.size > 25e6) { toast(`${f.name}: 25MB보다 큼. 나눠서 올리기.`, 5000); continue; }
       busy(`${f.name} 풀어서 올리는 중… (이미지가 많으면 1~2분)`);
       const u8 = new Uint8Array(await f.arrayBuffer()); let bin = '';
       for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
       const r = await fetch(`/api/files/${encodeURIComponent(c.id)}/zip`, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: btoa(bin) }) });
       const j = await r.json().catch(() => ({}));
-      if (!r.ok) { toast(j.message || 'zip을 올리지 못했어요.', 5000); continue; }
+      if (!r.ok) { toast(j.message || 'zip을 올리지 못함.', 5000); continue; }
       gameFiles[c.id] = j.files || gameFiles[c.id]; n += j.added || 0;
     } else if (/\.(png|jpe?g|webp)$/i.test(f.name)) {
       busy(`${f.name} 올리는 중…`); try { await storeGameFile(c.id, f); n++; } catch (e) { toast(e.message, 5000); }
     }
   }
-  done(); render(true); toast(`이미지 ${n}개를 올렸어요.`);
+  done(); render(true); toast(`이미지 ${n}개를 올림.`);
 }
 async function applyCross(tables) {
   const tb = tables.find(r => (r[0] || []).some(h => normHead(h).startsWith('판정'))) || tables.find(r => r.slice(0, 5).some(row => row.some(h => normHead(h).startsWith('판정')))) || tables[0];
-  if (!tb || tb.length < 2) { toast('검수 표를 찾지 못했어요. AI 답 전체를 복사해서 붙여 넣어 주세요.', 5000); return; }
+  if (!tb || tb.length < 2) { toast('검수 표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.', 5000); return; }
   const hi = Math.max(0, tb.findIndex(r => r.some(h => normHead(h).startsWith('판정'))));
   const h = tb[hi].map(normHead), ix = f => h.findIndex(f);
   const iNo = Math.max(0, ix(x => x === '번호' || x === 'id')), iV = ix(x => x.startsWith('판정')), iB = ix(x => x.startsWith('역번역')), iFix = ix(x => x.startsWith('고친')), iWhy = ix(x => x.startsWith('이유'));
@@ -2059,40 +2122,55 @@ function resultXlsx(t, lk) {
   void L;
 }
 
+/* ---------- 단계별 확인(서명) ---------- */
+const signOf = (t, lk, key) => key === 'info' ? ((t.sign || {}).info || null) : ((((t.work || {})[lk] || {}).sign || {})[key] || null);
+function signRow(t, lk, key, cond, what, why) {
+  const sg = signOf(t, lk, key);
+  if (sg && cond) return `<div class="signrow ok"><span class="sg-ok">✓ ${esc(what)} 확인 완료</span><small>${esc(sg.by)} · ${fmtDate(sg.at)}</small>${readOnly ? '' : `<button type="button" class="linkbtn" data-unsign="${key}">취소</button>`}</div>`;
+  return `<div class="signrow${cond ? ' ready' : ''}">${readOnly ? '' : `<button type="button" class="btn ${cond ? 'primary' : ''}" data-sign="${key}" ${cond ? '' : 'disabled'}>${esc(what)} 확인 완료</button>`}<small>${cond ? (sg ? '내용이 바뀌어 다시 확인 필요' : '다 봤으면 누르기') : esc(why)}</small></div>`;
+}
+document.addEventListener('click', async e => {
+  const sb = e.target.closest('[data-sign]'), ub = e.target.closest('[data-unsign]'); if (!sb && !ub) return;
+  const key = (sb || ub).dataset.sign || (ub && ub.dataset.unsign), val = sb ? { by: meName(), at: nowISO() } : null;
+  await saveGameField(key === 'info' ? 'sign.info' : `work.${promptLang}.sign.${key}`, val);
+  render(true); toast(sb ? '확인 완료로 표시함.' : '확인을 취소함.');
+});
+
 /* ---------- 화면 ---------- */
 let rvTab = 'auto';
 const pasteBtn = (target, label) => readOnly ? '' : `<button type="button" class="btn" data-paste="${target}">${label}</button>`;
 function workHTML({ id, data: t }) {
   const L = LANGS.find(l => l.key === promptLang), lk = L.key, step = simpleStep(t, lk), F = flowState(t, lk), sh = sheetOf(t, lk);
-  const info = infoDone(t);
+  const info = infoDone(t) && !!signOf(t, lk, 'info');
   if (gameFiles[id] === undefined) { gameFiles[id] = []; loadFiles(id, true); }
-  const nowN = !info && !F.N ? 1 : step === 'translate' ? 2 : step === 'review' ? 3 : 4;
+  const nowN = !info && !F.N ? 1 : step === 'translate' || step === 'excel' ? 2 : step === 'review' ? 3 : 4;
   const vkey = id + ':' + lk;
   if (!viewStep[vkey] || viewStep[vkey].now !== nowN) viewStep[vkey] = { now: nowN, pick: null };
   const open = viewStep[vkey].pick ?? nowN;
   const reviewer = (aiOf(t, lk) || 'Claude') === 'ChatGPT' ? 'Claude' : 'ChatGPT';
   const nImg = (gameFiles[id] || []).filter(f => /\.(png|jpe?g|webp)$/i.test(f.name)).length;
   const body = {
-    1: () => `<p class="sb">AI가 게임 분위기를 알 수 있게 적어 주세요. <b>컨셉·상황</b>은 꼭 채워 주세요.</p>${infoFormHTML(t)}
-      <div class="nextrow"><button type="button" class="btn primary" data-show="2">다음: 번역 엑셀</button></div>`,
+    1: () => `<p class="sb">AI가 게임 분위기를 알 수 있게 작성. <b>컨셉·상황</b>은 필수.</p>${infoFormHTML(t)}
+      ${signRow(t, lk, 'info', infoDone(t), '게임 정보', '컨셉·상황을 채우면 누를 수 있음')}`,
     2: () => `
       <ol class="do">
         <li><i>1</i><div><button type="button" class="btn primary" data-copy="p-main">프롬프트 복사</button></div></li>
-        <li><i>2</i><div><b>${esc(aiOf(t, lk) || 'Claude')}</b> 새 대화에 붙여 넣고, 게임 화면 <b>PNG(또는 zip)</b>를 첨부해 보내요.</div></li>
-        <li><i>3</i><div>받은 엑셀을 ${readOnly ? '' : `<label class="btn upl primary">엑셀 올리기<input type="file" hidden data-sheet accept=".xlsx,.xls,.csv,.tsv,.txt,.md"></label>`}<span class="do-l">원본 엑셀도 함께 보관돼서 팀원이 받을 수 있어요</span></div></li>
-        <li><i>4</i><div>같은 PNG(또는 zip)를 사이트에도 올려요. 검수 때 이미지와 대조해요. ${readOnly ? '' : `<label class="btn upl">PNG·zip 올리기<input type="file" hidden multiple data-imgs accept=".png,.jpg,.jpeg,.webp,.zip"></label>`}<span class="do-l">${nImg}개 올림</span></div></li>
+        <li><i>2</i><div><b>${esc(aiOf(t, lk) || 'Claude')}</b> 새 대화에 붙여 넣고, 게임 화면 <b>PNG(또는 zip)</b>를 첨부해 보냄.</div></li>
+        <li><i>3</i><div>받은 엑셀을 ${readOnly ? '' : `<label class="btn upl primary">엑셀 올리기<input type="file" hidden data-sheet accept=".xlsx,.xls,.csv,.tsv,.txt,.md"></label>`}<span class="do-l">원본 엑셀도 함께 보관돼서 팀원이 받을 수 있음</span></div></li>
+        <li><i>4</i><div>같은 PNG(또는 zip)를 사이트에도 올림. 검수 때 이미지와 대조함. ${readOnly ? '' : `<label class="btn upl">PNG·zip 올리기<input type="file" hidden multiple data-imgs accept=".png,.jpg,.jpeg,.webp,.zip"></label>`}<span class="do-l">${nImg}개 올림</span></div></li>
       </ol>
       ${sh ? `<p class="sb">지금 <b>${esc(sh.src || '')}</b> · ${F.N}줄${(sh.extra || []).length ? ` · 별도 시트 ${sh.extra.map(e => esc(e.name)).join(', ')}` : ''} (${esc(sh.by || '')}, ${fmtDate(sh.at)})</p>` : ''}
       <details class="more"><summary>프롬프트 보기${readOnly ? '' : ' · 번역 AI 바꾸기'}</summary><div class="optbox"><label class="aisel">번역 AI <select id="ai-sel" ${readOnly ? 'disabled' : ''}>${['Claude', 'ChatGPT', 'Gemini'].map(a => `<option ${(aiOf(t, lk) || 'Claude') === a ? 'selected' : ''}>${a}</option>`).join('')}</select></label></div><pre class="ptext" id="pt-p-main">${esc(makePrompt(id, t, lk))}</pre></details>
-      ${F.N ? `<div class="nextrow"><button type="button" class="btn primary" data-show="3">다음: 검수</button></div>` : ''}`,
-    3: () => !F.N ? '<p class="sb">번역 엑셀을 먼저 올려 주세요.</p>' : reviewHTML(id, t, lk, F, reviewer),
-    4: () => (step === 'done' ? `<p class="sb">검수 3가지를 모두 마쳤어요.</p>${readOnly ? '' : `<button type="button" class="btn primary" data-wact="confirm">${esc(L.label)} 확정하기</button>`}`
+      ${signRow(t, lk, 'excel', F.N > 0, '번역 엑셀', '엑셀을 올리면 누를 수 있음')}`,
+    3: () => !F.N ? '<p class="sb">번역 엑셀을 먼저 올리기.</p>' : reviewHTML(id, t, lk, F, reviewer),
+    4: () => (step === 'done' ? `<p class="sb">검수 3가지 모두 확인 완료.</p>${readOnly ? '' : `<button type="button" class="btn primary" data-wact="confirm">${esc(L.label)} 확정하기</button>`}`
       : step === 'confirmed' ? `<p class="sb">${esc(APPLY_CHECK[lk])}</p>${readOnly ? '' : '<button type="button" class="btn primary" data-wact="applied">화면 적용 완료</button>'}`
-      : step === 'applied' ? '<p class="sb">화면 적용까지 끝났어요.</p>'
-      : '<p class="sb">검수 3가지를 마치면 여기서 확정해요.</p>'),
+      : step === 'applied' ? '<p class="sb">화면 적용까지 끝남.</p>'
+      : '<p class="sb">검수 3가지를 마치면 여기서 확정함.</p>'),
   };
   const TITLES = { 1: '게임 정보', 2: '번역 엑셀', 3: '검수', 4: '확정' };
-  const SUB = { 1: info ? esc(t.concept) : '', 2: F.N ? `${F.N}줄` : '', 3: F.N ? `자동 ${F.openAuto ? F.openAuto + '건 남음' : '✓'} · 대조 ${F.files.length - F.filesTodo}/${F.files.length} · 교차 ${F.pass}/${F.N}` : '', 4: isFinal(step) ? SIMPLE_LABEL[step] : '' };
+  const sgn = k => signOf(t, lk, k) ? '✓' : '○';
+  const SUB = { 1: info ? `확인 · ${esc(signOf(t, lk, 'info').by)}` : '', 2: F.N ? `${F.N}줄${signOf(t, lk, 'excel') ? ' · 확인 완료' : ''}` : '', 3: F.N ? `${sgn('auto')} 자동 점검  ${sgn('files')} 이미지 대조  ${sgn('cross')} 교차 검수` : '', 4: isFinal(step) ? SIMPLE_LABEL[step] : '' };
   const stateOf = n => n === 1 ? (info ? 'done' : 'now') : n < nowN || isFinal(step) ? 'done' : n === nowN ? 'now' : '';
   const items = [1, 2, 3, 4].map(n => { const st = stateOf(n), isOpen = open === n; return `<li class="ck ${st}${isOpen ? ' open' : ''}"><button type="button" class="ck-h" data-show="${n}"><i>${st === 'done' ? '✓' : n}</i><b>${TITLES[n]}</b><span>${SUB[n] || ''}</span></button>${isOpen ? `<div class="ck-b">${body[n]()}</div>` : ''}</li>`; }).join('');
   return `
@@ -2127,46 +2205,48 @@ function sheetViewHTML(t, lk) {
 }
 function reviewHTML(id, t, lk, F, reviewer) {
   const tabs = [['auto', '① 자동 점검', F.openAuto ? `${F.openAuto}줄 남음` : '완료'], ['files', '② 이미지 대조', `${F.files.length - F.filesTodo}/${F.files.length}`], ['cross', '③ 교차 검수', `${F.pass}/${F.N}`]];
-  const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${(k === 'auto' && !F.openAuto) || (k === 'files' && !F.filesTodo && F.files.length) || (k === 'cross' && F.pass === F.N) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${c}</small></button>`).join('')}</div>`;
+  const cond = { auto: !F.openAuto, files: !F.filesTodo, cross: !F.rvTodo && !F.human };
+  const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${cond[k] && signOf(t, lk, k) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${cond[k] && signOf(t, lk, k) ? '확인 완료' : c}</small></button>`).join('')}</div>`;
   let inner = '';
-  if (rvTab === 'auto') inner = `<p class="sb">숫자 · 줄 수 · 한글 남음 · 같은 원문 다른 번역 · 길이 · 용어를 사이트가 바로 확인했어요. 고치거나 ‘문제 없음’을 눌러 주세요. (비고에 이유가 있으면 ‘문제 없음’)</p>
-    ${F.issues.length ? `<div class="ilist">${F.issues.map(({ r, list }) => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b>${readOnly ? `<div style="white-space:pre-wrap">${esc(r.tr)}</div>` : `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>`}${r.note ? `<small class="sb">비고: ${esc(r.note)}</small>` : ''}${list.map(([k, m]) => `<span class="itag">${esc(m)}${readOnly ? '' : ` <button type="button" class="linkbtn" data-autook="${esc(r.id)}|${k}">문제 없음</button>`}</span>`).join('')}${memoBtn(r)}${memoEditorHTML(r)}</div></div>`).join('')}</div>` : '<p class="okmsg">자동 점검에서 걸린 게 없어요.</p>'}`;
+  if (rvTab === 'auto') inner = `<p class="sb">숫자 · 줄 수 · 한글 남음 · 같은 원문 다른 번역 · 길이 · 용어를 사이트가 바로 확인함. 고치거나 ‘문제 없음’을 누르기. (비고에 이유가 있으면 ‘문제 없음’)</p>
+    ${F.issues.length ? `<div class="ilist">${F.issues.map(({ r, list }) => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b>${readOnly ? `<div style="white-space:pre-wrap">${esc(r.tr)}</div>` : `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>`}${r.note ? `<small class="sb">비고: ${esc(r.note)}</small>` : ''}${list.map(([k, m]) => `<span class="itag">${esc(m)}${readOnly ? '' : ` <button type="button" class="linkbtn" data-autook="${esc(r.id)}|${k}">문제 없음</button>`}</span>`).join('')}${memoBtn(r)}${memoEditorHTML(r)}</div></div>`).join('')}</div>` : '<p class="okmsg">자동 점검에서 걸린 게 없음.</p>'}`;
   if (rvTab === 'files') {
     const stored = gameFiles[id] || [];
     const common = F.rows.filter(r => !splitFiles(r.file).some(isFileName));
-    inner = `<p class="sb">이미지와 그 파일의 원문 목록을 나란히 보고, <b>빠진 문구가 없으면 체크</b>해 주세요. 한국어만 보면 돼요.</p>
-      ${!F.files.length ? '<p class="sb">대조할 파일이 없어요. 엑셀의 ‘파일’ 열과 PNG 이름(AD_01.png → AD_01)이 맞는지 확인해 주세요.</p>' : ''}
+    inner = `<p class="sb">이미지와 그 파일의 원문 목록을 나란히 보고, <b>빠진 문구가 없으면 체크</b>하기. 한국어만 보면 됨.</p>
+      ${!F.files.length ? '<p class="sb">대조할 파일이 없음. 엑셀의 ‘파일’ 열과 PNG 이름(AD_01.png → AD_01)이 맞는지 확인 필요.</p>' : ''}
       ${F.files.map(f => {
         const fid = normId(f), img = stored.find(s => /\.(png|jpe?g|webp)$/i.test(s.name) && normId(fileIdOf(s.name)) === fid);
         const ph = F.rows.filter(r => splitFiles(r.file).some(w => normId(fileIdOf(w)) === fid));
         const ok = !!F.fchk[f], first = !ok && F.files.find(x => !F.fchk[x]) === f;
-        return `<details class="fcard${ok ? ' done' : ''}"${first ? ' open' : ''}><summary><input type="checkbox" data-fchk="${esc(f)}" ${ok ? 'checked' : ''} ${readOnly ? 'disabled' : ''} aria-label="${esc(f)} 확인"> <b>${esc(f)}</b> <span>문구 ${ph.length}${!img ? ' · <b class="badtxt">이미지 없음</b>' : ''}${!ph.length ? ' · <b class="badtxt">엑셀에 이 파일 문구가 없어요</b>' : ''}</span></summary>
-          <div class="fgrid">${img ? `<img src="/api/files/${encodeURIComponent(id)}/${encodeURIComponent(img.name)}" alt="${esc(f)}" loading="lazy">` : '<div class="noimg">이 PNG를 올리면 여기서 보여요.</div>'}
+        return `<details class="fcard${ok ? ' done' : ''}"${first ? ' open' : ''}><summary><input type="checkbox" data-fchk="${esc(f)}" ${ok ? 'checked' : ''} ${readOnly ? 'disabled' : ''} aria-label="${esc(f)} 확인"> <b>${esc(f)}</b> <span>문구 ${ph.length}${!img ? ' · <b class="badtxt">이미지 없음</b>' : ''}${!ph.length ? ' · <b class="badtxt">엑셀에 이 파일 문구가 없음</b>' : ''}</span></summary>
+          <div class="fgrid">${img ? `<img src="/api/files/${encodeURIComponent(id)}/${encodeURIComponent(img.name)}" alt="${esc(f)}" loading="lazy">` : '<div class="noimg">이 PNG를 올리면 여기서 보임.</div>'}
           <ol>${ph.map(r => `<li><small>${esc([r.screen, r.elem].filter(Boolean).join(' · '))}</small><span style="white-space:pre-wrap">${esc(r.ko)}</span></li>`).join('')}</ol></div></details>`;
       }).join('')}
       ${common.length ? `<details class="fcard"><summary><b>공통</b> <span>여러 화면에 함께 나오는 문구 ${common.length}개 (체크 없음)</span></summary><ol class="clist">${common.map(r => `<li>${esc(r.ko)}</li>`).join('')}</ol></details>` : ''}
-      ${readOnly ? '' : `<p class="sb">이미지가 없으면 <label class="btn upl">PNG·zip 올리기<input type="file" hidden multiple data-imgs accept=".png,.jpg,.jpeg,.webp,.zip"></label> 빠진 문구가 있으면 엑셀을 고쳐 2단계에서 다시 올리면 돼요. 그대로인 줄은 검수 결과가 이어져요.</p>`}`;
+      ${readOnly ? '' : `<p class="sb">이미지가 없으면 <label class="btn upl">PNG·zip 올리기<input type="file" hidden multiple data-imgs accept=".png,.jpg,.jpeg,.webp,.zip"></label> 빠진 문구가 있으면 엑셀을 고쳐 2단계에서 다시 올리면 됨. 그대로인 줄은 검수 결과가 이어짐.</p>`}`;
   }
   if (rvTab === 'cross') {
     const need = F.rows.filter(r => r.x.rv && r.x.rv.v !== '통과');
-    inner = `${F.rvTodo ? `<p class="sb">번역한 AI와 <b>다른 AI</b>가 한 줄씩 검사하고, 한국어로 되돌린 <b>역번역</b>을 붙여 줘요. 별도 시트(대응표·퍼즐)도 같이 보내져요.</p>
+    inner = `${F.rvTodo ? `<p class="sb">번역한 AI와 <b>다른 AI</b>가 한 줄씩 검사하고, 한국어로 되돌린 <b>역번역</b>을 붙여 줌. 별도 시트(대응표·퍼즐)도 같이 보내짐.</p>
       <ol class="do">
         <li><i>1</i><div><button type="button" class="btn primary" data-copy="p-cross">프롬프트 복사 <small>${F.rvTodo}줄</small></button></div></li>
-        <li><i>2</i><div><b>${esc(reviewer)}</b> 새 대화에 붙여 넣고, 같은 PNG(또는 zip)를 첨부해 보내요.</div></li>
+        <li><i>2</i><div><b>${esc(reviewer)}</b> 새 대화에 붙여 넣고, 같은 PNG(또는 zip)를 첨부해 보냄.</div></li>
         <li><i>3</i><div>AI 답 전체를 복사해서 ${pasteBtn('one:cross', '붙여 넣기')}${readOnly ? '' : `<label class="btn upl">파일로 올리기<input type="file" hidden data-one="one:cross" accept="${FILE_ACCEPT}"></label>`}</div></li>
       </ol>
       <details class="more"><summary>프롬프트 보기</summary><pre class="ptext" id="pt-p-cross">${esc(crossPrompt(id, t, lk))}</pre></details>` : ''}
-      ${need.length ? `<h4 class="mh">사람이 볼 것 ${need.length}줄 <small>원문과 역번역(한국어)을 비교해서 골라 주세요</small></h4><div class="ilist">${need.map(r => { const x = r.x, v = x.rv; return `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}<br><span class="vtag ${v.v === '수정 필요' ? 'fail' : 'rev'}">${v.v === '수정 필요' ? 'FAIL' : 'REVIEW'}</span></code><div class="ibody">
+      ${need.length ? `<h4 class="mh">사람이 볼 것 ${need.length}줄 <small>원문과 역번역(한국어)을 비교해서 고르기</small></h4><div class="ilist">${need.map(r => { const x = r.x, v = x.rv; return `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}<br><span class="vtag ${v.v === '수정 필요' ? 'fail' : 'rev'}">${v.v === '수정 필요' ? 'FAIL' : 'REVIEW'}</span></code><div class="ibody">
         <div class="cmp"><div><span>원문</span><b style="white-space:pre-wrap">${esc(r.ko)}</b></div><div><span>역번역</span>${esc((x.bt || [])[0] || '-')}</div></div>
         <div class="cmp"><div><span>지금 번역</span>${xEditing.has(r.id) && !readOnly ? `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>` : `<span style="white-space:pre-wrap">${esc(r.tr)}</span>`}</div><div><span>AI가 고친 번역</span><span style="white-space:pre-wrap">${esc(v.fix || '-')}</span></div></div>
         <small>이유: ${esc(v.why || '-')}${r.note ? ` · 비고: ${esc(r.note)}` : ''}</small>
         ${readOnly ? '' : `<div class="iacts">${v.fix ? `<button type="button" class="btn primary" data-xfix="${esc(r.id)}">고친 번역 쓰기</button>` : ''}<button type="button" class="btn" data-xkeep="${esc(r.id)}">지금 번역 유지</button><button type="button" class="btn ghost" data-xedit="${esc(r.id)}">직접 고치기</button>${memoBtn(r)}</div>`}${memoEditorHTML(r)}</div></div>`; }).join('')}</div>
         ${readOnly || !need.some(r => r.x.rv.fix) ? '' : '<button type="button" class="btn" data-xfixall>고친 번역 모두 쓰기</button>'}` : ''}
-      ${!F.rvTodo && !need.length ? '<p class="okmsg">교차 검수를 모두 통과했어요.</p>' : ''}
+      ${!F.rvTodo && !need.length ? '<p class="okmsg">교차 검수를 모두 통과함.</p>' : ''}
       ${F.rows.some(r => r.x.bt) ? `<details class="more"><summary>전체 원문 ↔ 역번역 보기</summary><div class="tprev"><table><thead><tr><th>번호</th><th>파일</th><th>원문</th><th>역번역</th><th>판정</th></tr></thead><tbody>${F.rows.map(r => `<tr><td>${esc(r.id)}</td><td>${esc(r.file)}</td><td style="white-space:pre-wrap">${esc(r.ko)}</td><td>${esc((r.x.bt || [])[0] || '')}</td><td>${r.x.rv ? esc(VLABEL[r.x.rv.v] || r.x.rv.v) : ''}</td></tr>`).join('')}</tbody></table></div></details>` : ''}`;
   }
-  const allDone = !F.openAuto && !F.filesTodo && !F.rvTodo && !F.human && !F.memos;
-  return tabHTML + `<div class="rpane">${inner}</div>` + (allDone ? '<div class="nextrow"><button type="button" class="btn primary" data-show="4">다음: 확정</button></div>' : '');
+  const WHY = { auto: '걸린 줄을 고치거나 ‘문제 없음’ 처리하면 누를 수 있음', files: '모든 파일을 체크하면 누를 수 있음', cross: '교차 검수 결과를 넣고 FAIL·REVIEW를 처리하면 누를 수 있음' };
+  const NAME = { auto: '자동 점검', files: '이미지 대조', cross: '교차 검수' };
+  return tabHTML + `<div class="rpane">${inner}${signRow(t, lk, rvTab, cond[rvTab], NAME[rvTab], WHY[rvTab])}</div>` + (F.memos ? '<p class="sb badtxt">맨 위 수정 요청을 반영해야 확정 가능.</p>' : '');
 }
 
 /* 번역 표: 원문 | 번역 (번역 칸은 바로 고칠 수 있다) */
@@ -2212,7 +2292,7 @@ function termRowHTML(id, d, isDraft) {
     <select data-f="game" aria-label="사용 게임" ${dis}><option value="common" ${gv === 'common' ? 'selected' : ''}>모든 게임 공통</option>${themes.map(t => `<option value="${esc(t.id)}" ${gv === t.id ? 'selected' : ''}>${esc(t.data.name || '(이름 없음)')}</option>`).join('')}<option value="" ${gv === '' ? 'selected' : ''}>미지정</option></select></div></td>
     ${LANGS.map(l => { const x = trOf(d, l.key), st = statusOf(d, l.key); return `
     <td data-label="${l.label}"><div class="lcell"><textarea class="grow" rows="1" data-f="tr.${l.key}.text" placeholder="번역 입력" aria-label="${l.label} 번역" ${dis}>${esc(x.text)}</textarea>
-      <button type="button" class="st ${stClass(st)}" data-st="${l.key}" ${readOnly || !x.text || isDraft ? 'disabled' : ''} title="${x.text ? '누르면 후보 ↔ 확정' : '번역을 입력하면 후보가 돼요'}">${stLabel(st)}${x.avoid ? ' · 금지 있음' : ''}</button></div></td>`; }).join('')}
+      <button type="button" class="st ${stClass(st)}" data-st="${l.key}" ${readOnly || !x.text || isDraft ? 'disabled' : ''} title="${x.text ? '누르면 후보 ↔ 확정' : '번역을 입력하면 후보가 됨'}">${stLabel(st)}${x.avoid ? ' · 금지 있음' : ''}</button></div></td>`; }).join('')}
     <td class="c-acts"><div class="racts">
       <button type="button" class="iconbtn" data-more="${esc(id)}" aria-expanded="${expanded.has(id)}" title="금지 번역·메모">${expanded.has(id) ? '접기' : '금지·메모'}</button>
       ${readOnly ? '' : `<button type="button" class="iconbtn ${armedDelete === id ? 'warn' : ''}" data-del="${esc(id)}" title="삭제" aria-label="삭제">${armedDelete === id ? '삭제?' : '✕ 삭제'}</button>`}
@@ -2235,7 +2315,7 @@ function glossaryHTML() {
     <button type="button" class="btn" id="g-csv">엑셀(CSV)로 내보내기</button>
   </div>
   <div class="gstats"><div><span>전체</span><b>${total}</b></div>${LANGS.map(l => { const n = terms.filter(x => statusOf(x.data, l.key) === '확정').length; return `<div><span>${l.label} 확정</span><b>${n}</b><small>/ ${total}</small></div>`; }).join('')}</div>
-  ${csvText ? `<div class="section"><h2>CSV 텍스트</h2><p class="hint">전체 선택(Ctrl+A) 후 복사해서 엑셀에 붙여 넣으세요.</p><textarea class="csvbox" id="csv-text" readonly>${esc(csvText)}</textarea><div class="dangerzone" style="margin-top:8px"><button type="button" class="btn" id="csv-close">닫기</button></div></div>` : ''}
+  ${csvText ? `<div class="section"><h2>CSV 텍스트</h2><p class="hint">전체 선택(Ctrl+A) 후 복사해서 엑셀에 붙여 넣기.</p><textarea class="csvbox" id="csv-text" readonly>${esc(csvText)}</textarea><div class="dangerzone" style="margin-top:8px"><button type="button" class="btn" id="csv-close">닫기</button></div></div>` : ''}
   ${mode === 'view' ? glossaryViewHTML(list, total) : glossaryEditHTML(list, total)}`;
 }
 function glossaryEditHTML(list, total) {
@@ -2246,15 +2326,15 @@ function glossaryEditHTML(list, total) {
     <tbody>
       ${list.map(x => termRowHTML(x.id, x.data, false)).join('')}
       ${drafts.map(d => termRowHTML(d.id, d.data, true)).join('')}
-      ${!list.length && !drafts.length ? `<tr><td colspan="7"><div class="empty" style="border:0">${total ? '조건에 맞는 용어가 없어요.' : '아직 용어가 없어요. 아래 + 를 눌러 추가하세요.'}</div></td></tr>` : ''}
+      ${!list.length && !drafts.length ? `<tr><td colspan="7"><div class="empty" style="border:0">${total ? '조건에 맞는 용어가 없음.' : '아직 용어가 없음. 아래 + 를 눌러 추가하기.'}</div></td></tr>` : ''}
     </tbody>
     ${readOnly ? '' : `<tfoot><tr><td colspan="7"><button type="button" class="addrow" id="g-add">+ 용어 추가</button></td></tr></tfoot>`}
   </table></div>
-  <p class="hint" style="color:var(--muted);font-size:14px;margin-top:10px">칸을 고치고 다른 곳을 누르면 저장돼요. 번역 아래 버튼으로 <b>후보 ↔ 확정</b>을 바꿀 수 있어요. ‘모든 게임 공통’ 용어는 모든 게임의 프롬프트에 들어갑니다.</p>`;
+  <p class="hint" style="color:var(--muted);font-size:14px;margin-top:10px">칸을 고치고 다른 곳을 누르면 저장됨. 번역 아래 버튼으로 <b>후보 ↔ 확정</b>을 바꿀 수 있음. ‘모든 게임 공통’ 용어는 모든 게임의 프롬프트에 들어갑니다.</p>`;
 }
 /* 보기 화면: 입력 칸 없이 읽기 좋게 */
 function glossaryViewHTML(list, total) {
-  if (!list.length) return `<div class="empty">${total ? '조건에 맞는 용어가 없어요.' : '아직 용어가 없어요. ‘추가·수정’에서 용어를 넣어 주세요.'}</div>`;
+  if (!list.length) return `<div class="empty">${total ? '조건에 맞는 용어가 없음.' : '아직 용어가 없음. ‘추가·수정’에서 용어를 넣기.'}</div>`;
   const groups = [];
   if (gf.game === 'all') {
     const common = list.filter(x => x.data.common);
@@ -2283,7 +2363,7 @@ function glossaryViewHTML(list, total) {
   return `
   <div class="gvhead" aria-hidden="true"><span>원문 · 의도</span>${LANGS.map(l => `<span>${l.label}</span>`).join('')}</div>
   ${groups.map(([name, g]) => `<section class="gvgroup">${name ? `<h2 class="gvgname">${esc(name)} <small>${g.length}개</small></h2>` : ''}${g.map(item).join('')}</section>`).join('')}
-  <p class="hint" style="color:var(--muted);font-size:14px;margin-top:10px"><b>확정</b>은 번역할 때 그대로 써야 하는 번역, <b>후보</b>는 참고용, <b>미입력</b>은 아직 번역이 없는 상태예요. 용어를 넣거나 고치려면 위의 <b>추가·수정</b>을 누르세요.</p>`;
+  <p class="hint" style="color:var(--muted);font-size:14px;margin-top:10px"><b>확정</b>은 번역할 때 그대로 써야 하는 번역, <b>후보</b>는 참고용, <b>미입력</b>은 아직 번역이 없는 상태임. 용어를 넣거나 고치려면 위의 <b>추가·수정</b>을 누르기.</p>`;
 }
 function blankTerm() {
   const g = gf.game !== 'all' && gf.game !== 'common' ? gf.game : '';
@@ -2321,7 +2401,7 @@ async function saveDraft(d) {
   const data = JSON.parse(JSON.stringify(d.data));
   LANGS.forEach(l => { const r = data.tr[l.key]; r.status = r.text ? '후보' : '미정'; });
   data.updatedAt = new Date().toISOString();
-  if (terms.some(t => t.data.ko === data.ko)) toast(`‘${data.ko}’는 이미 있는 원문이에요. 필요하면 하나를 지워 주세요.`);
+  if (terms.some(t => t.data.ko === data.ko)) toast(`‘${data.ko}’는 이미 있는 원문임. 필요하면 하나를 지우기.`);
   const id = makeId(data.ko);
   const af = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.f : null;
   const inDraft = document.activeElement && document.activeElement.closest && document.activeElement.closest('[data-draft="' + d.id + '"]');
@@ -2379,13 +2459,13 @@ document.addEventListener('click', async e => {
   if (b.dataset.spDel !== undefined) { const c = cur(); const sp = [...(c.data.speakers || [])]; sp.splice(+b.dataset.spDel, 1); try { await db.doc('themes/' + c.id).update({ speakers: sp }); savedMark(); } catch (err) { writeErr(err); } return; }
   if (b.id === 'game-del') { armedDelete = 'game:' + gameId; render(true); return; }
   if (b.id === 'game-del-no') { armedDelete = null; render(true); return; }
-  if (b.id === 'game-del-yes') { const id = gameId; armedDelete = null; try { await db.doc('themes/' + id).delete(); gameId = null; toast('게임 카드를 삭제했어요.'); } catch (err) { writeErr(err); } return; }
+  if (b.id === 'game-del-yes') { const id = gameId; armedDelete = null; try { await db.doc('themes/' + id).delete(); gameId = null; toast('게임 카드를 삭제함.'); } catch (err) { writeErr(err); } return; }
   if (b.dataset.lang) { promptLang = b.dataset.lang; render(true); return; }
   if (b.dataset.copy !== undefined) {
     e.preventDefault(); e.stopPropagation();
     const pre = $('#pt-' + b.dataset.copy); const txt = pre.textContent;
     const orig = b.innerHTML;
-    const fallback = () => { const d = b.closest('details'); if (d) d.open = true; pre.closest('details').open = true; const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('텍스트를 선택했어요. Ctrl+C로 복사하세요.'); };
+    const fallback = () => { const d = b.closest('details'); if (d) d.open = true; pre.closest('details').open = true; const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('텍스트를 선택함. Ctrl+C로 복사하기.'); };
     try { navigator.clipboard.writeText(txt).then(() => { b.textContent = '복사됨 ✓'; setTimeout(() => { if (b.isConnected) b.innerHTML = orig; }, 1500); }, fallback); } catch { fallback(); }
     return;
   }
@@ -2403,7 +2483,7 @@ document.addEventListener('click', async e => {
     if (id.startsWith('draft-')) { drafts = drafts.filter(x => x.id !== id); render(true); return; }
     if (armedDelete !== id) { armedDelete = id; render(true); setTimeout(() => { if (armedDelete === id) { armedDelete = null; render(); } }, 4000); return; }
     armedDelete = null;
-    try { await db.doc('terms/' + id).delete(); toast('용어를 삭제했어요.'); } catch (err) { writeErr(err); }
+    try { await db.doc('terms/' + id).delete(); toast('용어를 삭제함.'); } catch (err) { writeErr(err); }
     return;
   }
   if (b.dataset.st) {
@@ -2413,7 +2493,7 @@ document.addEventListener('click', async e => {
   }
   if (b.id === 'g-csv') {
     const csv = csvOf(filtered());
-    if (downloads) { try { await downloads.save({ filename: '체키_번역_용어집.csv', data: csv }); toast('CSV 파일을 저장했어요.'); return; } catch (err) { if (err && err.code === 'declined') return; } }
+    if (downloads) { try { await downloads.save({ filename: '체키_번역_용어집.csv', data: csv }); toast('CSV 파일을 저장함.'); return; } catch (err) { if (err && err.code === 'declined') return; } }
     csvText = csv.replace(/^﻿/, ''); render(true); const ta = $('#csv-text'); if (ta) ta.select(); return;
   }
   if (b.id === 'csv-close') { csvText = ''; render(true); return; }
@@ -2438,7 +2518,7 @@ function showWaiting(me) {
   $('#app').hidden = true; $('#auth-page').hidden = false;
   $('.tabs2').hidden = true; $('#login-form').hidden = true; $('#signup-form').hidden = true; $('#setup-err').hidden = true;
   $('#wait-box').hidden = false; $('.authcard .sub').hidden = true;
-  $('#wait-who').innerHTML = `<b>${esc(me.name)}</b> (${esc(me.username)}) 님, 가입이 완료됐어요.`;
+  $('#wait-who').innerHTML = `<b>${esc(me.name)}</b> (${esc(me.username)}) 님, 가입이 완료됨.`;
 }
 function dlgTab(which) {
   $('#tab-login').setAttribute('aria-pressed', String(which === 'login'));
@@ -2449,7 +2529,7 @@ function dlgTab(which) {
 }
 function openLogin() { showAuthPage(); }
 async function doLogout() {
-  if (Store.pending()) { toast('저장 중인 내용이 있어요. 잠시 후 다시 눌러 주세요.'); return; }
+  if (Store.pending()) { toast('저장 중인 내용이 있음. 잠시 후 다시 누르기.'); return; }
   await Store.logout(); location.href = location.pathname;
 }
 function setAdminBadge(n) {
@@ -2478,14 +2558,14 @@ function setupAuth(me) {
   $('#signup-form').onsubmit = async e => {
     e.preventDefault();
     $('#su-ok').textContent = '';
-    if ($('#su-pw').value !== $('#su-pw2').value) { $('#su-err').textContent = '비밀번호 확인이 맞지 않아요.'; return; }
+    if ($('#su-pw').value !== $('#su-pw2').value) { $('#su-err').textContent = '비밀번호 확인이 맞지 않음.'; return; }
     $('#su-err').textContent = '보내는 중…';
     try { await Store.signup($('#su-id').value.trim(), $('#su-name').value.trim(), $('#su-pw').value); location.reload(); }
     catch (err) { $('#su-err').textContent = err.message; }
   };
   $('#pw-form').onsubmit = async e => {
     e.preventDefault();
-    try { await Store.changePassword($('#pw-cur').value, $('#pw-new').value); $('#pwdlg').close(); toast('비밀번호를 바꿨어요.'); }
+    try { await Store.changePassword($('#pw-cur').value, $('#pw-new').value); $('#pwdlg').close(); toast('비밀번호를 바꿈.'); }
     catch (err) { $('#pw-err').textContent = err.message; }
   };
 }
@@ -2523,7 +2603,7 @@ function adminHTML() {
   const row = u => {
     const lock = !owner && (u.canAdmin || u.id === myId);
     const acts = lock
-      ? `<span class="meta">${u.id === myId ? '본인 계정' : '관리자 계정'} · 대표 관리자만 바꿀 수 있어요</span>`
+      ? `<span class="meta">${u.id === myId ? '본인 계정' : '관리자 계정'} · 대표 관리자만 바꿀 수 있음</span>`
       : `${tog(u, 'view', '보기 허용', u.canView)}${tog(u, 'edit', '편집 허용', u.canEdit)}${owner ? tog(u, 'admin', '관리자 지정', u.canAdmin) : ''}
         <button type="button" class="btn" data-ua="reset" data-uid="${esc(u.id)}">비밀번호 초기화</button>
         <button type="button" class="btn danger" data-ua="delete" data-uid="${esc(u.id)}">삭제</button>`;
@@ -2533,15 +2613,15 @@ function adminHTML() {
       <div class="acts">${acts}</div></div>`;
   };
   return `
-  ${tempShown ? `<div class="section" style="border-color:var(--ok)"><h2>임시 비밀번호</h2><p class="hint">${esc(tempShown.name)} 님에게 전달하세요. 이 화면을 벗어나면 다시 볼 수 없어요. 로그인 후 ‘비밀번호 변경’으로 바꾸게 해 주세요.</p><p><span class="temp">${esc(tempShown.pw)}</span></p><div class="dangerzone"><button type="button" class="btn" data-ua="hide-temp">닫기</button></div></div>` : ''}
+  ${tempShown ? `<div class="section" style="border-color:var(--ok)"><h2>임시 비밀번호</h2><p class="hint">${esc(tempShown.name)} 님에게 전달하기. 이 화면을 벗어나면 다시 볼 수 없음. 로그인 후 ‘비밀번호 변경’으로 바꾸게 하기.</p><p><span class="temp">${esc(tempShown.pw)}</span></p><div class="dangerzone"><button type="button" class="btn" data-ua="hide-temp">닫기</button></div></div>` : ''}
   <section class="section"><h2>승인 대기 ${wait.length ? `<span class="badge">${wait.length}</span>` : ''}</h2>
-    <p class="hint"><b>보기 허용</b>을 켜면 그 사람 화면이 바로 열려요. <b>편집 허용</b>을 켜면 게임 카드와 용어집을 고칠 수 있어요.${owner ? ' <b>관리자 지정</b>을 켜면 그 사람도 가입 승인과 권한 관리를 할 수 있어요.' : ''}</p>
-    <div class="ulist">${wait.length ? wait.map(row).join('') : '<p class="hint">기다리는 사람이 없어요.</p>'}</div></section>
+    <p class="hint"><b>보기 허용</b>을 켜면 그 사람 화면이 바로 열림. <b>편집 허용</b>을 켜면 게임 카드와 용어집을 고칠 수 있음.${owner ? ' <b>관리자 지정</b>을 켜면 그 사람도 가입 승인과 권한 관리를 할 수 있음.' : ''}</p>
+    <div class="ulist">${wait.length ? wait.map(row).join('') : '<p class="hint">기다리는 사람이 없음.</p>'}</div></section>
   <section class="section"><h2>관리자 (${admins.length + 1})</h2>
-    <p class="hint">대표 관리자는 항상 모든 권한이 있어요. 지정된 관리자는 일반 회원의 권한만 바꿀 수 있고, 관리자 지정·해제는 대표 관리자만 할 수 있어요.</p>
-    <div class="ulist">${admins.length ? admins.map(row).join('') : '<p class="hint">지정된 관리자가 없어요.</p>'}</div></section>
+    <p class="hint">대표 관리자는 항상 모든 권한이 있음. 지정된 관리자는 일반 회원의 권한만 바꿀 수 있고, 관리자 지정·해제는 대표 관리자만 할 수 있음.</p>
+    <div class="ulist">${admins.length ? admins.map(row).join('') : '<p class="hint">지정된 관리자가 없음.</p>'}</div></section>
   <section class="section"><h2>이용 중인 회원 (${ok.length})</h2>
-    <div class="ulist">${ok.length ? ok.map(row).join('') : '<p class="hint">아직 허용된 회원이 없어요.</p>'}</div></section>`;
+    <div class="ulist">${ok.length ? ok.map(row).join('') : '<p class="hint">아직 허용된 회원이 없음.</p>'}</div></section>`;
 }
 document.addEventListener('click', async e => {
   const t = e.target.closest('[data-perm]');
@@ -2550,7 +2630,7 @@ document.addEventListener('click', async e => {
     t.disabled = true;
     try {
       await Store.adminAction(t.dataset.uid, 'perm', { [t.dataset.perm]: on });
-      toast(`${{ view: '보기 허용', edit: '편집 허용', admin: '관리자 지정' }[t.dataset.perm]}을 ${on ? '켰어요' : '껐어요'}.`);
+      toast(`${{ view: '보기 허용', edit: '편집 허용', admin: '관리자 지정' }[t.dataset.perm]}을 ${on ? '켬' : '끔'}.`);
       await loadAdmin(); setAdminBadge(adminUsers ? adminUsers.filter(u => !u.canView).length : 0);
     } catch (err) { toast(err.message); t.disabled = false; }
     return;
@@ -2563,17 +2643,17 @@ document.addEventListener('click', async e => {
   try {
     const r = await Store.adminAction(b.dataset.uid, action);
     if (r.tempPassword) tempShown = { name: r.name, pw: r.tempPassword };
-    toast({ delete: '삭제했어요.', reset: '임시 비밀번호를 만들었어요.' }[action] || '처리했어요.');
+    toast({ delete: '삭제함.', reset: '임시 비밀번호를 만듦.' }[action] || '처리함.');
     await loadAdmin(); setAdminBadge(adminUsers ? adminUsers.filter(u => !u.canView).length : 0);
   } catch (err) { toast(err.message); b.disabled = false; }
 });
 /* ---------- 표 파일 올리기 · 내려받기 ---------- */
 function loadXLSX() {
-  return window.XLSX ? Promise.resolve(window.XLSX) : new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = 'vendor/xlsx.full.min.js'; sc.onload = () => res(window.XLSX); sc.onerror = () => rej(new Error('엑셀 읽기 도구를 불러오지 못했어요.')); document.head.appendChild(sc); });
+  return window.XLSX ? Promise.resolve(window.XLSX) : new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = 'vendor/xlsx.full.min.js'; sc.onload = () => res(window.XLSX); sc.onerror = () => rej(new Error('엑셀 읽기 도구를 불러오지 못함.')); document.head.appendChild(sc); });
 }
 async function readTableFile(file) {
   if (/\.(docx|pdf|png|jpe?g|webp)$/i.test(file.name)) return readRichTable(file);
-  if (/\.doc$/i.test(file.name)) throw new Error('예전 Word 형식(.doc)은 못 읽어요. Word에서 .docx로 다시 저장해 주세요.');
+  if (/\.doc$/i.test(file.name)) throw new Error('예전 Word 형식(.doc)은 못 읽음. Word에서 .docx로 다시 저장 필요.');
   if (/\.xlsx?$/i.test(file.name)) {
     const X = await loadXLSX();
     const wb = X.read(await file.arrayBuffer(), { type: 'array' });
@@ -2607,7 +2687,7 @@ document.addEventListener('click', async e => {
   const rows = parseTable((cur() || {}).data?.[b.dataset.dl]); if (!rows.length) return;
   const q = v => { const x = String(v ?? ''); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; };
   const csv = '\uFEFF' + rows.map(r => r.map(q).join(',')).join('\r\n');
-  try { if (downloads) await downloads.save({ filename: b.dataset.fname + '.csv', data: csv }); } catch { toast('내려받지 못했어요.'); }
+  try { if (downloads) await downloads.save({ filename: b.dataset.fname + '.csv', data: csv }); } catch { toast('내려받지 못함.'); }
 });
 
 /* ---------- 색 고르기 ---------- */
@@ -2626,8 +2706,8 @@ function openColor(target, title, current) {
 document.addEventListener('click', async e => {
   if (e.target.closest('#my-color') || e.target.closest('#my-name-btn')) { openColor('me', '내 정보', meNow.color); return; }
   if (e.target.closest('#name-save')) {
-    const n = $('#my-name').value.trim(); if (!n) { toast('이름을 입력해 주세요.'); return; }
-    try { await Store.setProfile({ name: n }); meNow.name = n; setupAuth(meNow); $('#colordlg').close(); toast('이름을 바꿨어요.'); } catch (err) { toast(err.message); }
+    const n = $('#my-name').value.trim(); if (!n) { toast('이름을 입력 필요.'); return; }
+    try { await Store.setProfile({ name: n }); meNow.name = n; setupAuth(meNow); $('#colordlg').close(); toast('이름을 바꿈.'); } catch (err) { toast(err.message); }
     return;
   }
   const uc = e.target.closest('[data-ucolor]');
@@ -2637,10 +2717,10 @@ document.addEventListener('click', async e => {
   try {
     if (colorTarget === 'me') { await Store.setColor(c); meNow.color = c; $('#my-color').style.background = c; }
     else { await Store.adminAction(colorTarget, 'color', { color: c }); await loadAdmin(); }
-    $('#colordlg').close(); toast('색을 바꿨어요. 앞으로 누르는 단계부터 새 색으로 표시돼요.');
+    $('#colordlg').close(); toast('색을 바꿈. 앞으로 누르는 단계부터 새 색으로 표시됨.');
   } catch (err) { toast(err.message); }
 });
-window.addEventListener('store-save-error', e => { const err = e.detail || {}; if (err.code === 'invalid_argument') { readOnly = true; render(true); } toast(err.message || '저장하지 못했어요.'); });
+window.addEventListener('store-save-error', e => { const err = e.detail || {}; if (err.code === 'invalid_argument') { readOnly = true; render(true); } toast(err.message || '저장하지 못함.'); });
 window.addEventListener('store-need-view', () => location.reload());
 
 /* ---------- 화면 밝기 · 칸 자동 높이 ---------- */
@@ -2671,10 +2751,10 @@ function updateSaveBar() {
   bar.hidden = !show; if (!show) return;
   const draftsOpen = view === 'glossary' && drafts.length;
   let cls, txt;
-  if (storeState.error && !storeState.saving) { cls = 'err'; txt = '저장하지 못했어요. 다시 저장을 눌러 주세요.'; }
+  if (storeState.error && !storeState.saving) { cls = 'err'; txt = '저장하지 못함. 다시 저장을 누르기.'; }
   else if (storeState.saving) { cls = 'busy'; txt = '저장 중…'; }
-  else if (uiDirty.size || storeState.queued) { cls = 'dirty'; txt = `저장 안 된 변경이 있어요${uiDirty.size ? ` (${uiDirty.size}칸)` : ''}`; }
-  else if (draftsOpen) { cls = 'dirty'; txt = '새 용어는 원문을 입력하면 저장돼요'; }
+  else if (uiDirty.size || storeState.queued) { cls = 'dirty'; txt = `저장 안 된 변경이 있음${uiDirty.size ? ` (${uiDirty.size}칸)` : ''}`; }
+  else if (draftsOpen) { cls = 'dirty'; txt = '새 용어는 원문을 입력하면 저장됨'; }
   else { cls = 'ok'; txt = '모두 저장됨'; }
   bar.className = 'savebar ' + cls;
   $('#sb-text').textContent = txt;
@@ -2717,7 +2797,7 @@ const SRC_ACCEPT = '.png,.jpg,.jpeg,.webp,.pdf,.docx,.xlsx,.xls,.csv,.tsv,.txt,.
 const STEP_NAMES = { 1: '원문 분석', 2: '번역', 3: '오류 검수', 4: '행동 테스트', 5: '재수정' };
 const openState = {};
 const viewStep = {};   // 게임:언어 → { step, pick }
-const APPLY_CHECK = { en: '최종 결과를 받아 화면에 넣고, 넘치거나 잘리는 문구가 없는지 확인해요.', ja: '화면에 넣고 넘침·잘림과 함께, 폰트에 없는 한자(□로 보이는 글자)가 없는지 확인해요.', zh: '화면에 넣고 넘침·잘림과 함께, 간체 폰트로 모든 글자가 보이는지 확인해요.' };   // 게임:언어 → { step, open: Set(펼친 단계) }
+const APPLY_CHECK = { en: '최종 결과를 받아 화면에 넣고, 넘치거나 잘리는 문구가 없는지 확인함.', ja: '화면에 넣고 넘침·잘림과 함께, 폰트에 없는 한자(□로 보이는 글자)가 없는지 확인함.', zh: '화면에 넣고 넘침·잘림과 함께, 간체 폰트로 모든 글자가 보이는지 확인함.' };   // 게임:언어 → { step, open: Set(펼친 단계) }
 const extOf = f => ((f && f.name || '').match(/\.([a-z0-9]+)$/i) || [, ''])[1].toLowerCase();
 const isImgFile = f => /^(png|jpe?g|webp)$/.test(extOf(f));
 const isAiFile = f => isImgFile(f) || extOf(f) === 'pdf';
@@ -2729,7 +2809,7 @@ function done() { const t = $('#toast'); t.classList.remove('busy'); t.hidden = 
 
 /* ---------- 현황판 ---------- */
 function dashHTML() {
-  if (!themes.length) return `<div class="empty">아직 게임이 없어요.${readOnly ? '' : ' <button type="button" class="btn" id="add-game">+ 게임 추가</button>'}</div>`;
+  if (!themes.length) return `<div class="empty">아직 게임이 없음.${readOnly ? '' : ' <button type="button" class="btn" id="add-game">+ 게임 추가</button>'}</div>`;
   const rows = themes.map(({ id, data: t }) => {
     const cells = LANGS.map(l => {
       const st = simpleStep(t, l.key), rs = sheetRows(t, l.key), N = rs.length, tr = rs.filter(r => r.x.rv && r.x.rv.v === '통과').length;
@@ -2739,17 +2819,17 @@ function dashHTML() {
     }).join('');
     return `<div class="drow"><div class="dgame"><button type="button" data-goto="${esc(id)}|${promptLang}">${esc(t.name || '(이름 없음)')}</button><small>${esc(t.concept || '게임 정보 없음')}</small></div>${cells}</div>`;
   });
-  return `<p class="lead">게임을 누르면 해야 할 일이 순서대로 나와요.</p>
+  return `<p class="lead">게임을 누르면 해야 할 일이 순서대로 나옴.</p>
     <div class="dash"><div class="drow head"><div>게임</div>${LANGS.map(l => `<div>${l.label}</div>`).join('')}</div>${rows.join('')}</div>
     ${readOnly ? '' : '<div style="margin-top:12px"><button type="button" class="btn" id="add-game">+ 게임 추가</button></div>'}`;
 }
 
 /* ---------- 지금 할 일 바 ---------- */
 function nowBarHTML(t, lk, L, step, stat, extra, main) {
-  if (step === 'wait') return `<div class="nowbar wait"><div class="nb-txt"><span class="nb-k">지금 할 일</span><span class="nb-t">영어를 먼저 확정해 주세요</span> <span class="nb-s">일본어·중국어는 영어 확정본을 참고해서 번역해요.</span></div><div class="nb-acts"><button type="button" class="btn primary" data-lang="en">영어 작업으로 가기</button></div></div>`;
-  if (step === 'done') return `<div class="nowbar ok"><div class="nb-txt"><span class="nb-k">지금 할 일</span><span class="nb-t">모든 문구가 검수와 테스트를 통과했어요</span></div><div class="nb-acts">${readOnly ? '' : `<button type="button" class="btn primary" data-wact="confirm">${esc(L.label)} 확정하기</button>`}</div></div>`;
-  if (step === 'confirmed') return `<div class="nowbar"><div class="nb-txt"><span class="nb-k">마무리 · 기획팀</span><span class="nb-t">✓ 확정됨 — 화면에 적용해 주세요</span> <span class="nb-s">${esc(APPLY_CHECK[lk])}</span></div><div class="nb-acts"><button type="button" class="btn" data-wact="export">최종 결과 내보내기</button>${readOnly ? '' : '<button type="button" class="btn primary" data-wact="applied">화면 적용 완료</button>'}</div></div>`;
-  if (step === 'applied') return `<div class="nowbar ok"><div class="nb-txt"><span class="nb-k">완료</span><span class="nb-t">✓ ${esc(L.label)} 화면 적용까지 끝났어요</span></div><div class="nb-acts"><button type="button" class="btn" data-wact="export">최종 결과 내보내기</button></div></div>`;
+  if (step === 'wait') return `<div class="nowbar wait"><div class="nb-txt"><span class="nb-k">지금 할 일</span><span class="nb-t">영어를 먼저 확정 필요</span> <span class="nb-s">일본어·중국어는 영어 확정본을 참고해서 번역함.</span></div><div class="nb-acts"><button type="button" class="btn primary" data-lang="en">영어 작업으로 가기</button></div></div>`;
+  if (step === 'done') return `<div class="nowbar ok"><div class="nb-txt"><span class="nb-k">지금 할 일</span><span class="nb-t">모든 문구가 검수와 테스트를 통과함</span></div><div class="nb-acts">${readOnly ? '' : `<button type="button" class="btn primary" data-wact="confirm">${esc(L.label)} 확정하기</button>`}</div></div>`;
+  if (step === 'confirmed') return `<div class="nowbar"><div class="nb-txt"><span class="nb-k">마무리 · 기획팀</span><span class="nb-t">✓ 확정됨 — 화면에 적용 필요</span> <span class="nb-s">${esc(APPLY_CHECK[lk])}</span></div><div class="nb-acts"><button type="button" class="btn" data-wact="export">최종 결과 내보내기</button>${readOnly ? '' : '<button type="button" class="btn primary" data-wact="applied">화면 적용 완료</button>'}</div></div>`;
+  if (step === 'applied') return `<div class="nowbar ok"><div class="nb-txt"><span class="nb-k">완료</span><span class="nb-t">✓ ${esc(L.label)} 화면 적용까지 끝남</span></div><div class="nb-acts"><button type="button" class="btn" data-wact="export">최종 결과 내보내기</button></div></div>`;
   const p = main.find(x => +x.tag === step); if (!p) return '';
   const u = usageFor(p.id, t, L) || {}, x = extra[step];
   return `<div class="nowbar"><div class="nb-txt"><span class="nb-k">지금 할 일 · ${step}단계 · ${esc(stat[step][1])}</span><span class="nb-t">${esc(p.name)}</span> <span class="nb-s">${esc(u.tool || p.tool)} · 넣을 것: ${esc(u.input || '')}</span></div>
@@ -2760,9 +2840,9 @@ function nowBarHTML(t, lk, L, step, stat, extra, main) {
 function srcBoxHTML(t) {
   const st = tableStats(t.srcTable), unc = (String(t.srcTable || '').match(/판독 불확실/g) || []).length;
   return `<div class="srcbox dropzone" data-drop="src"><h4>파일에서 원문 읽기${st.rows ? ` · 원문 표 ${st.rows}행` : ''}</h4>
-    <p>${aiOn() ? 'PNG·JPG·PDF는 AI가, Word·엑셀·텍스트는 사이트가 바로 읽어요.' : 'Word·엑셀·텍스트 파일을 읽어요. PNG·JPG·PDF 읽기는 관리자가 AI 키를 넣으면 켜져요.'} 파일 이름이 ID가 되니 <b>${esc(abbrOf(t))}-01.png</b>처럼 정해 주세요. 같은 파일을 다시 올리면 그 파일의 행만 바뀌어요.</p>
-    ${readOnly ? '' : `<div class="wups"><label class="btn upl${st.rows ? '' : ' primary'}">원문 파일 고르기 (여러 개)<input type="file" hidden multiple data-src accept="${SRC_ACCEPT}"></label>${st.rows ? `<button type="button" class="btn" data-dl="srcTable" data-fname="${esc(abbrOf(t))}_source">엑셀(CSV)로 내려받기</button><button type="button" class="btn danger" data-srcclear>원문 표 비우기</button>` : ''}<span class="droptip">여기에 끌어다 놓아도 돼요</span></div>`}
-    ${st.rows ? `<p>${unc ? `<b class="badtxt">판독 불확실 ${unc}곳</b> — 아래에서 직접 고치거나, 그대로 두면 1 원문 분석에서 질문으로 올라가요.` : '판독 불확실 없음 · 그래도 원문과 한 번 훑어봐 주세요.'}</p>${tablePreviewHTML(t.srcTable)}
+    <p>${aiOn() ? 'PNG·JPG·PDF는 AI가, Word·엑셀·텍스트는 사이트가 바로 읽음.' : 'Word·엑셀·텍스트 파일을 읽음. PNG·JPG·PDF 읽기는 관리자가 AI 키를 넣으면 켜짐.'} 파일 이름이 ID가 되니 <b>${esc(abbrOf(t))}-01.png</b>처럼 정하기. 같은 파일을 다시 올리면 그 파일의 행만 바뀜.</p>
+    ${readOnly ? '' : `<div class="wups"><label class="btn upl${st.rows ? '' : ' primary'}">원문 파일 고르기 (여러 개)<input type="file" hidden multiple data-src accept="${SRC_ACCEPT}"></label>${st.rows ? `<button type="button" class="btn" data-dl="srcTable" data-fname="${esc(abbrOf(t))}_source">엑셀(CSV)로 내려받기</button><button type="button" class="btn danger" data-srcclear>원문 표 비우기</button>` : ''}<span class="droptip">여기에 끌어다 놓아도 됨</span></div>`}
+    ${st.rows ? `<p>${unc ? `<b class="badtxt">판독 불확실 ${unc}곳</b> — 아래에서 직접 고치거나, 그대로 두면 1 원문 분석에서 질문으로 올라감.` : '판독 불확실 없음 · 그래도 원문과 한 번 훑어보기.'}</p>${tablePreviewHTML(t.srcTable)}
       <details class="more"><summary>텍스트로 보기 · 직접 고치기</summary><textarea class="tablebox" data-path="srcTable" ${readOnly ? 'disabled' : ''} spellcheck="false">${esc(t.srcTable || '')}</textarea></details>` : ''}
   </div>`;
 }
@@ -2781,12 +2861,12 @@ async function shrinkImage(file) {
 }
 async function serverExtract(file, mode) {
   const blob = isImgFile(file) ? await shrinkImage(file) : file;
-  if (blob.size > 12 * 1024 * 1024) throw new Error('12MB보다 커서 읽을 수 없어요. 나눠서 올려 주세요.');
+  if (blob.size > 12 * 1024 * 1024) throw new Error('12MB보다 커서 읽을 수 없음. 나눠서 올리기.');
   const u8 = new Uint8Array(await blob.arrayBuffer()); let bin = '';
   for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
   const r = await fetch('/api/extract', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: file.name, type: blob.type || file.type, data: btoa(bin), mode }) });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.message || (r.status === 413 ? '파일이 너무 커요.' : '파일을 읽지 못했어요.'));
+  if (!r.ok) throw new Error(j.message || (r.status === 413 ? '파일이 너무 큼.' : '파일을 읽지 못함.'));
   return j;
 }
 async function decodeText(file) {
@@ -2802,15 +2882,15 @@ async function readRichTable(file) {
       const j = await serverExtract(file, 'table');
       const tabs = j.blocks.filter(b => b.type === 'table').map(b => b.rows);
       const pick = tabs.find(hasIdHead) || tabs.sort((a, b) => b.length - a.length)[0];
-      if (!pick) throw new Error('Word 파일에서 표를 찾지 못했어요.');
+      if (!pick) throw new Error('Word 파일에서 표를 찾지 못함.');
       return pick;
     } finally { done(); }
   }
-  if (!aiOn()) throw new Error('PNG·JPG·PDF 읽기가 아직 꺼져 있어요. 관리자에게 AI 키를 넣어 달라고 하거나, 엑셀·Word로 받아서 올려 주세요.');
+  if (!aiOn()) throw new Error('PNG·JPG·PDF 읽기가 아직 꺼져 있음. 관리자에게 AI 키를 넣어 달라고 하거나, 엑셀·Word로 받아서 올리기.');
   busy(`AI가 ${file.name}의 표를 읽는 중… (30초~1분)`);
   try {
     const j = await serverExtract(file, 'table');
-    if (j.cut) setTimeout(() => toast('표가 길어서 AI가 끝까지 못 읽었을 수 있어요. 마지막 행을 확인해 주세요.', 6000), 2600);
+    if (j.cut) setTimeout(() => toast('표가 길어서 AI가 끝까지 못 읽었을 수 있음. 마지막 행을 확인 필요.', 6000), 2600);
     return (j.rows || []).map(r => r.map(c => String(c).replace(/^\|+|\|+$/g, '').trim()));
   } finally { done(); }
 }
@@ -2881,7 +2961,7 @@ async function readSourceFiles(list) {
   const fails = [], cut = [], waiting = []; let added = 0;
   for (let k = 0; k < files.length; k++) {
     const f = files[k], fid = fileIdOf(f.name);
-    busy(`${files.length > 1 ? `${k + 1}/${files.length} · ` : ''}${f.name} 올리는 중…${isAiFile(f) && aiOn() ? ' AI가 읽어요 (한 장에 20~40초)' : ''}`);
+    busy(`${files.length > 1 ? `${k + 1}/${files.length} · ` : ''}${f.name} 올리는 중…${isAiFile(f) && aiOn() ? ' AI가 읽음 (한 장에 20~40초)' : ''}`);
     try {
       if (isAiFile(f)) { await storeGameFile(c.id, f); if (!aiOn()) { waiting.push(f.name); continue; } }
       const r = await readSourceRows(f); if (r.cut) cut.push(f.name);
@@ -2891,13 +2971,13 @@ async function readSourceFiles(list) {
   done();
   if (added) await saveSource(c, src);
   else render(true);
-  const msg = [added ? `원문 ${added}줄을 뽑았어요.` : '', waiting.length ? `이미지 ${waiting.length}개를 올렸어요. 아래 ‘ChatGPT로 뽑기’로 원문을 뽑아 주세요.` : '', cut.length ? `${cut.join(', ')}은 문구가 많아 끝까지 못 읽었을 수 있어요.` : '', fails.length ? `못 올린 파일 — ${fails.join(' / ')}` : ''].filter(Boolean).join(' ');
-  toast(msg || '뽑은 원문이 없어요.', 6000);
+  const msg = [added ? `원문 ${added}줄을 뽑음.` : '', waiting.length ? `이미지 ${waiting.length}개를 올림. 아래 ‘ChatGPT로 뽑기’로 원문을 뽑기.` : '', cut.length ? `${cut.join(', ')}은 문구가 많아 끝까지 못 읽었을 수 있음.` : '', fails.length ? `못 올린 파일 — ${fails.join(' / ')}` : ''].filter(Boolean).join(' ');
+  toast(msg || '뽑은 원문이 없음.', 6000);
 }
 /* ChatGPT에서 받은 추출 답 붙여 넣기: 파일 이름 | 순번 | 화면 원문 | 위치 | 종류 | 비고 */
 async function applyExtraction(tables) {
   const c = cur(), tb = tables.find(r => headHas(r, /원문/)) || tables[0];
-  if (!tb || tb.length < 2) { toast('표를 찾지 못했어요. AI 답 전체를 복사해서 붙여 넣어 주세요.', 5000); return; }
+  if (!tb || tb.length < 2) { toast('표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.', 5000); return; }
   const h = tb[0].map(normHead), ix = k => h.findIndex(x => x.startsWith(k));
   const iF = ix('파일'), iT = ix('화면원문') >= 0 ? ix('화면원문') : ix('원문'), iW = ix('위치'), iK = ix('종류'), iN = ix('비고');
   const known = (gameFiles[c.id] || []).map(f => fileIdOf(f.name));
@@ -2910,7 +2990,7 @@ async function applyExtraction(tables) {
   });
   let src = srcList(c.data), n = 0;
   groups.forEach((rows, fid) => { src = mergeSource(src, fid, rows); n += rows.length; });
-  await saveSource(c, src, `원문 ${n}줄을 넣었어요 (파일 ${groups.size}개).`);
+  await saveSource(c, src, `원문 ${n}줄을 넣음 (파일 ${groups.size}개).`);
 }
 function extractPrompt(t) {
   const names = (gameFiles[cur().id] || []).filter(f => /\.(png|jpe?g|webp)$/i.test(f.name)).map(f => f.name);
@@ -2934,18 +3014,18 @@ async function handleRows(target, rows, label) {
   rows = cleanRows(rows);
   if (type === 'wup') return applyUpload(key, rows);
   if (key === 'enFinal') rows = pickEnglish(rows);
-  if (rows.length < 2) { toast('표를 찾지 못했어요. 첫 행이 열 이름인 표인지 확인해 주세요.'); return; }
+  if (rows.length < 2) { toast('표를 찾지 못함. 첫 행이 열 이름인 표인지 확인 필요.'); return; }
   const had = !!String((cur() || {}).data?.[key] || '').trim();
   await saveGameField(key, rowsToTSV(rows));
   render(true);
-  toast(`${label}에서 ${rows.length - 1}행을 올렸어요.${had ? ' 이전 내용은 수정 기록에 남아 있어요.' : ''}`);
+  toast(`${label}에서 ${rows.length - 1}행을 올림.${had ? ' 이전 내용은 수정 기록에 남아 있음.' : ''}`);
 }
 async function uploadTable(target, file) {
   try {
     const rows = await readTableFile(file);
-    if (rows.length < 2) { toast('표를 찾지 못했어요. 첫 행이 열 이름인 표인지 확인해 주세요.'); return; }
+    if (rows.length < 2) { toast('표를 찾지 못함. 첫 행이 열 이름인 표인지 확인 필요.'); return; }
     await handleRows(target, rows, file.name);
-  } catch (err) { done(); toast(err.message || '파일을 읽지 못했어요.', 6000); }
+  } catch (err) { done(); toast(err.message || '파일을 읽지 못함.', 6000); }
 }
 async function dropFiles(target, files) {
   if (target === 'src') return readSourceFiles(files);
@@ -2976,7 +3056,7 @@ document.addEventListener('change', e => {
 
 /* 붙여 넣기 */
 let pasteTarget = null;
-const PASTE_TITLES = { 'one:res': '번역 결과 표 붙여 넣기 (표 3개 모두 붙여 넣어도 돼요)', 'one:cross': '교차 검수 답 붙여 넣기', 'one:x': 'AI 원문 추출 답 붙여 넣기', 'one:tr': 'AI 번역 답 붙여 넣기', 'one:rv': 'AI 검수 답 붙여 넣기', tr: '번역 결과', b: 'DeepL 결과', bt: '역번역 결과', rv: '검수 결과', ts: '테스트 결과', fx: '수정 결과', inputTable: '번역 입력표', enFinal: '영어 확정본' };
+const PASTE_TITLES = { 'one:res': '번역 결과 표 붙여 넣기 (표 3개 모두 붙여 넣어도 됨)', 'one:cross': '교차 검수 답 붙여 넣기', 'one:x': 'AI 원문 추출 답 붙여 넣기', 'one:tr': 'AI 번역 답 붙여 넣기', 'one:rv': 'AI 검수 답 붙여 넣기', tr: '번역 결과', b: 'DeepL 결과', bt: '역번역 결과', rv: '검수 결과', ts: '테스트 결과', fx: '수정 결과', inputTable: '번역 입력표', enFinal: '영어 확정본' };
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-paste]'); if (!b) return;
   pasteTarget = b.dataset.paste;
@@ -2988,12 +3068,12 @@ $('#paste-form').addEventListener('submit', async e => {
   e.preventDefault();
   if (pasteTarget && pasteTarget.startsWith('one:')) {
     const tables = splitTables($('#paste-text').value);
-    if (!tables.length) { $('#paste-err').textContent = '표를 찾지 못했어요. AI 답 전체를 복사해서 붙여 넣어 주세요.'; return; }
+    if (!tables.length) { $('#paste-err').textContent = '표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.'; return; }
     $('#pastedlg').close();
     return pasteTarget === 'one:res' ? applyResult(tables) : pasteTarget === 'one:cross' ? applyCross(tables) : pasteTarget === 'one:tr' ? applyTranslation(tables) : pasteTarget === 'one:x' ? applyExtraction(tables) : applyReview(tables);
   }
   const rows = parseTable($('#paste-text').value);
-  if (rows.length < 2) { $('#paste-err').textContent = '표를 찾지 못했어요. 첫 행에 열 이름(ID 등)이 있어야 해요.'; return; }
+  if (rows.length < 2) { $('#paste-err').textContent = '표를 찾지 못함. 첫 행에 열 이름(ID 등)이 있어야 함.'; return; }
   $('#pastedlg').close();
   await handleRows(pasteTarget, rows, '붙여 넣은 표');
 });
@@ -3031,8 +3111,8 @@ document.addEventListener('click', e => {
 /* 원문 표 비우기 (두 번 눌러야 실행) */
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-srcclear]'); if (!b) return;
-  if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = '한 번 더 누르면 비워요'; return; }
-  await saveGameField('srcTable', ''); render(true); toast('원문 표를 비웠어요. 이전 내용은 수정 기록에 남아 있어요.');
+  if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = '한 번 더 누르면 비움'; return; }
+  await saveGameField('srcTable', ''); render(true); toast('원문 표를 비움. 이전 내용은 수정 기록에 남아 있음.');
 });
 
 /* 용어집 패널 */
@@ -3045,7 +3125,7 @@ function renderGlossPanel() {
     .sort((a, b) => (a.ko || '').localeCompare(b.ko || '', 'ko'));
   $('#gp-list').innerHTML = list.length ? list.map(d => { const x = trOf(d, L.key), st = statusOf(d, L.key); return `
     <div class="gpanel-row"><div class="ko">${esc(d.ko)}</div><div>${x.text ? esc(x.text) : '<span style="color:var(--muted)">—</span>'} <span class="sbadge ${stClass(st)}">${stLabel(st)}</span></div>
-    ${d.intent || x.avoid ? `<small>${esc(d.intent || '')}${x.avoid ? `${d.intent ? ' · ' : ''}쓰지 않음: ${esc(x.avoid)}` : ''}</small>` : ''}</div>`; }).join('') : '<div class="empty" style="border:0">이 게임에 쓰는 용어가 없어요.</div>';
+    ${d.intent || x.avoid ? `<small>${esc(d.intent || '')}${x.avoid ? `${d.intent ? ' · ' : ''}쓰지 않음: ${esc(x.avoid)}` : ''}</small>` : ''}</div>`; }).join('') : '<div class="empty" style="border:0">이 게임에 쓰는 용어가 없음.</div>';
 }
 document.addEventListener('click', e => {
   if (e.target.closest('#gp-open')) { $('#gp-q').value = ''; renderGlossPanel(); $('#glossdlg').showModal(); return; }
@@ -3058,11 +3138,11 @@ $('#gp-q').addEventListener('input', renderGlossPanel);
 function rulesHTML() {
   const li = a => `<ul>${a.map(x => `<li>${x}</li>`).join('')}</ul>`;
   return `
-    <h3>진행 순서</h3>${li(['준비 → 번역 → 검수 → 마무리. 언어는 <b>영어 → 일본어 → 중국어(간체)</b>.', '영어로 해석을 먼저 확정하고, 일본어·중국어는 <b>한국어 원문 + 영어 확정본</b>으로 번역해요.', '마무리(화면 적용)는 확정 뒤 기획팀이 해요.'])}
+    <h3>진행 순서</h3>${li(['준비 → 번역 → 검수 → 마무리. 언어는 <b>영어 → 일본어 → 중국어(간체)</b>.', '영어로 해석을 먼저 확정하고, 일본어·중국어는 <b>한국어 원문 + 영어 확정본</b>으로 번역함.', '마무리(화면 적용)는 확정 뒤 기획팀이 함.'])}
     <h3>단계별 도구</h3>${li(['원문 분석: ChatGPT 초안 → 기획 확정', '번역: 언어별 확정 AI(초벌) + DeepL(독립 번역)', '검수: 역번역(번역기 2종) → 오류 검수(Claude) → 행동 테스트(Gemini)', '판정: <b>PASS</b> 통과 / <b>REVIEW</b> 사람 확인 / <b>FAIL</b> 수정'])}
-    <h3>영어 확정본 사용 조건</h3>${li(['한국어가 기준. 영어 어순·말투는 따르지 않아요.', '<b>직접 번역 문구에만</b> 줘요. 말장난·현지화·재설계 문구는 빼요. (사이트가 자동으로 빼요)', '검수가 끝나 확정된 영어만 써요.', '일·중도 역번역 검수는 그대로 해요.'])}
-    <h3>운영 규칙</h3>${li(['검수·역번역은 항상 <b>새 대화창</b>에서 해요.', '번역 AI가 Claude인 언어는 오류 검수를 <b>ChatGPT</b>로 바꿔요. (번역 AI를 고르면 자동으로 바뀌어요)', `걸린 문구는 걸린 이유만 고쳐 다시 검수해요. <b>최대 ${MAX_FIX}회</b>, 그 뒤에도 걸리면 기획이 정해요.`])}
-    <h3>번역 준비</h3>${li(['원문 정리: 화면 원문은 기획이 정한 그대로, 맥락 설명은 누가·어느 화면에서·무엇을 하게 하는지, 정리 원문은 한 문장에 한 동작.', '처리 방식: 직접 번역 / 현지화 / 재설계 / 제외', '용어집: 게임명·캐릭터명·버튼 라벨·반복 지시 동사·결과 문구를 넣고, 말장난·한 번만 나오는 문장은 빼요.', '컨텍스트 카드: 게임마다 1장. ‘밝게’ 같은 형용사 대신 구체적 규칙으로. 게임 말투가 언어별 기본 말투보다 우선해요. 존댓말·반말은 이전 한글 버전을 참고해요.'])}
+    <h3>영어 확정본 사용 조건</h3>${li(['한국어가 기준. 영어 어순·말투는 따르지 않음.', '<b>직접 번역 문구에만</b> 줌. 말장난·현지화·재설계 문구는 뺌. (사이트가 자동으로 뺌)', '검수가 끝나 확정된 영어만 씀.', '일·중도 역번역 검수는 그대로 함.'])}
+    <h3>운영 규칙</h3>${li(['검수·역번역은 항상 <b>새 대화창</b>에서 함.', '번역 AI가 Claude인 언어는 오류 검수를 <b>ChatGPT</b>로 바꿈. (번역 AI를 고르면 자동으로 바뀜)', `걸린 문구는 걸린 이유만 고쳐 다시 검수함. <b>최대 ${MAX_FIX}회</b>, 그 뒤에도 걸리면 기획이 정함.`])}
+    <h3>번역 준비</h3>${li(['원문 정리: 화면 원문은 기획이 정한 그대로, 맥락 설명은 누가·어느 화면에서·무엇을 하게 하는지, 정리 원문은 한 문장에 한 동작.', '처리 방식: 직접 번역 / 현지화 / 재설계 / 제외', '용어집: 게임명·캐릭터명·버튼 라벨·반복 지시 동사·결과 문구를 넣고, 말장난·한 번만 나오는 문장은 뺌.', '컨텍스트 카드: 게임마다 1장. ‘밝게’ 같은 형용사 대신 구체적 규칙으로. 게임 말투가 언어별 기본 말투보다 우선함. 존댓말·반말은 이전 한글 버전을 참고함.'])}
     <h3>문화권별 주의사항</h3>${li(CULTURE.common)}
     ${LANGS.map(l => `<h3 style="font-size:14px">${l.label}</h3>${li(CULTURE[l.key])}`).join('')}`;
 }
@@ -3070,7 +3150,7 @@ document.addEventListener('click', e => { if (e.target.closest('#rules-open')) {
 document.addEventListener('change', e => {
   if (e.target.id !== 'ai-sel' || readOnly) return;
   const v = e.target.value; e.target.blur();
-  saveGameField('ai.' + promptLang, v).then(() => { render(true); if (v === 'Claude') toast('번역 AI가 Claude라서 오류 검수는 ChatGPT로 바뀌었어요.', 3500); });
+  saveGameField('ai.' + promptLang, v).then(() => { render(true); if (v === 'Claude') toast('번역 AI가 Claude라서 오류 검수는 ChatGPT로 바뀜.', 3500); });
 });
 
 
@@ -3130,15 +3210,15 @@ function filesFor(ids) {
 async function aiCall(provider, { system, prompt, files }) {
   const r = await fetch('/api/ai/run', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ provider, system, prompt, files, game: autoCtx.id }) });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.message || 'AI를 부르지 못했어요.');
+  if (!r.ok) throw new Error(j.message || 'AI를 부르지 못함.');
   const t0 = Date.now();
   for (;;) {
     await new Promise(res => setTimeout(res, 2500));
-    if (autoState.stop) throw new Error('멈췄어요.');
+    if (autoState.stop) throw new Error('멈춤.');
     const q = await fetch('/api/ai/job/' + j.job, { credentials: 'same-origin', cache: 'no-store' }).then(x => x.json()).catch(() => null);
-    if (q && q.status === 'done') { if (q.cut) autoLog('답이 길어서 끝이 잘렸을 수 있어요. 빠진 행은 다음 실행 때 다시 처리해요.'); return q.text; }
-    if (q && (q.status === 'error' || q.message)) throw new Error(q.message || 'AI 호출이 실패했어요.');
-    if (Date.now() - t0 > 12 * 60000) throw new Error('AI 답이 12분 넘게 오지 않아요. 다시 시도해 주세요.');
+    if (q && q.status === 'done') { if (q.cut) autoLog('답이 길어서 끝이 잘렸을 수 있음. 빠진 행은 다음 실행 때 다시 처리함.'); return q.text; }
+    if (q && (q.status === 'error' || q.message)) throw new Error(q.message || 'AI 호출이 실패함.');
+    if (Date.now() - t0 > 12 * 60000) throw new Error('AI 답이 12분 넘게 오지 않음. 다시 시도 필요.');
   }
 }
 
@@ -3156,7 +3236,7 @@ async function loadFiles(id, force) {
 const G = () => wGame().data;
 async function runAnalysis(extraAnswers) {
   const t = G(), src = parseTable(t.srcTable);
-  if (src.length < 2) throw new Error('원문 표가 없어요. 먼저 이 게임의 화면 캡처·대본을 자료로 올려 주세요.');
+  if (src.length < 2) throw new Error('원문 표가 없음. 먼저 이 게임의 화면 캡처·대본을 자료로 올리기.');
   const R = roles(t, 'en'), ps0 = buildPrompts(t, 'en', autoCtx.id), system = ps0.find(p => p.id === 'P1-1').text;
   let ids = src.slice(1).map(r => String(r[0]).trim());
   if (extraAnswers) { const want = new Set(extraAnswers.ids); ids = ids.filter(id => want.has(id)); }
@@ -3168,7 +3248,7 @@ async function runAnalysis(extraAnswers) {
     if (extraAnswers) prompt += `\n\n[기획 답변]\n아래는 기획이 질문에 답한 내용이다. 답을 반영해서 해당 행을 다시 정리하고 ‘확인 필요’를 없애라. 답이 없거나 애매한 질문만 다시 출력 2에 남긴다.\n번호\t관련 ID\t질문\t답\n${extraAnswers.list.map(q => [q.no, q.ids, q.q, q.a].join('\t')).join('\n')}`;
     const ans = answerTables(await aiCall(R.analyzer, { system, prompt: autoPrompt(prompt), files: filesFor(parts[k]) }));
     const t1 = ans.find(x => x.no === 1) || ans.find(x => x.no == null && hasIdHead(x.rows)) || ans[0];
-    if (!t1 || t1.rows.length < 2) throw new Error('AI 답에서 번역 입력표를 찾지 못했어요. 다시 실행해 주세요.');
+    if (!t1 || t1.rows.length < 2) throw new Error('AI 답에서 번역 입력표를 찾지 못함. 다시 실행 필요.');
     if (!head.length) head.push(...t1.rows[0]);
     body.push(...t1.rows.slice(1));
     const t2 = ans.find(x => x.no === 2); if (t2) qs.push(...t2.rows.slice(1).map(r => ({ no: r[0], ids: r[1] || '', q: r[2] || '', cols: r[3] || '', a: '' })).filter(q => q.q));
@@ -3194,7 +3274,7 @@ async function runTranslate() {
     autoLog(`번역 ${k + 1}/${parts.length} · ${PNAME[R.translator]}`);
     const p = buildPrompts(subGame(G(), parts[k]), lk, autoCtx.id).find(x => x.id === 'P2-2' || x.id === 'P2-3');
     const ans = answerTables(await aiCall(R.translator, { system, prompt: autoPrompt(p.text), files: filesFor(parts[k]) }));
-    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 번역 표를 찾지 못했어요.');
+    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 번역 표를 찾지 못함.');
     await applyUpload('tr', tb.rows);
   }
   if (PROV().deepl) {
@@ -3203,7 +3283,7 @@ async function runTranslate() {
       autoLog('DeepL 비교 번역');
       const r = await fetch('/api/ai/deepl', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lang: lk, texts: rows.map(x => /^원문 유지/.test(x.clean) || !x.clean ? x.ko : x.clean) }) });
       const j = await r.json().catch(() => ({}));
-      if (r.ok) await applyUpload('b', [['ID', 'DeepL'], ...rows.map((x, i) => [x.id, (j.texts || [])[i] || ''])]); else autoLog('DeepL은 건너뛰었어요: ' + (j.message || r.status));
+      if (r.ok) await applyUpload('b', [['ID', 'DeepL'], ...rows.map((x, i) => [x.id, (j.texts || [])[i] || ''])]); else autoLog('DeepL은 건너뜀: ' + (j.message || r.status));
     }
   }
 }
@@ -3225,7 +3305,7 @@ async function runReview() {
     autoLog(`오류 검수 ${k + 1}/${parts.length} · ${PNAME[R.reviewer]}`);
     const p = buildPrompts(subGame(G(), parts[k]), lk, autoCtx.id).find(x => x.id === 'P3');
     const ans = answerTables(await aiCall(R.reviewer, { prompt: autoPrompt(p.text), files: filesFor(parts[k]) }));
-    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 검수 표를 찾지 못했어요.');
+    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 검수 표를 찾지 못함.');
     await applyUpload('rv', tb.rows);
   }
   void need;
@@ -3237,7 +3317,7 @@ async function runTest() {
     autoLog(`행동 테스트 ${k + 1}/${parts.length} · ${PNAME[R.tester]}`);
     const p = buildPrompts(subGame(G(), parts[k]), lk, autoCtx.id).find(x => x.id === 'P4');
     const ans = answerTables(await aiCall(R.tester, { prompt: autoPrompt(p.text), files: filesFor(parts[k]) }));
-    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 테스트 표를 찾지 못했어요.');
+    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 테스트 표를 찾지 못함.');
     await applyUpload('ts', tb.rows);
   }
   await matchCalm();
@@ -3255,7 +3335,7 @@ async function runFix() {
     autoLog(`재수정 ${k + 1}/${parts.length} · ${PNAME[R.translator]}`);
     const p = buildPrompts(subGame(G(), parts[k]), lk, autoCtx.id).find(x => x.id === 'P5');
     const ans = answerTables(await aiCall(R.translator, { system, prompt: autoPrompt(p.text), files: filesFor(parts[k]) }));
-    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 수정 표를 찾지 못했어요.');
+    const tb = ans.find(x => hasIdHead(x.rows)) || ans[0]; if (!tb) throw new Error('AI 답에서 수정 표를 찾지 못함.');
     await applyUpload('fx', tb.rows);
   }
 }
@@ -3272,7 +3352,7 @@ async function autoRun(opts = {}) {
     for (let guard = 0; guard < 16; guard++) {
       const t = G(), lk = autoCtx.lk, step = currentStep(t, lk), s = workStats(t, lk);
       const sig = step + ':' + JSON.stringify(s);
-      if (sig === lastSig) throw new Error('AI 답을 저장하지 못해 진행이 멈췄어요. 다시 실행해 보고, 같으면 ‘직접 하기’로 진행해 주세요.');
+      if (sig === lastSig) throw new Error('AI 답을 저장하지 못해 진행이 멈춤. 다시 실행해 보고, 같으면 ‘직접 하기’로 진행 필요.');
       lastSig = sig;
       if (step === 1) { if (s.N && s.unresolved && !opts.reanalyze) break; await runAnalysis(); opts.reanalyze = false; if (tableStats(G().inputTable).unresolved) break; continue; }
       if (step === 2) { await runTranslate(); continue; }
@@ -3281,7 +3361,7 @@ async function autoRun(opts = {}) {
       if (step === 5) { if (!s.fix) break; await runFix(); continue; }
       break;
     }
-    autoLog('사람이 볼 차례예요.');
+    autoLog('사람이 볼 차례임.');
   } catch (e) { autoState.error = e.message || String(e); }
   finally { autoState.running = false; autoCtx = null; render(true); }
 }
@@ -3291,7 +3371,7 @@ document.addEventListener('click', e => {
   if (e.target.closest('#q-rerun')) {
     const t = cur().data, qs = (t.analysis && t.analysis.questions) || [];
     const list = qs.map((q, i) => Object.assign({}, q, { a: (document.querySelector(`[data-qa="${i}"]`) || {}).value || '' })).filter(q => q.a.trim());
-    if (!list.length) { toast('답을 하나 이상 적어 주세요.'); return; }
+    if (!list.length) { toast('답을 하나 이상 적기.'); return; }
     const ids = new Set(); list.forEach(q => String(q.ids).split(/[,\s/]+/).forEach(x => { const id = srcIdOf(t, x); if (id) ids.add(id); }));
     parseTable(t.inputTable).slice(1).forEach(r => { if (/확인 필요|판독 불확실/.test(r.join(' '))) ids.add(String(r[0]).trim()); });
     autoRun({ answers: { list, ids: [...ids] } });
@@ -3314,7 +3394,7 @@ async function addTermCands() {
     await db.doc('terms/' + makeId(c.ko)).set(d); n++;
   }
   await saveGameField('analysis.terms', []);
-  toast(`용어집에 ${n}개를 넣었어요. 번역은 용어집에서 채워 주세요.`); render(true);
+  toast(`용어집에 ${n}개를 넣음. 번역은 용어집에서 채우기.`); render(true);
 }
 
 /* ---- 자동 진행 패널 ---- */
@@ -3325,21 +3405,21 @@ function autoPanelHTML(id, t, lk, L, step, s) {
   const hasSrc = tableStats(t.srcTable).rows > 0;
   const nf = (gameFiles[id] || []).length;
   let head, body = '', go = true, goLabel = '자동으로 진행';
-  if (running) { head = 'AI가 작업하고 있어요'; go = false; }
-  else if (step === 1 && !hasSrc && !tableStats(t.inputTable).rows) { head = '먼저 자료를 올려 주세요'; body = `<p class="ap-p">이 게임의 <b>화면 캡처</b>(PNG·JPG)와 대본(Word·PDF)을 올리면, 사이트가 원문을 읽어 두고 자동 진행을 시작할 수 있어요. 파일 이름은 <b>${esc(abbrOf(t))}-01.png</b>처럼 정해 주세요.</p>${readOnly ? '' : `<label class="btn primary upl big">자료 올리기<input type="file" hidden multiple data-src accept="${SRC_ACCEPT}"></label>`}`; go = false; }
-  else if (step === 1 && s.unresolved && qs.length) { head = `AI가 ${qs.length}가지를 물어봤어요`; body = `<p class="ap-p">답을 적고 <b>답변 반영</b>을 누르면 그 부분만 다시 분석해요. 모르는 건 비워 두면 돼요.</p><div class="qlist">${qs.map((q, i) => `<label class="qrow"><span class="qq"><b>${esc(/^q/i.test(String(q.no)) ? q.no : 'Q' + (q.no || i + 1))}</b> ${esc(q.q)}<small>${esc(q.ids)}</small></span><input data-qa="${i}" placeholder="답" ${readOnly ? 'disabled' : ''}></label>`).join('')}</div>${readOnly ? '' : '<button type="button" class="btn primary big" id="q-rerun">답변 반영해서 다시 분석</button>'}`; go = false; }
-  else if (step === 1 && s.unresolved) { head = '번역 입력표에 확인 필요가 남아 있어요'; body = '<p class="ap-p">게임 설정의 번역 입력표에서 ‘확인 필요’를 직접 고치거나, 처음부터 다시 분석해 주세요.</p>'; goLabel = '처음부터 다시 분석'; }
-  else if (step === 'wait') { head = '영어를 먼저 확정해 주세요'; body = '<p class="ap-p">일본어·중국어는 확정된 영어를 참고해서 번역해요.</p><button type="button" class="btn" data-lang="en">영어로 가기</button>'; go = false; }
-  else if (step === 3 && !s.needReview && s.human) { head = `REVIEW ${s.human}건을 골라 주세요`; go = false; }
-  else if (step === 4 && !s.needTest && s.compare) { head = `테스트에서 걸린 ${s.compare}건을 확인해 주세요`; go = false; }
-  else if (step === 5 && !s.fix && s.plan) { head = `기획 판단 ${s.plan}건이 남았어요`; go = false; }
-  else if (step === 'done') { head = '모든 문구가 통과했어요'; body = readOnly ? '' : `<button type="button" class="btn primary big" data-wact="confirm">${esc(L.label)} 확정하기</button>`; go = false; }
-  else if (step === 'confirmed') { head = '확정됐어요 — 화면에 적용해 주세요'; body = `<p class="ap-p">${esc(APPLY_CHECK[lk])}</p><button type="button" class="btn" data-wact="export">최종 결과 내보내기</button>${readOnly ? '' : '<button type="button" class="btn primary" data-wact="applied">화면 적용 완료</button>'}`; go = false; }
-  else if (step === 'applied') { head = '화면 적용까지 끝났어요'; body = '<button type="button" class="btn" data-wact="export">최종 결과 내보내기</button>'; go = false; }
+  if (running) { head = 'AI가 작업하고 있음'; go = false; }
+  else if (step === 1 && !hasSrc && !tableStats(t.inputTable).rows) { head = '먼저 자료를 올리기'; body = `<p class="ap-p">이 게임의 <b>화면 캡처</b>(PNG·JPG)와 대본(Word·PDF)을 올리면, 사이트가 원문을 읽어 두고 자동 진행을 시작할 수 있음. 파일 이름은 <b>${esc(abbrOf(t))}-01.png</b>처럼 정하기.</p>${readOnly ? '' : `<label class="btn primary upl big">자료 올리기<input type="file" hidden multiple data-src accept="${SRC_ACCEPT}"></label>`}`; go = false; }
+  else if (step === 1 && s.unresolved && qs.length) { head = `AI가 ${qs.length}가지를 물어봄`; body = `<p class="ap-p">답을 적고 <b>답변 반영</b>을 누르면 그 부분만 다시 분석함. 모르는 건 비워 두면 됨.</p><div class="qlist">${qs.map((q, i) => `<label class="qrow"><span class="qq"><b>${esc(/^q/i.test(String(q.no)) ? q.no : 'Q' + (q.no || i + 1))}</b> ${esc(q.q)}<small>${esc(q.ids)}</small></span><input data-qa="${i}" placeholder="답" ${readOnly ? 'disabled' : ''}></label>`).join('')}</div>${readOnly ? '' : '<button type="button" class="btn primary big" id="q-rerun">답변 반영해서 다시 분석</button>'}`; go = false; }
+  else if (step === 1 && s.unresolved) { head = '번역 입력표에 확인 필요가 남아 있음'; body = '<p class="ap-p">게임 설정의 번역 입력표에서 ‘확인 필요’를 직접 고치거나, 처음부터 다시 분석 필요.</p>'; goLabel = '처음부터 다시 분석'; }
+  else if (step === 'wait') { head = '영어를 먼저 확정 필요'; body = '<p class="ap-p">일본어·중국어는 확정된 영어를 참고해서 번역함.</p><button type="button" class="btn" data-lang="en">영어로 가기</button>'; go = false; }
+  else if (step === 3 && !s.needReview && s.human) { head = `REVIEW ${s.human}건을 고르기`; go = false; }
+  else if (step === 4 && !s.needTest && s.compare) { head = `테스트에서 걸린 ${s.compare}건을 확인 필요`; go = false; }
+  else if (step === 5 && !s.fix && s.plan) { head = `기획 판단 ${s.plan}건이 남음`; go = false; }
+  else if (step === 'done') { head = '모든 문구가 통과함'; body = readOnly ? '' : `<button type="button" class="btn primary big" data-wact="confirm">${esc(L.label)} 확정하기</button>`; go = false; }
+  else if (step === 'confirmed') { head = '확정됨 — 화면에 적용 필요'; body = `<p class="ap-p">${esc(APPLY_CHECK[lk])}</p><button type="button" class="btn" data-wact="export">최종 결과 내보내기</button>${readOnly ? '' : '<button type="button" class="btn primary" data-wact="applied">화면 적용 완료</button>'}`; go = false; }
+  else if (step === 'applied') { head = '화면 적용까지 끝남'; body = '<button type="button" class="btn" data-wact="export">최종 결과 내보내기</button>'; go = false; }
   else head = `다음 할 일: ${stepLabel(step)}`;
   const who = `원문 분석 ${PNAME[R.analyzer] || '-'} · 번역 ${PNAME[R.translator] || '-'} · 검수 ${PNAME[R.reviewer] || '-'} · 테스트 ${PNAME[R.tester] || '-'}`;
   return `<section class="autop">
-    <div class="ap-head"><h2>${esc(head)}</h2>${go && !readOnly ? `<button type="button" class="btn primary big" id="auto-go" ${goLabel.startsWith('처음') ? 'data-re="1"' : ''} ${busyElse ? 'disabled title="다른 게임을 자동으로 진행하고 있어요"' : ''}>${goLabel}</button>` : ''}${running ? '<button type="button" class="btn" id="auto-stop">멈추기</button>' : ''}</div>
+    <div class="ap-head"><h2>${esc(head)}</h2>${go && !readOnly ? `<button type="button" class="btn primary big" id="auto-go" ${goLabel.startsWith('처음') ? 'data-re="1"' : ''} ${busyElse ? 'disabled title="다른 게임을 자동으로 진행하고 있음"' : ''}>${goLabel}</button>` : ''}${running ? '<button type="button" class="btn" id="auto-stop">멈추기</button>' : ''}</div>
     ${running ? `<ul class="ap-log on">${autoState.lines.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
     ${autoState.error && autoState.key === id + ':' + lk ? `<p class="ap-err">${esc(autoState.error)}</p>` : ''}
     ${body}
@@ -3352,7 +3432,7 @@ function autoPanelHTML(id, t, lk, L, step, s) {
 function openFiles() {
   const id = gameId, fs = gameFiles[id] || [];
   $('#files-title').textContent = `자료 · ${themeName(id)}`;
-  $('#files-list').innerHTML = fs.length ? fs.map(f => `<div class="frow">${/\.pdf$/i.test(f.name) ? '<span class="fpdf">PDF</span>' : `<img src="/api/files/${encodeURIComponent(id)}/${encodeURIComponent(f.name)}" alt="" loading="lazy">`}<span>${esc(f.name)}</span>${readOnly ? '' : `<button type="button" class="btn ghost" data-fdel="${esc(f.name)}">삭제</button>`}</div>`).join('') : '<p class="ap-p">아직 자료가 없어요.</p>';
+  $('#files-list').innerHTML = fs.length ? fs.map(f => `<div class="frow">${/\.pdf$/i.test(f.name) ? '<span class="fpdf">PDF</span>' : `<img src="/api/files/${encodeURIComponent(id)}/${encodeURIComponent(f.name)}" alt="" loading="lazy">`}<span>${esc(f.name)}</span>${readOnly ? '' : `<button type="button" class="btn ghost" data-fdel="${esc(f.name)}">삭제</button>`}</div>`).join('') : '<p class="ap-p">아직 자료가 없음.</p>';
   $('#filesdlg').showModal();
 }
 document.addEventListener('click', async e => {
@@ -3366,12 +3446,12 @@ document.addEventListener('click', async e => {
 async function storeGameFile(id, file) {
   let blob = isImgFile(file) ? await shrinkImage(file) : file;
   let name = fileIdOf(file.name) + (blob.type === 'image/jpeg' ? '.jpg' : blob.type === 'image/png' ? '.png' : '.' + extOf(file));
-  if (blob.size > 4e6) throw new Error(`${file.name}: 4MB보다 커서 자료로 저장하지 못했어요.`);
+  if (blob.size > 4e6) throw new Error(`${file.name}: 4MB보다 커서 자료로 저장하지 못함.`);
   const u8 = new Uint8Array(await blob.arrayBuffer()); let bin = '';
   for (let i = 0; i < u8.length; i += 0x8000) bin += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
   const r = await fetch('/api/files/' + encodeURIComponent(id), { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, data: btoa(bin) }) });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.message || '자료를 저장하지 못했어요.');
+  if (!r.ok) throw new Error(j.message || '자료를 저장하지 못함.');
   gameFiles[id] = j.files || gameFiles[id];
 }
 
@@ -3390,14 +3470,14 @@ document.addEventListener('change', async e => {
     const f = el.files[0], target = el.dataset.one; el.value = '';
     try {
       const tables = await readWorkbook(f);
-      if (!tables.length || tables[0].length < 2) { toast('표를 찾지 못했어요.'); return; }
+      if (!tables.length || tables[0].length < 2) { toast('표를 찾지 못함.'); return; }
       await (target === 'one:res' ? applyResult(tables) : target === 'one:cross' ? applyCross(tables) : target === 'one:tr' ? applyTranslation(tables) : applyReview(tables));
-    } catch (err) { done(); toast(err.message || '파일을 읽지 못했어요.', 5000); }
+    } catch (err) { done(); toast(err.message || '파일을 읽지 못함.', 5000); }
     return;
   }
   if (el.matches && el.matches('[data-tr]') && !readOnly) {
     const id = el.dataset.tr, v = el.value.trim();
-    await saveWork(items => { const x = items[id] = items[id] || {}; if (x.tr === v) return 0; if (x.tr) (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: v, why: '직접 고침' }); x.tr = v; x.rv = null; x.bt = null; x.ok = (x.ok || []).filter(k => k === 'read'); return 1; }, n => n ? '고쳤어요. 이 줄은 자동 점검과 교차 검수를 다시 받아요.' : '');
+    await saveWork(items => { const x = items[id] = items[id] || {}; if (x.tr === v) return 0; if (x.tr) (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: v, why: '직접 고침' }); x.tr = v; x.rv = null; x.bt = null; x.ok = (x.ok || []).filter(k => k === 'read'); return 1; }, n => n ? '고침. 이 줄은 자동 점검과 교차 검수를 다시 받음.' : '');
   }
 });
 
@@ -3477,11 +3557,11 @@ function extractStepHTML(id, t) {
   const allFiles = [...new Set([...storedIds.map(f => f.fid), ...A.files])];
   const countOf = fid => A.list.filter(x => x.file === fid).length;
   const pending = storedIds.filter(f => /\.(png|jpe?g|webp|pdf)$/i.test(f.name) && !countOf(f.fid));
-  const fileChips = allFiles.length ? `<div class="fchips">${allFiles.map(fid => { const n = countOf(fid), isRef = !!A.ref[fid]; return `<span class="fchip${isRef ? ' ref' : ''}${n ? '' : ' wait'}"><b>${esc(fid)}</b> ${n ? `${n}줄` : '아직 안 뽑음'}${readOnly ? '' : ` <button type="button" class="linkbtn" data-sref="${esc(fid)}" title="기획서처럼 규칙만 설명하는 파일이면 참고 자료로 바꿔요">${isRef ? '참고 자료' : '원문 자료'}</button>`}</span>`; }).join('')}</div>` : '';
+  const fileChips = allFiles.length ? `<div class="fchips">${allFiles.map(fid => { const n = countOf(fid), isRef = !!A.ref[fid]; return `<span class="fchip${isRef ? ' ref' : ''}${n ? '' : ' wait'}"><b>${esc(fid)}</b> ${n ? `${n}줄` : '아직 안 뽑음'}${readOnly ? '' : ` <button type="button" class="linkbtn" data-sref="${esc(fid)}" title="기획서처럼 규칙만 설명하는 파일이면 참고 자료로 바꿈">${isRef ? '참고 자료' : '원문 자료'}</button>`}</span>`; }).join('')}</div>` : '';
   const flt = [['all', `전체 ${A.n}`], ['unc', `판독 불확실 ${A.unc}`], ['dup', `중복 ${A.dup}`], ['todo', `미확인 ${A.n - A.ok}`]];
   const shown = A.main.filter(x => srcFilter === 'all' || (srcFilter === 'unc' && x.unc) || (srcFilter === 'dup' && x.dup.length) || (srcFilter === 'todo' && !x.chk) || srcFilter === 'f:' + x.file);
   const hasImg = fid => storedIds.some(f => f.fid === fid);
-  return `<p class="sb">게임 화면 캡처·대본을 올리면 한국어 원문을 표로 뽑아요. 한국어만 보고 <b>빠진 문구·잘못 읽은 글자</b>를 확인하면 돼요.</p>
+  return `<p class="sb">게임 화면 캡처·대본을 올리면 한국어 원문을 표로 뽑음. 한국어만 보고 <b>빠진 문구·잘못 읽은 글자</b>를 확인하면 됨.</p>
     <ol class="do">
       <li><i>1</i><div>${readOnly ? '' : `<label class="btn ${A.n ? '' : 'primary'} upl">파일 올리기<input type="file" hidden multiple data-src accept="${SRC_ACCEPT}"></label>`}<span class="do-l">PNG · JPG · PDF · Word · 엑셀 (여러 개, 끌어다 놓기 가능)</span></div></li>
       ${pending.length && !aiOn() ? `<li><i>2</i><div>${`<button type="button" class="btn primary" data-copy="one-x">프롬프트 복사</button>`} ChatGPT 새 대화에 붙여 넣고, 올린 이미지 ${pending.length}개를 첨부해 보낸 뒤 ${readOnly ? '' : '<button type="button" class="btn" data-paste="one:x">답 붙여 넣기</button>'}<pre hidden id="pt-one-x">${esc(extractPrompt(t))}</pre></div></li>` : ''}
@@ -3493,7 +3573,7 @@ function extractStepHTML(id, t) {
       <td class="mono">${esc(x.id)}</td>
       <td>${readOnly ? esc(x.ko) : `<textarea class="grow" rows="1" data-sko="${esc(x.id)}">${esc(x.ko)}</textarea>`}${x.unc ? `<small class="flag">${esc(x.note || '판독 불확실')}</small>` : ''}${x.dup.length ? `<small class="dupf">중복: ${esc(x.dup.join(', '))}</small>` : ''}${x.chk === 'edited' ? '<small class="edf">사람이 고침</small>' : ''}</td>
       <td>${esc(String(x.where).replace(/^[^·]*·\s*/, ''))}</td><td>${esc(x.kind)}</td>
-      <td>${hasImg(x.file) ? `<button type="button" class="linkbtn" data-simg="${esc(x.id)}">캡처</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="6">해당하는 문구가 없어요.</td></tr>'}</tbody></table></div>
+      <td>${hasImg(x.file) ? `<button type="button" class="linkbtn" data-simg="${esc(x.id)}">캡처</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="6">해당하는 문구가 없음.</td></tr>'}</tbody></table></div>
     <div class="nextrow spread"><span class="sb">확인 ${A.ok}/${A.n}${readOnly ? '' : ` · <button type="button" class="linkbtn" data-sall>문제 없는 줄 모두 확인</button>`}</span><span><button type="button" class="btn" id="src-xlsx">엑셀 받기</button>${readOnly ? '' : `<button type="button" class="btn primary" id="src-done">${t.srcDone ? '확인 완료됨' : '확인 완료 · 다음: 번역'}</button>`}</span></div>` : ''}`;
 }
 function srcXlsx(t) {
@@ -3517,12 +3597,12 @@ async function patchSrc(fn, msg) { const c = cur(); const t = c.data; const out 
 document.addEventListener('click', async e => {
   const f = e.target.closest('[data-sflt]'); if (f) { srcFilter = srcFilter === f.dataset.sflt && f.dataset.sflt !== 'all' ? 'all' : f.dataset.sflt; render(true); return; }
   const r = e.target.closest('[data-sref]'); if (r) { const fid = r.dataset.sref; return patchSrc((chk, ref) => { if (ref[fid]) delete ref[fid]; else ref[fid] = true; return { ref }; }); }
-  if (e.target.closest('[data-sall]')) { const A = srcAnalysis(cur().data); return patchSrc(chk => { A.main.forEach(x => { if (!x.unc && !x.dup.length && !chk[x.id]) chk[x.id] = 'ok'; }); return { check: chk }; }, '판독 불확실·중복이 아닌 줄을 모두 확인으로 표시했어요.'); }
+  if (e.target.closest('[data-sall]')) { const A = srcAnalysis(cur().data); return patchSrc(chk => { A.main.forEach(x => { if (!x.unc && !x.dup.length && !chk[x.id]) chk[x.id] = 'ok'; }); return { check: chk }; }, '판독 불확실·중복이 아닌 줄을 모두 확인으로 표시함.'); }
   if (e.target.closest('#src-xlsx')) { srcXlsx(cur().data); return; }
   if (e.target.closest('#src-done')) {
     const A = srcAnalysis(cur().data);
-    if (A.unc && !confirmOnce('src-done')) { toast(`판독 불확실 ${A.unc}곳이 남아 있어요. 그래도 넘어가려면 한 번 더 눌러 주세요.`, 4000); return; }
-    await saveGameField('srcDone', true); render(true); toast('원문 추출을 마쳤어요. 이제 번역해요.'); return;
+    if (A.unc && !confirmOnce('src-done')) { toast(`판독 불확실 ${A.unc}곳이 남아 있음. 그래도 넘어가려면 한 번 더 누르기.`, 4000); return; }
+    await saveGameField('srcDone', true); render(true); toast('원문 추출을 마침. 이제 번역함.'); return;
   }
   const im = e.target.closest('[data-simg]'); if (im) {
     const x = srcList(cur().data).find(v => v.id === im.dataset.simg); if (!x) return;
@@ -3542,7 +3622,7 @@ document.addEventListener('change', async e => {
     x.ko = v; if (/판독\s*불확실/.test(x.note)) x.note = x.note.replace(/판독\s*불확실[^/]*/,'').trim();
     await saveGameField('srcTable', rowsToTSV(srcRowsOut(list)));
     const chk = Object.assign({}, c.data.srcCheck || {}, { [id]: 'edited' }); await saveGameField('srcCheck', chk);
-    render(true); toast('고쳤어요. ‘사람이 고침’으로 표시돼요.');
+    render(true); toast('고침. ‘사람이 고침’으로 표시됨.');
   }
 });
 
@@ -3552,9 +3632,9 @@ const xEditing = new Set();
 document.addEventListener('click', async e => {
   const tb = e.target.closest('[data-rtab]'); if (tb) { rvTab = tb.dataset.rtab; render(true); return; }
   const ok = e.target.closest('[data-autook]'); if (ok) { const [id, k] = ok.dataset.autook.split('|'); return saveWork(items => { const x = items[id] = items[id] || {}; x.ok = [...new Set([...(x.ok || []), k])]; return 1; }, () => ''); }
-  const fx = e.target.closest('[data-xfix]'); if (fx) { const id = fx.dataset.xfix; return saveWork(items => { const x = items[id]; if (!x || !x.rv || !x.rv.fix) return 0; (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: x.rv.fix, why: x.rv.why || '교차 검수', kind: 'fix' }); x.tr = x.rv.fix; x.rv = null; x.bt = null; x.ok = (x.ok || []).filter(k => k === 'read'); return 1; }, () => '고친 번역을 썼어요. 이 줄은 교차 검수를 한 번 더 받아요.'); }
-  if (e.target.closest('[data-xfixall]')) return saveWork(items => { let n = 0; Object.values(items).forEach(x => { if (x.rv && x.rv.v !== '통과' && x.rv.fix) { (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: x.rv.fix, why: x.rv.why || '교차 검수', kind: 'fix' }); x.tr = x.rv.fix; x.rv = null; x.bt = null; x.ok = (x.ok || []).filter(k => k === 'read'); n++; } }); return n; }, n => `${n}줄을 고친 번역으로 바꿨어요. 바뀐 줄만 교차 검수를 한 번 더 받아요.`);
-  const kp = e.target.closest('[data-xkeep]'); if (kp) { const id = kp.dataset.xkeep; return saveWork(items => { const x = items[id]; if (!x) return 0; x.rv = Object.assign({}, x.rv, { v: '통과', by: meName(), kind: '사람 판단' }); return 1; }, () => '지금 번역으로 통과시켰어요.'); }
+  const fx = e.target.closest('[data-xfix]'); if (fx) { const id = fx.dataset.xfix; return saveWork(items => { const x = items[id]; if (!x || !x.rv || !x.rv.fix) return 0; (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: x.rv.fix, why: x.rv.why || '교차 검수', kind: 'fix' }); x.tr = x.rv.fix; x.rv = null; x.bt = null; x.ok = (x.ok || []).filter(k => k === 'read'); return 1; }, () => '고친 번역을 씀. 이 줄은 교차 검수를 한 번 더 받음.'); }
+  if (e.target.closest('[data-xfixall]')) return saveWork(items => { let n = 0; Object.values(items).forEach(x => { if (x.rv && x.rv.v !== '통과' && x.rv.fix) { (x.hist = x.hist || []).push({ at: nowISO(), by: meName(), from: x.tr, to: x.rv.fix, why: x.rv.why || '교차 검수', kind: 'fix' }); x.tr = x.rv.fix; x.rv = null; x.bt = null; x.ok = (x.ok || []).filter(k => k === 'read'); n++; } }); return n; }, n => `${n}줄을 고친 번역으로 바꿈. 바뀐 줄만 교차 검수를 한 번 더 받음.`);
+  const kp = e.target.closest('[data-xkeep]'); if (kp) { const id = kp.dataset.xkeep; return saveWork(items => { const x = items[id]; if (!x) return 0; x.rv = Object.assign({}, x.rv, { v: '통과', by: meName(), kind: '사람 판단' }); return 1; }, () => '지금 번역으로 통과시킴.'); }
   const ed = e.target.closest('[data-xedit]'); if (ed) { xEditing.add(ed.dataset.xedit); render(true); const ta = document.querySelector(`textarea[data-tr="${CSS.escape(ed.dataset.xedit)}"]`); if (ta) ta.focus(); return; }
 });
 document.addEventListener('change', async e => {
@@ -3563,7 +3643,7 @@ document.addEventListener('change', async e => {
   if (el.matches && el.matches('[data-png]') && el.files && el.files.length) {
     const files = [...el.files], c = cur(); el.value = ''; let n = 0;
     for (const f of files) { busy(`${f.name} 올리는 중…`); try { await storeGameFile(c.id, f); n++; } catch (err) { toast(err.message, 5000); } }
-    done(); render(true); toast(`PNG ${n}개를 올렸어요.`);
+    done(); render(true); toast(`PNG ${n}개를 올림.`);
   }
   if (el.matches && el.matches('[data-tr]')) xEditing.delete(el.dataset.tr);
 });
@@ -3574,13 +3654,13 @@ let memoEditing = null;
 const openMemosOf = x => ((x && x.memos) || []).filter(m => !m.done);
 function memoBtn(r) { return readOnly ? '' : `<button type="button" class="linkbtn memo-btn" data-memo="${esc(r.id)}">메모</button>`; }
 function memoEditorHTML(r) {
-  return memoEditing === r.id && !readOnly ? `<div class="memo-ed"><textarea id="memo-text" rows="2" placeholder="무엇을 어떻게 고쳐야 하는지 적어 주세요. 예: 1P 화면에서는 ‘探して’보다 ‘見つけて’가 맞아요"></textarea><div class="iacts"><button type="button" class="btn primary" data-memo-save="${esc(r.id)}">메모 남기기</button><button type="button" class="btn ghost" data-memo-cancel>취소</button></div></div>` : '';
+  return memoEditing === r.id && !readOnly ? `<div class="memo-ed"><textarea id="memo-text" rows="2" placeholder="무엇을 어떻게 고쳐야 하는지 적기. 예: 1P 화면에서는 ‘探して’보다 ‘見つけて’가 맞음"></textarea><div class="iacts"><button type="button" class="btn primary" data-memo-save="${esc(r.id)}">메모 남기기</button><button type="button" class="btn ghost" data-memo-cancel>취소</button></div></div>` : '';
 }
 function memoBannerHTML(t, lk) {
   const rows = sheetRows(t, lk).filter(r => openMemosOf(r.x).length);
   if (!rows.length) return '';
   const n = rows.reduce((a, r) => a + openMemosOf(r.x).length, 0);
-  return `<section class="memo-banner" role="alert"><h3>수정 요청 ${n}건 <small>반영하면 ‘반영함’을 눌러 주세요. 다 반영해야 확정할 수 있어요.</small></h3>
+  return `<section class="memo-banner" role="alert"><h3>수정 요청 ${n}건 <small>반영하면 ‘반영함’을 누르기. 다 반영해야 확정할 수 있음.</small></h3>
     ${rows.map(r => `<div class="memo-row"><div class="memo-src"><code>${esc(r.id)}${r.file ? ' · ' + esc(r.file) : ''}</code><b style="white-space:pre-wrap">${esc(r.ko)}</b><span style="white-space:pre-wrap">${xEditing.has(r.id) && !readOnly ? `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>` : esc(r.tr)}</span></div>
       <div class="memo-list">${openMemosOf(r.x).map(m => `<div class="memo"><p>${esc(m.text)}</p><small>${esc(m.by)} · ${fmtDate(m.at)}</small>${readOnly ? '' : `<div class="iacts"><button type="button" class="btn" data-xedit="${esc(r.id)}">번역 고치기</button><button type="button" class="btn primary" data-memo-done="${esc(r.id)}|${esc(m.id)}">반영함</button></div>`}</div>`).join('')}</div></div>`).join('')}
   </section>`;
@@ -3589,13 +3669,13 @@ document.addEventListener('click', async e => {
   const mb = e.target.closest('[data-memo]'); if (mb) { memoEditing = mb.dataset.memo; render(true); const ta = $('#memo-text'); if (ta) ta.focus(); return; }
   if (e.target.closest('[data-memo-cancel]')) { memoEditing = null; render(true); return; }
   const ms = e.target.closest('[data-memo-save]'); if (ms) {
-    const id = ms.dataset.memoSave, text = ($('#memo-text') || {}).value || ''; if (!text.trim()) { toast('메모 내용을 적어 주세요.'); return; }
+    const id = ms.dataset.memoSave, text = ($('#memo-text') || {}).value || ''; if (!text.trim()) { toast('메모 내용을 적기.'); return; }
     memoEditing = null;
-    return saveWork(items => { const x = items[id] = items[id] || {}; x.memos = [...(x.memos || []), { id: Math.random().toString(36).slice(2, 8), by: meName(), at: nowISO(), text: text.trim(), done: false }]; return 1; }, () => '수정 요청을 남겼어요. 화면 맨 위에 표시돼요.');
+    return saveWork(items => { const x = items[id] = items[id] || {}; x.memos = [...(x.memos || []), { id: Math.random().toString(36).slice(2, 8), by: meName(), at: nowISO(), text: text.trim(), done: false }]; return 1; }, () => '수정 요청을 남김. 화면 맨 위에 표시됨.');
   }
   const md = e.target.closest('[data-memo-done]'); if (md) {
     const [id, mid] = md.dataset.memoDone.split('|');
-    return saveWork(items => { const x = items[id]; if (!x) return 0; (x.memos || []).forEach(m => { if (m.id === mid) Object.assign(m, { done: true, doneBy: meName(), doneAt: nowISO() }); }); return 1; }, () => '반영함으로 표시했어요.');
+    return saveWork(items => { const x = items[id]; if (!x) return 0; (x.memos || []).forEach(m => { if (m.id === mid) Object.assign(m, { done: true, doneBy: meName(), doneAt: nowISO() }); }); return 1; }, () => '반영함으로 표시함.');
   }
 });
 
@@ -3627,7 +3707,7 @@ document.addEventListener('click', e => {
   const me = await Store.me();
   setupAuth(me);
   if (me.setupError) { showAuthPage(me.setupError); return; }
-  if (me.offline) { showAuthPage('서버에 연결하지 못했어요. 잠시 후 새로고침해 주세요. (무료 서버는 처음 열 때 1분 정도 걸릴 수 있어요)'); return; }
+  if (me.offline) { showAuthPage('서버에 연결하지 못함. 잠시 후 새로고침 필요. (무료 서버는 처음 열 때 1분 정도 걸릴 수 있음)'); return; }
   if (!me.loggedIn) { showAuthPage(); return; }
   if (!me.canView) { showWaiting(me); watchMe(8000); return; }
   readOnly = !me.canEdit;
@@ -3640,11 +3720,11 @@ document.addEventListener('click', e => {
     if (!gameId && h && themes.some(t => t.id === h)) gameId = h;
     if (!gameId || !themes.some(t => t.id === gameId)) gameId = themes[0]?.id ?? null;
     render();
-  }, () => toast('게임 목록을 불러오지 못했어요. 새로고침해 주세요.'));
+  }, () => toast('게임 목록을 불러오지 못함. 새로고침 필요.'));
   db.collection('terms').onSnapshot(snap => {
     terms = snap.docs.filter(d => d.exists).map(d => ({ id: d.id, data: d.data() }));
     render();
-  }, () => toast('용어집을 불러오지 못했어요. 새로고침해 주세요.'));
+  }, () => toast('용어집을 불러오지 못함. 새로고침 필요.'));
 })();
 </script>
 

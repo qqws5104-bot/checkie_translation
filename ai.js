@@ -52,15 +52,15 @@ async function model(p) {
 }
 
 function fail(p, status, msg) {
-  if (status === 401 || status === 403) return new Error(`${NAMES[p]} API 키가 올바르지 않아요. 관리자에게 알려 주세요.`);
-  if (status === 429 || status === 529 || status === 503) return new Error(`${NAMES[p]}가 지금 바빠요(${status}). 1분쯤 뒤에 다시 해 주세요.`);
-  if (status === 404) { delete picked[p]; return new Error(`${NAMES[p]} 모델을 찾지 못했어요. 관리자가 모델 이름을 확인해 주세요.`); }
-  return new Error(`${NAMES[p]} 호출이 실패했어요 (${status}${msg ? ': ' + String(msg).slice(0, 200) : ''}).`);
+  if (status === 401 || status === 403) return new Error(`${NAMES[p]} API 키가 올바르지 않음. 관리자에게 알리기.`);
+  if (status === 429 || status === 529 || status === 503) return new Error(`${NAMES[p]}가 지금 바쁨(${status}). 1분쯤 뒤에 다시 하기.`);
+  if (status === 404) { delete picked[p]; return new Error(`${NAMES[p]} 모델을 찾지 못함. 관리자가 모델 이름을 확인 필요.`); }
+  return new Error(`${NAMES[p]} 호출이 실패함 (${status}${msg ? ': ' + String(msg).slice(0, 200) : ''}).`);
 }
 
 /* files: [{ media: 'image/png' | 'application/pdf', b64, name }] */
 async function call(p, { system, text, files = [], maxTokens = 32000 }) {
-  if (!KEYS[p] || p === 'deepl') throw new Error(`${NAMES[p] || p} API 키가 없어요.`);
+  if (!KEYS[p] || p === 'deepl') throw new Error(`${NAMES[p] || p} API 키가 없음.`);
   if (p === 'claude') {
     const content = [...files.map(f => f.media === 'application/pdf'
       ? { type: 'document', source: { type: 'base64', media_type: f.media, data: f.b64 } }
@@ -94,12 +94,12 @@ async function call(p, { system, text, files = [], maxTokens = 32000 }) {
     const c = (j.candidates || [])[0] || {};
     return { text: ((c.content && c.content.parts) || []).map(x => x.text || '').join(''), cut: c.finishReason === 'MAX_TOKENS', model: m };
   }
-  throw new Error('알 수 없는 AI예요.');
+  throw new Error('알 수 없는 AI임.');
 }
 
 const DEEPL_LANG = { en: 'EN-US', ja: 'JA', zh: 'ZH-HANS' };
 async function deepl(texts, lang) {
-  if (!KEYS.deepl) throw new Error('DeepL API 키가 없어요.');
+  if (!KEYS.deepl) throw new Error('DeepL API 키가 없음.');
   const out = [];
   for (let i = 0; i < texts.length; i += 50) {
     const r = await fetch(BASE.deepl + '/v2/translate', { method: 'POST', headers: { Authorization: 'DeepL-Auth-Key ' + KEYS.deepl, 'content-type': 'application/json' }, body: JSON.stringify({ text: texts.slice(i, i + 50), source_lang: 'KO', target_lang: DEEPL_LANG[lang] || 'EN-US' }) });
