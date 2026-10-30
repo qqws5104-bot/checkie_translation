@@ -246,8 +246,10 @@
     "updatedAt": "2026-10-30T03:23:40.512Z"
   },
   "ui-side": {
-    "common": true,
-    "games": [],
+    "common": false,
+    "games": [
+      "fix-pix"
+    ],
     "intent": "옆쪽 방향 안내",
     "ko": "SIDE",
     "memo": "영어 버전에서는 자연스러운지 확인 필요",
@@ -272,7 +274,7 @@
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-29T00:00:00Z"
+    "updatedAt": "2026-10-30T03:23:44.976Z"
   },
   "ui-time": {
     "common": true,
