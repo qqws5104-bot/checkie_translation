@@ -155,7 +155,7 @@
     "honorific": "게임 스타일의 말투.",
     "speakers": [
       {
-        "who": "",
+        "who": "게임 말투",
         "to": "플레이어",
         "tone": "",
         "banned": ""
@@ -172,7 +172,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-10-30T03:25:58.801Z"
+    "updatedAt": "2026-10-30T03:26:02.851Z"
   },
   "game-c4dl2": {
     "name": "Qbrick",
