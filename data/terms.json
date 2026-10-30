@@ -215,8 +215,10 @@
     "updatedAt": "2026-10-29T00:00:00Z"
   },
   "ui-round": {
-    "common": true,
-    "games": [],
+    "common": false,
+    "games": [
+      "fix-pix"
+    ],
     "intent": "라운드 표시",
     "ko": "ROUND",
     "memo": "일·중은 영문 그대로 유지",
@@ -241,7 +243,7 @@
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-29T05:28:55.463Z"
+    "updatedAt": "2026-10-30T03:23:40.512Z"
   },
   "ui-side": {
     "common": true,
