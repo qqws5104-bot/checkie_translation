@@ -91,7 +91,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-10-30T02:58:54.838Z",
+    "updatedAt": "2026-10-30T02:59:18.676Z",
     "progressBy": {
       "en": {
         "4": {
@@ -146,6 +146,14 @@
             "by": "김예은",
             "at": "2026-10-30T02:58:54.838Z",
             "forced": true
+          }
+        },
+        "apply": {
+          "side": {
+            "AD-1-1P": true,
+            "AD-1-2P": true,
+            "AD-2-1P": true,
+            "AD-2-2P": true
           }
         }
       },
