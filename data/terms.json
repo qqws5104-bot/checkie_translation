@@ -79,18 +79,18 @@
       "ja": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "미정",
-        "text": ""
+        "status": "후보",
+        "text": "Fix Pix"
       },
       "zh": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "미정",
-        "text": ""
+        "status": "후보",
+        "text": "Fix Pix"
       }
     },
     "type": "게임명",
-    "updatedAt": "2026-10-29T00:00:00Z"
+    "updatedAt": "2026-10-30T03:23:33.937Z"
   },
   "this-one": {
     "common": false,
