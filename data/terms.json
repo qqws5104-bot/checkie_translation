@@ -374,7 +374,7 @@
     "games": [
       "chris-mas"
     ],
-    "intent": "",
+    "intent": "내비 화면 영문",
     "tr": {
       "en": {
         "text": "NAVIGATION SYSTEM",
@@ -396,6 +396,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:53:00.529Z"
+    "updatedAt": "2026-11-02T03:53:08.735Z"
   }
 }
