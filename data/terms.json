@@ -54,12 +54,12 @@
       "zh": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "미정",
-        "text": ""
+        "status": "후보",
+        "text": "这个！这个！这个！"
       }
     },
     "type": "게임명",
-    "updatedAt": "2026-11-02T03:46:13.018Z"
+    "updatedAt": "2026-11-02T03:47:40.165Z"
   },
   "fix-pix-name": {
     "common": false,
