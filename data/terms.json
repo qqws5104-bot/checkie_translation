@@ -397,5 +397,36 @@
     },
     "memo": "",
     "updatedAt": "2026-11-02T03:53:10.959Z"
+  },
+  "item-ehfpz": {
+    "ko": "산타자격 검정시험",
+    "type": "지시 동사",
+    "common": false,
+    "games": [
+      "chris-mas"
+    ],
+    "intent": "",
+    "tr": {
+      "en": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      },
+      "ja": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      },
+      "zh": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      }
+    },
+    "memo": "",
+    "updatedAt": "2026-11-02T03:53:29.240Z"
   }
 }
