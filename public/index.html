@@ -764,6 +764,12 @@ h1 { font-size: 22px; }
 .fhead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
 .fhead b { font-size: 16px; }
 .memo.plan { border-left-color: var(--warn, #c92a2a); }
+.pzt td.pz { text-align: center; font-weight: 700; white-space: nowrap; }
+.pzt td.pz.ok { color: var(--ok); }
+.pzt td.pz.bad { color: var(--warn, #c92a2a); background: color-mix(in srgb, var(--warn, #c92a2a) 10%, transparent); }
+.pzt td.pz.na { color: var(--muted); font-weight: 400; }
+.pzhint { margin-top: -4px; }
+.pzt td.pzc { white-space: nowrap; }
 .warnchip { background: var(--warn-soft, #fff0f0); color: var(--warn, #c92a2a); font-style: normal; }
 .fsample { font-size: 22px; line-height: 1.4; padding: 8px 10px; border-radius: 8px; background: var(--panel); overflow-wrap: anywhere; }
 
@@ -1148,7 +1154,10 @@ const isExcluded = r => /^\s*제외/.test(r.method || '');
 const isDirect = r => !r.method || /직접/.test(r.method);   // 영어 확정본은 직접 번역 문구에만 준다
 const isFinal = step => step === 'confirmed' || step === 'applied';
 const VLABEL = { '통과': 'PASS', '수정 필요': 'FAIL', '사람 확인 필요': 'REVIEW' };
-const aiOf = (t, lk) => (t.ai && t.ai[lk]) || '';
+/* 팀 운영 원칙: 영어·중국어 = ChatGPT 번역 → Claude 검수, 일본어 = Claude 번역 → ChatGPT 검수 */
+const DEFAULT_AI = { en: 'ChatGPT', ja: 'Claude', zh: 'ChatGPT' };
+const aiOf = (t, lk) => (t.ai && t.ai[lk]) || DEFAULT_AI[lk] || 'Claude';
+const reviewerOf = (t, lk) => aiOf(t, lk) === 'ChatGPT' ? 'Claude' : 'ChatGPT';
 const CULTURE = {
   common: ['한국 문화 요소는 몰라도 플레이할 수 있으면 살린다.', '정치·역사 소재(지도, 국기, 역사 인물)를 새로 넣지 않는다.', '색 이름만으로 정답·오답을 구분하게 쓰지 않는다.', '언어를 가리킬 때 국기 대신 언어 이름(English / 日本語 / 简体中文)을 쓴다.'],
   en: ['비원어민 관광객이 많으므로 쉬운 단어를 쓰고, 관용구·속어를 쓰지 않는다.', '플레이어 호칭은 player 또는 you로 통일한다. 성별이 드러나는 호칭을 쓰지 않는다.'],
@@ -1450,8 +1459,9 @@ function flowState(t, lk) {
   const rvTodo = rows.filter(r => !r.x.rv).length;
   const human = rows.filter(r => r.x.rv && r.x.rv.v !== '통과').length;
   const pass = rows.filter(r => r.x.rv && r.x.rv.v === '통과').length;
-  const memos = rows.reduce((a, r) => a + openMemosOf(r.x).length, 0) + openMemosOf(it['@plan']).length;
-  return { memos, rows, it, N, nTr: N, issues, openAuto: issues.length, files, fchk, filesTodo, rvTodo, human, pass };
+  const memos = rows.reduce((a, r) => a + openMemosOf(r.x).length, 0) + openMemosOf(it['@plan']).length + openMemosOf(it['@puzzle']).length;
+  const pzNames = puzzleNames(t, lk), pzOk = ((t.work || {})[lk] || {}).pzOk || {}, pzTodo = pzNames.filter(n => !pzOk[n]).length;
+  return { memos, pzTodo, pzNames, rows, it, N, nTr: N, issues, openAuto: issues.length, files, fchk, filesTodo, rvTodo, human, pass };
 }
 const splitFiles = s => String(s || '').split(/[,،、\n]+/).map(x => x.trim()).filter(Boolean);
 /* 대조할 파일: 엑셀 파일 열의 값(공통 제외) + 사이트에 올린 이미지 */
@@ -1511,30 +1521,51 @@ ${[...CULTURE[lk], ...CULTURE.common.slice(0, 2)].map(x => '  - ' + x).join('\n'
 
 마지막에 확인한 PNG 목록과, 판독이 어려워 따로 확인할 문구를 알려줘.`;
 }
+/* 퍼즐 검수 6가지 (게임 단위) */
+const PUZZLE_CHECKS = [
+  ['정답 보존', '번역 후에도 기존 정답이 유지되는가'],
+  ['풀이 가능성', '현지 언어로도 같은 방식으로 풀 수 있는가'],
+  ['단서 보존', '정답을 유도하는 정보가 사라지지 않았는가'],
+  ['언어유희', '직역으로 퍼즐의 기능이 사라지지 않았는가'],
+  ['조합 관계', '문자·숫자·기호의 연결 방식이 유지되는가'],
+  ['협동 요소', '1P·2P 정보가 정상적으로 연결되는가'],
+];
+const PZ_BAD = /문제|FAIL|확인\s*필요|REVIEW|^X$/i, PZ_OK = /^(OK|O|PASS|통과|유지|문제\s*없음)$/i, PZ_NA = /해당\s*없음|N\/?A|^-$/i;
 function crossPrompt(id, t, lk) {
   const L = LANGS.find(l => l.key === lk), sh = sheetOf(t, lk);
   const rows = sheetRows(t, lk).filter(r => !r.x.rv);
   const extra = (sh && sh.extra || []).map(e => `## 시트: ${e.name}\n${rowsToTSV(e.rows)}`).join('\n\n');
+  const focus = reviewerOf(t, lk) === 'Claude' ? '의미 전달, 현지 표현의 자연스러움, 용어 통일' : '의미 누락, 문법, 경어, 표현의 적절성';
   return `# 역할
 너는 이 번역을 하지 않은 검수자다. 문제를 찾는 것이 목적이다.
+1차 번역(비고 포함)의 판단을 그대로 따르지 않고, 한국어 원문과 번역문을 직접 비교해 독립적으로 검수한다.
 
 # 작업
 첨부한 PNG는 오프라인 게임 「${t.name || ''}」의 화면이다. 아래 표의 ${L.label} 번역을 한 줄씩 검수한다.
 읽는 사람: 한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객
 
-# 확인할 것
-1. 뜻이 원문과 같은가 (말장난·패러디를 바꾼 줄은 비고의 의도대로 됐는가)
-2. 플레이어가 할 행동(찾기, 고르기, 방향, 순서)과 정답이 바뀌지 않았는가
-3. 숫자·고유명사가 맞는가
-4. 같은 문구의 번역이 통일됐는가
-5. 화면 칸에 들어갈 길이인가
-6. 문화 금기: ${CULTURE[lk].join(' ')}
+# 공통 검수 기준
+1. 정확성: 원문의 의미와 정보가 정확하게 전달되는가 (말장난·패러디를 바꾼 줄은 비고의 의도대로 됐는가)
+2. 누락 여부: 문장, 단어, 숫자, 기호 등이 빠지지 않았는가
+3. 자연스러움: 해당 언어권에서 자연스럽게 쓰는 표현인가
+4. 용어 통일: 고유명사와 주요 용어, 같은 문구가 일관되게 번역되었는가
+5. 캐릭터성: 인물의 성격과 말투가 유지되었는가
+6. 게임 적합성: 플레이어가 할 행동(찾기, 고르기, 방향, 순서)과 퍼즐의 단서·정답·규칙이 변형되지 않았는가
+- 그 밖에: 화면 칸에 들어갈 길이인가 / 문화 금기: ${CULTURE[lk].join(' ')}
+- 이번 검수에서 특히 볼 것: ${focus}
 
 # 판정 (한 줄에 하나)
 - PASS: 문제 없음
 - FAIL: 고칠 것이 분명함 → 고친 번역을 쓴다
 - REVIEW: 정답·행동이 바뀔 수 있는데 확신이 없음, 또는 말장난·아이콘처럼 기획이 정해야 함 → 사람이 판단
 - 원문과 다른 문제로 의도적으로 바꾼 줄(퍼즐 재설계 등)은 번역 오류가 아니다. 뜻과 정답이 맞으면 PASS로 두고 이유에 ‘의도된 재설계’라고 쓴다.
+
+# 퍼즐 검수 (게임 전체)
+퍼즐·퀴즈·짝 맞추기마다 번역본 기준으로 아래 6가지를 확인한다. 줄 검수와 따로, 퍼즐 단위로 본다.
+${PUZZLE_CHECKS.map(([k, q], i) => `${i + 1}. ${k}: ${q}?`).join('\n')}
+- 값은 OK, 문제, 확인 필요, 해당 없음 중 하나만 쓴다.
+- 문제·확인 필요는 이유에 어느 줄(번호)·무엇이 깨지는지 쓴다.
+- 언어유희가 직역으로 깨지면 대안을 제안만 하고, 이유를 ‘[기획 확인]’으로 시작한다.
 
 # 기획 판단은 하지 않는다
 - 아이콘·그림 교체, 퍼즐·문제 재설계, 정답·규칙 변경은 검수자가 정하지 않는다. 제안만 한다.
@@ -1555,10 +1586,13 @@ ${extra ? `2. \`별도 시트 검수\` — 시트 | 항목 | 한국어 | 번역 
    - 아래 ‘별도 시트’의 내용을 한 행씩 검수한다. (대응표는 행마다, 퍼즐은 문항·정답마다)
    - 퍼즐은 칸 수, 겹치는 글자 위치, 두 줄을 합친 문장이 맞는지 확인하고 이유에 적는다.
    - 판정은 PASS, FAIL, REVIEW 중 하나.
-3.` : '2.'} \`수정 우선순위\` — 우선순위 | 대상 | 조치
+3.` : '2.'} \`퍼즐 검수\` — 퍼즐 | 관련 번호 | ${PUZZLE_CHECKS.map(c => c[0]).join(' | ')} | 이유
+   - 퍼즐 하나가 한 행. 퍼즐 이름은 화면 이름이나 파일 이름(예: AD_06 문장 반반)으로 쓴다.
+   - 퍼즐이 없는 게임이면 ‘퍼즐 없음’ 한 행만 쓰고 나머지 칸은 ‘해당 없음’.
+${extra ? '4.' : '3.'} \`수정 우선순위\` — 우선순위 | 대상 | 조치
    - FAIL·REVIEW와 기획이 정해야 할 것(아이콘 교체 등)만 쓴다. PASS는 쓰지 않는다.
    - 우선순위는 높음 / 중간 / 낮음. 대상은 번호(여러 개면 쉼표)나 시트·항목 이름.
-${extra ? '4.' : '3.'} \`의견\` — 구분 | 내용
+${extra ? '5.' : '4.'} \`의견\` — 구분 | 내용
    - 최종 의견, 의도된 재설계로 분류한 줄, 화면에서 따로 확인할 것(글자 크기·폰트 등)을 한 행에 하나씩.
 
 - 셀 너비와 줄바꿈을 조정해 읽기 쉽게 만든다.
@@ -1660,9 +1694,9 @@ async function applyCross(tables) {
   const hasNoV = r => r.slice(0, 5).some(row => row.some(h => normHead(h).startsWith('판정')) && row.some(h => /^(번호|id)$/.test(normHead(h))));
   const tb = tables.find(r => r.sheet === '줄 검수') || tables.find(hasNoV) || tables.find(r => (r[0] || []).some(h => normHead(h).startsWith('판정'))) || tables[0];
   /* 나머지 표(별도 시트 검수·수정 우선순위·의견)는 보관해서 보여 주고 결과 엑셀에 넣는다 */
-  const NAMES = ['별도 시트 검수', '수정 우선순위', '의견'];
-  const guess = r => { const h = (r[0] || []).map(normHead); return h.includes('우선순위') ? '수정 우선순위' : h.includes('시트') && h.some(x => x.startsWith('판정')) ? '별도 시트 검수' : h.includes('구분') && h.includes('내용') ? '의견' : ''; };
-  const extraX = tables.filter(r => r !== tb && r.length).map((r, i) => ({ name: r.sheet || guess(r) || `추가 표 ${i + 1}`, rows: r.slice(0, 300).map(x => x.slice(0, 10)) }));
+  const NAMES = ['퍼즐 검수', '별도 시트 검수', '수정 우선순위', '의견'];
+  const guess = r => { const h = (r[0] || []).map(normHead); return h.includes('정답보존') || h.includes('풀이가능성') ? '퍼즐 검수' : h.includes('우선순위') ? '수정 우선순위' : h.includes('시트') && h.some(x => x.startsWith('판정')) ? '별도 시트 검수' : h.includes('구분') && h.includes('내용') ? '의견' : ''; };
+  const extraX = tables.filter(r => r !== tb && r.length).map((r, i) => ({ name: (guess(r) === '퍼즐 검수' && '퍼즐 검수') || r.sheet || guess(r) || `추가 표 ${i + 1}`, rows: r.slice(0, 300).map(x => x.slice(0, 12)) }));
   if (extraX.length) { const lk = promptLang; await saveGameField(`work.${lk}.crossExtra`, extraX.sort((a, b) => (NAMES.indexOf(a.name) + 9) % 9 - (NAMES.indexOf(b.name) + 9) % 9)); }
   if (!tb || tb.length < 2) { toast('검수 표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.', 5000); return; }
   const hi = Math.max(0, tb.findIndex(r => r.some(h => normHead(h).startsWith('판정'))));
@@ -1682,12 +1716,24 @@ async function applyCross(tables) {
       if (ids.length) ids.forEach(id => addPlan(id, act)); else planSheet.push(`[기획 확인] ${target ? target + ': ' : ''}${act.replace(PLAN, '').trim()}`);
     });
   }
+  /* 퍼즐 검수: 문제·확인 필요 → 수정 요청 메모(퍼즐), [기획 확인]이면 기획 확인 메모 */
+  const pzIssues = [], pz = extraX.find(e => e.name === '퍼즐 검수');
+  if (pz && pz.rows.length > 1) {
+    const ph = pz.rows[0].map(normHead), iP = Math.max(0, ph.findIndex(x => x.startsWith('퍼즐'))), iN = ph.findIndex(x => x.startsWith('관련')), iY = ph.findIndex(x => x.startsWith('이유'));
+    pz.rows.slice(1).forEach(r => {
+      const bad = PUZZLE_CHECKS.map(([k]) => [k, ph.indexOf(normHead(k))]).filter(([, i]) => i >= 0 && PZ_BAD.test(String(r[i] || '')) && !PZ_OK.test(String(r[i]).trim())).map(([k, i]) => `${k} ${String(r[i]).trim()}`);
+      if (!bad.length) return;
+      const why = iY >= 0 ? String(r[iY] || '').trim() : '', name = String(r[iP] || '').trim(), nos = iN >= 0 ? String(r[iN] || '').trim() : '';
+      pzIssues.push({ kind: PLAN.test(why) ? 'plan' : 'puzzle', text: `[퍼즐] ${name}${nos && nos !== '-' ? ` (${nos})` : ''} · ${bad.join(', ')}${why && why !== '-' ? ` — ${why.replace(PLAN, '').trim()}` : ''}` });
+    });
+  }
   const planMemo = text => ({ id: Math.random().toString(36).slice(2, 8), kind: 'plan', by: '교차 검수 AI', at: nowISO(), text: /^\[\s*기획/.test(text) ? text : '[기획 확인] ' + text, done: false });
   const addMemos = (x, texts) => { x.memos = x.memos || []; texts.forEach(tx => { const m = planMemo(tx); if (!x.memos.some(y => y.kind === 'plan' && y.text === m.text)) x.memos.push(m); }); };
   let n = 0, fail = 0, rev = 0;
   await saveWork(items => {
     plan.forEach((texts, id) => addMemos(items[id] = items[id] || {}, texts));
     if (planSheet.length) addMemos(items['@plan'] = items['@plan'] || {}, planSheet);
+    if (pzIssues.length) { const x = items['@puzzle'] = items['@puzzle'] || {}; x.memos = x.memos || []; pzIssues.forEach(m => { if (!x.memos.some(y => y.text === m.text)) x.memos.push(Object.assign({ id: Math.random().toString(36).slice(2, 8), by: '교차 검수 AI', at: nowISO(), done: false }, m)); }); }
     tb.slice(hi + 1).forEach(r => {
       const id = valid.get(normId(r[iNo])); if (!id) return;
       const x = items[id] = items[id] || {};
@@ -1703,20 +1749,33 @@ async function applyCross(tables) {
   }, () => '');
   render(true);
   const np = plan.size + planSheet.length;
-  toast(`교차 검수 ${n}줄: FAIL ${fail} · REVIEW ${rev}${np ? ` · 기획 확인 ${np}건은 수정 요청 메모로 넘김` : ''}`, 5000);
+  toast(`교차 검수 ${n}줄: FAIL ${fail} · REVIEW ${rev}${np ? ` · 기획 확인 ${np}건` : ''}${pzIssues.length ? ` · 퍼즐 문제 ${pzIssues.length}건` : ''}${np || pzIssues.length ? ' → 수정 요청 메모로 넘김' : ''}`, 5000);
 }
 
 /* 교차 검수 AI가 준 추가 표: 수정 우선순위는 펼쳐서, 나머지는 접어서 */
 function crossExtraHTML(t, lk) {
   const ex = ((t.work || {})[lk] || {}).crossExtra || []; if (!ex.length) return '';
   const tbl = (rows, hl) => `<div class="tprev"><table><thead><tr>${(rows[0] || []).map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.slice(1).map(r => `<tr class="${hl && hl(r) ? 'hi' : ''}">${r.map(c => `<td style="white-space:pre-wrap">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-  const pri = ex.find(e => e.name === '수정 우선순위'), rest = ex.filter(e => e !== pri);
+  const pri = ex.find(e => e.name === '수정 우선순위'), pzs = ex.find(e => e.name === '퍼즐 검수'), rest = ex.filter(e => e !== pri && e !== pzs);
+  const pzCell = v => { const x = String(v || '').trim(); const c = PZ_OK.test(x) ? 'ok' : PZ_NA.test(x) || !x ? 'na' : PZ_BAD.test(x) ? 'bad' : 'na'; return `<td class="pz ${c}">${esc(x || '-')}</td>`; };
+  const pzHTML = pzs && pzs.rows.length > 1 ? (() => { const h = pzs.rows[0].map(normHead), cols = PUZZLE_CHECKS.map(([k]) => h.indexOf(normHead(k))), iP = Math.max(0, h.findIndex(x => x.startsWith('퍼즐'))), iY = h.findIndex(x => x.startsWith('이유'));
+    const ok = ((t.work || {})[lk] || {}).pzOk || {};
+    const conf = name => { const n = String(name || '').trim(); if (!n || /퍼즐\s*없음/.test(n)) return '<td>-</td>'; const o = ok[n]; return `<td class="pzc">${o ? `<span class="sg-ok">✓ ${esc(o.by)}</span>${readOnly ? '' : ` <button type="button" class="linkbtn" data-pzok="${esc(n)}" data-off="1">취소</button>`}` : readOnly ? '<span class="sb">대기</span>' : `<button type="button" class="btn" data-pzok="${esc(n)}">직접 확인함</button>`}</td>`; };
+    return `<div class="xpri"><b>퍼즐 검수</b> <small class="sb">${PUZZLE_CHECKS.map(c => c[0]).join(' · ')}</small><div class="tprev"><table class="pzt"><thead><tr><th>퍼즐</th>${PUZZLE_CHECKS.map(([k, q]) => `<th title="${esc(q)}">${esc(k)}</th>`).join('')}<th>이유</th><th>담당자</th></tr></thead><tbody>${pzs.rows.slice(1).map(r => `<tr><td>${esc(r[iP])}</td>${cols.map(i => i >= 0 ? pzCell(r[i]) : '<td class="pz na">-</td>').join('')}<td style="white-space:pre-wrap">${iY >= 0 ? esc(r[iY]) : ''}</td>${conf(r[iP])}</tr>`).join('')}</tbody></table></div><small class="sb">퍼즐 단서·정답·규칙은 AI 결과와 관계없이 담당자가 직접 풀어 보고 ‘직접 확인함’. 문제·확인 필요는 맨 위 수정 요청(퍼즐)으로 넘어감.</small></div>`; })() : '';
   const vi = rows => (rows[0] || []).findIndex(h => normHead(h).startsWith('판정'));
   return `<div class="xextra"><h4 class="mh">AI 추가 검수 결과 <small>교차 검수 엑셀의 다른 시트</small></h4>
+    ${pzHTML}
     ${pri ? (() => { const plan = pri.rows.slice(1).filter(r => r.some(c => /\[기획\s*확인\]/.test(c))).length; return `<div class="xpri"><b>수정 우선순위</b>${plan ? ` <em class="chip warnchip">[기획 확인] ${plan}건 · 번역자가 정하지 말고 기획 담당에게 수정 요청 메모로 넘기기</em>` : ''}${tbl(pri.rows, r => /높음/.test(r[0]) || r.some(c => /\[기획\s*확인\]/.test(c)))}</div>`; })() : ''}
     ${rest.map(e => { const v = vi(e.rows); return `<details class="more"><summary>${esc(e.name)}${v >= 0 ? ` <small>${e.rows.slice(1).filter(r => /FAIL|REVIEW/i.test(r[v])).length ? 'FAIL·REVIEW ' + e.rows.slice(1).filter(r => /FAIL|REVIEW/i.test(r[v])).length + '건' : '모두 PASS'}</small>` : ''}</summary>${tbl(e.rows, v >= 0 ? r => /FAIL|REVIEW/i.test(r[v]) : null)}</details>`; }).join('')}
     <p class="sb">기획이 정해야 할 항목(아이콘 교체 등)은 해당 줄에 수정 요청 메모로 남기기.</p></div>`;
 }
+
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-pzok]'); if (!b) return;
+  const lk = promptLang, name = b.dataset.pzok;
+  await saveGameField(`work.${lk}.pzOk`, { [name]: b.dataset.off ? null : { by: meName(), at: nowISO() } }); render(true);
+  if (!b.dataset.off) toast(`${name}: 담당자 확인으로 표시함.`);
+});
 
 /* ---------- 내려받기 ---------- */
 function resultXlsx(t, lk) {
@@ -1736,7 +1795,14 @@ function resultXlsx(t, lk) {
 /* ---------- 단계별 확인(서명) ---------- */
 const signOf = (t, lk, key) => key === 'info' ? ((t.sign || {}).info || null) : ((((t.work || {})[lk] || {}).sign || {})[key] || null);
 /* 단계 완료 여부: 확인을 눌렀고 (조건을 채웠거나 ‘완료로 처리’했으면) 완료 */
-function stepConds(t, lk, F) { return { info: infoDone(t), excel: F.N > 0, auto: !F.openAuto, files: !F.filesTodo, cross: !F.rvTodo && !F.human }; }
+function stepConds(t, lk, F) { return { info: infoDone(t), excel: F.N > 0, auto: !F.openAuto, files: !F.filesTodo, cross: !F.rvTodo && !F.human && !F.pzTodo }; }
+/* 교차 검수 ‘퍼즐 검수’ 시트의 퍼즐 이름 (퍼즐 없음 제외) */
+function puzzleNames(t, lk) {
+  const pz = ((((t.work || {})[lk] || {}).crossExtra) || []).find(e => e.name === '퍼즐 검수');
+  if (!pz || pz.rows.length < 2) return [];
+  const h = pz.rows[0].map(normHead), iP = Math.max(0, h.findIndex(x => x.startsWith('퍼즐')));
+  return [...new Set(pz.rows.slice(1).map(r => String(r[iP] || '').trim()).filter(n => n && !/퍼즐\s*없음/.test(n)))];
+}
 function isDone(t, lk, key, F) { const sg = signOf(t, lk, key); return !!sg && (!!sg.forced || stepConds(t, lk, F)[key]); }
 const whoOf = sg => sg ? `${sg.by} · ${fmtShort(sg.at)}` : '';
 const fmtShort = s => { if (!s) return ''; const d = new Date(s); return `${d.getMonth() + 1}/${d.getDate()}`; };
@@ -1795,7 +1861,7 @@ function workHTML({ id, data: t }) {
   const vkey = id + ':' + lk;
   if (!viewStep[vkey] || viewStep[vkey].now !== nowN) viewStep[vkey] = { now: nowN, pick: null };
   const open = viewStep[vkey].pick ?? nowN;
-  const reviewer = (aiOf(t, lk) || 'Claude') === 'ChatGPT' ? 'Claude' : 'ChatGPT';
+  const reviewer = reviewerOf(t, lk);
   const nImg = (gameFiles[id] || []).filter(f => /\.(png|jpe?g|webp)$/i.test(f.name)).length;
   const body = {
     1: () => `<p class="sb">AI가 게임 분위기를 알 수 있게 작성. <b>컨셉·상황</b>은 필수.</p>${infoFormHTML(t)}
@@ -1856,7 +1922,7 @@ function sheetViewHTML(t, lk) {
 }
 function reviewHTML(id, t, lk, F, reviewer) {
   const tabs = [['auto', '① 자동 점검', F.openAuto ? `${F.openAuto}줄 남음` : '완료'], ['files', '② 이미지 대조', `${F.files.length - F.filesTodo}/${F.files.length}`], ['cross', '③ 교차 검수', `${F.pass}/${F.N}`]];
-  const cond = { auto: !F.openAuto, files: !F.filesTodo, cross: !F.rvTodo && !F.human };
+  const cond = { auto: !F.openAuto, files: !F.filesTodo, cross: !F.rvTodo && !F.human && !F.pzTodo };
   const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${isDone(t, lk, k, F) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${isDone(t, lk, k, F) ? '✓ ' + esc(whoOf(signOf(t, lk, k))) : c}</small></button>`).join('')}</div>`;
   let inner = '';
   if (rvTab === 'auto') inner = `<p class="sb">숫자 · 줄 수 · 한글 남음 · 같은 원문 다른 번역 · 길이 · 용어를 사이트가 바로 확인함. 고치거나 ‘문제 없음’을 누르기. (비고에 이유가 있으면 ‘문제 없음’)</p>
@@ -1896,7 +1962,7 @@ function reviewHTML(id, t, lk, F, reviewer) {
       ${crossExtraHTML(t, lk)}
       ${F.rows.some(r => r.x.bt) ? `<details class="more"><summary>전체 원문 ↔ 역번역 보기</summary><div class="tprev"><table><thead><tr><th>번호</th><th>파일</th><th>원문</th><th>역번역</th><th>판정</th></tr></thead><tbody>${F.rows.map(r => `<tr><td>${esc(r.id)}</td><td>${esc(r.file)}</td><td style="white-space:pre-wrap">${esc(r.ko)}</td><td>${esc((r.x.bt || [])[0] || '')}</td><td>${r.x.rv ? esc(VLABEL[r.x.rv.v] || r.x.rv.v) : ''}</td></tr>`).join('')}</tbody></table></div></details>` : ''}`;
   }
-  const WHY = { auto: '걸린 줄을 고치거나 ‘문제 없음’ 처리하면 누를 수 있음', files: '모든 파일을 체크하면 누를 수 있음', cross: '교차 검수 결과를 넣고 FAIL·REVIEW를 처리하면 누를 수 있음' };
+  const WHY = { auto: '걸린 줄을 고치거나 ‘문제 없음’ 처리하면 누를 수 있음', files: '모든 파일을 체크하면 누를 수 있음', cross: '교차 검수 결과를 넣고 FAIL·REVIEW 처리 + 퍼즐마다 담당자 확인을 하면 누를 수 있음' };
   const NAME = { auto: '자동 점검', files: '이미지 대조', cross: '교차 검수' };
   return tabHTML + `<div class="rpane">${inner}${signRow(t, lk, rvTab, cond[rvTab], NAME[rvTab], WHY[rvTab])}</div>` + (F.memos ? '<p class="sb badtxt">맨 위 수정 요청을 반영해야 확정 가능.</p>' : '');
 }
@@ -2947,14 +3013,15 @@ const memoDoneBtn = (rid, m) => `<button type="button" class="btn primary" data-
 const memoTag = m => m.kind === 'plan' ? '<em class="chip warnchip">기획 확인</em> ' : '';
 function memoBannerHTML(t, lk) {
   const rows = sheetRows(t, lk).filter(r => openMemosOf(r.x).length);
-  const pm = openMemosOf(workOf(t, lk)['@plan']);
-  if (!rows.length && !pm.length) return '';
-  const n = rows.reduce((a, r) => a + openMemosOf(r.x).length, 0) + pm.length;
+  const pm = openMemosOf(workOf(t, lk)['@plan']), pzm = openMemosOf(workOf(t, lk)['@puzzle']);
+  if (!rows.length && !pm.length && !pzm.length) return '';
+  const n = rows.reduce((a, r) => a + openMemosOf(r.x).length, 0) + pm.length + pzm.length;
   return `<section class="memo-banner" role="alert"><h3>수정 요청 ${n}건 <small>반영하면 ‘반영함’을 누르기. 다 반영해야 확정할 수 있음.</small></h3>
     ${rows.map(r => `<div class="memo-row"><div class="memo-src"><code>${esc(r.id)}${r.file ? ' · ' + esc(r.file) : ''}</code><b style="white-space:pre-wrap">${esc(r.ko)}</b><span style="white-space:pre-wrap">${xEditing.has(r.id) && !readOnly ? `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>` : esc(r.tr)}</span></div>
       <div class="memo-list">${openMemosOf(r.x).map(m => `<div class="memo${m.kind === 'plan' ? ' plan' : ''}"><p>${memoTag(m)}${esc(m.text)}</p><small>${esc(m.by)} · ${fmtDate(m.at)}</small>${readOnly ? '' : `<div class="iacts">${m.kind === 'plan' ? '' : `<button type="button" class="btn" data-xedit="${esc(r.id)}">번역 고치기</button>`}${memoDoneBtn(r.id, m)}</div>`}</div>`).join('')}</div></div>`).join('')}
+    ${pzm.length ? `<div class="memo-row"><div class="memo-src"><code>퍼즐 검수</code><b>퍼즐 단위 문제</b></div><div class="memo-list">${pzm.map(m => `<div class="memo${m.kind === 'plan' ? ' plan' : ''}"><p>${m.kind === 'plan' ? memoTag(m) : '<em class="chip">퍼즐</em> '}${esc(m.text)}</p><small>${esc(m.by)} · ${fmtDate(m.at)}</small>${readOnly ? '' : `<div class="iacts">${memoDoneBtn('@puzzle', m)}</div>`}</div>`).join('')}</div></div>` : ''}
     ${pm.length ? `<div class="memo-row"><div class="memo-src"><code>시트·전체</code><b>특정 줄이 아닌 기획 확인</b></div><div class="memo-list">${pm.map(m => `<div class="memo plan"><p>${memoTag(m)}${esc(m.text)}</p><small>${esc(m.by)} · ${fmtDate(m.at)}</small>${readOnly ? '' : `<div class="iacts">${memoDoneBtn('@plan', m)}</div>`}</div>`).join('')}</div></div>` : ''}
-    ${pm.length || rows.some(r => openMemosOf(r.x).some(m => m.kind === 'plan')) ? '<small class="sb">‘기획 확인’은 AI가 제안한 아이콘·퍼즐·정답 변경임. 기획 담당이 정한 뒤 ‘기획 승인’을 누르면 그 줄의 고친 번역을 쓸 수 있음.</small>' : ''}
+    ${pm.length || pzm.some(m => m.kind === 'plan') || rows.some(r => openMemosOf(r.x).some(m => m.kind === 'plan')) ? '<small class="sb">‘기획 확인’은 AI가 제안한 아이콘·퍼즐·정답 변경임. 기획 담당이 정한 뒤 ‘기획 승인’을 누르면 그 줄의 고친 번역을 쓸 수 있음.</small>' : ''}
   </section>`;
 }
 document.addEventListener('click', async e => {
@@ -3074,6 +3141,7 @@ function testPrompt(id, t, lk, A) {
 2. 헷갈리는 점: 두 가지로 읽히거나 막히는 부분 (없으면 ‘-’)
 3. 퍼즐 정답: 퀴즈·퍼즐·짝 맞추기가 있으면 직접 풀어 본 정답 (없으면 ‘-’)${puzzle ? '\n   - 1P/2P 문장 반반은 두 화면을 겹쳤을 때 완성되는 문장까지 쓴다.' : ''}
 4. 읽기 어려운 글자: 너무 작거나 획이 많아 알아보기 힘든 글자 (없으면 ‘-’)
+- 퍼즐 정답에는 정답에 이른 단서(어떤 글자·숫자·기호를 어떻게 이었는지, 1P·2P 화면 중 어느 정보를 썼는지)도 함께 쓴다.
 
 # 결과물: 엑셀 파일 \`${abbrOf(t)}_${LSHORT[lk]}_처음보는테스트.xlsx\`
 - 시트 \`테스트\`, 첫 행은 제목
@@ -3126,6 +3194,7 @@ function applyStepHTML(id, t, lk, step) {
     const tok = A.ap.testOk || {}, groups = new Map();
     A.testRows.forEach(r => { const k = normId(locBaseOf(r[0] + '.png')); groups.set(k, (groups.get(k) || []).concat([r])); });
     inner = `<p class="sb">번역본만 보고 처음 보는 사람이 이해한 내용을 <b>한국어로</b> 받아, 원래 문구와 비교함. 뜻이 같으면 ‘의도와 같음’.</p>
+      <p class="sb pzhint">퍼즐 판단 기준: ${PUZZLE_CHECKS.map(([k, q]) => `<b title="${esc(q)}">${esc(k)}</b>`).join(' · ')}</p>
       <ol class="do"><li><i>1</i><div><button type="button" class="btn primary" data-copy="p-test">프롬프트 복사</button></div></li>
       <li><i>2</i><div>번역에 쓰지 않은 AI(<b>Gemini</b> 등) 새 대화에 붙여 넣고, 번역본 PNG만 첨부해 보내기. 한국어 원본은 보내지 않기.</div></li>
       <li><i>3</i><div>받은 엑셀을 ${readOnly ? '' : `<label class="btn upl primary">엑셀 올리기<input type="file" hidden data-apup="test" accept="${FILE_ACCEPT}"></label>`}<span class="do-l">엑셀이 안 나왔으면</span>${pasteBtn('ap:test', '답 붙여 넣기')}</div></li></ol>
