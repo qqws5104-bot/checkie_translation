@@ -11,7 +11,7 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "LEFT! TRASH! RIGHT!"
       },
       "ja": {
@@ -28,7 +28,7 @@
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:44:57.586Z"
+    "updatedAt": "2026-11-02T03:45:01.868Z"
   },
   "chris-mas-name": {
     "common": false,
@@ -105,7 +105,7 @@
         "avoid": "",
         "avoidWhy": "",
         "status": "확정",
-        "text": "Left! This! Right!"
+        "text": "LEFT! TISH! RIGHT!"
       },
       "ja": {
         "avoid": "",
@@ -121,7 +121,7 @@
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:44:45.762Z"
+    "updatedAt": "2026-11-02T03:45:01.464Z"
   },
   "ui-front": {
     "common": false,
