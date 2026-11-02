@@ -111,7 +111,7 @@
         "avoid": "",
         "avoidWhy": "",
         "status": "확정",
-        "text": "これ！"
+        "text": "ひだり！これ！みぎ！"
       },
       "zh": {
         "avoid": "",
@@ -121,7 +121,7 @@
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:42:05.320Z"
+    "updatedAt": "2026-11-02T03:42:31.315Z"
   },
   "ui-front": {
     "common": false,
