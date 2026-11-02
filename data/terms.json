@@ -377,25 +377,25 @@
     "intent": "",
     "tr": {
       "en": {
-        "text": "",
-        "status": "미정",
+        "text": "NAVIGATION SYSTEM",
+        "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       },
       "ja": {
-        "text": "",
-        "status": "미정",
+        "text": "NAVIGATION SYSTEM",
+        "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       },
       "zh": {
-        "text": "",
-        "status": "미정",
+        "text": "NAVIGATION SYSTEM",
+        "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:52:50.902Z"
+    "updatedAt": "2026-11-02T03:53:00.529Z"
   }
 }
