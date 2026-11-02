@@ -347,7 +347,7 @@
     "tr": {
       "en": {
         "text": "HERE! HERE! HERE!",
-        "status": "후보",
+        "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -365,6 +365,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:51:18.980Z"
+    "updatedAt": "2026-11-02T03:51:37.969Z"
   }
 }
