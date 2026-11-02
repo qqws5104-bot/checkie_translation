@@ -23,12 +23,12 @@
       "zh": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "미정",
-        "text": ""
+        "status": "후보",
+        "text": "左边！扔掉！右边！"
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:46:29.812Z"
+    "updatedAt": "2026-11-02T03:47:33.901Z"
   },
   "chris-mas-name": {
     "common": false,
