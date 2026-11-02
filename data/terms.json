@@ -110,8 +110,8 @@
       "ja": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "미정",
-        "text": ""
+        "status": "확정",
+        "text": "これ！"
       },
       "zh": {
         "avoid": "",
@@ -121,7 +121,7 @@
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:32:23.075Z"
+    "updatedAt": "2026-11-02T03:32:30.143Z"
   },
   "ui-front": {
     "common": false,
