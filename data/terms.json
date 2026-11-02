@@ -97,7 +97,7 @@
     "games": [
       "chris-mas"
     ],
-    "intent": "아이콘 라벨",
+    "intent": "1라운드 아이콘 라벨",
     "ko": "왼쪽! 이거! 오른쪽!",
     "memo": "고르기면 PICK!, 가리키기면 THIS! 쪽으로 갈림",
     "tr": {
@@ -121,7 +121,7 @@
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:43:16.107Z"
+    "updatedAt": "2026-11-02T03:44:45.762Z"
   },
   "ui-front": {
     "common": false,
