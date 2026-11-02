@@ -306,7 +306,7 @@
     "updatedAt": "2026-10-29T00:00:00Z"
   },
   "item-7kiun": {
-    "ko": "개굴",
+    "ko": "개굴!",
     "type": "기타",
     "common": false,
     "games": [
@@ -315,13 +315,13 @@
     "intent": "크리마스 청개구리 문제",
     "tr": {
       "en": {
-        "text": "ribbit",
+        "text": "ribbit!",
         "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       },
       "ja": {
-        "text": "ゲロゲロ",
+        "text": "ゲロゲロ!",
         "status": "확정",
         "avoid": "",
         "avoidWhy": ""
@@ -334,7 +334,7 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:27:26.617Z"
+    "updatedAt": "2026-11-02T03:52:18.607Z"
   },
   "item-tl9sz": {
     "ko": "여기! 여기! 여기!",
