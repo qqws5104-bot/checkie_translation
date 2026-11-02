@@ -43,7 +43,7 @@
         "avoid": "",
         "avoidWhy": "",
         "status": "확정",
-        "text": "TISH! TISH! TISH!"
+        "text": "THIS! THIS! THIS"
       },
       "ja": {
         "avoid": "",
@@ -59,7 +59,7 @@
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:49:46.474Z"
+    "updatedAt": "2026-11-02T03:50:23.010Z"
   },
   "fix-pix-name": {
     "common": false,
