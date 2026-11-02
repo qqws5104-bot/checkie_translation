@@ -186,8 +186,10 @@
     "updatedAt": "2026-11-02T03:59:44.286Z"
   },
   "ui-here": {
-    "common": true,
-    "games": [],
+    "common": false,
+    "games": [
+      "fix-pix"
+    ],
     "intent": "위치 안내",
     "ko": "HERE",
     "memo": "영어 버전에서는 자연스러운지 확인 필요",
@@ -212,7 +214,7 @@
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-11-02T03:59:44.814Z"
+    "updatedAt": "2026-11-02T07:47:59.982Z"
   },
   "ui-round": {
     "common": false,
