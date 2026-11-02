@@ -451,13 +451,13 @@
         "avoidWhy": ""
       },
       "zh": {
-        "text": "",
-        "status": "미정",
+        "text": "广告",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T06:30:32.190Z"
+    "updatedAt": "2026-11-02T06:30:41.591Z"
   }
 }
