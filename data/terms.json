@@ -459,5 +459,36 @@
     },
     "memo": "",
     "updatedAt": "2026-11-02T06:31:51.009Z"
+  },
+  "item-8jpmw": {
+    "ko": "필요한 픽셀 개수",
+    "type": "지시 동사",
+    "common": false,
+    "games": [
+      "fix-pix"
+    ],
+    "intent": "메인 문제 가이드라인",
+    "tr": {
+      "en": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      },
+      "ja": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      },
+      "zh": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      }
+    },
+    "memo": "",
+    "updatedAt": "2026-11-02T07:00:06.433Z"
   }
 }
