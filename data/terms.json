@@ -315,8 +315,8 @@
     "intent": "크리마스 청개구리 문제",
     "tr": {
       "en": {
-        "text": "",
-        "status": "미정",
+        "text": "ribbit",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -334,6 +334,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:25:56.822Z"
+    "updatedAt": "2026-11-02T03:27:04.599Z"
   }
 }
