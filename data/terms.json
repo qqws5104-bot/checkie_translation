@@ -440,7 +440,7 @@
     "tr": {
       "en": {
         "text": "AD",
-        "status": "후보",
+        "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -458,7 +458,7 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T06:31:51.009Z"
+    "updatedAt": "2026-11-02T07:01:17.386Z"
   },
   "item-8jpmw": {
     "ko": "필요한 픽셀 개수",
