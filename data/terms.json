@@ -321,8 +321,8 @@
         "avoidWhy": ""
       },
       "ja": {
-        "text": "",
-        "status": "미정",
+        "text": "ゲロゲロ",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -334,6 +334,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:25:41.161Z"
+    "updatedAt": "2026-11-02T03:25:56.822Z"
   }
 }
