@@ -79,18 +79,18 @@
       "ja": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "Fix Pix"
       },
       "zh": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "Fix Pix"
       }
     },
     "type": "게임명",
-    "updatedAt": "2026-11-02T07:48:09.290Z"
+    "updatedAt": "2026-11-02T07:48:19.720Z"
   },
   "this-one": {
     "common": false,
@@ -141,18 +141,18 @@
       "ja": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "FRONT"
       },
       "zh": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "FRONT"
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-11-02T07:48:09.822Z"
+    "updatedAt": "2026-11-02T07:48:20.684Z"
   },
   "ui-goal": {
     "common": false,
