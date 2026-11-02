@@ -48,8 +48,8 @@
       "ja": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "미정",
-        "text": ""
+        "status": "후보",
+        "text": "これ！これ！これ！"
       },
       "zh": {
         "avoid": "",
@@ -59,7 +59,7 @@
       }
     },
     "type": "게임명",
-    "updatedAt": "2026-10-29T00:00:00Z"
+    "updatedAt": "2026-11-02T03:45:36.388Z"
   },
   "fix-pix-name": {
     "common": false,
