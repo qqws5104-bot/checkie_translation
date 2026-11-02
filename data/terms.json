@@ -66,7 +66,7 @@
     "games": [
       "fix-pix"
     ],
-    "intent": "게임명 (영문 유지 여부 확정 필요)",
+    "intent": "게임명\n(영문 유지 여부 확정 필요)",
     "ko": "Fix Pix",
     "memo": "",
     "tr": {
@@ -90,7 +90,7 @@
       }
     },
     "type": "게임명",
-    "updatedAt": "2026-10-30T03:23:33.937Z"
+    "updatedAt": "2026-11-02T07:03:55.615Z"
   },
   "this-one": {
     "common": false,
