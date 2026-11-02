@@ -35,7 +35,7 @@
     "games": [
       "chris-mas"
     ],
-    "intent": "게임명 (× 기호 유지 여부 확정 필요)",
+    "intent": "2라운드 B,C 아이콘 라벨",
     "ko": "이거! 이거! 이거!",
     "memo": "",
     "tr": {
@@ -59,7 +59,7 @@
       }
     },
     "type": "게임명",
-    "updatedAt": "2026-11-02T03:45:54.070Z"
+    "updatedAt": "2026-11-02T03:46:13.018Z"
   },
   "fix-pix-name": {
     "common": false,
