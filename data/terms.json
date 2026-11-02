@@ -408,8 +408,8 @@
     "intent": "시험지 제목",
     "tr": {
       "en": {
-        "text": "",
-        "status": "미정",
+        "text": "Santa Qualification Exam",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -427,6 +427,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:53:47.654Z"
+    "updatedAt": "2026-11-02T03:54:36.613Z"
   }
 }
