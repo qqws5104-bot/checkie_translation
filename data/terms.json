@@ -369,7 +369,7 @@
   },
   "navigation-system-98s4j": {
     "ko": "NAVIGATION SYSTEM",
-    "type": "지시 동사",
+    "type": "영문 표기",
     "common": false,
     "games": [
       "chris-mas"
@@ -396,6 +396,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:53:08.735Z"
+    "updatedAt": "2026-11-02T03:53:10.959Z"
   }
 }
