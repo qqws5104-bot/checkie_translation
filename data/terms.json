@@ -439,8 +439,8 @@
     "intent": "광고 표시",
     "tr": {
       "en": {
-        "text": "",
-        "status": "미정",
+        "text": "AD",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -458,6 +458,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T06:30:02.978Z"
+    "updatedAt": "2026-11-02T06:30:06.895Z"
   }
 }
