@@ -471,7 +471,7 @@
     "tr": {
       "en": {
         "text": "Required Pixels",
-        "status": "후보",
+        "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -489,6 +489,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T07:01:34.049Z"
+    "updatedAt": "2026-11-02T07:01:36.416Z"
   }
 }
