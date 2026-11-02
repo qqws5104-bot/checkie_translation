@@ -316,24 +316,24 @@
     "tr": {
       "en": {
         "text": "ribbit",
-        "status": "후보",
+        "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       },
       "ja": {
         "text": "ゲロゲロ",
-        "status": "후보",
+        "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       },
       "zh": {
         "text": "呱呱",
-        "status": "후보",
+        "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:27:04.599Z"
+    "updatedAt": "2026-11-02T03:27:26.617Z"
   }
 }
