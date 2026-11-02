@@ -234,18 +234,18 @@
       "ja": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "ROUND"
       },
       "zh": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "ROUND"
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-11-02T07:48:10.342Z"
+    "updatedAt": "2026-11-02T07:48:14.118Z"
   },
   "ui-side": {
     "common": false,
@@ -265,18 +265,18 @@
       "ja": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "SIDE"
       },
       "zh": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "SIDE"
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-11-02T07:48:10.742Z"
+    "updatedAt": "2026-11-02T07:48:15.708Z"
   },
   "ui-time": {
     "common": true,
@@ -294,18 +294,18 @@
       "ja": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "TIME"
       },
       "zh": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "TIME"
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-11-02T07:48:11.144Z"
+    "updatedAt": "2026-11-02T07:48:16.708Z"
   },
   "item-7kiun": {
     "ko": "개굴!",
