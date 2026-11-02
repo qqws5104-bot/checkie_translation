@@ -58,8 +58,8 @@
         "text": "这个！这个！这个！"
       }
     },
-    "type": "캐릭터명",
-    "updatedAt": "2026-11-02T03:49:29.508Z"
+    "type": "버튼 라벨",
+    "updatedAt": "2026-11-02T03:49:32.707Z"
   },
   "fix-pix-name": {
     "common": false,
@@ -338,7 +338,7 @@
   },
   "item-tl9sz": {
     "ko": "여기! 여기! 여기!",
-    "type": "지시 동사",
+    "type": "버튼 라벨",
     "common": false,
     "games": [
       "chris-mas"
@@ -365,6 +365,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:49:05.984Z"
+    "updatedAt": "2026-11-02T03:49:31.129Z"
   }
 }
