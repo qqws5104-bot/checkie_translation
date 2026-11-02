@@ -166,24 +166,24 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "GOAL!"
       },
       "ja": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "GOAL!"
       },
       "zh": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "GOAL!"
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-29T05:38:30.689Z"
+    "updatedAt": "2026-11-02T03:59:44.286Z"
   },
   "ui-here": {
     "common": true,
@@ -195,24 +195,24 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "HERE"
       },
       "ja": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "HERE"
       },
       "zh": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "HERE"
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-29T00:00:00Z"
+    "updatedAt": "2026-11-02T03:59:44.814Z"
   },
   "ui-round": {
     "common": false,
