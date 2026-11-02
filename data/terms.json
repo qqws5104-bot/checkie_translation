@@ -470,8 +470,8 @@
     "intent": "메인 문제 가이드라인",
     "tr": {
       "en": {
-        "text": "",
-        "status": "미정",
+        "text": "Required Pixels",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -489,6 +489,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T07:00:06.433Z"
+    "updatedAt": "2026-11-02T07:01:34.049Z"
   }
 }
