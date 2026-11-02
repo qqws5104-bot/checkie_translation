@@ -766,6 +766,28 @@ h1 { font-size: 22px; }
 .memo.plan { border-left-color: var(--warn, #c92a2a); }
 .warnchip { background: var(--warn-soft, #fff0f0); color: var(--warn, #c92a2a); font-style: normal; }
 .fsample { font-size: 22px; line-height: 1.4; padding: 8px 10px; border-radius: 8px; background: var(--panel); overflow-wrap: anywhere; }
+
+/* ===== 정리: 가벼운 탭 · 차분한 현황판 ===== */
+.mainnav { display: flex; gap: 4px; margin: 14px 0 22px; border-bottom: 1px solid var(--line); grid-template-columns: none; }
+.mainnav button, .mainnav button[aria-selected="true"] { border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: none; padding: 10px 14px 9px; font-size: 16px; font-weight: 600; color: var(--muted); margin-bottom: -1px; min-height: 0; }
+.mainnav button:hover { color: var(--fg); }
+.mainnav button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+a.btn { text-decoration: none; display: inline-flex; align-items: center; }
+.dcell.now b, .dcellw.now .dcell b { color: var(--fg); }
+.dcell.idle b, .dcellw.idle .dcell b { color: var(--muted); font-weight: 600; }
+.dcell .dstep { font-style: normal; font-size: 12px; font-weight: 700; color: var(--accent); margin-right: 6px; }
+.dcell .dwho { font-size: 12.5px; }
+.dlang { padding: 0 12px 8px; min-height: 22px; }
+.dlang button { border: 0; background: none; padding: 0; font-size: 12px; color: var(--muted); text-decoration: underline; text-underline-offset: 2px; opacity: 0; transition: opacity .12s; }
+.dcellw:hover .dlang button, .dlang button:focus-visible, .dcellw.off .dlang button { opacity: 1; }
+@media (hover: none) { .dlang button { opacity: .8; } }
+.opsbox { margin-top: 8px; }
+@media (max-width: 640px) {
+  .dcell b { font-size: 14.5px; word-break: keep-all; }
+  .dcell .dstep { display: block; margin: 0 0 2px; }
+  .dcell .dwho { word-break: keep-all; }
+  .mainnav button, .mainnav button[aria-selected="true"] { padding: 8px 10px; font-size: 15px; }
+}
 </style>
 </head>
 <body>
@@ -1780,10 +1802,10 @@ function workHTML({ id, data: t }) {
       ${signRow(t, lk, 'info', infoDone(t), '게임 정보', '컨셉·상황을 채우면 누를 수 있음')}`,
     2: () => `
       <ol class="do">
-        <li><i>1</i><div><button type="button" class="btn primary" data-copy="p-main">프롬프트 복사</button></div></li>
+        <li><i>1</i><div><button type="button" class="btn${sh ? '' : ' primary'}" data-copy="p-main">프롬프트 복사</button></div></li>
         <li><i>2</i><div><b>${esc(aiOf(t, lk) || 'Claude')}</b> 새 대화에 붙여 넣고, 게임 화면 <b>PNG(또는 zip)</b>를 첨부해 보냄.</div></li>
-        <li><i>3</i><div>받은 엑셀을 ${readOnly ? '' : `<label class="btn upl primary">엑셀 올리기<input type="file" hidden data-sheet accept=".xlsx,.xls,.csv,.tsv,.txt,.md"></label>`}<span class="do-l">원본 엑셀도 함께 보관돼서 팀원이 받을 수 있음</span></div></li>
-        <li><i>4</i><div>같은 PNG(또는 zip)를 사이트에도 올림. 검수 때 이미지와 대조함. ${readOnly ? '' : `<label class="btn upl">PNG·zip 올리기<input type="file" hidden multiple data-imgs accept=".png,.jpg,.jpeg,.webp,.zip"></label>`}<span class="do-l">${nImg}개 올림</span></div></li>
+        <li><i>3</i><div>받은 엑셀을 ${readOnly ? '' : `<label class="btn upl${sh ? '' : ' primary'}">${sh ? '엑셀 다시 올리기' : '엑셀 올리기'}<input type="file" hidden data-sheet accept=".xlsx,.xls,.csv,.tsv,.txt,.md"></label>`}<span class="do-l">원본도 자료실에 보관됨</span></div></li>
+        <li><i>4</i><div>같은 PNG(또는 zip)를 사이트에도 올림. 검수 때 이미지와 대조함. ${readOnly ? '' : `<label class="btn upl">PNG·zip 올리기<input type="file" hidden multiple data-imgs accept=".png,.jpg,.jpeg,.webp,.zip"></label>`}${nImg ? `<span class="do-l">${nImg}개 올림</span>` : ''}</div></li>
       </ol>
       ${sh ? `<p class="sb">지금 <b>${esc(sh.src || '')}</b> · ${F.N}줄${(sh.extra || []).length ? ` · 별도 시트 ${sh.extra.map(e => esc(e.name)).join(', ')}` : ''} (${esc(sh.by || '')}, ${fmtDate(sh.at)})</p>` : ''}
       <details class="more"><summary>프롬프트 보기${readOnly ? '' : ' · 번역 AI 바꾸기'}</summary><div class="optbox"><label class="aisel">번역 AI <select id="ai-sel" ${readOnly ? 'disabled' : ''}>${['Claude', 'ChatGPT', 'Gemini'].map(a => `<option ${(aiOf(t, lk) || 'Claude') === a ? 'selected' : ''}>${a}</option>`).join('')}</select></label></div><pre class="ptext" id="pt-p-main">${esc(makePrompt(id, t, lk))}</pre></details>
@@ -2236,7 +2258,7 @@ function adminHTML() {
       <div class="acts">${acts}</div></div>`;
   };
   return `
-  ${opsHTML()}${tempShown ? `<div class="section" style="border-color:var(--ok)"><h2>임시 비밀번호</h2><p class="hint">${esc(tempShown.name)} 님에게 전달하기. 이 화면을 벗어나면 다시 볼 수 없음. 로그인 후 ‘비밀번호 변경’으로 바꾸게 하기.</p><p><span class="temp">${esc(tempShown.pw)}</span></p><div class="dangerzone"><button type="button" class="btn" data-ua="hide-temp">닫기</button></div></div>` : ''}
+  ${tempShown ? `<div class="section" style="border-color:var(--ok)"><h2>임시 비밀번호</h2><p class="hint">${esc(tempShown.name)} 님에게 전달하기. 이 화면을 벗어나면 다시 볼 수 없음. 로그인 후 ‘비밀번호 변경’으로 바꾸게 하기.</p><p><span class="temp">${esc(tempShown.pw)}</span></p><div class="dangerzone"><button type="button" class="btn" data-ua="hide-temp">닫기</button></div></div>` : ''}
   <section class="section"><h2>승인 대기 ${wait.length ? `<span class="badge">${wait.length}</span>` : ''}</h2>
     <p class="hint"><b>보기 허용</b>을 켜면 그 사람 화면이 바로 열림. <b>편집 허용</b>을 켜면 게임 카드와 용어집을 고칠 수 있음.${owner ? ' <b>관리자 지정</b>을 켜면 그 사람도 가입 승인과 권한 관리를 할 수 있음.' : ''}</p>
     <div class="ulist">${wait.length ? wait.map(row).join('') : '<p class="hint">기다리는 사람이 없음.</p>'}</div></section>
@@ -2244,7 +2266,7 @@ function adminHTML() {
     <p class="hint">대표 관리자는 항상 모든 권한이 있음. 지정된 관리자는 일반 회원의 권한만 바꿀 수 있고, 관리자 지정·해제는 대표 관리자만 할 수 있음.</p>
     <div class="ulist">${admins.length ? admins.map(row).join('') : '<p class="hint">지정된 관리자가 없음.</p>'}</div></section>
   <section class="section"><h2>이용 중인 회원 (${ok.length})</h2>
-    <div class="ulist">${ok.length ? ok.map(row).join('') : '<p class="hint">아직 허용된 회원이 없음.</p>'}</div></section>`;
+    <div class="ulist">${ok.length ? ok.map(row).join('') : '<p class="hint">아직 허용된 회원이 없음.</p>'}</div></section>${opsHTML()}`;
 }
 document.addEventListener('click', async e => {
   const t = e.target.closest('[data-perm]');
@@ -2448,13 +2470,17 @@ function dashHTML() {
       const cls = isFinal(st) || st === 'done' ? 'ok' : st === 'wait' ? 'wait' : 'now';
       const mm = flowState(t, l.key).memos;
       const sgs = [signOf(t, l.key, 'info'), ...['excel', 'auto', 'files', 'cross'].map(k => signOf(t, l.key, k)), ...Object.values((t.progressBy || {})[l.key] || {}).map(x => x && { by: x.n, at: x.at })].filter(x => x && x.at).sort((a, b) => b.at.localeCompare(a.at))[0];
-      if (Retention.isOff(t, l.key)) return `<div class="dcellw off"><div class="dcell"><span class="lab">${l.label}</span><b>불가능</b><small>이 언어는 번역 안 함</small></div>${langToggle(id, t, l.key)}</div>`;
+      if (Retention.isOff(t, l.key)) return `<div class="dcellw off"><div class="dcell"><span class="lab">${l.label}</span><b>불가능</b><small>번역 안 함</small></div>${langToggle(id, t, l.key)}</div>`;
       const wn = Retention.warnInfo(t, Date.now());
-      return `<div class="dcellw ${cls}"><button type="button" class="dcell ${cls}" data-goto="${esc(id)}|${l.key}"><span class="lab">${l.label}</span><b>${esc(SIMPLE_LABEL[st])}</b>${N && !isFinal(st) ? `<small>검수 ${tr}/${N}줄</small>` : ''}${sgs && st !== 'translate' ? `<small class="dwho">최근: ${esc(sgs.by)} · ${fmtShort(sgs.at)}</small>` : ''}${mm ? `<span class="memo-chip">수정 요청 ${mm}</span>` : ''}${wn ? `<small class="dwarn">D-${wn.days} 자료 삭제 예정</small>` : t.purgedAt ? '<small>자료 정리됨</small>' : ''}</button>${langToggle(id, t, l.key)}</div>`;
+      const idle = st === 'translate' && !N && !sgs;
+      const stepN = { translate: signOf(t, l.key, 'info') ? 2 : 1, excel: 2, review: 3, done: 4, confirmed: 5 }[st];
+      const meta = [N && !isFinal(st) ? `검수 ${tr}/${N}` : '', sgs && !idle ? `${esc(sgs.by)} ${fmtShort(sgs.at)}` : ''].filter(Boolean).join(' · ');
+      const c2 = idle ? 'idle' : cls;
+      return `<div class="dcellw ${c2}"><button type="button" class="dcell ${c2}" data-goto="${esc(id)}|${l.key}"><span class="lab">${l.label}</span><b>${idle ? '시작 전' : `${stepN ? `<i class="dstep">${stepN}/5</i>` : st === 'applied' ? '✓ ' : ''}${esc(SIMPLE_LABEL[st])}`}</b>${meta ? `<small class="dwho">${meta}</small>` : ''}${mm ? `<span class="memo-chip">수정 요청 ${mm}</span>` : ''}${wn ? `<small class="dwarn">D-${wn.days} 자료 삭제</small>` : t.purgedAt ? '<small>자료 정리됨</small>' : ''}</button>${langToggle(id, t, l.key)}</div>`;
     }).join('');
     return `<div class="drow"><div class="dgame"><button type="button" data-goto="${esc(id)}|${promptLang}">${esc(t.name || '(이름 없음)')}</button><small>${esc(t.concept || '게임 정보 없음')}</small></div>${cells}</div>`;
   });
-  return `<p class="lead">게임을 누르면 해야 할 일이 순서대로 나옴.</p>
+  return `<p class="lead">칸을 누르면 그 언어의 할 일이 순서대로 나옴.</p>
     <div class="dash"><div class="drow head"><div>게임</div>${LANGS.map(l => `<div>${l.label}</div>`).join('')}</div>${rows.join('')}</div>
     ${readOnly ? '' : '<div style="margin-top:12px"><button type="button" class="btn" id="add-game">+ 게임 추가</button></div>'}`;
 }
@@ -3181,7 +3207,8 @@ document.addEventListener('change', async e => {
 function langToggle(id, t, lk) {
   if (readOnly) return '';
   const off = Retention.isOff(t, lk);
-  return `<div class="dlang" role="group" aria-label="${esc(LANGS.find(l => l.key === lk).label)} 번역 가능 여부"><button type="button" data-langoff="${esc(id)}|${lk}|0" aria-pressed="${!off}">가능</button><button type="button" data-langoff="${esc(id)}|${lk}|1" aria-pressed="${off}">불가능</button></div>`;
+  const L = LANGS.find(l => l.key === lk).label;
+  return `<div class="dlang">${off ? `<button type="button" data-langoff="${esc(id)}|${lk}|0" aria-label="${esc(L)} 가능으로 되돌리기">가능으로 되돌리기</button>` : `<button type="button" data-langoff="${esc(id)}|${lk}|1" aria-label="${esc(L)} 번역 불가능으로 표시">불가능 표시</button>`}</div>`;
 }
 function langOffHTML(id, t, lk) {
   const o = (t.langOff || {})[lk] || {}, L = LANGS.find(l => l.key === lk);
@@ -3297,16 +3324,16 @@ document.addEventListener('click', async e => {
 <script>
 /* ================= 관리자: 운영 점검 (토큰 만료 · 백업 · 복구) ================= */
 function tokenNote() {
-  const ex = meNow && meNow.tokenExp; if (!ex) return '<span>GitHub 토큰 만료일: 확인 안 됨 (만료 없는 토큰이거나 아직 확인 전)</span>';
+  const ex = meNow && meNow.tokenExp; if (!ex) return '<span>GitHub 토큰 만료일 확인 전 (만료 없는 토큰일 수 있음)</span>';
   const left = Math.ceil((Date.parse(ex) - Date.now()) / 864e5);
-  return `<span class="${left <= 14 ? 'badtxt' : ''}">GitHub 토큰 만료: <b>${fmtDate(ex)}</b> (${left > 0 ? left + '일 남음' : '만료됨'})${left <= 14 ? ' · 새 토큰을 만들어 Render의 GITHUB_TOKEN 바꾸기' : ''}</span>`;
+  return `<span class="${left <= 14 ? 'badtxt' : ''}">GitHub 토큰 만료 <b>${fmtDate(ex)}</b> · ${left > 0 ? left + '일 남음' : '만료됨'}${left <= 14 ? '<br><small>새 토큰을 만들어 Render의 GITHUB_TOKEN 바꾸기</small>' : ''}</span>`;
 }
 function opsHTML() {
   if (!meNow || !meNow.isAdmin) return '';
   return `<div class="section opsbox"><h2>운영 점검</h2>
     <p>${tokenNote()}</p>
-    <div class="iacts"><a class="btn" href="/api/admin/backup" download>데이터 백업 받기 (게임·용어집·폰트 목록)</a>${meNow.isOwner ? '<label class="btn ghost upl">백업 파일로 되돌리기<input type="file" hidden id="restore-file" accept=".json"></label>' : ''}</div>
-    <p class="hint">백업은 큰 작업 전에 받아 두기. 이미지·엑셀 파일과 모든 저장 기록은 GitHub data 브랜치에 커밋으로 남아 있어 그곳에서도 되돌릴 수 있음.</p></div>`;
+    <div class="iacts"><a class="btn" href="/api/admin/backup" download>백업 받기</a>${meNow.isOwner ? '<label class="btn upl">백업으로 되돌리기<input type="file" hidden id="restore-file" accept=".json"></label>' : ''}</div>
+    <p class="hint">백업 = 게임·용어집·폰트 목록. 큰 작업 전에 받아 두기. 이미지·엑셀 파일은 GitHub data 브랜치 기록에 남음.</p></div>`;
 }
 let restoreData = null;
 document.addEventListener('change', async e => {
