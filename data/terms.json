@@ -117,11 +117,11 @@
         "avoid": "",
         "avoidWhy": "",
         "status": "후보",
-        "text": "这个!"
+        "text": "左边！这个！右边！"
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:42:34.393Z"
+    "updatedAt": "2026-11-02T03:42:56.377Z"
   },
   "ui-front": {
     "common": false,
