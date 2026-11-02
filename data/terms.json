@@ -42,8 +42,8 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
-        "text": "Chris×Mas"
+        "status": "확정",
+        "text": "TISH! TISH! TISH!"
       },
       "ja": {
         "avoid": "",
@@ -59,7 +59,7 @@
       }
     },
     "type": "게임명",
-    "updatedAt": "2026-11-02T03:45:43.190Z"
+    "updatedAt": "2026-11-02T03:45:54.070Z"
   },
   "fix-pix-name": {
     "common": false,
