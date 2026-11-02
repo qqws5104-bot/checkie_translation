@@ -346,8 +346,8 @@
     "intent": "4라운드 아이콘 라벨",
     "tr": {
       "en": {
-        "text": "",
-        "status": "미정",
+        "text": "HERE! HERE! HERE!",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -365,6 +365,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:50:00.666Z"
+    "updatedAt": "2026-11-02T03:51:18.980Z"
   }
 }
