@@ -308,8 +308,10 @@
   "item-7kiun": {
     "ko": "개굴",
     "type": "기타",
-    "common": true,
-    "games": [],
+    "common": false,
+    "games": [
+      "chris-mas"
+    ],
     "intent": "크리마스 청개구리 문제",
     "tr": {
       "en": {
@@ -332,6 +334,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:25:17.654Z"
+    "updatedAt": "2026-11-02T03:25:20.203Z"
   }
 }
