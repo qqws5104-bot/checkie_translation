@@ -116,12 +116,12 @@
       "zh": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "확정",
+        "status": "후보",
         "text": "这个!"
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:42:31.315Z"
+    "updatedAt": "2026-11-02T03:42:34.393Z"
   },
   "ui-front": {
     "common": false,
