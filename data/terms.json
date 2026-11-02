@@ -73,7 +73,7 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "Fix Pix"
       },
       "ja": {
@@ -90,7 +90,7 @@
       }
     },
     "type": "게임명",
-    "updatedAt": "2026-11-02T07:03:55.615Z"
+    "updatedAt": "2026-11-02T07:48:09.290Z"
   },
   "this-one": {
     "common": false,
@@ -135,7 +135,7 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "FRONT"
       },
       "ja": {
@@ -152,7 +152,7 @@
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-30T03:23:52.412Z"
+    "updatedAt": "2026-11-02T07:48:09.822Z"
   },
   "ui-goal": {
     "common": false,
@@ -228,7 +228,7 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "ROUND"
       },
       "ja": {
@@ -245,7 +245,7 @@
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-30T03:23:40.512Z"
+    "updatedAt": "2026-11-02T07:48:10.342Z"
   },
   "ui-side": {
     "common": false,
@@ -259,7 +259,7 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "SIDE"
       },
       "ja": {
@@ -276,7 +276,7 @@
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-30T03:23:44.976Z"
+    "updatedAt": "2026-11-02T07:48:10.742Z"
   },
   "ui-time": {
     "common": true,
@@ -288,7 +288,7 @@
       "en": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "후보",
+        "status": "확정",
         "text": "TIME"
       },
       "ja": {
@@ -305,7 +305,7 @@
       }
     },
     "type": "영문 표기",
-    "updatedAt": "2026-10-29T00:00:00Z"
+    "updatedAt": "2026-11-02T07:48:11.144Z"
   },
   "item-7kiun": {
     "ko": "개굴!",
