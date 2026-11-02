@@ -105,7 +105,7 @@
         "avoid": "",
         "avoidWhy": "",
         "status": "확정",
-        "text": "LEFT! TISH! RIGHT!"
+        "text": "LEFT! THIS! RIGHT!"
       },
       "ja": {
         "avoid": "",
@@ -121,7 +121,7 @@
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:45:01.464Z"
+    "updatedAt": "2026-11-02T03:50:19.244Z"
   },
   "ui-front": {
     "common": false,
