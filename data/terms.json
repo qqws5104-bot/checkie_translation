@@ -431,7 +431,7 @@
   },
   "item-c3s41": {
     "ko": "광고",
-    "type": "지시 동사",
+    "type": "기타",
     "common": false,
     "games": [
       "fix-pix"
@@ -458,6 +458,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T06:29:59.790Z"
+    "updatedAt": "2026-11-02T06:30:02.978Z"
   }
 }
