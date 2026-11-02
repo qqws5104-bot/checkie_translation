@@ -400,7 +400,7 @@
   },
   "item-ehfpz": {
     "ko": "산타자격 검정시험",
-    "type": "지시 동사",
+    "type": "게임명",
     "common": false,
     "games": [
       "chris-mas"
@@ -427,6 +427,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:53:43.854Z"
+    "updatedAt": "2026-11-02T03:53:47.654Z"
   }
 }
