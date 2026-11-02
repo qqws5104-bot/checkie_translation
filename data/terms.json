@@ -328,13 +328,13 @@
       },
       "zh": {
         "text": "呱呱!",
-        "status": "확정",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:52:25.181Z"
+    "updatedAt": "2026-11-02T03:52:27.507Z"
   },
   "item-tl9sz": {
     "ko": "여기! 여기! 여기!",
