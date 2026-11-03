@@ -4,7 +4,7 @@
     "games": [
       "chris-mas"
     ],
-    "intent": "2라운드 A 아이콘 라벨",
+    "intent": "2라운드 A 아이콘",
     "ko": "이쪽! 폐기! 저쪽!",
     "memo": "중국어는 크리스마스를 보통 ‘圣诞’이라 해 말장난이 약해질 수 있음",
     "tr": {
@@ -28,7 +28,7 @@
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:47:33.901Z"
+    "updatedAt": "2026-11-03T01:20:37.612Z"
   },
   "chris-mas-name": {
     "common": false,
@@ -97,7 +97,7 @@
     "games": [
       "chris-mas"
     ],
-    "intent": "1라운드 아이콘 라벨",
+    "intent": "1라운드 아이콘",
     "ko": "왼쪽! 이거! 오른쪽!",
     "memo": "고르기면 PICK!, 가리키기면 THIS! 쪽으로 갈림",
     "tr": {
@@ -121,7 +121,7 @@
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-02T03:50:19.244Z"
+    "updatedAt": "2026-11-03T01:20:38.667Z"
   },
   "ui-front": {
     "common": false,
