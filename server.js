@@ -401,7 +401,7 @@ function stampMemos(before, after, me) {
   const now = new Date().toISOString();
   memoList(after).forEach(([lk, k, mm]) => {
     if (old.has(lk + '/' + k + '/' + (mm.id || JSON.stringify(mm)))) return;
-    if ((mm.kind === 'plan' || mm.kind === 'puzzle') && mm.by === '교차 검수 AI') { mm.at = mm.at || now; mm.addedBy = me.name; return; }   // AI 교차 검수가 만든 기획 확인 메모: 올린 사람을 따로 기록
+    if (['plan', 'puzzle', 'enref'].includes(mm.kind) && mm.by === '교차 검수 AI') { mm.at = mm.at || now; mm.addedBy = me.name; return; }   // AI 교차 검수가 만든 기획 확인 메모: 올린 사람을 따로 기록
     mm.by = me.name; mm.at = now;
   });
 }
