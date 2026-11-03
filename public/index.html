@@ -1477,12 +1477,17 @@ const sheetOf = (t, lk) => ((t.work || {})[lk] || {}).sheet || null;
 /* 현지화 분류 A 직접 번역 / B 의미 현지화 / C 재설계 */
 const CLS = { A: 'A. 직접 번역 가능', B: 'B. 의미 현지화 필요', C: 'C. 재설계 필요', R: 'REVIEW. 분류 보류' };
 function clsOf(v) { const s = String(v || '').trim(); if (/^\s*REVIEW|분류\s*보류|판단\s*(불가|필요)/i.test(s)) return 'R'; const m = s.match(/^\s*([ABC])\b/i); if (m) return m[1].toUpperCase(); if (/재설계/.test(s)) return 'C'; if (/현지화/.test(s)) return 'B'; if (/직접|직역/.test(s)) return 'A'; return ''; }
+/* 단순 3분류: 직역(그대로 번역) / 의역(뜻을 살려 바꿈) / 재창조(번역이 아니라 문제를 새로 만듦)
+   기준: 원문 분석의 현지화 분류(A/B/C) → 없으면 번역 AI가 적은 번역 방식 → 둘 다 없으면 분류 없음 */
+const TRI = ['직역', '의역', '재창조'], TRI_DESC = { 직역: '그대로 번역하면 됨', 의역: '뜻을 살려 표현을 바꿔야 함', 재창조: '번역이 아니라 문제를 새로 만들어야 함' };
+const triOf = r => ({ A: '직역', B: '의역', C: '재창조' })[r.cls] || (r.rat && ({ 직역: '직역', 의역: '의역', 재구성: '재창조' })[r.rat.meth]) || '분류 없음';
+function triStats(rows) { const c = { 직역: 0, 의역: 0, 재창조: 0, '분류 없음': 0 }; rows.forEach(r => { c[triOf(r)]++; }); const done = c.직역 + c.의역 + c.재창조, pct = k => done ? Math.round(c[k] / done * 1000) / 10 : 0; return { c, done, n: rows.length, p: { 직역: pct('직역'), 의역: pct('의역'), 재창조: pct('재창조') } }; }
 function clsBarHTML(rows) {
-  const st = clsStats(rows); if (!st.n) return '';
-  if (st.none === st.n) return '<p class="sb">현지화 분류(A·B·C) 열이 없는 엑셀임. 새 프롬프트로 다시 받으면 분류와 비율이 나옴.</p>';
-  const seg = (k, c, lab) => st[k] ? `<span class="clsseg ${c}" style="flex:${st[k]}" title="${lab} ${st[k]}줄">${lab} ${st['p' + k]}%</span>` : '';
-  return `<div class="clsbar"><div class="clsrow">${seg('A', 'a', 'A 직접')}${seg('B', 'b', 'B 현지화')}${seg('C', 'c', 'C 재설계')}${st.R ? `<span class="clsseg r" style="flex:${st.R}" title="REVIEW ${st.R}줄">REVIEW ${st.R}</span>` : ''}${st.none ? `<span class="clsseg n" style="flex:${st.none}">미분류 ${st.none}</span>` : ''}</div>
-    <small class="sb">전체 ${st.n}줄 · 분류 완료 ${st.done}줄 기준 직접 번역 ${st.A}줄(${st.pA}%) · 현지화 ${st.B}줄(${st.pB}%) · 재설계 ${st.C}줄(${st.pC}%)${st.R ? ` · REVIEW ${st.R}줄(분류 완료에서 뺌)` : ''} · <b>사람 확인 필요 ${st.pHuman}%</b> (B+C+REVIEW ÷ 전체) — 번역 난이도 통계이지 품질 점수가 아님</small></div>`;
+  const T = triStats(rows); if (!T.n) return '';
+  if (!T.done) return `<p class="sb">분류 정보가 없는 엑셀임(${T.n}줄 분류 없음). 지금 프롬프트로 다시 받거나 원문 준비를 하면 직역·의역·재창조 비율이 나옴.</p>`;
+  const seg = (k, c) => T.c[k] ? `<span class="clsseg ${c}" style="flex:${T.c[k]}" title="${k} ${T.c[k]}줄 · ${TRI_DESC[k]}">${k} ${T.p[k]}%</span>` : '';
+  return `<div class="clsbar"><div class="clsrow">${seg('직역', 'a')}${seg('의역', 'b')}${seg('재창조', 'c')}${T.c['분류 없음'] ? `<span class="clsseg n" style="flex:${T.c['분류 없음']}">분류 없음 ${T.c['분류 없음']}</span>` : ''}</div>
+    <small class="sb">직역 ${T.c.직역}줄(${T.p.직역}%) · 의역 ${T.c.의역}줄(${T.p.의역}%) · 재창조 ${T.c.재창조}줄(${T.p.재창조}%)${T.c['분류 없음'] ? ` · 분류 없음 ${T.c['분류 없음']}줄(비율에서 뺌)` : ''}</small></div>`;
 }
 function clsStats(rows) {
   const n = rows.length, c = { A: 0, B: 0, C: 0, R: 0, '': 0 };
@@ -2488,6 +2493,18 @@ function humanVerdict(t, lk, r) {
   if (conf) return `확정 승인 · ${conf.n || ''}`;
   return 'AI PASS · 사람 미확인';
 }
+/* 01 전체 통계 = 직역·의역·재창조 세 비율만 (언어 시트의 ‘3분류’ 열을 COUNTIF) */
+function triSheet(langs, rowsOf, rangeOf) {
+  const F = (f, v, pct) => ({ f, v, pct });
+  const head = ['구분', '뜻', ...langs.flatMap(l => [`${l.label} 줄 수`, `${l.label} 비율`])];
+  const cnt = (l, k) => `COUNTIF(${rangeOf(l)},"${k}")`, sum3 = l => `(${TRI.map(k => cnt(l, k)).join('+')})`;
+  const body = TRI.map(k => [k, TRI_DESC[k], ...langs.flatMap(l => { const T = triStats(rowsOf(l)); return [F(cnt(l, k), T.c[k]), F(`IF(${sum3(l)}=0,"분류 없음",${cnt(l, k)}/${sum3(l)})`, T.done ? T.c[k] / T.done : '분류 없음', true)]; })]);
+  body.push(['분류 없음', '분류 정보가 없는 줄 (비율에서 뺌)', ...langs.flatMap(l => [F(cnt(l, '분류 없음'), triStats(rowsOf(l)).c['분류 없음']), ''])]);
+  body.push(['합계', '', ...langs.flatMap(l => [F(`COUNTA(${rangeOf(l)})`, rowsOf(l).length), ''])]);
+  body.push(['', '', ...langs.flatMap(() => ['', ''])]);
+  body.push(['기준', '원문 분석의 현지화 분류(A 직역 · B 의역 · C 재창조)를 쓰고, 없으면 번역 AI가 적은 번역 방식(직역 · 의역 · 재구성=재창조)을 씀. 비율 = 개수 ÷ (직역 + 의역 + 재창조).', ...langs.flatMap(() => ['', ''])]);
+  return { name: '01 전체 통계', rows: [head, ...body], widths: [12, 40, ...langs.flatMap(() => [12, 12])], style: (ri, ci, r) => ri <= 3 && ci === 0 ? [4, 3, 2][ri - 1] : 0 };
+}
 /* ---------- 명세 v1.0 엑셀 (원문 기준표가 있는 게임): 00~08 시트 ---------- */
 const x2 = r => r.x.hv && r.x.hv.v === '수정 요청' ? `사람 수정 요청: ${r.x.hv.why}` : r.x.rv && aiNow(r.x.rv) === 'FAIL' ? `AI FAIL: ${r.x.rv.why || ''}` : '';
 const fmtDT = s => s ? new Date(s).toLocaleString('ko-KR', { hour12: false }) : '';
@@ -2500,7 +2517,7 @@ function specXlsx(id, t) {
   const head2 = ['Source_ID', '파일명', '페이지/화면', '원문', '원문 유형', '현지화 분류', '분류 근거', '문화적 배경', '번역 시 주의점', '재설계 제안', '사람 판정', '최종 현지화 분류', '비고', '원문 핵심 의미', '다의어·중의 판단'];
   const body2 = base.map(b => { const changed = b.x.cls && b.x.cls !== b.cls; return [b.id, b.file, [b.screen, b.elem].filter(Boolean).join(' · '), b.ko, b.type, b.cls ? CLS[b.cls] : '', b.why, b.cult || '', b.care, b.redo || '', b.x.ok ? `승인 · ${b.x.ok.by}` : changed ? '수정 요청 (분류 변경 후 대기)' : '대기', b.x.ok && b.clsEff ? CLS[b.clsEff] : '', [b.note, b.exRaw ? `언어별 예외: ${b.exRaw}` : '', changed ? `사람이 ${CLS[b.cls] || '미분류'} → ${CLS[b.x.cls]}로 변경 (${b.x.clsBy || ''})` : ''].filter(Boolean).join(' / '), b.core || '', b.sense || '']; });
   /* 03~05 언어별 번역·검수 (같은 열 구조) */
-  const head3 = ['Source_ID', '한국어 원문', '현지화 분류', '번역 시 주의점', '1차 번역문', '번역 대안', '역번역문', '의미 일치 판정', '행동 보존 판정', '조건 보존 판정', '정답 보존 판정', '자연스러움 판정', '용어 일관성 판정', '검수 의견', '프로그램 자동 검사', '종합 AI 판정', '사람 최종 판정', '수정 번역문', '재검수 결과', '최종 확정 상태', '번역 방식', '번역 결과의 한국어 의미 (번역 AI)', '단어 의미 판단', '번역 이유', '재구성 사유', '검수 주의사항', '핵심어 대응 (번역 AI)', '핵심어 뜻 (검수 AI)', '판단 근거 요약', '승인 때 본 근거'];
+  const head3 = ['Source_ID', '한국어 원문', '현지화 분류', '번역 시 주의점', '1차 번역문', '번역 대안', '역번역문', '의미 일치 판정', '행동 보존 판정', '조건 보존 판정', '정답 보존 판정', '자연스러움 판정', '용어 일관성 판정', '검수 의견', '프로그램 자동 검사', '종합 AI 판정', '사람 최종 판정', '수정 번역문', '재검수 결과', '최종 확정 상태', '번역 방식', '번역 결과의 한국어 의미 (번역 AI)', '단어 의미 판단', '번역 이유', '재구성 사유', '검수 주의사항', '핵심어 대응 (번역 AI)', '핵심어 뜻 (검수 AI)', '판단 근거 요약', '승인 때 본 근거', '3분류'];
   const FS = {}, langSheets = langs.map(l => {
     const F = FS[l.key] = flowState(t, l.key);
     const body = F.rows.map(r => { const x = r.x, rv = x.rv, chk = (rv && rv.chk) || {}, vd = r.vd;
@@ -2508,8 +2525,8 @@ function specXlsx(id, t) {
       const opinion = [['문화', '추가 정보'].map(k => chkGet(chk, k) ? `${k} ${NA(chkGet(chk, k))}` : '').filter(Boolean).join(' · '), rv && rv.why && rv.why !== '-' ? rv.why : '', rv && rv.fix && rv.v !== '통과' ? `수정 제안: ${rv.fix}` : '', vd.exc ? `AI ${vd.ai0} 예외 사유: ${vd.exc}` : '', x.srcChg ? '원문 변경됨' : ''].filter(Boolean).join(' / ');
       const O = vd.O + (vd.pf.length ? `: ${vd.pf.map(m => m[1]).join(' / ')}` : '') + (vd.pr.length ? ` (REVIEW: ${vd.pr.map(m => m[1]).join(' / ')})` : '') + (Object.keys(x.okWhy || {}).length ? ` (예외: ${Object.values(x.okWhy).map(o => o.why).join(' / ')})` : '');
       const hv = x.hv;
-      return [r.id, r.ko, r.cls ? CLS[r.cls] : '', r.clsDir, first, r.alt, (x.bt || [])[0] || '', NA(chk['의미']), NA(chk['행동']), NA(chk['조건']), NA(chk['정답']), NA(chk['자연스러움']), termOpen ? 'FAIL (프로그램)' : NA(chk['용어']), opinion, O, vd.P, hv ? `${hv.v}${hv.why ? ` · ${hv.type ? hv.type + ': ' : ''}${hv.why}` : ''} (${hv.by} · ${hv.basis || ''})` : '', normKo(r.tr) !== normKo(first) ? r.tr : '', recheckOf(r, vd), vd.T, ...(r.rat ? [r.rat.meth || r.rat.methRaw, r.rat.intent, r.rat.sense, r.rat.reason, r.rat.redo] : ['', '', '', '', '']), r.note, r.rat ? r.rat.wmap : '', x.gl || '', judgeSignals(r).summary, hv && hv.ev ? hv.ev : '']; });
-    return { name: SPEC_SHEET[l.key], rows: [head3, ...body], widths: [9, 32, 16, 26, 32, 22, 30, 9, 9, 9, 9, 9, 9, 36, 22, 10, 22, 30, 10, 13, 9, 30, 26, 40, 30, 26, 36, 36, 50, 50], filter: true, style: (ri, ci, r) => ci >= 7 && ci !== 13 && ci < 20 ? vStyle(String(r[ci] || '')) : ci === 20 && r[ci] === '재구성' ? 3 : ci === 28 ? (/^빨간|승인 불가/.test(r[ci]) ? 2 : /^노란|부족/.test(r[ci]) ? 3 : /^모든 근거/.test(r[ci]) ? 4 : 0) : 0, F, n: body.length };
+      return [r.id, r.ko, r.cls ? CLS[r.cls] : '', r.clsDir, first, r.alt, (x.bt || [])[0] || '', NA(chk['의미']), NA(chk['행동']), NA(chk['조건']), NA(chk['정답']), NA(chk['자연스러움']), termOpen ? 'FAIL (프로그램)' : NA(chk['용어']), opinion, O, vd.P, hv ? `${hv.v}${hv.why ? ` · ${hv.type ? hv.type + ': ' : ''}${hv.why}` : ''} (${hv.by} · ${hv.basis || ''})` : '', normKo(r.tr) !== normKo(first) ? r.tr : '', recheckOf(r, vd), vd.T, ...(r.rat ? [r.rat.meth || r.rat.methRaw, r.rat.intent, r.rat.sense, r.rat.reason, r.rat.redo] : ['', '', '', '', '']), r.note, r.rat ? r.rat.wmap : '', x.gl || '', judgeSignals(r).summary, hv && hv.ev ? hv.ev : '', triOf(r)]; });
+    return { name: SPEC_SHEET[l.key], rows: [head3, ...body], widths: [9, 32, 16, 26, 32, 22, 30, 9, 9, 9, 9, 9, 9, 36, 22, 10, 22, 30, 10, 13, 9, 30, 26, 40, 30, 26, 36, 36, 50, 50, 9], filter: true, style: (ri, ci, r) => ci >= 7 && ci !== 13 && ci < 20 ? vStyle(String(r[ci] || '')) : ci === 20 && r[ci] === '재구성' ? 3 : ci === 28 ? (/^빨간|승인 불가/.test(r[ci]) ? 2 : /^노란|부족/.test(r[ci]) ? 3 : /^모든 근거/.test(r[ci]) ? 4 : 0) : 0, F, n: body.length };
   });
   /* 06 오류 및 수정 이력 (+ N~T: 변경 전후 한국어 의미·방식, 변경 유형, 의미 차이, 재검수 여부) */
   let k = 0; const body6 = [], add = (row, ext) => body6.push([`E${String(++k).padStart(3, '0')}`, ...row, ...(ext || ['', '', '', '', '', '', ''])]);
@@ -2585,14 +2602,14 @@ function specXlsx(id, t) {
     ['승인 근거', '역번역 = 이 언어를 못 읽는 사람이 역번역·검수 결과로 확인 / 언어 가능자 = 번역문을 직접 읽고 확인. AI PASS 신뢰도는 언어 가능자 확인만으로 계산'],
     ['외국어를 모를 때', 'AC열 ‘판단 근거 요약’만 보고 판단 가능: 의미 대조(원문 · 번역 AI가 적은 의미 · 검수 AI 역번역) · 검수 AI 8가지 · 프로그램 검사 · 핵심어 대조 · 번역 근거 · 원문 해석 · 분류. ✓ 일치 / ! 확인 / ✗ 승인 불가. AD열은 사람이 승인할 때 본 근거 기록'],
     ['번역 근거', '03~05의 U열부터: 번역 AI가 번역할 때 적은 번역 방식(직역/의역/재구성)·의도한 한국어 의미·단어 의미 판단·번역 이유·재구성 사유·검수 주의사항. G열 역번역은 이 근거를 받지 않은 검수 AI가 따로 쓴 것이라, 두 의미가 어긋나는 줄을 먼저 확인'],
-    ['시트', '00 사용 안내 · 01 전체 통계 · 02 원문 분석 · 03~05 언어별 번역·검수 · 06 오류 및 수정 이력 · 07 용어집 · 08 정답·게임 규칙 · 09 번역 버전 · 10 확인 사항'],
+    ['시트', '00 사용 안내 · 01 전체 통계(직역·의역·재창조 비율) · 02 원문 분석 · 03~05 언어별 번역·검수 · 06 오류 및 수정 이력 · 07 용어집 · 08 정답·게임 규칙 · 09 번역 버전 · 10 확인 사항 · 11 상세 통계(검수·승인 지표)'],
     ['번역 버전', '같은 Source_ID 안에서 V1(최초 번역) → V2 … 덮어쓰지 않음. 버전마다 그때의 번역문·근거·검수·사람 판정을 남김. 기록에 없는 버전·검수는 만들지 않으며, 근거가 기록되지 않은 버전은 ‘근거 없음’으로 표시'],
     ['근거 상태', '번역 AI 작성 근거 → 검수 AI 확인 근거 → 사람 확인 완료 → 최종 승인. 번역 AI 근거는 정답이 아님. 번역 AI가 적은 의미와 검수 AI 역번역·핵심어 뜻이 어긋나면 근거 충돌로 10 확인 사항에 올라감'],
     ['만든 때', `${fmtDT(nowISO())} · ${meName()} · 규칙 버전 ${PROMPT_VER}`],
   ];
   const sheets = [
     { name: '00 사용 안내', rows: [['항목', '내용'], ...body0], widths: [14, 110] },
-    { name: '01 전체 통계', rows: [['통계 항목', ...langs.map(l => l.label), '계산 방식'], ...body1], widths: [28, ...langs.map(() => 16), 56] },
+    triSheet(langs, l => FS[l.key].rows, l => R(l, 30)),
     { name: '02 원문 분석', rows: [head2, ...body2], widths: [9, 12, 14, 34, 10, 18, 30, 24, 28, 28, 18, 18, 30, 30, 30], filter: true, style: (ri, ci, r) => ci === 5 || ci === 11 ? (/^C\./.test(r[ci]) ? 2 : /^B\.|^REVIEW/.test(r[ci]) ? 3 : 0) : ci === 10 ? vStyle(String(r[ci])) : 0 },
     ...langSheets.map(x => ({ name: x.name, rows: x.rows, widths: x.widths, filter: true, style: x.style })),
     { name: '06 오류 및 수정 이력', rows: [['Issue_ID', 'Source_ID', '언어', '오류 유형', '오류 발견 단계', '기존 번역문', '수정 번역문', '오류 설명', '수정 이유', '수정자', '수정 일시', '재검수 결과', '최종 승인 여부', '변경 전 한국어 의미', '변경 후 한국어 의미', '변경 전 번역 방식', '변경 후 번역 방식', '변경 유형', '의미 차이 설명', '재검수 여부'], ...(body6.length ? body6 : [['', '', '', '', '', '', '', '기록 없음', '', '', '', '', '', '', '', '', '', '', '', '']])], widths: [9, 9, 10, 16, 12, 32, 32, 36, 16, 10, 18, 12, 12, 32, 32, 10, 10, 14, 40, 12], filter: true, style: (ri, ci, r) => ci === 11 || ci === 12 ? vStyle(String(r[ci])) || (/미승인/.test(r[ci]) ? 3 : 0) : 0 },
@@ -2600,6 +2617,7 @@ function specXlsx(id, t) {
     { name: '08 정답·게임 규칙', rows: [['Game_ID', 'Question_ID', '문제 원문', '선택지 A', '선택지 B', '사실상 정답', '게임상 정답', '판정 방식', '규칙 설명', '사람 승인'], ...(body8.length ? body8 : [['', '', '문제 없음', '', '', '', '', '', '', '']])], widths: [9, 10, 34, 18, 22, 14, 14, 14, 34, 16], style: (ri, ci, r) => ci === 6 && r[5] && normKo(r[5]) !== normKo(r[6]) ? 3 : 0 },
     { name: '09 번역 버전', rows: [['Source_ID', '언어', '버전', '지금 버전', '누가', '단계', '시각', '번역문', '번역 방식', '번역 결과의 한국어 의미', '근거 작성', '번역 이유', '핵심어 대응', '그 버전의 검수 판정', '그 버전의 역번역', '사람 판정', '변경 이유', '변경 유형', '의미 차이 설명'], ...(body9.length ? body9 : [['', '', '', '', '', '', '', '기록 없음', '', '', '', '', '', '', '', '', '', '', '']])], widths: [9, 8, 6, 8, 18, 16, 18, 32, 8, 32, 16, 36, 30, 12, 30, 16, 26, 12, 36], filter: true, style: (ri, ci, r) => ci === 3 && r[3] === '지금' ? 4 : ci === 10 && /없음/.test(r[10]) ? 3 : 0 },
     { name: '10 확인 사항', rows: [['Source_ID', '언어', '구분', '내용', '지금 상태'], ...(body10.length ? body10 : [['', '', '미해결 항목 없음', '', '']])], widths: [9, 8, 22, 70, 14], filter: true, style: (ri, ci, r) => ci === 2 && /오류|충돌/.test(r[2]) ? 2 : ci === 2 ? 3 : 0 },
+    { name: '11 상세 통계', rows: [['통계 항목', ...langs.map(l => l.label), '계산 방식'], ...body1], widths: [28, ...langs.map(() => 16), 56] },
   ];
   saveBlob(XS(sheets), `${ab}_checkie_v1.xlsx`);
 }
@@ -2621,14 +2639,14 @@ function gameXlsx(id, t) {
   const N = src.length, last = N + 1;
   /* ③ 번역·역검증 */
   const head3 = ['번호', '파일', '화면', '요소', '한국어 원문'], colOf = {};
-  langs.forEach(l => { colOf[l.key] = head3.length; head3.push(`${l.label} 분류`, `${l.label} 번역`, `${l.label} 역번역(검수 AI)`, `${l.label} 의미`, `${l.label} 규칙(행동·조건·정답)`, `${l.label} 현지화`, `${l.label} AI 판정`, `${l.label} 최종 판정(사람)`); });
+  langs.forEach(l => { colOf[l.key] = head3.length; head3.push(`${l.label} 분류`, `${l.label} 번역`, `${l.label} 역번역(검수 AI)`, `${l.label} 의미`, `${l.label} 규칙(행동·조건·정답)`, `${l.label} 현지화`, `${l.label} AI 판정`, `${l.label} 최종 판정(사람)`, `${l.label} 3분류`); });
   head3.push('검수 의견', '수정 요청 메모');
   const body3 = src.map((row, i) => {
     const out = [row.id || `S${String(i + 1).padStart(3, '0')}`, row.file, row.screen, row.elem, row.ko];
     const why = [], memos = [];
-    langs.forEach(l => { const r = row.per[l.key]; if (!r) { out.push('', '', '', '', '', '', '', ''); return; }
+    langs.forEach(l => { const r = row.per[l.key]; if (!r) { out.push('', '', '', '', '', '', '', '', ''); return; }
       const rv = r.x.rv, chk = (rv && rv.chk) || {};
-      out.push(r.cls ? CLS[r.cls] : '', r.tr, ((r.x.bt || [])[0]) || '', chk['의미'] || '', ruleOf(chk), chk['현지화'] || '', aiVerdict(rv), humanVerdict(t, l.key, r));
+      out.push(r.cls ? CLS[r.cls] : '', r.tr, ((r.x.bt || [])[0]) || '', chk['의미'] || '', ruleOf(chk), chk['현지화'] || '', aiVerdict(rv), humanVerdict(t, l.key, r), triOf(r));
       if (rv && rv.why && rv.why !== '-') why.push(`[${l.label}] ${rv.why}`);
       openMemosOf(r.x).forEach(m => memos.push(`[${l.label}] ${m.text} (${m.by})`)); });
     out.push(why.join(' / '), memos.join(' / '));
@@ -2682,10 +2700,11 @@ function gameXlsx(id, t) {
     (r.x.memos || []).forEach(m => body4.push([l.label, r.id, r.ko, '', '', m.text, m.done ? `수정 요청 · 반영함` : '수정 요청 · 미반영', m.by || '', fmtDate(m.at) + (m.done ? ` → ${m.doneBy || ''} ${fmtDate(m.doneAt)}` : '')]));
   }));
   const sheets = [
-    { name: '전체 통계', rows: [head1, ...body1], widths: [26, ...langs.map(() => 16), 44] },
+    triSheet(langs, l => sheetRows(t, l.key), l => `'${S3}'!$${XCOL(c3(l, 8))}$2:$${XCOL(c3(l, 8))}$${last}`),
     { name: S2, rows: [head2, ...body2], widths: [8, 12, 36, 10, 18, 30, 30, 20, 14, ...langs.flatMap(() => [18, 30, 30, 12, 12]), 18], filter: true, style: (ri, ci, r) => /^C\./.test(r[ci]) ? 2 : /^B\./.test(r[ci]) ? 3 : 0 },
-    { name: S3, rows: [head3, ...body3], widths: [8, 12, 8, 12, 36, ...langs.flatMap(() => [16, 34, 30, 9, 12, 9, 10, 22]), 40, 40], filter: true, style: (ri, ci, r) => ci >= 5 ? vStyle(String(r[ci] || '')) || (/^C\./.test(r[ci]) ? 2 : /^B\./.test(r[ci]) ? 3 : 0) : 0 },
+    { name: S3, rows: [head3, ...body3], widths: [8, 12, 8, 12, 36, ...langs.flatMap(() => [16, 34, 30, 9, 12, 9, 10, 22, 9]), 40, 40], filter: true, style: (ri, ci, r) => ci >= 5 ? vStyle(String(r[ci] || '')) || (/^C\./.test(r[ci]) ? 2 : /^B\./.test(r[ci]) ? 3 : 0) : 0 },
     ...(srcHas(t) && (t.source.answers || []).length ? [{ name: '정답 기준', rows: [['문제 ID', '관련 원문 ID', '문제', '선택지', '사실상 정답', '게임상 정답', '판정 방식'], ...t.source.answers.map(a => [a.id, a.refs, a.q, a.choices, a.fact, a.game, a.how])], widths: [10, 16, 36, 30, 14, 14, 14], style: (ri, ci, r) => ci === 5 && normKo(r[4]) !== normKo(r[5]) ? 3 : 0 }] : []),
+    { name: '상세 통계', rows: [head1, ...body1], widths: [26, ...langs.map(() => 16), 44] },
     { name: '수정 이력', rows: [['언어', '번호', '한국어 원문', '수정 전', '수정 후', '사유', '종류', '누가', '언제'], ...(body4.length ? body4 : [['', '', '기록 없음', '', '', '', '', '', '']])], widths: [10, 8, 32, 32, 32, 36, 20, 12, 22], filter: true, style: (ri, ci, r) => /미결|미반영/.test(r[6]) ? 2 : 0 },
   ];
   saveBlob(XS(sheets), `${abbrOf(t)}_all_review.xlsx`);
@@ -2869,7 +2888,7 @@ function filesBoxHTML(id, t, lk, F) {
   const sh = sheetOf(t, lk), ups = (((t.work || {})[lk] || {}).uploads || []).slice().reverse();
   if (!sh) return '';
   return `<section class="libbox"><h3>자료 · ${esc(LANGS.find(l => l.key === lk).label)}</h3>
-    <div class="librow"><span><b>통합 검수 엑셀 (모든 언어)</b><small>${srcHas(t) && sh.ids ? '00 사용 안내 · 01 전체 통계(엑셀 수식) · 02 원문 분석 · 03~05 언어별 번역·검수 · 06 오류 및 수정 이력 · 07 용어집 · 08 정답·게임 규칙' : '① 전체 통계(분류 비율·의미 일치율·규칙 보존율 등, 엑셀 수식) ② 원문 분류 ③ 번역·역검증 ④ 수정 이력'}</small></span><button type="button" class="btn primary" data-xall>받기</button></div>
+    <div class="librow"><span><b>통합 검수 엑셀 (모든 언어)</b><small>${srcHas(t) && sh.ids ? '00 사용 안내 · 01 전체 통계(직역·의역·재창조 비율) · 02 원문 분석 · 03~05 언어별 번역·검수 · 06 오류 및 수정 이력 · 07 용어집 · 08 정답·게임 규칙' : '① 전체 통계(직역·의역·재창조 비율) ② 원문 분류 ③ 번역·역검증 ④ 상세 통계 ⑤ 수정 이력'}</small></span><button type="button" class="btn primary" data-xall>받기</button></div>
     <div class="librow"><span><b>검수 결과 엑셀</b><small>원래 열 + 수정 요청 메모 · 검수 판정 · 역번역 · 처음 번역, 별도 시트 · 교차 검수 시트 포함</small></span><button type="button" class="btn" data-xres>받기</button></div>
     ${ups.map((u, i) => `<div class="librow"><span><b>${esc(u.name)}</b>${i === 0 ? ' <em class="chip">최신</em>' : ''}<small>${esc(u.by || '')} · ${fmtDate(u.at)} · ${u.rows}줄</small></span>${u.file ? `<a class="btn" href="/api/files/${encodeURIComponent(id)}/${encodeURIComponent(u.file)}" download="${esc(u.name)}">원본 받기</a>` : '<small class="sb">원본 없음</small>'}</div>`).join('')}
     <details class="more"${memoEditing ? ' open' : ''}><summary>번역 표 보기 · 수정 요청 메모 남기기</summary>${sheetViewHTML(t, lk)}</details>
