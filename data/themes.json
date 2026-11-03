@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-03T01:02:42.516Z",
+    "updatedAt": "2026-11-03T01:02:45.048Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -4210,7 +4210,7 @@
       "zh": null
     },
     "ai": {
-      "en": "Claude"
+      "en": "ChatGPT"
     }
   },
   "fix-pix": {
