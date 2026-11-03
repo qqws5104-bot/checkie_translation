@@ -397,22 +397,24 @@ function memoList(doc) {
 }
 /* 새로 생긴 메모의 작성자·시간은 서버가 적는다 (이름을 바꿔 적을 수 없게) */
 function stampMemos(before, after, me) {
-  const old = new Set(memoList(before).map(([lk, k, mm]) => lk + '/' + k + '/' + (mm.id || JSON.stringify(mm))));
+  const mkey = (lk, k, mm) => lk + '/' + (k === '@file' ? 'f' : 'i') + '/' + (mm.id || k + JSON.stringify(mm));   // 메모 id 기준 (엑셀을 다시 올려 줄 번호가 바뀌어도 같은 메모)
+  const old = new Set(memoList(before).map(([lk, k, mm]) => mkey(lk, k, mm)));
   const now = new Date().toISOString();
   memoList(after).forEach(([lk, k, mm]) => {
-    if (old.has(lk + '/' + k + '/' + (mm.id || JSON.stringify(mm)))) return;
-    if (['plan', 'puzzle', 'enref'].includes(mm.kind) && mm.by === '교차 검수 AI') { mm.at = mm.at || now; mm.addedBy = me.name; return; }   // AI 교차 검수가 만든 기획 확인 메모: 올린 사람을 따로 기록
+    if (old.has(mkey(lk, k, mm))) return;
+    if (['plan', 'puzzle', 'enref'].includes(mm.kind) && (mm.by === '교차 검수 AI' || mm.by === '번역 AI')) { mm.at = mm.at || now; mm.addedBy = me.name; return; }   // AI 교차 검수가 만든 기획 확인 메모: 올린 사람을 따로 기록
     mm.by = me.name; mm.at = now;
   });
 }
 /* 편집 계정도 기존 메모를 지우거나 내용을 바꿀 수 없음 (반영함 표시만 가능). 처음부터 다시(리셋)한 언어는 예외 */
 function memoLost(before, after) {
-  const now = new Map(memoList(after).filter(([, , mm]) => mm.id).map(([lk, k, mm]) => [lk + '/' + k + '/' + mm.id, mm]));
+  const key = (lk, k, mm) => lk + '/' + (k === '@file' ? 'f' : 'i') + '/' + mm.id;
+  const now = new Map(memoList(after).filter(([, , mm]) => mm.id).map(([lk, k, mm]) => [key(lk, k, mm), mm]));
   const resetLangs = new Set(Object.keys((after && after.work) || {}).filter(lk => (((after.work[lk] || {}).resets) || []).length > ((((before && before.work) || {})[lk] || {}).resets || []).length));
   if (!after.work && before.work) return '';   // 게임 전체를 비우는 경우(관리 작업)는 따로 막지 않음
   for (const [lk, k, mm] of memoList(before)) {
     if (!mm.id || resetLangs.has(lk) || !after.work || !after.work[lk]) { if (mm.id && after.work && !after.work[lk] && !resetLangs.has(lk)) return '기존 수정 요청 메모는 지울 수 없음.'; continue; }
-    const cur = now.get(lk + '/' + k + '/' + mm.id);
+    const cur = now.get(key(lk, k, mm));
     if (!cur) return '기존 수정 요청 메모는 지울 수 없음. 화면을 새로 고친 뒤 다시 하기.';
     if (cur.text !== mm.text || cur.by !== mm.by || cur.at !== mm.at) return '기존 수정 요청 메모의 내용·작성자는 바꿀 수 없음.';
   }

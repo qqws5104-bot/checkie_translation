@@ -1488,7 +1488,7 @@ function flowState(t, lk) {
   const rvTodo = rows.filter(r => !r.x.rv).length;
   const human = rows.filter(r => r.x.rv && r.x.rv.v !== '통과').length;
   const pass = rows.filter(r => r.x.rv && r.x.rv.v === '통과').length;
-  const memos = rows.reduce((a, r) => a + openMemosOf(r.x).length, 0) + openMemosOf(it['@plan']).length + openMemosOf(it['@puzzle']).length;
+  const memos = rows.reduce((a, r) => a + openMemosOf(r.x).length, 0) + openMemosOf(it['@plan']).length + openMemosOf(it['@puzzle']).length + openMemosOf(it['@old']).length;
   const pzNames = puzzleNames(t, lk), pzOk = ((t.work || {})[lk] || {}).pzOk || {}, pzTodo = pzNames.filter(n => !pzOk[n]).length;
   return { memos, pzTodo, pzNames, rows, it, N, nTr: N, issues, openAuto: issues.length, files, fchk, filesTodo, rvTodo, human, pass };
 }
@@ -1545,53 +1545,115 @@ ${mode === 'translate' ? `- 한국어 원문과 영어가 다르면 비고에 �
 ${tsv(['파일', '한국어 원문', 'English'], ref.map(e => [e.file, e.ko.replace(/\n/g, ' / '), enCell(e)]))}
 ` : ''}`;
 }
-function makePrompt(id, t, lk) {
-  const L = LANGS.find(l => l.key === lk), ab = abbrOf(t);
-  return `# 역할
-너는 오프라인 게임의 다국어 번역 자료를 정리하는 담당자다.
+/* ================= 번역 프롬프트 = 공통 지시 + AI별 지시 + 게임별 정보 + 언어별 블록 + 이번 작업 ================= */
+const PROMPT_VER = '2026.11-v3';
+const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 
-# 작업 목표
-첨부한 PNG(또는 zip 안의 PNG)를 모두 확인하고, 화면에 보이는 모든 문구를 ${L.target}로 번역해 엑셀로 정리한다.
+1. 역할
+너는 오프라인 게임 전문 현지화 번역가다. 한국어를 모르고 해당 게임을 처음 접하는 외국인 방문객이 번역문만으로 게임을 이해하고 플레이할 수 있도록 번역한다.
 
-# 게임 정보
+2. 번역 우선순위 (반드시 이 순서)
+1) 게임 규칙 및 정답 보존
+2) 원문의 의미와 행동 보존
+3) 화자별 말투 및 게임 상황 반영
+4) 현지 언어의 자연스러운 표현
+5) 화면에 적합한 글자 수
+자연스러운 표현이나 짧은 글자 수를 위해 게임 규칙이나 의미를 바꾸지 않는다.
+
+3. 용어 및 고유명사
+- 용어집의 ‘확정’ 번역은 반드시 그대로 쓴다.
+- 게임명, 고유명사, 캐릭터명은 임의로 바꾸지 않는다.
+- 확정되지 않은 용어는 임의로 확정하지 않는다.
+- 같은 개념은 게임 전체에서 같은 표현을 쓴다.
+
+4. 의미 및 게임 규칙 보존
+- 원문에 없는 힌트, 조건, 설명을 추가하지 않는다.
+- 원문에 있는 조건, 숫자, 순서, 대상, 행동을 누락하지 않는다.
+- 선택과 이동, 누르기와 제출 등 서로 다른 행동을 바꾸지 않는다.
+- 정답에 영향을 주는 말장난이나 언어유희는 임의로 일반화하지 않는다.
+- 현지 언어로 같은 언어유희를 구현할 수 없으면 임의로 재설계하지 말고 대안을 제시한다.
+
+5. 문체 및 표현
+- 해당 언어권에서 실제로 쓰는 자연스러운 표현을 쓴다. 한국어 어순을 그대로 옮기지 않는다.
+- 처음 게임을 접하는 사람이 한 번에 이해할 수 있게 쓴다. 화면 안내문은 짧고 명확하게.
+- 화자별 말투와 캐릭터 성격을 유지한다. 불필요한 존댓말, 설명, 수식어를 붙이지 않는다.
+
+6. 형식 보존
+- 원문의 문장과 행을 임의로 합치거나 나누지 않는다.
+- 숫자, 기호, 효과음, 줄바꿈 등 원문의 구조를 최대한 보존한다. {변수}·지정 기호가 있으면 그대로 둔다.
+- 번역 대상이 아닌 요소는 번역하지 않는다.
+
+7. 불확실한 부분
+- 의미가 불분명하거나 게임 상황만으로 확정할 수 없으면 추측하지 않는다.
+- 대안이 필요하면 최대 2개까지 제시한다. 추측이 들어간 번역은 반드시 ‘(추측)’이라고 표시한다.
+
+8. 최종 결과
+- 모든 번역 대상 문장을 빠짐없이 처리하고, 원문과 번역문을 1:1로 대응시킨다.
+- 각 번역문에 한국어 역번역을 붙인다.
+- 번역이 불가능하거나 기획 판단이 필요한 부분은 따로 표시한다.
+- 지정된 엑셀 시트, 열, 행 구조를 바꾸지 않는다.
+
+최종 원칙: 번역의 자연스러움보다 게임의 정상적인 플레이 가능성을 우선한다.`;
+const TRANSLATE_TIPS = {
+  Claude: ['번역을 시작하기 전에 게임 정보, 용어집, 원문, 이미지 자료를 전체적으로 파악한다.', '문장을 번역하기 전에 앞뒤 문맥과 그 문장의 게임 내 역할을 확인한다.', '같은 게임 안의 표현과 캐릭터 말투가 일관되게 유지되게 한다.', '긴 작업에서도 앞서 정한 용어와 번역 방식을 유지한다.', '의미가 불분명한 부분은 임의로 확정하지 않는다.', '결과를 내기 전에 원문 누락과 번역 누락이 없는지 확인한다.'],
+  Gemini: ['첨부된 PNG와 자료를 함께 보고 게임의 시각적 맥락을 파악한다.', '이미지에 표시된 문구와 원문 목록을 대응시킨다.', '버튼, 안내창, 제목, 효과음 등 화면에서의 역할을 구분해 번역한다.', '글자 크기·배치·강조 여부를 고려해 화면에 맞는 표현을 고른다.', '이미지에서 정확히 판독할 수 없는 문구는 추측하지 않는다.', '자료가 여러 개면 서로의 연결 관계를 파악한 뒤 번역한다.', '결과에 원문 누락이나 중복이 없는지 확인한다.'],
+  ChatGPT: ['제공된 게임 정보, 용어집, 원문, 이미지 자료를 기준으로 번역한다.', '번역 대상 전체를 원문과 1:1로 대응시킨다.', '지정된 엑셀 시트와 열 구조를 엄격하게 지킨다.', '원문, 번역문, 한국어 역번역을 각각 구분해 쓴다.', '번역 대안이나 기획 판단이 필요한 항목은 일반 번역 결과와 분리해 ‘기획 확인’ 시트에 쓴다.', '번역 후 원문 대비 누락, 중복, 변수·숫자 변경 여부를 확인한다.', '결과를 요약하거나 일부 문장만 쓰지 않는다.'],
+};
+/* 게임별 정보: 게임마다 다르고, 번역·검수 프롬프트에 똑같이 들어감 */
+function gameInfoBlock(t, lk) {
+  const L = LANGS.find(l => l.key === lk);
+  return `# 게임별 정보
 - 게임: ${t.name || ''}${t.concept ? ` — ${t.concept}` : ''}
 - 상황: ${t.situation || '(없음)'}
+- 게임 규칙·정답: ${t.rules || '(없음 — 이미지에서 파악하고, 확실하지 않으면 비고에 적기)'}
 - 읽는 사람: 한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객
-- 말투:
-${toneLines(t, lk).split('\n').map(x => '  ' + x).join('\n')}
-${lk === 'zh' ? enRefBlock(t, 'translate') : ''}
-# 작업 지침
-## 1. 이미지 확인
-- 모든 PNG를 처음부터 끝까지 확인한다. 버튼, 안내문, 제목, 대사, 로고, 숫자 옆 문구까지 모두 대상이다.
-- 생략하거나 추측하지 않는다. 판독이 어려우면 비고에 ‘판독 불확실’이라고 쓴다.
-- ${COMMON_WORDS.join(', ')}처럼 여러 게임에서 공통으로 쓰는 기본 조작 단어는 빼도 된다. 뺐다면 비고 없이 ‘제외 단어’ 시트에 적는다.
+- 화자별 말투:
+${toneLines(t, lk).split('\n').map(x => '  ' + x).join('\n')}`;
+}
+function makePrompt(id, t, lk) {
+  const L = LANGS.find(l => l.key === lk), ab = abbrOf(t), ai = aiOf(t, lk);
+  return `규칙 버전 ${PROMPT_VER} · 번역 AI ${ai} · ${L.label}
 
-## 2. 번역
-- 한국어 원문은 이미지에 적힌 그대로 옮긴다. 줄바꿈도 이미지와 같게 둔다.
-- 번역문의 줄 수는 원문과 맞춘다. 숫자는 그대로 둔다. 바꿔야 하면(예: 전화번호 형식) 비고에 이유를 쓴다.
-- 말장난·패러디·퍼즐처럼 그대로 옮기면 안 되는 것은 현지에 맞게 바꾸고, 비고에 무엇을 왜 바꿨는지 쓴다.
-- 같은 문구는 모든 화면에서 같은 번역으로 통일한다.
-- 아래 용어는 반드시 지킨다.
-${termLines(id, lk).split('\n').map(x => '  ' + x).join('\n')}
-- 문화:
-${[...CULTURE[lk], ...CULTURE.common.slice(0, 2)].map(x => '  - ' + x).join('\n')}
+${COMMON_TRANSLATE}
+
+# ${ai} 추가 지시
+${(TRANSLATE_TIPS[ai] || TRANSLATE_TIPS.ChatGPT).map((x, i) => `${i + 1}. ${x}`).join('\n')}
+
+${gameInfoBlock(t, lk)}
+
+# 용어집 (확정은 반드시 지킴)
+${termLines(id, lk)}
+
+# ${L.label} 언어 규칙
+${[...CULTURE[lk], ...CULTURE.common.slice(0, 2)].map(x => '- ' + x).join('\n')}${lk === 'zh' ? '\n- 중국 본토 간체만 쓴다. 번체와 대만·홍콩 지역 표현을 쓰지 않는다.' : ''}
+${lk === 'zh' ? enRefBlock(t, 'translate') : ''}
+# 이번 작업
+첨부한 PNG(또는 zip 안의 PNG)를 모두 확인하고, 화면에 보이는 모든 문구를 ${L.target}로 번역해 엑셀로 정리한다.
+- 모든 PNG를 처음부터 끝까지 본다. 버튼, 안내문, 제목, 대사, 로고, 숫자 옆 문구까지 모두 대상이다.
+- 한국어 원문은 이미지에 적힌 그대로 옮긴다. 줄바꿈도 이미지와 같게 둔다. 판독이 어려우면 비고에 ‘판독 불확실’.
+- 번역문의 줄 수는 원문과 맞춘다. 숫자는 그대로 둔다.
+- ${COMMON_WORDS.join(', ')}처럼 여러 게임에 공통인 기본 조작 단어는 빼도 된다. 뺐다면 ‘제외 단어’ 시트에 적는다.
 
 # 결과물: 엑셀 파일 \`${ab}_${LSHORT[lk]}.xlsx\`
-1. 시트 \`번역\` — 열: 파일 | 화면 | 요소 | 한국어 원문 | ${LHEAD[lk]} | 비고
+1. 시트 \`번역\` — 열: 파일 | 화면 | 요소 | 한국어 원문 | ${LHEAD[lk]} | 역번역 | 비고
    - 파일: PNG 파일 이름(확장자 없이). 여러 화면에 공통이면 ‘공통’
    - 화면: 1P / 2P / 사진 화면처럼 어느 화면인지
    - 요소: 제목, 버튼, 말풍선(위), 로고처럼 화면 안의 위치·종류
+   - 역번역: 번역문만 보고 옮긴 한국어 직역
+   - 비고: 모호하거나 확인이 필요한 것만. 추측이면 ‘(추측)’
    - 같은 문구가 여러 파일에 나오면 파일마다 한 줄씩 쓴다. (화면에 적용할 때 편하도록)
-2. 시트 \`제외 단어\` — 파일 | 단어 (뺀 것이 있을 때만)
-3. 퍼즐 정답 대응표, 재설계한 퍼즐처럼 표 하나로 정리하기 어려운 내용은 시트를 따로 만든다.
-- 첫 행은 제목, 셀 너비와 줄바꿈을 조정해 읽기 쉽게 만든다.
+2. 시트 \`기획 확인\` — 파일 | 한국어 원문 | 문제 | 대안 1 | 대안 2 (언어유희·퍼즐처럼 그대로 옮길 수 없거나 기획 판단이 필요한 것. 없으면 만들지 않음)
+   - 이 줄도 \`번역\` 시트에는 가장 가까운 번역을 넣고 비고에 ‘기획 확인’이라고 쓴다.
+3. 시트 \`제외 단어\` — 파일 | 단어 (뺀 것이 있을 때만)
+4. 퍼즐 정답 대응표처럼 표 하나로 정리하기 어려운 내용은 시트를 따로 만든다.
+- 첫 행은 제목, 셀 너비와 줄바꿈을 조정해 읽기 쉽게 만든다. 엑셀을 만들 수 없으면 같은 표들을 채팅에 표로 쓰고 각 표 위에 시트 이름을 쓴다.
 
 # 저장 전 확인
-- 모든 PNG를 확인했는가? / 빠진 문구가 없는가?
-- 한국어 원문이 이미지와 똑같은가? / 같은 문구의 번역이 통일됐는가?
-- 번역문이 ${L.label}로만 되어 있는가? / 바꾼 부분은 비고에 이유가 있는가?
+- 모든 PNG를 확인했는가? / 빠진 문구가 없는가? / 한국어 원문이 이미지와 똑같은가?
+- 게임 규칙·정답·행동이 그대로인가? / 같은 문구의 번역이 통일됐는가? / 용어집을 지켰는가?
+- 번역문이 ${L.label}로만 되어 있는가? / 원문에 없는 힌트·설명을 넣지 않았는가?
 
-마지막에 확인한 PNG 목록과, 판독이 어려워 따로 확인할 문구를 알려줘.`;
+마지막에 확인한 PNG 목록과, 판독이 어려워 따로 확인할 문구를 한국어로 알려줘.`;
 }
 /* 퍼즐 검수 6가지 (게임 단위) */
 const PUZZLE_CHECKS = [
@@ -1610,14 +1672,17 @@ function crossPrompt(id, t, lk) {
   const ref = lk === 'zh' ? enRef(t) : null;
   const rvAi = revAiOf(t, lk, 'cross');
   const focus = rvAi === 'Claude' ? '의미 전달, 현지 표현의 자연스러움, 용어 통일' : '의미 누락, 문법, 경어, 표현의 적절성';
-  return `# 역할
+  return `규칙 버전 ${PROMPT_VER} · 검수 AI ${rvAi} · ${L.label}
+
+# 역할
 너는 이 번역을 하지 않은 검수자다. 문제를 찾는 것이 목적이다.
 1차 번역(비고 포함)의 판단을 그대로 따르지 않고, 한국어 원문과 번역문을 직접 비교해 독립적으로 검수한다.
 
 # 작업
 첨부한 PNG는 오프라인 게임 「${t.name || ''}」의 화면이다. 아래 표의 ${L.label} 번역을 한 줄씩 검수한다.
 읽는 사람: 한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객
-
+${t.rules ? `게임 규칙·정답: ${t.rules}
+` : ''}
 # 공통 검수 기준
 1. 정확성: 원문의 의미와 정보가 정확하게 전달되는가 (말장난·패러디를 바꾼 줄은 비고의 의도대로 됐는가)
 2. 누락 여부: 문장, 단어, 숫자, 기호 등이 빠지지 않았는가
@@ -1733,22 +1798,43 @@ async function uploadSheet(file) {
   const oldBy = new Map(old.map(r => [keyOf(r), r]));
   const next = JSON.parse(JSON.stringify(t));
   next.work = next.work || {}; const w = next.work[lk] = next.work[lk] || {};
-  w.sheet = { name: m.sheet.sheet || '', file: stored, src: file.name, head: m.head, cols: m.cols, rows, extra, by: meName(), at: nowISO() };
-  const items = {}; let kept = 0;
+  w.sheet = { name: m.sheet.sheet || '', file: stored, src: file.name, head: m.head, cols: m.cols, rows, extra, by: meName(), at: nowISO(), ver: PROMPT_VER, ai: aiOf(t, lk) };
+  const items = {}, used = new Set(); let kept = 0;
   rows.forEach((r, i) => {
     const id = 'R' + String(i + 1).padStart(3, '0'), cc = m.cols;
     const nr = { file: cc.file >= 0 ? String(r[cc.file] || '') : '', elem: cc.elem >= 0 ? String(r[cc.elem] || '') : '', ko: String(r[cc.ko] || '') }, tr = String(r[cc.tr] || '');
     const o = oldBy.get(keyOf(nr));
+    if (o) used.add(o.id);
     if (o && normKo(o.tr) === normKo(tr)) { items[id] = Object.assign({}, o.x, { tr: null }); delete items[id].tr; kept++; }
-    else items[id] = o ? { hist: [...(o.x.hist || []), { at: nowISO(), by: meName(), from: o.tr, to: tr, why: '엑셀 다시 올림' }] } : {};
+    else items[id] = o ? Object.assign({ hist: [...(o.x.hist || []), { at: nowISO(), by: meName(), from: o.tr, to: tr, why: '엑셀 다시 올림' }] }, o.x.memos ? { memos: o.x.memos } : {}) : {};
   });
+  /* 메모는 지우지 않음: 시트·전체 항목(@…)은 그대로, 사라진 줄의 메모는 ‘이전 엑셀’ 항목으로 옮김 */
+  const oldItems = ((t.work || {})[lk] || {}).items || {};
+  Object.keys(oldItems).filter(k => k.startsWith('@')).forEach(k => { items[k] = oldItems[k]; });
+  old.filter(r => !used.has(r.id) && (r.x.memos || []).length).forEach(r => { const x = items['@old'] = items['@old'] || { memos: [] }; x.memos = [...(x.memos || []), ...r.x.memos.map(m => Object.assign({}, m, { from: `${r.id} · ${String(r.ko).slice(0, 30)}` }))]; });
+  /* 번역 AI가 따로 낸 ‘기획 확인’ 시트 → 기획 확인 메모 (기획 승인 전엔 확정 불가) */
+  const planX = extra.find(e => /기획\s*확인/.test(e.name));
+  let nPlan = 0;
+  if (planX && planX.rows.length > 1) {
+    const ph = planX.rows[0].map(normHead), iF = ph.findIndex(x => x.startsWith('파일')), iK = ph.findIndex(x => x.includes('원문')), iQ = ph.findIndex(x => x.startsWith('문제') || x.startsWith('내용')), alt = ph.map((x, i) => x.startsWith('대안') ? i : -1).filter(i => i >= 0);
+    const newRows = rows.map((r, i) => ({ id: 'R' + String(i + 1).padStart(3, '0'), file: m.cols.file >= 0 ? String(r[m.cols.file] || '') : '', ko: String(r[m.cols.ko] || '') }));
+    planX.rows.slice(1).forEach(r => {
+      const ko = iK >= 0 ? String(r[iK] || '') : '', f = iF >= 0 ? String(r[iF] || '') : '', q = iQ >= 0 ? String(r[iQ] || '').trim() : '';
+      if (!q && !ko) return;
+      const hit = newRows.find(x => normKo(x.ko) === normKo(ko) && (!f || normId(x.file) === normId(f))) || newRows.find(x => ko && normKo(x.ko) === normKo(ko));
+      const text = `[기획 확인] ${!hit && ko ? `‘${ko.slice(0, 40)}’ · ` : ''}${q}${alt.map((i, n) => r[i] && String(r[i]).trim() !== '-' ? ` / 대안 ${n + 1}: ${String(r[i]).trim()}` : '').join('')}`;
+      const key = hit ? hit.id : '@plan', x = items[key] = items[key] || {};
+      x.memos = x.memos || [];
+      if (!x.memos.some(y => y.text === text)) { x.memos.push({ id: Math.random().toString(36).slice(2, 8), kind: 'plan', by: '번역 AI', at: nowISO(), text, done: false }); nPlan++; }
+    });
+  }
   w.items = items; w.sign = {};
   w.uploads = [...(w.uploads || []), { name: file.name, file: stored, rows: rows.length, by: meName(), at: nowISO() }].slice(-20);
   if (stageOf(next, lk) >= 4) { next.progress = { ...(next.progress || {}), [lk]: 3 }; }
   next.updatedAt = nowISO();
   await db.doc('themes/' + c.id).set(next);
   render(true);
-  toast(`${rows.length}줄을 올림${extra.length ? ` (별도 시트 ${extra.length}개 포함)` : ''}.${kept ? ` 그대로인 ${kept}줄은 검수 결과를 이어받음.` : ''}`, 5000);
+  toast(`${rows.length}줄을 올림${extra.length ? ` (별도 시트 ${extra.length}개 포함)` : ''}.${kept ? ` 그대로인 ${kept}줄은 검수 결과를 이어받음.` : ''}${nPlan ? ` 기획 확인 ${nPlan}건은 수정 요청으로 넘김.` : ''}`, 5000);
 }
 /* 엑셀 원본을 자료로 보관 (이미지 보관과 같은 곳) */
 async function storeRawFile(id, file, name) {
@@ -2076,7 +2162,7 @@ const infoDone = t => !!(String(t.concept || '').trim() && String(t.situation ||
 function infoFormHTML(t) {
   const sp = t.speakers || [];
   return `<div class="fields">${fld('게임 이름', 'name', t.name)}${fld('컨셉 한 줄', 'concept', t.concept, { ph: '예: 망가진 파일 복구' })}</div>
-    <div class="fields" style="margin-top:10px">${fld('상황', 'situation', t.situation, { area: true, ph: '플레이어가 놓인 상황과 목표' })}${fld('존댓말·반말', 'honorific', t.honorific, { area: true, ph: '예: 메리는 플레이어에게 존댓말' })}</div>
+    <div class="fields" style="margin-top:10px">${fld('상황', 'situation', t.situation, { area: true, ph: '플레이어가 놓인 상황과 목표' })}${fld('게임 규칙·정답 (선택)', 'rules', t.rules, { area: true, ph: '예: 1P가 본 그림 속 새를 2P가 찾아 누름. 화면마다 정답 1개' })}${fld('존댓말·반말', 'honorific', t.honorific, { area: true, ph: '예: 메리는 플레이어에게 존댓말' })}</div>
     <h4 class="mh">화자별 말투 <small>‘밝게’보다 ‘문장 짧게, 느낌표 사용’처럼 구체적으로</small></h4>
     ${sp.map((x, i) => `<div class="sp">${fld('화자', `speakers.${i}.who`, x.who, { ph: '예: 비서 메리' })}${fld('누구에게', `speakers.${i}.to`, x.to, { ph: '플레이어' })}${fld('말투', `speakers.${i}.tone`, x.tone, { grow: true })}${fld('쓰면 안 되는 말투', `speakers.${i}.banned`, x.banned, { grow: true })}${readOnly ? '' : `<button type="button" class="btn danger del" data-sp-del="${i}">삭제</button>`}</div>`).join('')}
     ${readOnly ? '' : '<button type="button" class="addrow" id="sp-add">+ 화자 추가</button>'}
@@ -3116,14 +3202,14 @@ const memoDoneBtn = (rid, m) => `<button type="button" class="btn primary" data-
 const memoTag = m => m.kind === 'plan' ? '<em class="chip warnchip">기획 확인</em> ' : m.kind === 'enref' ? '<em class="chip">중국어 검수에서 발견</em> ' : '';
 function memoBannerHTML(t, lk) {
   const rows = sheetRows(t, lk).filter(r => openMemosOf(r.x).length);
-  const pm = openMemosOf(workOf(t, lk)['@plan']), pzm = openMemosOf(workOf(t, lk)['@puzzle']);
+  const pm = [...openMemosOf(workOf(t, lk)['@plan']), ...openMemosOf(workOf(t, lk)['@old']).map(m => Object.assign({ _old: 1 }, m))], pzm = openMemosOf(workOf(t, lk)['@puzzle']);
   if (!rows.length && !pm.length && !pzm.length) return '';
   const n = rows.reduce((a, r) => a + openMemosOf(r.x).length, 0) + pm.length + pzm.length;
   return `<section class="memo-banner" role="alert"><h3>수정 요청 ${n}건 <small>반영하면 ‘반영함’을 누르기. 다 반영해야 확정할 수 있음.</small></h3>
     ${rows.map(r => `<div class="memo-row"><div class="memo-src"><code>${esc(r.id)}${r.file ? ' · ' + esc(r.file) : ''}</code><b style="white-space:pre-wrap">${esc(r.ko)}</b><span style="white-space:pre-wrap">${xEditing.has(r.id) && !readOnly ? `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>` : esc(r.tr)}</span></div>
       <div class="memo-list">${openMemosOf(r.x).map(m => `<div class="memo${m.kind === 'plan' ? ' plan' : ''}"><p>${memoTag(m)}${esc(m.text)}</p><small>${esc(m.by)} · ${fmtDate(m.at)}</small>${readOnly ? '' : `<div class="iacts">${m.kind === 'plan' ? '' : `<button type="button" class="btn" data-xedit="${esc(r.id)}">번역 고치기</button>`}${memoDoneBtn(r.id, m)}</div>`}</div>`).join('')}</div></div>`).join('')}
     ${pzm.length ? `<div class="memo-row"><div class="memo-src"><code>퍼즐 검수</code><b>퍼즐 단위 문제</b></div><div class="memo-list">${pzm.map(m => `<div class="memo${m.kind === 'plan' ? ' plan' : ''}"><p>${m.kind === 'plan' ? memoTag(m) : '<em class="chip">퍼즐</em> '}${esc(m.text)}</p><small>${esc(m.by)} · ${fmtDate(m.at)}</small>${readOnly ? '' : `<div class="iacts">${memoDoneBtn('@puzzle', m)}</div>`}</div>`).join('')}</div></div>` : ''}
-    ${pm.length ? `<div class="memo-row"><div class="memo-src"><code>시트·전체</code><b>특정 줄이 아닌 기획 확인</b></div><div class="memo-list">${pm.map(m => `<div class="memo plan"><p>${memoTag(m)}${esc(m.text)}</p><small>${esc(m.by)} · ${fmtDate(m.at)}</small>${readOnly ? '' : `<div class="iacts">${memoDoneBtn('@plan', m)}</div>`}</div>`).join('')}</div></div>` : ''}
+    ${pm.length ? `<div class="memo-row"><div class="memo-src"><code>시트·전체</code><b>특정 줄이 아닌 요청</b></div><div class="memo-list">${pm.map(m => `<div class="memo${m.kind === 'plan' ? ' plan' : ''}"><p>${m._old ? `<em class="chip">이전 엑셀 ${esc(m.from || '')}</em> ` : memoTag(m)}${esc(m.text)}</p><small>${esc(m.by)} · ${fmtDate(m.at)}</small>${readOnly ? '' : `<div class="iacts">${memoDoneBtn(m._old ? '@old' : '@plan', m)}</div>`}</div>`).join('')}</div></div>` : ''}
     ${pm.length || pzm.some(m => m.kind === 'plan') || rows.some(r => openMemosOf(r.x).some(m => m.kind === 'plan')) ? '<small class="sb">‘기획 확인’은 AI가 제안한 아이콘·퍼즐·정답 변경임. 기획 담당이 정한 뒤 ‘기획 승인’을 누르면 그 줄의 고친 번역을 쓸 수 있음.</small>' : ''}
   </section>`;
 }
