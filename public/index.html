@@ -1161,6 +1161,32 @@ const VLABEL = { '통과': 'PASS', '수정 필요': 'FAIL', '사람 확인 필�
 const DEFAULT_AI = { en: 'ChatGPT', ja: 'Claude', zh: 'ChatGPT' };
 const aiOf = (t, lk) => (t.ai && t.ai[lk]) || DEFAULT_AI[lk] || 'Claude';
 const reviewerOf = (t, lk) => aiOf(t, lk) === 'ChatGPT' ? 'Claude' : 'ChatGPT';
+/* 검수 AI (작업별로 고를 수 있음): cross 교차 검수 · ocr 글자 대조 · test 처음 보는 사람 */
+const REVIEW_AIS = ['Claude', 'ChatGPT', 'Gemini'];
+const revAiOf = (t, lk, task) => (((t.revAi || {})[lk] || {})[task]) || (task === 'test' ? 'Gemini' : reviewerOf(t, lk));
+/* 같은 작업이라도 AI마다 보완 지시를 다르게 (공통 지시는 각 프롬프트 본문) */
+const MODEL_TIPS = {
+  cross: {
+    Claude: ['전체 문맥(게임 흐름, 화면 순서, 화자 관계)을 먼저 파악한 뒤 문장별 검수를 진행한다.', '원문과 번역문 사이의 의미 차이를 구체적으로 설명한다. (어느 단어가 어떻게 달라졌는지)', '문제가 없는 문장을 불필요하게 수정하지 않는다. 문체 취향 차이는 FAIL이 아니다.'],
+    Gemini: ['첨부 이미지의 실제 화면 배치와 검수할 표를 대조한다. (파일·화면·요소가 맞는지)', '이미지에서 확인할 수 없는 내용은 추측하지 않는다. 모르면 REVIEW로 둔다.', '글자 누락, 이미지와 표의 불일치는 이유를 ‘[이미지]’로 시작해 따로 표시한다.'],
+    ChatGPT: ['지정된 시트·열 이름과 순서를 엄격하게 유지한다. 열을 더하거나 빼지 않는다.', 'PASS / FAIL / REVIEW를 항목(줄)마다 하나씩 분명하게 구분한다.', 'FAIL이면 고친 번역과 수정 이유를 반드시 함께 쓴다. 이유만 있고 수정안이 없는 FAIL은 쓰지 않는다.'],
+  },
+  ocr: {
+    Claude: ['파일 전체를 먼저 훑어 문구 덩어리를 나눈 뒤 옮겨 적는다.', '읽은 글자를 문맥에 맞게 고치지 않는다. 보이는 그대로 쓴다.'],
+    Gemini: ['화면의 실제 배치 순서(위→아래, 왼쪽→오른쪽)를 그대로 따른다.', '흐리거나 가려져 보이지 않는 글자는 추측하지 않고 상태를 ‘판독 불확실’로 쓴다.', '잘림·넘침·깨짐은 위치와 함께 상태에 따로 표시한다.'],
+    ChatGPT: ['지정된 열과 순서를 엄격하게 유지한다.', '파일마다 빠짐없이 쓰고, 글자가 없는 파일도 ‘(글자 없음)’ 한 행을 쓴다.'],
+  },
+  test: {
+    Claude: ['화면 전체의 흐름을 먼저 파악한 뒤 파일별로 답한다.', '이해한 내용과 추측을 구분한다. 추측이면 ‘(추측)’이라고 쓴다.'],
+    Gemini: ['화면에 실제로 보이는 정보만으로 판단한다. 보이지 않는 규칙을 지어내지 않는다.', '글자가 작거나 배치 때문에 놓치기 쉬운 부분은 읽기 어려운 글자 칸에 쓴다.'],
+    ChatGPT: ['지정된 열과 순서를 엄격하게 유지하고, 파일마다 한 행씩 쓴다.', '퍼즐 정답과 그 근거를 칸마다 분명하게 나눠 쓴다.'],
+  },
+};
+const modelTips = (ai, task) => (MODEL_TIPS[task] && MODEL_TIPS[task][ai]) ? `\n# ${ai} 작업 방식\n${MODEL_TIPS[task][ai].map(x => '- ' + x).join('\n')}\n` : '';
+function revAiSelect(t, lk, task) {
+  const v = revAiOf(t, lk, task), same = task === 'cross' && v === aiOf(t, lk);
+  return `<label class="aisel">검수 AI <select data-revai="${task}" ${readOnly ? 'disabled' : ''}>${REVIEW_AIS.map(a => `<option ${a === v ? 'selected' : ''}>${a}</option>`).join('')}</select></label>${same ? '<small class="badtxt"> 번역 AI와 같은 모델. 다른 모델 권장</small>' : ''}`;
+}
 const CULTURE = {
   common: ['한국 문화 요소는 몰라도 플레이할 수 있으면 살린다.', '정치·역사 소재(지도, 국기, 역사 인물)를 새로 넣지 않는다.', '색 이름만으로 정답·오답을 구분하게 쓰지 않는다.', '언어를 가리킬 때 국기 대신 언어 이름(English / 日本語 / 简体中文)을 쓴다.'],
   en: ['비원어민 관광객이 많으므로 쉬운 단어를 쓰고, 관용구·속어를 쓰지 않는다.', '플레이어 호칭은 player 또는 you로 통일한다. 성별이 드러나는 호칭을 쓰지 않는다.'],
@@ -1582,7 +1608,8 @@ function crossPrompt(id, t, lk) {
   const rows = sheetRows(t, lk).filter(r => !r.x.rv);
   const extra = (sh && sh.extra || []).map(e => `## 시트: ${e.name}\n${rowsToTSV(e.rows)}`).join('\n\n');
   const ref = lk === 'zh' ? enRef(t) : null;
-  const focus = reviewerOf(t, lk) === 'Claude' ? '의미 전달, 현지 표현의 자연스러움, 용어 통일' : '의미 누락, 문법, 경어, 표현의 적절성';
+  const rvAi = revAiOf(t, lk, 'cross');
+  const focus = rvAi === 'Claude' ? '의미 전달, 현지 표현의 자연스러움, 용어 통일' : '의미 누락, 문법, 경어, 표현의 적절성';
   return `# 역할
 너는 이 번역을 하지 않은 검수자다. 문제를 찾는 것이 목적이다.
 1차 번역(비고 포함)의 판단을 그대로 따르지 않고, 한국어 원문과 번역문을 직접 비교해 독립적으로 검수한다.
@@ -1600,7 +1627,13 @@ function crossPrompt(id, t, lk) {
 6. 게임 적합성: 플레이어가 할 행동(찾기, 고르기, 방향, 순서)과 퍼즐의 단서·정답·규칙이 변형되지 않았는가
 - 그 밖에: 화면 칸에 들어갈 길이인가 / 문화 금기: ${CULTURE[lk].join(' ')}
 - 이번 검수에서 특히 볼 것: ${focus}
-${ref ? `${enRefBlock(t, 'review')}
+
+# 공통 지시
+- 대상은 한국어를 모르는 ${L.region} 방문객이다.
+- 원문의 게임 규칙과 정답을 보존한다.
+- 문제가 없으면 PASS, 오류가 있으면 FAIL, 판단이 어려우면 REVIEW.
+- 모든 문장에 역번역을 제공한다.
+${modelTips(rvAi, 'cross')}${ref ? `${enRefBlock(t, 'review')}
 # 3개 언어 대조 (한국어 원문 · 확정 영어 · 중국어)
 줄마다 먼저 세 언어의 의미가 맞는지 판별하고, 결과를 \`불일치\` 칸에 아래 중 하나로 쓴다.
 - 없음: 세 언어의 의미가 같다
@@ -1840,6 +1873,13 @@ document.addEventListener('click', async e => {
   if (!b.dataset.off) toast(`${name}: 담당자 확인으로 표시함.`);
 });
 
+document.addEventListener('change', async e => {
+  const sel = e.target.closest && e.target.closest('[data-revai]'); if (!sel || readOnly) return;
+  const task = sel.dataset.revai, v = sel.value, lk = promptLang;
+  await saveGameField(`revAi.${lk}.${task}`, v); render(true);
+  toast(`${{ cross: '교차 검수', ocr: '글자 대조', test: '처음 보는 사람' }[task]} AI: ${v}. 프롬프트도 ${v}용으로 바뀜.`);
+});
+
 /* ---------- 내려받기 ---------- */
 function resultXlsx(t, lk) {
   const sh = sheetOf(t, lk); if (!sh) return;
@@ -1924,7 +1964,7 @@ function workHTML({ id, data: t }) {
   const vkey = id + ':' + lk;
   if (!viewStep[vkey] || viewStep[vkey].now !== nowN) viewStep[vkey] = { now: nowN, pick: null };
   const open = viewStep[vkey].pick ?? nowN;
-  const reviewer = reviewerOf(t, lk);
+  const reviewer = revAiOf(t, lk, 'cross');
   const nImg = (gameFiles[id] || []).filter(f => /\.(png|jpe?g|webp)$/i.test(f.name)).length;
   const body = {
     1: () => `<p class="sb">AI가 게임 분위기를 알 수 있게 작성. <b>컨셉·상황</b>은 필수.</p>${infoFormHTML(t)}
@@ -2011,7 +2051,7 @@ function reviewHTML(id, t, lk, F, reviewer) {
     inner = `${F.rvTodo ? `<p class="sb">번역한 AI와 <b>다른 AI</b>가 한 줄씩 검사하고, 한국어로 되돌린 <b>역번역</b>을 붙여 줌. 별도 시트(대응표·퍼즐)도 같이 보내짐.</p>
       <ol class="do">
         <li><i>1</i><div><button type="button" class="btn primary" data-copy="p-cross">프롬프트 복사 <small>${F.rvTodo}줄</small></button></div></li>
-        <li><i>2</i><div><b>${esc(reviewer)}</b> 새 대화에 붙여 넣고, 같은 PNG(또는 zip)를 첨부해 보냄.</div></li>
+        <li><i>2</i><div><b>${esc(reviewer)}</b> 새 대화에 붙여 넣고, 같은 PNG(또는 zip)를 첨부해 보냄. ${revAiSelect(t, lk, 'cross')}</div></li>
         <li><i>3</i><div>받은 엑셀을 ${readOnly ? '' : `<label class="btn upl primary">엑셀 올리기<input type="file" hidden data-one="one:cross" accept="${FILE_ACCEPT}"></label>`}<span class="do-l">엑셀이 안 나왔으면</span>${pasteBtn('one:cross', '답 붙여 넣기')}</div></li>
       </ol>
       <details class="more"><summary>프롬프트 보기</summary><pre class="ptext" id="pt-p-cross">${esc(crossPrompt(id, t, lk))}</pre></details>` : ''}
@@ -3184,7 +3224,7 @@ function ocrPrompt(id, t, lk, A) {
 - 한 덩어리 문구는 한 행에 쓰고, 줄바꿈 자리는 ‘ / ’로 쓴다.
 - 글자가 □처럼 깨졌거나, 잘렸거나, 칸 밖으로 넘쳤으면 상태에 쓴다.
 - 한국어가 보이면 그대로 적고 상태에 ‘한국어’라고 쓴다.
-
+${modelTips(revAiOf(t, lk, 'ocr'), 'ocr')}
 # 결과물: 엑셀 파일 \`${abbrOf(t)}_${LSHORT[lk]}_적용판독.xlsx\`
 - 시트 \`이미지 글자\`, 첫 행은 제목
 - 열: 파일 | 이미지 글자 | 위치 | 상태
@@ -3206,6 +3246,7 @@ function testPrompt(id, t, lk, A) {
 4. 읽기 어려운 글자: 너무 작거나 획이 많아 알아보기 힘든 글자 (없으면 ‘-’)
 - 퍼즐 정답에는 정답에 이른 단서(어떤 글자·숫자·기호를 어떻게 이었는지, 1P·2P 화면 중 어느 정보를 썼는지)도 함께 쓴다.
 
+${modelTips(revAiOf(t, lk, 'test'), 'test')}
 # 결과물: 엑셀 파일 \`${abbrOf(t)}_${LSHORT[lk]}_처음보는테스트.xlsx\`
 - 시트 \`테스트\`, 첫 행은 제목
 - 열: 파일 | 해야 할 일 | 헷갈리는 점 | 퍼즐 정답 | 읽기 어려운 글자
@@ -3247,7 +3288,7 @@ function applyStepHTML(id, t, lk, step) {
     const oc = A.oc, ok = A.ap.ocrOk || {};
     inner = `<p class="sb">AI가 번역본 이미지의 글자를 그대로 옮겨 적으면, 사이트가 확정 번역과 줄마다 비교해 <b>다른 줄만</b> 보여 줌. 글자 모양이 같은지만 보면 됨.</p>
       <ol class="do"><li><i>1</i><div><button type="button" class="btn primary" data-copy="p-ocr">프롬프트 복사</button></div></li>
-      <li><i>2</i><div><b>Claude</b>나 <b>ChatGPT</b> 새 대화에 붙여 넣고, 번역본 PNG(또는 zip)를 첨부해 보내기.</div></li>
+      <li><i>2</i><div><b>${esc(revAiOf(t, lk, 'ocr'))}</b> 새 대화에 붙여 넣고, 번역본 PNG(또는 zip)를 첨부해 보내기. ${revAiSelect(t, lk, 'ocr')}</div></li>
       <li><i>3</i><div>받은 엑셀을 ${readOnly ? '' : `<label class="btn upl primary">엑셀 올리기<input type="file" hidden data-apup="ocr" accept="${FILE_ACCEPT}"></label>`}<span class="do-l">엑셀이 안 나왔으면</span>${pasteBtn('ap:ocr', '답 붙여 넣기')}</div></li></ol>
       <details class="more"><summary>프롬프트 보기</summary><pre class="ptext" id="pt-p-ocr">${esc(ocrPrompt(id, t, lk, A))}</pre></details>
       ${oc ? `${oc.res.length || oc.bad.length || oc.missing.length ? `<div class="ilist">${oc.missing.map(m => `<div class="irow${ok['f:' + m.k] ? ' resolved' : ''}"><code>${esc(m.base)}</code><div class="ibody"><span class="itag">판독 결과에 이 파일이 없음 (확정 번역 ${m.n}줄)</span><small class="sb">번역본 ${esc(m.base)}_${suf}.png를 올리고 판독에 포함하기. 이 언어에서 안 쓰는 화면이면 ‘이상 없음’.</small>${readOnly ? '' : `<div class="iacts">${ok['f:' + m.k] ? `<span class="sg-ok">✓ 확인함</span><button type="button" class="linkbtn" data-ocrok="f:${esc(m.k)}" data-off="1">취소</button>` : `<button type="button" class="btn" data-ocrok="f:${esc(m.k)}">이상 없음</button>`}</div>`}</div></div>`).join('')}${oc.res.map(x => `<div class="irow${ok[x.r.id] ? ' resolved' : ''}"><code>${esc(x.r.id)}<br>${esc(x.r.file)}</code><div class="ibody"><span class="itag">${esc(x.msg)}</span><div class="cmp"><div><span>확정 번역</span><span style="white-space:pre-wrap">${esc(x.r.tr)}</span></div><div><span>이미지에서 읽은 글자</span>${esc(x.best || '-')}</div></div><small class="sb">원문: ${esc(x.r.ko.replace(/\n/g, ' / '))}</small>${readOnly ? `<div class="iacts">${memoBtn(x.r)}</div>` : `<div class="iacts">${ok[x.r.id] ? `<span class="sg-ok">✓ 확인함</span><button type="button" class="linkbtn" data-ocrok="${esc(x.r.id)}" data-off="1">취소</button>` : `<button type="button" class="btn" data-ocrok="${esc(x.r.id)}">이상 없음</button>${memoBtn(x.r)}`}</div>`}${memoEditorHTML(x.r)}</div></div>`).join('')}
@@ -3259,7 +3300,7 @@ function applyStepHTML(id, t, lk, step) {
     inner = `<p class="sb">번역본만 보고 처음 보는 사람이 이해한 내용을 <b>한국어로</b> 받아, 원래 문구와 비교함. 뜻이 같으면 ‘의도와 같음’.</p>
       <p class="sb pzhint">퍼즐 판단 기준: ${PUZZLE_CHECKS.map(([k, q]) => `<b title="${esc(q)}">${esc(k)}</b>`).join(' · ')}</p>
       <ol class="do"><li><i>1</i><div><button type="button" class="btn primary" data-copy="p-test">프롬프트 복사</button></div></li>
-      <li><i>2</i><div>번역에 쓰지 않은 AI(<b>Gemini</b> 등) 새 대화에 붙여 넣고, 번역본 PNG만 첨부해 보내기. 한국어 원본은 보내지 않기.</div></li>
+      <li><i>2</i><div><b>${esc(revAiOf(t, lk, 'test'))}</b> 새 대화에 붙여 넣고, 번역본 PNG만 첨부해 보내기. 한국어 원본은 보내지 않기. ${revAiSelect(t, lk, 'test')}</div></li>
       <li><i>3</i><div>받은 엑셀을 ${readOnly ? '' : `<label class="btn upl primary">엑셀 올리기<input type="file" hidden data-apup="test" accept="${FILE_ACCEPT}"></label>`}<span class="do-l">엑셀이 안 나왔으면</span>${pasteBtn('ap:test', '답 붙여 넣기')}</div></li></ol>
       <details class="more"><summary>프롬프트 보기</summary><pre class="ptext" id="pt-p-test">${esc(testPrompt(id, t, lk, A))}</pre></details>
       ${[...groups.entries()].map(([k, rs]) => { const ko = rowsOfBase(t, lk, k); const done = tok[k]; return `<div class="irow${done ? ' resolved' : ''}"><code>${esc(rs[0][0])}</code><div class="ibody">
