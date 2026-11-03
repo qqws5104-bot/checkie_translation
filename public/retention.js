@@ -9,7 +9,7 @@
   const LANG_KEYS = ['en', 'ja', 'zh'];
   const DAY = 864e5, KEEP_DAYS = 30, WARN_DAYS = 7;
   /* 정리 후에도 남기는 칸 = 게임 정보 + 진행 표시 */
-  const KEEP = ['name', 'concept', 'situation', 'rules', 'honorific', 'speakers', 'lang', 'langOff', 'memo', 'progress', 'progressBy', 'createdAt', 'updatedAt'];
+  const KEEP = ['name', 'concept', 'situation', 'rules', 'special', 'honorific', 'speakers', 'lang', 'langOff', 'memo', 'progress', 'progressBy', 'createdAt', 'updatedAt'];
   const isOff = (t, lk) => !!((t && t.langOff) || {})[lk];
   const activeLangs = t => LANG_KEYS.filter(k => !isOff(t, k));
   /* 전체 완료 시각 (아니면 null) */
