@@ -345,7 +345,7 @@
     "games": [
       "chris-mas"
     ],
-    "intent": "4라운드 아이콘 라벨",
+    "intent": "4라운드 아이콘",
     "tr": {
       "en": {
         "text": "HERE! HERE! HERE!",
@@ -367,7 +367,7 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-02T03:51:42.905Z"
+    "updatedAt": "2026-11-03T01:20:42.193Z"
   },
   "navigation-system-98s4j": {
     "ko": "NAVIGATION SYSTEM",
