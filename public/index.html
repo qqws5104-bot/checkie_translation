@@ -1223,10 +1223,23 @@ function revAiSelect(t, lk, task) {
   const v = revAiOf(t, lk, task), same = task === 'cross' && v === aiOf(t, lk);
   return `<label class="aisel">검수 AI <select data-revai="${task}" ${readOnly ? 'disabled' : ''}>${REVIEW_AIS.map(a => `<option ${a === v ? 'selected' : ''}>${a}</option>`).join('')}</select></label>${same ? '<small class="badtxt"> 번역 AI와 같은 모델. 다른 모델 권장</small>' : ''}`;
 }
+/* 존대·반말·대화체 일관성 규칙 */
+const HONOR = {
+  common: ['원문의 존대 수준, 친밀도, 권력 관계, 감정적 어조를 유지한다.', '원문보다 과도하게 정중하거나 무례한 표현으로 바꾸지 않는다.', '캐릭터별 말투를 일관되게 유지한다. (게임 정보의 ‘화자별 말투’ 기준)', '문장 끝 표현만 기계적으로 대응시키지 않고 그 언어의 자연스러운 대화 관습에 맞게 쓴다.'],
+  zh: ['존대 수준은 호칭, 어휘, 요청 표현, 문장 구조로 나타낸다.', '您과 你는 캐릭터 관계에 맞게 정하고 게임 전체에서 일관되게 쓴다.', '您, 请, 麻烦您 같은 정중 표현을 남용하지 않는다.', '语气词(吧, 呀, 哦 등)는 캐릭터의 성격과 상황에 맞을 때만 쓴다.'],
+  ja: ['です・ます체와 보통체는 캐릭터 관계에 맞게 정하고 유지한다.', '존경어·겸양어는 실제로 필요한 상황에서만 쓴다.', '캐릭터의 기존 말투와 대화 상대에 따른 경어 수준을 유지한다.', '같은 캐릭터가 관계 변화 없이 정중체와 보통체를 오가지 않는다.'],
+  en: ['정중함은 Please, Could you, Would you 같은 어휘와 문장 구조로 나타낸다.', '원문의 친밀도와 지시 강도를 유지한다.', '불필요하게 격식 있는 문장이나 지나치게 직접적인 명령문을 쓰지 않는다.', 'Please가 있는지만으로 정중함을 판단하지 않는다.'],
+  check: ['원문과 번역문의 존대 수준이 같은가', '상대와의 관계가 번역에서 달라지지 않았는가', '캐릭터의 말투가 다른 대사와 일관되는가', '원문보다 지나치게 정중하거나 무례해지지 않았는가', '그 언어에서 실제로 자연스러운 대화체인가'],
+};
+const honorBlock = (lk, mode) => `# 존대·반말·대화체 일관성
+${[...HONOR.common, ...HONOR[lk]].map(x => '- ' + x).join('\n')}${mode === 'review' ? `
+- 검수 항목: ${HONOR.check.join(' / ')}
+- 불일치가 있으면 말투 칸을 PASS로 두지 않는다 (관계·말투가 바뀌면 FAIL, 판단이 애매하면 REVIEW). 이유에 원문과 번역문의 차이와 수정 방향을 쓴다. 말하는 문장이 아닌 제목·이름·표지는 ‘해당 없음’.` : ''}
+`;
 const CULTURE = {
   common: ['한국 문화 요소는 몰라도 플레이할 수 있으면 살린다.', '정치·역사 소재(지도, 국기, 역사 인물)를 새로 넣지 않는다.', '색 이름만으로 정답·오답을 구분하게 쓰지 않는다.', '언어를 가리킬 때 국기 대신 언어 이름(English / 日本語 / 简体中文)을 쓴다.'],
   en: ['비원어민 관광객이 많으므로 쉬운 단어를 쓰고, 관용구·속어를 쓰지 않는다.', '플레이어 호칭은 player 또는 you로 통일한다. 성별이 드러나는 호칭을 쓰지 않는다.'],
-  ja: ['명령형을 쓰지 않는다.', '존댓말 수준을 컨텍스트 카드에 맞춰 고정하고 섞지 않는다.', '한국 한자어를 일본어 한자로 그대로 옮기지 않는다. (예: 애인 → 愛人은 ‘불륜 상대’ 뜻)'],
+  ja: ['명령형(～しろ・～なさい 등)을 쓰지 않는다. 원문이 반말 지시면 ～て・～てね처럼 보통체로 쓴다.', '존댓말 수준은 화자별 말투에 맞춰 화자마다 고정하고 섞지 않는다.', '한국 한자어를 일본어 한자로 그대로 옮기지 않는다. (예: 애인 → 愛人은 ‘불륜 상대’ 뜻)'],
   zh: ['중국 본토용 간체로만 쓴다.', '지도, 대만·홍콩 표기를 넣지 않는다.', '초록 모자(바람난 사람), 시계 선물(장례)을 떠올리게 하는 표현을 피한다.', '250(바보) 같은 숫자 은어와 유행어를 쓰지 않는다.'],
 };
 /* 열 이름은 AI마다 조금씩 달라서 느슨하게 맞춘다: 공백·괄호·굵게(**) 무시, 정확히 같은 이름 → 앞부분이 같은 이름 순 */
@@ -1570,14 +1583,14 @@ function relCompare(src, tr) {
 }
 
 /* ---------- 판정 체계: 프로그램 검사(O) + 독립 검수 AI → 종합(P) → 사람 판정(Q) → 상태(T) ---------- */
-const AI_CHECKS = ['의미', '행동', '조건', '정답', '자연스러움', '문화', '추가 정보', '용어'];
-const AI_CHECK_Q = { 의미: '원문과 같은 뜻인가', 행동: '플레이어가 해야 하는 행동이 같은가', 조건: '시간·횟수·순서·대상·조건이 그대로인가', 정답: '사실상 정답·게임상 정답과 선택지 관계가 그대로인가 (관계없으면 해당 없음)', 자연스러움: '처음 온 방문객이 자연스럽게 이해하는가', 문화: '한국 문화를 몰라도 이해하는가', '추가 정보': '원문에 없는 힌트·조건·설명이 들어가지 않았는가', 용어: '확정 용어집과 맞고 금지 표현이 없는가' };
+const AI_CHECKS = ['의미', '행동', '조건', '정답', '자연스러움', '말투', '문화', '추가 정보', '용어'];
+const AI_CHECK_Q = { 의미: '원문과 같은 뜻인가', 행동: '플레이어가 해야 하는 행동이 같은가', 조건: '시간·횟수·순서·대상·조건이 그대로인가', 정답: '사실상 정답·게임상 정답과 선택지 관계가 그대로인가 (관계없으면 해당 없음)', 자연스러움: '처음 온 방문객이 자연스럽게 이해하는가', 말투: '존대 수준·상대와의 관계·화자의 말투가 원문과 같고 그 언어에서 자연스러운 대화체인가 (말하는 문장이 아니면 해당 없음)', 문화: '한국 문화를 몰라도 이해하는가', '추가 정보': '원문에 없는 힌트·조건·설명이 들어가지 않았는가', 용어: '확정 용어집과 맞고 금지 표현이 없는가' };
 const chkGet = (chk, k) => !chk ? '' : chk[k] || (k === '문화' ? chk['현지화'] || '' : '');
 /* 프로그램 검사 등급: FAIL은 고치거나 예외 사유를 써야 넘어감, REVIEW는 사람이 보고 넘김 */
 const PROG_FAIL = new Set(['empty', 'var', 'term', 'avoid', 'hangul', 'script', 'srcChg', 'relSwap', 'btShift']);
 function progSev(k, r) { if (k === 'num') return (r.cls === 'B' || r.cls === 'C' || /숫자\s*(변경|표기)?\s*허용/.test(`${r.clsDir} ${r.note}`)) ? 'REVIEW' : 'FAIL'; return PROG_FAIL.has(k) ? 'FAIL' : 'REVIEW'; }
 const ERR_TYPES = ['의미 오류', '행동 오류', '조건 오류', '정답 오류', '문화적 현지화 오류', '용어 불일치', '문법 오류', '자연스러움 문제', '누락', '추가 정보 생성', '숫자 및 변수 오류', '화면 길이 초과', '기타'];
-const CHK_ERR = { 의미: '의미 오류', 행동: '행동 오류', 조건: '조건 오류', 정답: '정답 오류', 자연스러움: '자연스러움 문제', 문화: '문화적 현지화 오류', 현지화: '문화적 현지화 오류', '추가 정보': '추가 정보 생성', 용어: '용어 불일치' };
+const CHK_ERR = { 의미: '의미 오류', 행동: '행동 오류', 조건: '조건 오류', 정답: '정답 오류', 자연스러움: '자연스러움 문제', 말투: '말투·존대 불일치', 문화: '문화적 현지화 오류', 현지화: '문화적 현지화 오류', '추가 정보': '추가 정보 생성', 용어: '용어 불일치' };
 const PROG_ERR = { relSwap: '행동 오류', relDiff: '행동 오류', empty: '누락', hangul: '누락', var: '숫자 및 변수 오류', num: '숫자 및 변수 오류', term: '용어 불일치', avoid: '용어 불일치', long: '화면 길이 초과', script: '문법 오류' };
 const errTypeOfRv = rv => { const chk = (rv && rv.chk) || {}; return Object.keys(chk).filter(k => chk[k] === 'FAIL').map(k => CHK_ERR[k]).filter(Boolean)[0] || ''; };
 /* 지금 번역문에 대한 사람 판정만 유효 (승인 뒤 번역이 바뀌면 무효) */
@@ -1605,8 +1618,22 @@ const recheckOf = (r, vd) => !(r.x.hist || []).length ? '해당 없음' : vd.P =
 /* ---------- 자동 점검 (외국어를 몰라도 확인할 수 있는 것만) ---------- */
 const HANGUL = /[가-힣]/, KANA = /[぀-ヿ]/, CJK = /[㐀-鿿]/;
 const lines = s => String(s).split(/\n/).length;
+/* 마지막 줄의 문장 끝으로 존대 수준을 대충 가름. 이름·제목(명사로 끝남)은 판단 안 함 */
+const endOf = s => String(s || '').split('\n').map(x => x.trim()).filter(Boolean).pop() || '';
+const tailOf = s => endOf(s).replace(/[\s\p{P}\p{S}～~]+$/u, '');
+function koReg(s) { const e = tailOf(s); if (e.replace(/\s/g, '').length < 3) return ''; if (/(요|니다|니까|세요|시오|십시오|죠)$/.test(e)) return '존대'; if (/(다|야|어|아|지|자|해|라|냐|래|네|군|걸|게|마|렴|구나|거든|줘|봐|와|돼|워|까)$/.test(e)) return '반말'; return ''; }
+function jaReg(s) { const e = tailOf(s); if (e.length < 2) return ''; if (/(ます|ました|ません|ませんか|ましょう|です|でした|でしょう|ください|下さい|ませ)(か|ね|よ|よね)?$/.test(e)) return '존대'; if (/(る|た|だ|よ|ね|て|な|ない|たい|う|ぞ|ぜ|わ|さ|ろ|けど|から|かな|の|か)$/.test(e)) return '반말'; return ''; }
+function honorCheck(lk, r) {
+  const k = koReg(r.ko); if (!k) return null;
+  if (lk === 'ja') { const j = jaReg(r.tr); if (j && j !== k) return k === '존대' ? `원문은 존댓말(…${tailOf(r.ko).slice(-3)})인데 번역은 보통체(…${tailOf(r.tr).slice(-3)}) — です・ます체로 맞추거나, 화자 관계상 일부러 바꿨으면 예외 사유` : `원문은 반말(…${tailOf(r.ko).slice(-3)})인데 번역은 です・ます체(…${tailOf(r.tr).slice(-4)}) — 원문보다 정중해졌는지 확인`; }
+  if (lk === 'zh' && k === '반말' && /您|麻烦您/.test(r.tr)) return `원문은 반말(…${tailOf(r.ko).slice(-3)})인데 번역에 您 — 원문보다 정중해졌는지 확인`;
+  return null;
+}
 function autoChecks(t, lk, r, byKo) {
   const ko = r.ko, tr = r.tr || '', out = [];
+  const hc = honorCheck(lk, r); if (hc) out.push(['honor', hc]);
+  if (r.zhMix) out.push(['zhMix', `같은 게임에서 您과 你가 섞임 (您 ${byKo.zhN.you2}줄 · 你 ${byKo.zhN.you1}줄) — 이 줄은 적은 쪽(${r.zhMix}). 화자 관계상 다르면 예외 사유`]);
+  if (r.btFar) out.push(['btFar', '역번역이 이 줄 원문과 거의 겹치지 않음 — 다른 줄의 검수 결과가 붙었을 수 있음. 원문·역번역·이유를 비교']);
   if (r.btShift) out.push(['btShift', `역번역이 이 줄 원문보다 ${r.btShift} 원문과 훨씬 비슷함 — 검수 결과가 한 줄 밀려 붙었을 수 있음`]);
   const sdf = (sheetOf(t, lk) || {}).srcDiff; if (sdf && sdf[r.id] !== undefined) out.push(['srcDiff', `번역 엑셀의 한국어 원문이 기준표와 조금 다름 (엑셀: ‘${String(sdf[r.id]).slice(0, 40)}’) — 번역이 이 원문 기준인지 확인`]);
   if (r.x.srcChg) out.push(['srcChg', r.x.srcChg === 'removed' ? '원문 기준표에서 빠진 줄 — 번역을 지울지 확인' : r.x.srcChg === 'added' ? '원문 기준표에 새로 생긴 줄 — 번역 필요' : '원문이 바뀜 — 번역을 다시 확인']);
@@ -1661,11 +1688,13 @@ function autoChecks(t, lk, r, byKo) {
 /* 데이터 → 게임 id (화면에서 고른 게임이 아니라 그 데이터의 게임) */
 const gidOf = t => ((t && (themes.find(g => g.data === t) || themes.find(g => g.data && g.data.name === t.name && g.data.createdAt === t.createdAt))) || cur() || {}).id || '';
 /* 역번역이 자기 원문보다 앞뒤 줄 원문과 훨씬 비슷하면 그 줄의 이름 (검수 결과가 한 줄 밀렸다는 신호) */
-function btNeighbor(RM, id, bt) {
+function btNeighbor(RM, id, bt, fix) {
   if (!bt || !bt.trim()) return '';
   const ids = [...RM.keys()], i = ids.indexOf(id); if (i < 0) return '';
-  const own = simKo(RM.get(id).ko, bt) || 0;
-  let best = '', bs = 0; [i - 1, i + 1, i - 2, i + 2].forEach(j => { if (j < 0 || j >= ids.length) return; const o = RM.get(ids[j]); if (normKo(o.ko) === normKo(RM.get(id).ko)) return; const v = simKo(o.ko, bt) || 0; if (v > bs) { bs = v; best = o.id; } });
+  const fx = fix && fix.trim() && fix.trim() !== '-' ? fix : '';
+  const sc = o => Math.max(simKo(o.ko, bt) || 0, fx ? simKo(o.tr, fx) || 0 : 0);
+  const own = sc(RM.get(id));
+  let best = '', bs = 0; [i - 1, i + 1, i - 2, i + 2].forEach(j => { if (j < 0 || j >= ids.length) return; const o = RM.get(ids[j]); if (normKo(o.ko) === normKo(RM.get(id).ko)) return; const v = sc(o); if (v > bs) { bs = v; best = o.id; } });
   return bs >= 0.45 && bs - own >= 0.25 ? best : '';
 }
 const isFileName = f => f && !/^공통$|^-$/.test(f.trim());
@@ -1673,7 +1702,10 @@ function flowState(t, lk) {
   const rows = sheetRows(t, lk), N = rows.length, it = workOf(t, lk);
   const byKo = new Map(); rows.forEach(r => { const k = normKo(r.ko); byKo.set(k, (byKo.get(k) || []).concat(r)); });
   byKo.TL = termsFor(gidOf(t)).map(v => v.data);
-  const RMf = new Map(rows.map(r => [r.id, r])); rows.forEach(r => { r.btShift = r.x.rv && (r.x.bt || [])[0] ? btNeighbor(RMf, r.id, r.x.bt[0]) : ''; });
+  if (lk === 'zh') { const h1 = rows.filter(r => /你/.test(r.tr)), h2 = rows.filter(r => /您/.test(r.tr)); byKo.zhN = { you1: h1.length, you2: h2.length }; rows.forEach(r => { r.zhMix = ''; }); if (h1.length && h2.length) (h1.length < h2.length ? h1 : h2).forEach(r => { r.zhMix = h1.length < h2.length ? '你' : '您'; }); }
+  const RMf = new Map(rows.map(r => [r.id, r])); rows.forEach(r => { const bt = r.x.rv && (r.x.bt || [])[0]; r.btShift = bt ? btNeighbor(RMf, r.id, bt, r.x.rv.fix || '') : '';
+    /* 이웃 줄은 못 찾았지만 역번역이 이 줄 원문과 거의 안 겹침 (짧은 이름·말장난은 제외) */
+    r.btFar = bt && !r.btShift && normKo(r.ko).replace(/[^\p{L}\p{N}]/gu, '').length >= 5 && (simKo(r.ko, bt) || 0) < 0.1 && !(r.x.ok || []).includes('btFar'); });
   const all = rows.map(r => ({ r, x: r.x, list: autoChecks(t, lk, r, byKo).filter(([k]) => !((r.x.ok) || []).includes(k)) }));
   all.forEach(v => { v.r.open = v.list; v.r.vd = verdictOf(v.r, v.list); });
   const issues = all.filter(v => v.list.length);
@@ -2087,7 +2119,7 @@ function specialTag(t, row) {
 }
 
 /* ================= 번역 프롬프트 = 공통 지시 + AI별 지시 + 게임별 정보 + 언어별 블록 + 이번 작업 ================= */
-const PROMPT_VER = '2026.11-v10';
+const PROMPT_VER = '2026.11-v12';
 const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 
 1. 역할
@@ -2167,7 +2199,8 @@ ${termLines(id, lk)}
 
 # ${L.label} 언어 규칙
 ${[...CULTURE[lk], ...CULTURE.common.slice(0, 2)].map(x => '- ' + x).join('\n')}${lk === 'zh' ? '\n- 중국 본토 간체만 쓴다. 번체와 대만·홍콩 지역 표현을 쓰지 않는다.' : ''}
-${lk === 'zh' ? enRefBlock(t, 'translate') : ''}${srcConfirmed(t) ? srcTranslateTail(t, lk, ab) : `
+
+${honorBlock(lk, 'translate')}${lk === 'zh' ? enRefBlock(t, 'translate') : ''}${srcConfirmed(t) ? srcTranslateTail(t, lk, ab) : `
 # 현지화 분류 (모든 줄, ${L.region} 방문객 기준으로 판단)
 - A. 직접 번역 가능 (낮은 위험): 뜻과 표현을 크게 바꾸지 않고 옮겨도 외국인이 똑같이 이해함. 예: 문을 열어 주세요 / 카드를 선택하세요 / 제한 시간은 60초입니다
 - B. 의미 현지화 필요 (중간 위험): 그대로 옮기면 뜻이 전달되지 않거나 다르게 받아들여짐. 원문 규칙은 유지한 채 뜻만 현지 표현으로 바꿈. 예: 청개구리처럼 행동하세요 / 눈치껏 행동하세요 / 손이 크다
@@ -2279,6 +2312,8 @@ ${srcHas(t) ? answersBlock(t).replace('# 정답 기준 (게임상 정답과 판�
 5. 캐릭터성: 인물의 성격과 말투가 유지되었는가
 6. 게임 적합성: 플레이어가 할 행동(찾기, 고르기, 방향, 순서)과 퍼즐의 단서·정답·규칙이 변형되지 않았는가
 - 그 밖에: 화면 칸에 들어갈 길이인가 / 문화 금기: ${CULTURE[lk].join(' ')}
+
+${honorBlock(lk, 'review')}
 - 이번 검수에서 특히 볼 것: ${focus}
 
 # 공통 지시
@@ -2336,10 +2371,11 @@ ${PUZZLE_CHECKS.map(([k, q], i) => `${i + 1}. ${k}: ${q}?`).join('\n')}
 # 결과물: 엑셀 파일 \`${abbrOf(t)}_${LSHORT[lk]}_교차검수.xlsx\`
 시트 순서와 이름, 열 이름을 아래와 똑같이 쓴다. 각 시트의 첫 행은 제목이다.
 
-1. \`줄 검수\` — 번호 | 확인값 | 번역문 관계 | 판정 | ${AI_CHECKS.join(' | ')} | ${ref ? '불일치 | ' : ''}역번역 | 핵심어 뜻 | 고친 번역 | 이유
+1. \`줄 검수\` — 번호 | 확인값 | 번역문 관계 | 판정 | ${AI_CHECKS.join(' | ')} | ${ref ? '불일치 | ' : ''}검수한 원문 | 역번역 | 핵심어 뜻 | 고친 번역 | 이유
    - 아래 표의 모든 번호를 같은 순서로 빠짐없이 쓴다. 번호는 고치지 않는다.
    - 확인값은 아래 표의 확인값을 글자 그대로 복사한다. (검수한 번역문이 지금 번역문과 같은지 사이트가 확인하는 값)
-   - 판정과 ${AI_CHECKS.join('·')} 칸에는 PASS, FAIL, REVIEW 중 하나만 쓴다. 정답 칸은 관계없으면 ‘해당 없음’.
+   - 검수한 원문: 역번역을 쓰기 직전에 그 번호의 한국어 원문을 그대로 다시 쓴다. 이 줄의 판정·역번역·고친 번역·이유는 모두 이 원문에 대한 것이어야 한다. 앞뒤 줄의 내용이 섞이면 사이트가 ‘줄 밀림’으로 버리고 다시 검수를 맡긴다.
+   - 판정과 ${AI_CHECKS.join('·')} 칸에는 PASS, FAIL, REVIEW 중 하나만 쓴다. 정답·말투 칸은 관계없으면 ‘해당 없음’.
    - 빈칸이나 다른 값이 있는 줄은 형식 오류로 처리되어 다시 검수를 받는다.
    - 이유는 한국어로, FAIL·REVIEW면 어느 항목이 왜 문제인지 쓴다.
    - PASS면 고친 번역과 이유는 ‘-’. 칸 안 줄바꿈은 ‘ / ’로 쓴다.
@@ -2557,7 +2593,7 @@ async function applyCross(tables) {
   const planMemo = text => ({ id: Math.random().toString(36).slice(2, 8), kind: 'plan', by: '교차 검수 AI', at: nowISO(), text: /^\[\s*기획/.test(text) ? text : '[기획 확인] ' + text, done: false });
   const addMemos = (x, texts) => { x.memos = x.memos || []; texts.forEach(tx => { const m = planMemo(tx); if (!x.memos.some(y => y.kind === 'plan' && y.text === m.text)) x.memos.push(m); }); };
   let n = 0, fail = 0, rev = 0, already = 0; const bad = [], returned = new Set(), stale = [], shifted = [];
-  const RM0 = new Map(sheetRows(cur().data, promptLang).map(r => [r.id, r])), iCk = ix(x => x.startsWith('확인값'));
+  const RM0 = new Map(sheetRows(cur().data, promptLang).map(r => [r.id, r])), iCk = ix(x => x.startsWith('확인값')), iEcho = ix(x => x.startsWith('검수한원문') || x === '원문다시쓰기');
   const asked = [...RM0.values()].filter(r => !r.x.rv).map(r => r.id);
   /* 묶음: 대표 번호 → 함께 쓰는 번호들 (프롬프트를 만들 때와 같은 기준) */
   const GRP = new Map(rvGroups([...RM0.values()].filter(r => !r.x.rv)).filter(g => g.length > 1).map(g => [g[0].id, g.slice(1).map(b => b.id)]));
@@ -2577,8 +2613,13 @@ async function applyCross(tables) {
         /* 다른 줄의 확인값이면 줄이 밀린 것 */
         const other = [...RM0.values()].find(o => o.id !== id && rowCk(o) === ckv);
         if (other) shifted.push(`${id}←${other.id}`); else stale.push(id); return; }
-      /* 확인값이 없는 예전 형식: 역번역이 자기 원문보다 이웃 줄 원문과 훨씬 비슷하면 밀린 것으로 보고 반영 안 함 */
-      if (ckv === null && iB >= 0) { const nb = btNeighbor(RM0, id, String(r[iB] || '')); if (nb) { shifted.push(`${id}←${nb}`); return; } }
+      /* 검수한 원문이 이 줄 원문과 다르면: 번호·확인값만 맞고 내용이 밀린 것 */
+      const echo = iEcho >= 0 ? normKo(String(r[iEcho] || '').replace(/\s\/\s/g, '\n')) : '';
+      if (echo && echo !== normKo(row0.ko) && (simKo(echo, normKo(row0.ko)) || 0) < 0.7) {
+        const other = [...RM0.values()].find(o => o.id !== id && (normKo(o.ko) === echo || (simKo(echo, normKo(o.ko)) || 0) >= 0.8));
+        shifted.push(`${id}←${other ? other.id : '?'}`); return; }
+      /* 확인값·검수한 원문이 없는 예전 형식: 역번역·고친 번역이 자기 줄보다 이웃 줄과 훨씬 비슷하면 밀린 것으로 보고 반영 안 함 */
+      if (ckv === null && !echo && iB >= 0) { const nb = btNeighbor(RM0, id, String(r[iB] || ''), iFix >= 0 ? String(r[iFix] || '') : ''); if (nb) { shifted.push(`${id}←${nb}`); return; } }
       /* 형식 검사: 판정이나 검사 칸이 비었거나 허용되지 않은 값이면 시스템 오류 → 이 줄은 검수 미완료로 남겨 다시 받음 */
       const okV = ['PASS', 'FAIL', 'REVIEW'];
       const strictV = v => okV.includes(String(v ?? '').replace(/[*`\s]/g, '').toUpperCase()), strictC = v => strictV(v) || /^(해당없음|N\/?A)$/i.test(String(v ?? '').replace(/[*`\s]/g, ''));
@@ -2612,6 +2653,8 @@ async function applyCross(tables) {
         if (y.hv) { y.hvHist = [...(y.hvHist || []), { v: '무효', by: '시스템', at: nowISO(), why: '새 검수 결과가 들어옴', was: y.hv.v }].slice(-20); y.hv = null; }
         returned.add(mid); fanned++; });
     });
+    /* 대표 줄이 돌아왔으면 묶인 줄도 응답은 온 것 (반영 못 했으면 같이 다시 검수) */
+    GRP.forEach((mids, rid) => { if (returned.has(rid)) mids.forEach(m => returned.add(m)); });
     const missing = asked.filter(id => !returned.has(id) && !(items[id] && items[id].rv));
     if (bad.length || missing.length || stale.length || shifted.length) { const w = next.work[promptLang]; w.sysLog = [...(w.sysLog || []), ...(shifted.length ? [{ at: nowISO(), by: meName(), kind: '줄 밀림', ids: shifted.map(x => x.split('←')[0]).slice(0, 200), n: shifted.length, detail: shifted.slice(0, 50) }] : []), ...(stale.length ? [{ at: nowISO(), by: meName(), kind: '번역이 바뀐 뒤의 결과', ids: stale.slice(0, 200), n: stale.length }] : []), ...(bad.length ? [{ at: nowISO(), by: meName(), kind: '형식 오류', ids: bad.slice(0, 200), n: bad.length }] : []), ...(missing.length ? [{ at: nowISO(), by: meName(), kind: '응답 누락', ids: missing.slice(0, 200), n: missing.length }] : [])].slice(-30); }
     if (enIssues.length && next.work.en && next.work.en.items) enIssues.forEach(m => { const x = next.work.en.items[m.enId] = next.work.en.items[m.enId] || {}; x.memos = x.memos || []; if (!x.memos.some(y => y.text === m.text)) x.memos.push({ id: Math.random().toString(36).slice(2, 8), kind: 'enref', by: '교차 검수 AI', at: nowISO(), text: m.text, done: false }); });
@@ -2713,7 +2756,7 @@ function specXlsx(id, t) {
     const F = FS[l.key] = flowState(t, l.key);
     const body = F.rows.map(r => { const x = r.x, rv = x.rv, chk = (rv && rv.chk) || {}, vd = r.vd;
       const first = (x.hist || [])[0] ? x.hist[0].from : r.tr0, termOpen = r.open.some(([k]) => k === 'term' || k === 'avoid');
-      const opinion = [['문화', '추가 정보'].map(k => chkGet(chk, k) ? `${k} ${NA(chkGet(chk, k))}` : '').filter(Boolean).join(' · '), rv && rv.why && rv.why !== '-' ? rv.why : '', rv && rv.fix && rv.v !== '통과' ? `수정 제안: ${rv.fix}` : '', vd.exc ? `AI ${vd.ai0} 예외 사유: ${vd.exc}` : '', x.srcChg ? '원문 변경됨' : ''].filter(Boolean).join(' / ');
+      const opinion = [['말투', '문화', '추가 정보'].map(k => chkGet(chk, k) ? `${k} ${NA(chkGet(chk, k))}` : '').filter(Boolean).join(' · '), rv && rv.why && rv.why !== '-' ? rv.why : '', rv && rv.fix && rv.v !== '통과' ? `수정 제안: ${rv.fix}` : '', vd.exc ? `AI ${vd.ai0} 예외 사유: ${vd.exc}` : '', x.srcChg ? '원문 변경됨' : ''].filter(Boolean).join(' / ');
       const O = vd.O + (vd.pf.length ? `: ${vd.pf.map(m => m[1]).join(' / ')}` : '') + (vd.pr.length ? ` (REVIEW: ${vd.pr.map(m => m[1]).join(' / ')})` : '') + (Object.keys(x.okWhy || {}).length ? ` (예외: ${Object.values(x.okWhy).map(o => o.why).join(' / ')})` : '');
       const hv = x.hv;
       return [r.id, r.ko, r.cls ? CLS[r.cls] : '', r.clsDir, first, r.alt, (x.bt || [])[0] || '', NA(chk['의미']), NA(chk['행동']), NA(chk['조건']), NA(chk['정답']), NA(chk['자연스러움']), termOpen ? 'FAIL (프로그램)' : NA(chk['용어']), opinion, O, vd.P, hv ? `${hv.v}${hv.why ? ` · ${hv.type ? hv.type + ': ' : ''}${hv.why}` : ''} (${hv.by} · ${hv.basis || ''})` : '', normKo(r.tr) !== normKo(first) ? r.tr : '', recheckOf(r, vd), vd.T, ...(r.rat ? [r.rat.meth || r.rat.methRaw, r.rat.intent, r.rat.sense, r.rat.reason, r.rat.redo] : ['', '', '', '', '']), r.note, r.rat ? r.rat.wmap : '', x.gl || '', judgeSignals(r).summary, hv && hv.ev ? hv.ev : '', triOf(r), r.b ? r.b.rel || '' : '', x.rel || '', (() => { const rc = r.b && r.b.rel && x.rel ? relCompare(r.b.rel, x.rel) : null; return rc ? `${rc.v} · ${rc.msg}` : r.b && r.b.rel ? '검수 전' : ''; })()]; });
@@ -3103,8 +3146,8 @@ function reviewHTML(id, t, lk, F, reviewer) {
   const cond = stepConds(t, lk, F);
   const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${isDone(t, lk, k, F) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${isDone(t, lk, k, F) ? '✓ ' + esc(whoOf(signOf(t, lk, k))) : c}</small></button>`).join('')}</div>`;
   let inner = '';
-  if (rvTab === 'auto') inner = `<p class="sb">${F.issues.filter(v => v.r.btShift).length > 1 && !readOnly ? `<div class="ratbox"><b>검수 결과가 밀려 붙은 것으로 보이는 줄 ${F.issues.filter(v => v.r.btShift).length}개</b><small class="sb">역번역이 자기 원문보다 앞뒤 줄 원문과 훨씬 비슷함. 지우면 그 줄만 독립 검수 프롬프트에 다시 들어감</small><div class="iacts"><button type="button" class="btn primary" data-rvclear="@shift">모두 지우고 다시 검수</button></div></div>` : ''}숫자 · 변수 · 특수 기호 · 줄 수 · 한글 남음 · 같은 원문 다른 번역 · 길이 · 용어·금지 표현을 사이트가 바로 확인함. <b>FAIL</b>은 고치거나 예외 사유를 써야 넘어가고, <b>REVIEW</b>는 보고 ‘문제 없음’ 가능.</p>
-    ${F.issues.length ? `<div class="ilist">${F.issues.map(({ r, list }) => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b>${readOnly ? `<div style="white-space:pre-wrap">${esc(r.tr)}</div>` : `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>`}${r.note ? `<small class="sb">비고: ${esc(r.note)}</small>` : ''}${list.map(([k, m]) => { const sev = progSev(k, r), key = r.id + '|' + k; return `<span class="itag ${sev === 'FAIL' ? 'fail' : ''}"><b>${sev}</b> ${esc(m)}${readOnly ? '' : k === 'btShift' ? ` <button type="button" class="linkbtn" data-rvclear="${esc(r.id)}">검수 결과 지우고 다시 검수</button> <button type="button" class="linkbtn" data-autoex="${esc(key)}">예외 사유 쓰고 통과</button>` : sev === 'FAIL' ? ` <button type="button" class="linkbtn" data-autoex="${esc(key)}">예외 사유 쓰고 통과</button>` : ` <button type="button" class="linkbtn" data-autook="${esc(key)}">문제 없음</button>`}</span>${autoExEditing === key ? `<span class="exrow"><input type="text" id="autoex-why" placeholder="예외 사유 (필수) 예: 원작 표기를 그대로 둠"><button type="button" class="btn primary" data-autoexsave="${esc(key)}">저장</button><button type="button" class="btn ghost" data-autoexcancel>취소</button></span>` : ''}`; }).join('')}${memoBtn(r)}${memoEditorHTML(r)}</div></div>`).join('')}</div>` : '<p class="okmsg">자동 점검에서 걸린 게 없음.</p>'}`;
+  if (rvTab === 'auto') inner = `<p class="sb">${F.issues.filter(v => v.r.btShift || v.r.btFar).length > 1 && !readOnly ? `<div class="ratbox"><b>검수 결과가 밀려 붙은 것으로 보이는 줄 ${F.issues.filter(v => v.r.btShift || v.r.btFar).length}개</b><small class="sb">역번역이 자기 원문보다 앞뒤 줄 원문과 훨씬 비슷함. 지우면 그 줄만 독립 검수 프롬프트에 다시 들어감</small><div class="iacts"><button type="button" class="btn primary" data-rvclear="@shift">모두 지우고 다시 검수</button></div></div>` : ''}숫자 · 변수 · 특수 기호 · 줄 수 · 한글 남음 · 같은 원문 다른 번역 · 길이 · 용어·금지 표현을 사이트가 바로 확인함. <b>FAIL</b>은 고치거나 예외 사유를 써야 넘어가고, <b>REVIEW</b>는 보고 ‘문제 없음’ 가능.</p>
+    ${F.issues.length ? `<div class="ilist">${F.issues.map(({ r, list }) => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b>${readOnly ? `<div style="white-space:pre-wrap">${esc(r.tr)}</div>` : `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>`}${r.note ? `<small class="sb">비고: ${esc(r.note)}</small>` : ''}${list.map(([k, m]) => { const sev = progSev(k, r), key = r.id + '|' + k; return `<span class="itag ${sev === 'FAIL' ? 'fail' : ''}"><b>${sev}</b> ${esc(m)}${readOnly ? '' : k === 'btShift' || k === 'btFar' ? ` <button type="button" class="linkbtn" data-rvclear="${esc(r.id)}">검수 결과 지우고 다시 검수</button> <button type="button" class="linkbtn" data-autoex="${esc(key)}">예외 사유 쓰고 통과</button>` : sev === 'FAIL' ? ` <button type="button" class="linkbtn" data-autoex="${esc(key)}">예외 사유 쓰고 통과</button>` : ` <button type="button" class="linkbtn" data-autook="${esc(key)}">문제 없음</button>`}</span>${autoExEditing === key ? `<span class="exrow"><input type="text" id="autoex-why" placeholder="예외 사유 (필수) 예: 원작 표기를 그대로 둠"><button type="button" class="btn primary" data-autoexsave="${esc(key)}">저장</button><button type="button" class="btn ghost" data-autoexcancel>취소</button></span>` : ''}`; }).join('')}${memoBtn(r)}${memoEditorHTML(r)}</div></div>`).join('')}</div>` : '<p class="okmsg">자동 점검에서 걸린 게 없음.</p>'}`;
   if (rvTab === 'files') {
     const stored = gameFiles[id] || [];
     const common = F.rows.filter(r => !splitFiles(r.file).some(isFileName));
@@ -3134,14 +3177,14 @@ function reviewHTML(id, t, lk, F, reviewer) {
       </ol>
       ${lastErr.length ? `<p class="sb badtxt">지난 검수 결과에 ${lastErr.map(x => `${esc(x.kind)} ${x.n}줄`).join(' · ')} — 시스템 오류로 기록함. 아래 프롬프트에는 그 줄만 다시 들어감 (재시도).</p>` : ''}
       <details class="more"><summary>프롬프트 보기</summary><pre class="ptext" id="pt-p-cross">${esc(crossPrompt(id, t, lk))}</pre></details>` : ''}
-      ${need.length ? `<h4 class="mh">사람이 볼 것 ${need.length}줄${need.length < need0.length ? ` <small>(같은 어구를 묶어서 · 실제 ${need0.length}줄)</small>` : ''} <small>원문과 역번역(한국어)을 비교해서 고르기</small></h4><div class="ilist">${need.map(r => { const x = r.x, v = x.rv; return `<div class="irow"><code><button type="button" class="linkbtn" data-item="${esc(lk)}|${esc(r.id)}">${esc(r.id)}</button><br>${esc(r.file)}<br><span class="vtag ${v.v === '수정 필요' ? 'fail' : 'rev'}">${v.v === '수정 필요' ? 'FAIL' : 'REVIEW'}</span></code><div class="ibody">${(() => { const sb = sibOf(r.id); return sb.length ? `<p class="sb"><em class="chip">같은 어구 ${sb.length + 1}번 사용</em> ${esc(sb.join('·'))}도 같은 원문·번역 — 여기서 고르면 함께 처리됨</p>` : ''; })()}
+      ${need.length ? `<h4 class="mh">사람이 볼 것 ${need.length}줄${need.length < need0.length ? ` <small>(같은 어구를 묶어서 · 실제 ${need0.length}줄)</small>` : ''} <small>원문과 역번역(한국어)을 비교해서 고르기</small></h4><div class="ilist">${need.map(r => { const x = r.x, v = x.rv; return `<div class="irow"><code><button type="button" class="linkbtn" data-item="${esc(lk)}|${esc(r.id)}">${esc(r.id)}</button><br>${esc(r.file)}<br><span class="vtag ${v.v === '수정 필요' ? 'fail' : 'rev'}">${v.v === '수정 필요' ? 'FAIL' : 'REVIEW'}</span></code><div class="ibody">${r.btShift || r.btFar ? `<p class="badtxt"><b>줄 밀림 의심</b> — 역번역·고친 번역·이유가 이 줄 원문(${esc(r.ko.slice(0, 20))})과 맞지 않음${r.btShift ? `. ${esc(r.btShift)} 줄의 결과로 보임` : ''}. 고친 번역을 쓰지 말고 다시 검수.${readOnly ? '' : ` <button type="button" class="btn primary" data-rvclear="${esc(r.id)}">검수 결과 지우고 다시 검수</button>`}</p>` : ''}${(() => { const sb = sibOf(r.id); return sb.length ? `<p class="sb"><em class="chip">같은 어구 ${sb.length + 1}번 사용</em> ${esc(sb.join('·'))}도 같은 원문·번역 — 여기서 고르면 함께 처리됨</p>` : ''; })()}
         <div class="cmp"><div><span>원문</span><b style="white-space:pre-wrap">${esc(r.ko)}</b></div><div><span>역번역</span>${esc((x.bt || [])[0] || '-')}</div></div>${r.rat || x.gl ? `<div class="cmp"><div><span>번역 AI가 적은 의미 (번역할 때) · ${esc(r.rat && r.rat.meth || '방식 없음')}</span>${esc(r.rat && r.rat.intent || '-')}${r.rat && r.rat.wmap ? `<small class="sb">핵심어: ${esc(r.rat.wmap)}</small>` : ''}</div><div><span>검수 AI가 읽은 핵심어 뜻</span>${esc(x.gl || '-')}</div></div>` : ''}${lk === 'zh' && enRef(t) ? `<div class="cmp one"><div><span>영어 (확정 · 참조)${v.mis ? ` · <b class="badtxt">${esc(v.mis)}</b>` : ''}</span><span style="white-space:pre-wrap">${esc(enCell(enFor(enRef(t), r)))}</span></div></div>` : ''}
         <div class="cmp"><div><span>지금 번역</span>${xEditing.has(r.id) && !readOnly ? `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>` : `<span style="white-space:pre-wrap">${esc(r.tr)}</span>`}</div><div><span>AI가 고친 번역</span><span style="white-space:pre-wrap">${esc(v.fix || '-')}</span></div></div>
         ${chkRowHTML(v.chk)}
         <small>이유: ${esc(v.why || '-')}${r.note ? ` · 번역 AI 비고: ${esc(r.note)}` : ''}${r.cls ? ` · 분류: ${esc(CLS[r.cls] || r.cls)}` : ''}</small>
         ${xkeepEditing === r.id ? `<div class="memo-ed"><textarea id="xkeep-why" rows="2" placeholder="${v.v === '수정 필요' ? 'AI FAIL인데 지금 번역을 유지하는 이유 (필수). 예: 게임 규칙상 일부러 반대로 씀' : '지금 번역을 유지하는 이유 (선택)'}"></textarea><div class="iacts"><button type="button" class="btn primary" data-xkeepsave="${esc(r.id)}">${v.v === '수정 필요' ? '예외로 유지' : '유지'}</button><button type="button" class="btn ghost" data-xkeepcancel>취소</button></div></div>` : ''}
-        ${readOnly ? `<div class="iacts">${memoBtn(r)}</div>` : v.plan && openMemosOf(r.x).some(m => m.kind === 'plan') ? `<div class="iacts"><em class="chip warnchip">기획 승인 대기 · 맨 위 수정 요청에서 승인</em>${memoBtn(r)}</div>` : `<div class="iacts">${v.fix ? `<button type="button" class="btn primary" data-xfix="${esc(r.id)}">고친 번역 쓰기</button>` : ''}<button type="button" class="btn" data-xkeep="${esc(r.id)}">${v.v === '수정 필요' ? '예외 사유 쓰고 유지' : '지금 번역 유지'}</button><button type="button" class="btn ghost" data-xedit="${esc(r.id)}">직접 고치기</button>${memoBtn(r)}</div>`}${memoEditorHTML(r)}</div></div>`; }).join('')}</div>
-        ${readOnly || !need.some(r => r.x.rv.fix) ? '' : '<button type="button" class="btn" data-xfixall>고친 번역 모두 쓰기</button>'}` : ''}
+        ${readOnly ? `<div class="iacts">${memoBtn(r)}</div>` : v.plan && openMemosOf(r.x).some(m => m.kind === 'plan') ? `<div class="iacts"><em class="chip warnchip">기획 승인 대기 · 맨 위 수정 요청에서 승인</em>${memoBtn(r)}</div>` : `<div class="iacts">${v.fix && !r.btShift && !r.btFar ? `<button type="button" class="btn primary" data-xfix="${esc(r.id)}">고친 번역 쓰기</button>` : ''}<button type="button" class="btn" data-xkeep="${esc(r.id)}">${v.v === '수정 필요' ? '예외 사유 쓰고 유지' : '지금 번역 유지'}</button><button type="button" class="btn ghost" data-xedit="${esc(r.id)}">직접 고치기</button>${memoBtn(r)}</div>`}${memoEditorHTML(r)}</div></div>`; }).join('')}</div>
+        ${readOnly || !need.some(r => r.x.rv.fix && !r.btShift && !r.btFar) ? '' : '<button type="button" class="btn" data-xfixall>고친 번역 모두 쓰기</button>'}` : ''}
       ${!F.rvTodo && !need.length ? '<p class="okmsg">교차 검수를 모두 통과함.</p>' : ''}
       ${crossExtraHTML(t, lk)}
       ${F.rows.some(r => r.x.bt) ? `<details class="more"><summary>전체 원문 ↔ 역번역 보기</summary><div class="tprev"><table><thead><tr><th>번호</th><th>파일</th><th>원문</th><th>역번역</th><th>판정</th></tr></thead><tbody>${F.rows.map(r => `<tr><td>${esc(r.id)}</td><td>${esc(r.file)}</td><td style="white-space:pre-wrap">${esc(r.ko)}</td><td>${esc((r.x.bt || [])[0] || '')}</td><td>${r.x.rv ? esc(VLABEL[r.x.rv.v] || r.x.rv.v) : ''}</td></tr>`).join('')}</tbody></table></div></details>` : ''}`;
@@ -4472,7 +4515,7 @@ document.addEventListener('click', async e => {
   const tb = e.target.closest('[data-rtab]'); if (tb) { rvTab = tb.dataset.rtab; render(true); return; }
   const ok = e.target.closest('[data-autook]'); if (ok) { const [id, k] = ok.dataset.autook.split('|'); return saveWork(items => { const x = items[id] = items[id] || {}; x.ok = [...new Set([...(x.ok || []), k])]; return 1; }, () => ''); }
   const rc = e.target.closest('[data-rvclear]');
-  if (rc && !readOnly) { const key = rc.dataset.rvclear, F = flowState(cur().data, promptLang), ids = key === '@shift' ? F.rows.filter(r => r.btShift).map(r => r.id) : [key];
+  if (rc && !readOnly) { const key = rc.dataset.rvclear, F = flowState(cur().data, promptLang), ids = key === '@shift' ? F.rows.filter(r => r.btShift || r.btFar).map(r => r.id) : [key];
     return saveWork(items => { ids.forEach(id => { const x = items[id]; if (!x) return; x.rvHist = [...(x.rvHist || []), { at: nowISO(), by: meName(), why: '줄 밀림 의심으로 지움', rv: x.rv, bt: x.bt }].slice(-10); x.rv = null; x.bt = null; x.gl = null; x.rel = null; x.hv = null; }); return ids.length; }, n => `${n}줄의 검수 결과를 지움. 독립 검수 프롬프트에 그 줄만 다시 들어감.`); }
   const ax = e.target.closest('[data-autoex]'); if (ax) { autoExEditing = ax.dataset.autoex; render(true); const el = document.getElementById('autoex-why'); if (el) el.focus(); return; }
   if (e.target.closest('[data-autoexcancel]')) { autoExEditing = null; render(true); return; }
@@ -4483,7 +4526,7 @@ document.addEventListener('click', async e => {
   const canFix = x => x && x.rv && x.rv.v !== '통과' && x.rv.fix && !(x.rv.plan && openMemosOf(x).some(m => m.kind === 'plan'));
   const fixOne = (x, row) => pushVer(x, row, { to: x.rv.fix, why: x.rv.why || '교차 검수', kind: 'fix', type: errTypeOfRv(x.rv), stage: '교차 검수', byAi: revAiOf(wGame().data, wLang(), 'cross'), change: estChange(x.rv) });
   const fx = e.target.closest('[data-xfix]'); if (fx) { const id = fx.dataset.xfix, FR = flowState(wGame().data, wLang()).rows, RM = new Map(FR.map(r => [r.id, r])), ids = [id, ...rvSibs(FR)(id)]; return saveWork(items => { let n = 0; ids.forEach(i => { const x = items[i]; if (canFix(x)) { fixOne(x, RM.get(i)); n++; } }); return n; }, n => n > 1 ? `같은 어구 ${n}줄에 고친 번역을 씀. 바뀐 줄은 근거와 교차 검수를 다시 받음.` : '고친 번역을 씀. 이 줄은 근거와 교차 검수를 다시 받음.'); }
-  if (e.target.closest('[data-xfixall]')) { const RM = new Map(flowState(wGame().data, wLang()).rows.map(r => [r.id, r])); return saveWork(items => { let n = 0; Object.entries(items).forEach(([id, x]) => { if (canFix(x)) { fixOne(x, RM.get(id)); n++; } }); return n; }, n => `${n}줄을 고친 번역으로 바꿈. 바뀐 줄만 근거와 교차 검수를 다시 받음.`); }
+  if (e.target.closest('[data-xfixall]')) { const RM = new Map(flowState(wGame().data, wLang()).rows.map(r => [r.id, r])); return saveWork(items => { let n = 0; Object.entries(items).forEach(([id, x]) => { const rr = RM.get(id); if (rr && (rr.btShift || rr.btFar)) return; if (canFix(x)) { fixOne(x, rr); n++; } }); return n; }, n => `${n}줄을 고친 번역으로 바꿈. 바뀐 줄만 근거와 교차 검수를 다시 받음.`); }
   const kp = e.target.closest('[data-xkeep]'); if (kp) { xkeepEditing = kp.dataset.xkeep; render(true); const ta = document.getElementById('xkeep-why'); if (ta) ta.focus(); return; }
   if (e.target.closest('[data-xkeepcancel]')) { xkeepEditing = null; render(true); return; }
   const ks = e.target.closest('[data-xkeepsave]'); if (ks) { const id = ks.dataset.xkeepsave, why = (document.getElementById('xkeep-why') || {}).value || '';
