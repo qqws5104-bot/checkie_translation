@@ -1868,7 +1868,7 @@ function mergeRows(rows, groups) {
   const map = {}; let out = rows.slice();
   groups.forEach(g => { const keep = g[0], gone = g.slice(1); if (!gone.length) return;
     const files = [...new Set(g.flatMap(b => splitFiles(b.file)))];
-    const merged = Object.assign({}, keep, { file: files.join(', '), screen: g.map(b => `${b.file}: ${[b.screen, b.elem].filter(Boolean).join(' ')}`.trim()).join(' / '), elem: '', note: [keep.note, `합침: ${g.map(b => b.id).join(', ')}`].filter(Boolean).join(' / ') });
+    const merged = Object.assign({}, keep, { file: files.join(', '), screen: g.map(b => `${b.file}: ${[b.screen, b.elem].filter(Boolean).join(' ')}`.trim()).join(' / '), elem: '', note: [keep.note, `${g.length}번 반복 (${g.map(b => b.id).join('·')} 합침)`].filter(Boolean).join(' / '), rep: g.length });
     gone.forEach(b => { map[b.id] = keep.id; });
     out = out.filter(b => !map[b.id]).map(b => b.id === keep.id ? merged : b); });
   return { rows: out, map };
@@ -1885,6 +1885,36 @@ function mergeIntoLangs(next, map) {
       w.sheet.ids.splice(i, 1); w.sheet.rows.splice(i, 1); delete w.items[gid]; hit++; moved++; });
     if (hit) { w.merged = [...(w.merged || []), { map: Object.fromEntries(goneIds.filter(g => map[g]).map(g => [g, map[g]])), at: nowISO(), by: meName() }].slice(-20); if (stageOf(next, l.key) >= 4) { next.progress = Object.assign({}, next.progress, { [l.key]: 3 }); } } });
   return moved;
+}
+/* 같은 문구 묶음을 합쳐 저장 (자동/버튼 공용). 같은 분류로 모두 승인된 줄끼리면 승인·원문 확정 유지 */
+async function mergeDupGroups(gid, groups, auto) {
+  const g0 = themes.find(x => x.id === gid); if (!g0 || !groups.length) return;
+  const t = g0.data, rows0 = t.source.sheet.rows;
+    const MR = mergeRows(rows0, groups), gone = new Set(Object.keys(MR.map));
+  const next = JSON.parse(JSON.stringify(t));
+  next.source.sheet.rows = MR.rows;
+  next.source.items = Object.fromEntries(Object.entries(next.source.items || {}).filter(([id]) => !gone.has(id)));
+  /* 같은 글자·같은 분류로 모두 승인된 줄끼리 합치면 승인 내용이 그대로이므로 승인과 원문 확정을 유지. 아니면 다시 승인 */
+  const bmap = new Map(baseRows(t).map(b => [b.id, b])); let redo = 0;
+  groups.forEach(gg => { const bs = gg.map(b => bmap.get(b.id)).filter(Boolean), same = bs.length === gg.length && bs.every(b => b.x.ok && b.clsEff === bs[0].clsEff && (b.exRaw || '') === (bs[0].exRaw || ''));
+    if (!same) { redo++; if (next.source.items[gg[0].id]) next.source.items[gg[0].id].ok = null; } });
+  const wasConf = srcConfirmed(t); if (wasConf && redo) next.source.sign = Object.assign({}, next.source.sign, { confirm: null });
+  next.source.merged = [...(next.source.merged || []), ...groups.map(gg => ({ into: gg[0].id, ids: gg.slice(1).map(b => b.id), by: meName(), at: nowISO() }))];
+  const movedN = mergeIntoLangs(next, MR.map);
+  next.updatedAt = nowISO();
+  try { await db.doc('themes/' + gid).set(next); render(true); toast((auto ? '자동 정리: ' : '') + `같은 문구 ${groups.length}건 · ${gone.size + groups.length}줄을 한 줄씩으로 합침${movedN ? ` · 번역 표 ${movedN}줄도 정리` : ''}.${redo ? ` 분류가 달랐거나 승인 전이던 ${redo}건은 다시 승인 필요${wasConf ? ' (원문 확정이 풀림)' : ''}.` : wasConf ? ' 모두 같은 분류로 승인된 줄이라 원문 확정은 그대로. 번역 프롬프트를 다시 복사하면 한 번씩만 들어감.' : ''}`, 7000); } catch (err) { writeErr(err); }
+}
+/* 원문표에 같은 문구가 여러 줄이면 어느 단계에서든 맨 위에 알림 + 한 번에 합치기 */
+const autoMerged = new Set();
+const openDupGroups = t => { const splitOk = t.source.splitOk || {}; return dupGroupsOf(t.source.sheet.rows).filter(g => !splitOk[Merge.hash(normKo(g[0].ko)).slice(0, 10)] && !g.every(b => SPLIT_RE.test(b.note || ''))); };
+function dupBannerHTML(t) {
+  if (!srcHas(t)) return '';
+  const open = openDupGroups(t);
+  if (!open.length) return '';
+  const gid = gidOf(t);
+  if (!readOnly && gid && !autoMerged.has(gid)) { autoMerged.add(gid); setTimeout(() => { const g = themes.find(x => x.id === gid); if (g && srcHas(g.data)) mergeDupGroups(gid, openDupGroups(g.data), true); }, 50); return ''; }
+  const n = open.reduce((a, g) => a + g.length, 0);
+  return `<div class="ratbox"><b>원문표에 같은 문구 ${open.length}건이 ${n}줄로 반복됨</b> <small class="sb">예: ‘${esc(open[0][0].ko.slice(0, 20))}’ ${open[0].length}줄 (${esc(open[0].map(b => b.id).join(', '))}). 이대로면 번역·검수·승인을 줄마다 반복함. 합치면 이미 받은 번역 표도 같이 정리되고, 화면마다 번역이 달라야 하는 문구는 원문 준비에서 ‘나눈 채로 두기’</small>${readOnly ? '' : `<div class="iacts"><button type="button" class="btn primary" data-srcmerge="@all">모두 한 줄씩으로 합치기</button></div>`}</div>`;
 }
 function srcPanelHTML(id, t) {
   const has = srcHas(t), S = srcStats(t), conf = srcConfirmed(t), sg = (t.source && t.source.sign) || {};
@@ -1961,20 +1991,12 @@ document.addEventListener('click', async e => {
   const mg = e.target.closest('[data-srcmerge]'), so = e.target.closest('[data-srcsplitok]');
   if ((mg || so) && !readOnly) {
     const t = cur().data, key = (mg || so).dataset[mg ? 'srcmerge' : 'srcsplitok'];
-    if (srcConfirmed(t)) { toast('원문 확정 상태임. 바꾸려면 먼저 ‘확정 취소’.'); return; }
+    if (srcConfirmed(t) && key !== '@all') { toast('원문 확정 상태임. 바꾸려면 먼저 ‘확정 취소’.'); return; }
     const rows0 = t.source.sheet.rows, splitOk = t.source.splitOk || {};
     const groups = key === '@all' ? dupGroupsOf(rows0).filter(g => !splitOk[Merge.hash(normKo(g[0].ko)).slice(0, 10)] && !g.every(b => SPLIT_RE.test(b.note || ''))) : [rows0.filter(b => Merge.hash(normKo(b.ko)).slice(0, 10) === key)];
     const g = groups[0] || []; if (!groups.length || g.length < 2 && key !== '@all') return;
     if (so) { await saveGameField(`source.splitOk.${key}`, { by: meName(), at: nowISO(), ids: g.map(b => b.id) }); render(true); toast('나눈 채로 둠 (화면마다 번역이 다를 수 있는 문구).'); return; }
-    const MR = mergeRows(rows0, groups), gone = new Set(Object.keys(MR.map));
-    const next = JSON.parse(JSON.stringify(t));
-    next.source.sheet.rows = MR.rows;
-    next.source.items = Object.fromEntries(Object.entries(next.source.items || {}).filter(([id]) => !gone.has(id)));
-    groups.forEach(gg => { if (next.source.items[gg[0].id]) next.source.items[gg[0].id].ok = null; });
-    next.source.merged = [...(next.source.merged || []), ...groups.map(gg => ({ into: gg[0].id, ids: gg.slice(1).map(b => b.id), by: meName(), at: nowISO() }))];
-    const movedN = mergeIntoLangs(next, MR.map);
-    next.updatedAt = nowISO();
-    try { await db.doc('themes/' + cur().id).set(next); render(true); toast(`같은 문구 ${groups.length}건 · ${gone.size + groups.length}줄을 한 줄씩으로 합침${movedN ? ` · 번역 표 ${movedN}줄도 정리` : ''}. 합친 줄은 다시 승인 필요.`, 5000); } catch (err) { writeErr(err); }
+    await mergeDupGroups(cur().id, groups, false);
     return;
   }
   const sg = e.target.closest('[data-srcsign]');
@@ -1992,7 +2014,7 @@ function srcTableBlock(t, lk) {
 - 분류가 틀렸다고 보면 고치지 말고 비고에 ‘분류 이견: (이유)’를 쓴다.
 - 판단할 수 없는 줄은 추측하지 말고 비고를 ‘REVIEW: (판단이 필요한 부분)’으로 시작한다.
 - ‘핵심 의미·단어 해석’은 사람이 승인한 원문 해석이다. ‘관계’(주체 → 대상 : 행동)의 주체와 대상을 바꾸지 않는다. 다의어는 이 해석대로 번역하고, 이견이 있으면 검수 주의사항에 ‘해석 이견: (이유)’를 쓴다.
-${tsv(['ID', '파일', '화면', '요소', '원문', '유형', '핵심 의미·단어 해석', '분류', '번역 시 주의점'], rows.map(b => { const c = langCls(b, lk); return [b.id, b.file, b.screen, b.elem, b.ko.replace(/\n/g, ' / '), b.type, [b.core, b.rel ? `관계: ${b.rel}` : '', b.sense ? `단어: ${b.sense}` : ''].filter(Boolean).join(' / '), c.cls ? CLS[c.cls] : '', [b.care, c.why && c.why !== '-' && c.cls !== 'A' ? `근거: ${c.why}` : '', b.cult ? `문화적 배경: ${b.cult}` : ''].filter(x => x && x !== '-').join(' / ')]; }))}
+${tsv(['ID', '파일', '화면', '요소', '원문', '유형', '핵심 의미·단어 해석', '분류', '번역 시 주의점'], rows.map(b => { const c = langCls(b, lk); return [b.id, b.file, b.screen, b.elem, b.ko.replace(/\n/g, ' / '), b.type, [b.core, b.rel ? `관계: ${b.rel}` : '', b.sense ? `단어: ${b.sense}` : ''].filter(Boolean).join(' / '), c.cls ? CLS[c.cls] : '', [b.rep ? `${b.rep}번 반복되는 문구 (파일: ${b.file}) · 모든 화면 같은 번역` : '', b.care, c.why && c.why !== '-' && c.cls !== 'A' ? `근거: ${c.why}` : '', b.cult ? `문화적 배경: ${b.cult}` : ''].filter(x => x && x !== '-').join(' / ')]; }))}
 ${answersBlock(t, 'translate')}`;
 }
 function answersBlock(t, mode) {
@@ -3014,6 +3036,7 @@ function workHTML({ id, data: t }) {
       <div class="langseg" role="group" aria-label="언어">${LANGS.map(l => `<button type="button" data-lang="${l.key}" aria-pressed="${promptLang === l.key}">${l.label}${Retention.isOff(t, l.key) ? ' <small>불가능</small>' : ''}</button>`).join('')}</div>
     </div>
     ${retentionBannerHTML(id, t)}
+    ${dupBannerHTML(t)}
     ${Retention.isOff(t, lk) ? langOffHTML(id, t, lk) : `${memoBannerHTML(t, lk)}${fileMemoBannerHTML(t, lk)}
     <ol class="checklist">${items}</ol>
     ${filesBoxHTML(id, t, lk, F)}`}
