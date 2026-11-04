@@ -34,7 +34,7 @@ const ADMIN_NAME = (env.ADMIN_NAME || '김예은').trim();
 const DATA_BRANCH = env.DATA_BRANCH || 'data';
 const BASE_BRANCH = env.BASE_BRANCH || 'main';
 const SECRET = env.SESSION_SECRET || crypto.createHash('sha256').update('checkie-session:' + TOKEN + ':' + ADMIN_PW).digest('hex');
-const DATA_COLS = ['themes', 'terms', 'fonts'];
+const DATA_COLS = ['themes', 'terms', 'fonts', 'settings'];
 const PUBLIC = path.join(__dirname, 'public');
 const PORT = env.PORT || 3000;
 const configured = !!(REPO && TOKEN);
@@ -414,6 +414,10 @@ function guardTheme(before, after, conflicts) {
       const h = Merge.trHash(eff(id));
       if (x.hv && x.hv.trh && x.hv.trh !== h) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (번역이 바뀌어 승인 무효)`); }
       if (x.rv && x.rv.trh && x.rv.trh !== h) { x.rv = null; x.bt = null; x.gl = null; x.rel = null; conflicts.push(`work.${lk}.items.${id}.rv (번역이 바뀌어 검수 무효)`); }
+      /* 의미 일치도 합계는 서버가 다시 계산 (화면이 보낸 합계를 믿지 않음) */
+      if (x.rv && x.rv.sc && typeof x.rv.sc === 'object') { const tot = Object.values(x.rv.sc).reduce((a, v) => a + (Number(v) || 0), 0); if (x.rv.total !== tot) x.rv.total = tot; }
+      /* 치명 오류가 있는 줄은 예외 사유 없이 승인 불가 */
+      if (x.hv && x.hv.v === '승인' && x.rv && Array.isArray(x.rv.crit) && x.rv.crit.length && !x.rv.exc) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (치명 오류가 있는 줄은 예외 사유 없이 승인 불가)`); }
     });
     const p0 = Number(((before || {}).progress || {})[lk] || 0), p1 = Number((after.progress || {})[lk] || 0);
     if (p1 >= 4 && p0 < 4 && w.sheet && Array.isArray(w.sheet.ids)) {
@@ -765,6 +769,7 @@ http.createServer(async (req, res) => {
       }
       if (req.method === 'PUT') {
         const memoOnly = me && !me.canEdit && me.canView && m[1] === 'themes';   // 보기 전용: 수정 요청 메모 추가만
+        if (m[1] === 'settings' && !(me && me.isAdmin)) return send(res, 403, { message: '판정 기준은 관리자만 바꿀 수 있음.' });
         if (!me || (!me.canEdit && !memoOnly)) return send(res, 403, { message: me ? '편집 허용을 받지 않았음. 관리자에게 요청 필요.' : '수정하려면 로그인 필요.' });
         let changes; try { changes = await readBody(req, 12e6); } catch { return send(res, 413, { message: '한 번에 저장할 내용이 너무 큼.' }); }
         const set = changes.set || {}, patch = changes.patch || {}, del = changes.del || [];
