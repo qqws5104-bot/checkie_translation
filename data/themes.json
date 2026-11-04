@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-04T06:55:00.846Z",
+    "updatedAt": "2026-11-04T06:55:05.379Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -9195,6 +9195,9 @@
                 "rvSnap": null,
                 "hvSnap": null
               }
+            ],
+            "ok": [
+              "lines"
             ]
           },
           "S113": {
@@ -9312,6 +9315,9 @@
                 "rvSnap": null,
                 "hvSnap": null
               }
+            ],
+            "ok": [
+              "lines"
             ]
           },
           "S118": {
@@ -9429,6 +9435,9 @@
                 "rvSnap": null,
                 "hvSnap": null
               }
+            ],
+            "ok": [
+              "lines"
             ]
           },
           "S123": {
@@ -9468,6 +9477,9 @@
                 "rvSnap": null,
                 "hvSnap": null
               }
+            ],
+            "ok": [
+              "same"
             ]
           },
           "S124": {
@@ -9507,6 +9519,9 @@
                 "rvSnap": null,
                 "hvSnap": null
               }
+            ],
+            "ok": [
+              "same"
             ]
           },
           "S127": {
