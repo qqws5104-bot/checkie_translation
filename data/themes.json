@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-04T06:55:27.815Z",
+    "updatedAt": "2026-11-04T06:55:31.928Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -9684,7 +9684,8 @@
               }
             ],
             "ok": [
-              "lines"
+              "lines",
+              "clsB"
             ]
           },
           "S133": {
@@ -9802,6 +9803,9 @@
                 "rvSnap": null,
                 "hvSnap": null
               }
+            ],
+            "ok": [
+              "lines"
             ]
           },
           "S139": {
