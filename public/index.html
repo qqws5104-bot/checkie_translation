@@ -1574,7 +1574,7 @@ const AI_CHECKS = ['의미', '행동', '조건', '정답', '자연스러움', '�
 const AI_CHECK_Q = { 의미: '원문과 같은 뜻인가', 행동: '플레이어가 해야 하는 행동이 같은가', 조건: '시간·횟수·순서·대상·조건이 그대로인가', 정답: '사실상 정답·게임상 정답과 선택지 관계가 그대로인가 (관계없으면 해당 없음)', 자연스러움: '처음 온 방문객이 자연스럽게 이해하는가', 문화: '한국 문화를 몰라도 이해하는가', '추가 정보': '원문에 없는 힌트·조건·설명이 들어가지 않았는가', 용어: '확정 용어집과 맞고 금지 표현이 없는가' };
 const chkGet = (chk, k) => !chk ? '' : chk[k] || (k === '문화' ? chk['현지화'] || '' : '');
 /* 프로그램 검사 등급: FAIL은 고치거나 예외 사유를 써야 넘어감, REVIEW는 사람이 보고 넘김 */
-const PROG_FAIL = new Set(['empty', 'var', 'term', 'avoid', 'hangul', 'script', 'srcChg', 'relSwap']);
+const PROG_FAIL = new Set(['empty', 'var', 'term', 'avoid', 'hangul', 'script', 'srcChg', 'relSwap', 'btShift']);
 function progSev(k, r) { if (k === 'num') return (r.cls === 'B' || r.cls === 'C' || /숫자\s*(변경|표기)?\s*허용/.test(`${r.clsDir} ${r.note}`)) ? 'REVIEW' : 'FAIL'; return PROG_FAIL.has(k) ? 'FAIL' : 'REVIEW'; }
 const ERR_TYPES = ['의미 오류', '행동 오류', '조건 오류', '정답 오류', '문화적 현지화 오류', '용어 불일치', '문법 오류', '자연스러움 문제', '누락', '추가 정보 생성', '숫자 및 변수 오류', '화면 길이 초과', '기타'];
 const CHK_ERR = { 의미: '의미 오류', 행동: '행동 오류', 조건: '조건 오류', 정답: '정답 오류', 자연스러움: '자연스러움 문제', 문화: '문화적 현지화 오류', 현지화: '문화적 현지화 오류', '추가 정보': '추가 정보 생성', 용어: '용어 불일치' };
@@ -1582,6 +1582,7 @@ const PROG_ERR = { relSwap: '행동 오류', relDiff: '행동 오류', empty: '�
 const errTypeOfRv = rv => { const chk = (rv && rv.chk) || {}; return Object.keys(chk).filter(k => chk[k] === 'FAIL').map(k => CHK_ERR[k]).filter(Boolean)[0] || ''; };
 /* 지금 번역문에 대한 사람 판정만 유효 (승인 뒤 번역이 바뀌면 무효) */
 const trCk = tr => Merge.trHash(tr);
+const rowCk = r => Merge.hash([r.id, normKo(r.ko), Merge.trHash(r.tr)].join('|')).slice(0, 4);
 const hvOf = r => { const hv = r.x.hv; return hv && (!hv.trh || hv.trh === trCk(r.tr)) ? hv : null; };
 const aiNow = rv => !rv ? '' : rv.v === '통과' ? 'PASS' : rv.v === '수정 필요' ? 'FAIL' : 'REVIEW';
 function verdictOf(r, open) {
@@ -1602,6 +1603,7 @@ const HANGUL = /[가-힣]/, KANA = /[぀-ヿ]/, CJK = /[㐀-鿿]/;
 const lines = s => String(s).split(/\n/).length;
 function autoChecks(t, lk, r, byKo) {
   const ko = r.ko, tr = r.tr || '', out = [];
+  if (r.btShift) out.push(['btShift', `역번역이 이 줄 원문보다 ${r.btShift} 원문과 훨씬 비슷함 — 검수 결과가 한 줄 밀려 붙었을 수 있음`]);
   const sdf = (sheetOf(t, lk) || {}).srcDiff; if (sdf && sdf[r.id] !== undefined) out.push(['srcDiff', `번역 엑셀의 한국어 원문이 기준표와 조금 다름 (엑셀: ‘${String(sdf[r.id]).slice(0, 40)}’) — 번역이 이 원문 기준인지 확인`]);
   if (r.x.srcChg) out.push(['srcChg', r.x.srcChg === 'removed' ? '원문 기준표에서 빠진 줄 — 번역을 지울지 확인' : r.x.srcChg === 'added' ? '원문 기준표에 새로 생긴 줄 — 번역 필요' : '원문이 바뀜 — 번역을 다시 확인']);
   if (!tr.trim()) return [...out, ['empty', '번역이 비어 있음 (원문 누락)']];
@@ -1654,11 +1656,20 @@ function autoChecks(t, lk, r, byKo) {
 }
 /* 데이터 → 게임 id (화면에서 고른 게임이 아니라 그 데이터의 게임) */
 const gidOf = t => ((t && (themes.find(g => g.data === t) || themes.find(g => g.data && g.data.name === t.name && g.data.createdAt === t.createdAt))) || cur() || {}).id || '';
+/* 역번역이 자기 원문보다 앞뒤 줄 원문과 훨씬 비슷하면 그 줄의 이름 (검수 결과가 한 줄 밀렸다는 신호) */
+function btNeighbor(RM, id, bt) {
+  if (!bt || !bt.trim()) return '';
+  const ids = [...RM.keys()], i = ids.indexOf(id); if (i < 0) return '';
+  const own = simKo(RM.get(id).ko, bt) || 0;
+  let best = '', bs = 0; [i - 1, i + 1, i - 2, i + 2].forEach(j => { if (j < 0 || j >= ids.length) return; const o = RM.get(ids[j]); if (normKo(o.ko) === normKo(RM.get(id).ko)) return; const v = simKo(o.ko, bt) || 0; if (v > bs) { bs = v; best = o.id; } });
+  return bs >= 0.45 && bs - own >= 0.25 ? best : '';
+}
 const isFileName = f => f && !/^공통$|^-$/.test(f.trim());
 function flowState(t, lk) {
   const rows = sheetRows(t, lk), N = rows.length, it = workOf(t, lk);
   const byKo = new Map(); rows.forEach(r => { const k = normKo(r.ko); byKo.set(k, (byKo.get(k) || []).concat(r)); });
   byKo.TL = termsFor(gidOf(t)).map(v => v.data);
+  const RMf = new Map(rows.map(r => [r.id, r])); rows.forEach(r => { r.btShift = r.x.rv && (r.x.bt || [])[0] ? btNeighbor(RMf, r.id, r.x.bt[0]) : ''; });
   const all = rows.map(r => ({ r, x: r.x, list: autoChecks(t, lk, r, byKo).filter(([k]) => !((r.x.ok) || []).includes(k)) }));
   all.forEach(v => { v.r.open = v.list; v.r.vd = verdictOf(v.r, v.list); });
   const issues = all.filter(v => v.list.length);
@@ -2072,7 +2083,7 @@ function specialTag(t, row) {
 }
 
 /* ================= 번역 프롬프트 = 공통 지시 + AI별 지시 + 게임별 정보 + 언어별 블록 + 이번 작업 ================= */
-const PROMPT_VER = '2026.11-v8';
+const PROMPT_VER = '2026.11-v9';
 const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 
 1. 역할
@@ -2346,8 +2357,8 @@ ${extra ? '5.' : '4.'} \`의견\` — 구분 | 내용
 
 # 검수할 표
 ${(() => { const sc = srcConfirmed(t), basis = r => [specialTag(t, r), sc && r.cls ? `${CLS[r.cls] || r.cls}${r.clsDir && r.clsDir !== '-' ? ` · 주의점: ${r.clsDir}` : ''}` : ''].filter(Boolean).join(' '), bh = sc ? '원문 분석 기준(사람 승인)' : '특수 규칙';
-    return ref ? tsv(['번호', '확인값', '파일', '화면', '요소', '한국어 원문', 'English(확정, 참조)', LHEAD[lk], bh], rows.map(r => [r.id, trCk(r.tr).slice(0, 4), r.file, r.screen, r.elem, r.ko.replace(/\n/g, ' / '), enCell(enFor(ref, r)), r.tr.replace(/\n/g, ' / '), basis(r)]))
-      : tsv(['번호', '확인값', '파일', '화면', '요소', '한국어 원문', LHEAD[lk], bh], rows.map(r => [r.id, trCk(r.tr).slice(0, 4), r.file, r.screen, r.elem, r.ko.replace(/\n/g, ' / '), r.tr.replace(/\n/g, ' / '), basis(r)])); })()}
+    return ref ? tsv(['번호', '확인값', '파일', '화면', '요소', '한국어 원문', 'English(확정, 참조)', LHEAD[lk], bh], rows.map(r => [r.id, rowCk(r), r.file, r.screen, r.elem, r.ko.replace(/\n/g, ' / '), enCell(enFor(ref, r)), r.tr.replace(/\n/g, ' / '), basis(r)]))
+      : tsv(['번호', '확인값', '파일', '화면', '요소', '한국어 원문', LHEAD[lk], bh], rows.map(r => [r.id, rowCk(r), r.file, r.screen, r.elem, r.ko.replace(/\n/g, ' / '), r.tr.replace(/\n/g, ' / '), basis(r)])); })()}
 ${extra ? '\n# 별도 시트\n' + extra : ''}`;
 }
 
@@ -2538,7 +2549,7 @@ async function applyCross(tables) {
   }
   const planMemo = text => ({ id: Math.random().toString(36).slice(2, 8), kind: 'plan', by: '교차 검수 AI', at: nowISO(), text: /^\[\s*기획/.test(text) ? text : '[기획 확인] ' + text, done: false });
   const addMemos = (x, texts) => { x.memos = x.memos || []; texts.forEach(tx => { const m = planMemo(tx); if (!x.memos.some(y => y.kind === 'plan' && y.text === m.text)) x.memos.push(m); }); };
-  let n = 0, fail = 0, rev = 0, already = 0; const bad = [], returned = new Set(), stale = [];
+  let n = 0, fail = 0, rev = 0, already = 0; const bad = [], returned = new Set(), stale = [], shifted = [];
   const RM0 = new Map(sheetRows(cur().data, promptLang).map(r => [r.id, r])), iCk = ix(x => x.startsWith('확인값'));
   const asked = [...RM0.values()].filter(r => !r.x.rv).map(r => r.id);
   await saveWork((items, next) => {
@@ -2551,7 +2562,13 @@ async function applyCross(tables) {
       /* 이미 검수된 줄은 덮어쓰지 않음 (예전 결과 파일을 다시 올려도 안전) */
       if (items[id] && items[id].rv && !asked.includes(id)) { already++; return; }
       /* 확인값이 지금 번역문과 다르면 그 사이 번역이 바뀐 것 → 반영하지 않고 다시 검수 */
-      if (iCk >= 0 && String(r[iCk] || '').trim().toLowerCase() !== trCk((RM0.get(id) || {}).tr).slice(0, 4)) { stale.push(id); return; }
+      const ckv = iCk >= 0 ? String(r[iCk] || '').trim().toLowerCase() : null, row0 = RM0.get(id) || {};
+      if (ckv !== null && ckv !== rowCk(row0) && ckv !== trCk(row0.tr).slice(0, 4)) {
+        /* 다른 줄의 확인값이면 줄이 밀린 것 */
+        const other = [...RM0.values()].find(o => o.id !== id && rowCk(o) === ckv);
+        if (other) shifted.push(`${id}←${other.id}`); else stale.push(id); return; }
+      /* 확인값이 없는 예전 형식: 역번역이 자기 원문보다 이웃 줄 원문과 훨씬 비슷하면 밀린 것으로 보고 반영 안 함 */
+      if (ckv === null && iB >= 0) { const nb = btNeighbor(RM0, id, String(r[iB] || '')); if (nb) { shifted.push(`${id}←${nb}`); return; } }
       /* 형식 검사: 판정이나 검사 칸이 비었거나 허용되지 않은 값이면 시스템 오류 → 이 줄은 검수 미완료로 남겨 다시 받음 */
       const okV = ['PASS', 'FAIL', 'REVIEW'];
       const strictV = v => okV.includes(String(v ?? '').replace(/[*`\s]/g, '').toUpperCase()), strictC = v => strictV(v) || /^(해당없음|N\/?A)$/i.test(String(v ?? '').replace(/[*`\s]/g, ''));
@@ -2577,14 +2594,14 @@ async function applyCross(tables) {
       if (plan.has(id)) { if (x.rv.v === '수정 필요') { fail--; rev++; } else if (x.rv.v === '통과') rev++; x.rv = Object.assign({}, x.rv, { v: '사람 확인 필요', plan: true }); }
     });
     const missing = asked.filter(id => !returned.has(id) && !(items[id] && items[id].rv));
-    if (bad.length || missing.length || stale.length) { const w = next.work[promptLang]; w.sysLog = [...(w.sysLog || []), ...(stale.length ? [{ at: nowISO(), by: meName(), kind: '번역이 바뀐 뒤의 결과', ids: stale.slice(0, 200), n: stale.length }] : []), ...(bad.length ? [{ at: nowISO(), by: meName(), kind: '형식 오류', ids: bad.slice(0, 200), n: bad.length }] : []), ...(missing.length ? [{ at: nowISO(), by: meName(), kind: '응답 누락', ids: missing.slice(0, 200), n: missing.length }] : [])].slice(-30); }
+    if (bad.length || missing.length || stale.length || shifted.length) { const w = next.work[promptLang]; w.sysLog = [...(w.sysLog || []), ...(shifted.length ? [{ at: nowISO(), by: meName(), kind: '줄 밀림', ids: shifted.map(x => x.split('←')[0]).slice(0, 200), n: shifted.length, detail: shifted.slice(0, 50) }] : []), ...(stale.length ? [{ at: nowISO(), by: meName(), kind: '번역이 바뀐 뒤의 결과', ids: stale.slice(0, 200), n: stale.length }] : []), ...(bad.length ? [{ at: nowISO(), by: meName(), kind: '형식 오류', ids: bad.slice(0, 200), n: bad.length }] : []), ...(missing.length ? [{ at: nowISO(), by: meName(), kind: '응답 누락', ids: missing.slice(0, 200), n: missing.length }] : [])].slice(-30); }
     if (enIssues.length && next.work.en && next.work.en.items) enIssues.forEach(m => { const x = next.work.en.items[m.enId] = next.work.en.items[m.enId] || {}; x.memos = x.memos || []; if (!x.memos.some(y => y.text === m.text)) x.memos.push({ id: Math.random().toString(36).slice(2, 8), kind: 'enref', by: '교차 검수 AI', at: nowISO(), text: m.text, done: false }); });
     return n;
   }, () => '');
   render(true);
   const np = plan.size + planSheet.length;
   const miss = asked.filter(id => !returned.has(id)).length;
-  toast(`교차 검수 ${n}줄: FAIL ${fail} · REVIEW ${rev}${stale.length ? ` · 검수 뒤 번역이 바뀐 ${stale.length}줄은 반영 안 함` : ''}${already ? ` · 이미 검수된 ${already}줄은 덮어쓰지 않음` : ''}${bad.length ? ` · 형식 오류 ${bad.length}줄` : ''}${miss ? ` · 응답 누락 ${miss}줄` : ''}${bad.length || miss || stale.length ? '(그 줄만 다시 검수)' : ''}${np ? ` · 기획 확인 ${np}건` : ''}${pzIssues.length ? ` · 퍼즐 문제 ${pzIssues.length}건` : ''}${enIssues.length ? ` · 영어 쪽 의심 ${enIssues.length}건은 영어 화면에 메모로 남김` : ''}${np || pzIssues.length ? ' → 수정 요청 메모로 넘김' : ''}`, 5000);
+  toast(`교차 검수 ${n}줄: FAIL ${fail} · REVIEW ${rev}${shifted.length ? ` · 줄이 밀린 결과 ${shifted.length}줄은 반영 안 함 (예: ${shifted.slice(0, 3).join(', ')})` : ''}${stale.length ? ` · 검수 뒤 번역이 바뀐 ${stale.length}줄은 반영 안 함` : ''}${already ? ` · 이미 검수된 ${already}줄은 덮어쓰지 않음` : ''}${bad.length ? ` · 형식 오류 ${bad.length}줄` : ''}${miss ? ` · 응답 누락 ${miss}줄` : ''}${bad.length || miss || stale.length || shifted.length ? '(그 줄만 다시 검수)' : ''}${np ? ` · 기획 확인 ${np}건` : ''}${pzIssues.length ? ` · 퍼즐 문제 ${pzIssues.length}건` : ''}${enIssues.length ? ` · 영어 쪽 의심 ${enIssues.length}건은 영어 화면에 메모로 남김` : ''}${np || pzIssues.length ? ' → 수정 요청 메모로 넘김' : ''}`, 5000);
 }
 
 /* 교차 검수 AI가 준 추가 표: 수정 우선순위는 펼쳐서, 나머지는 접어서 */
@@ -3067,8 +3084,8 @@ function reviewHTML(id, t, lk, F, reviewer) {
   const cond = stepConds(t, lk, F);
   const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${isDone(t, lk, k, F) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${isDone(t, lk, k, F) ? '✓ ' + esc(whoOf(signOf(t, lk, k))) : c}</small></button>`).join('')}</div>`;
   let inner = '';
-  if (rvTab === 'auto') inner = `<p class="sb">숫자 · 변수 · 특수 기호 · 줄 수 · 한글 남음 · 같은 원문 다른 번역 · 길이 · 용어·금지 표현을 사이트가 바로 확인함. <b>FAIL</b>은 고치거나 예외 사유를 써야 넘어가고, <b>REVIEW</b>는 보고 ‘문제 없음’ 가능.</p>
-    ${F.issues.length ? `<div class="ilist">${F.issues.map(({ r, list }) => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b>${readOnly ? `<div style="white-space:pre-wrap">${esc(r.tr)}</div>` : `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>`}${r.note ? `<small class="sb">비고: ${esc(r.note)}</small>` : ''}${list.map(([k, m]) => { const sev = progSev(k, r), key = r.id + '|' + k; return `<span class="itag ${sev === 'FAIL' ? 'fail' : ''}"><b>${sev}</b> ${esc(m)}${readOnly ? '' : sev === 'FAIL' ? ` <button type="button" class="linkbtn" data-autoex="${esc(key)}">예외 사유 쓰고 통과</button>` : ` <button type="button" class="linkbtn" data-autook="${esc(key)}">문제 없음</button>`}</span>${autoExEditing === key ? `<span class="exrow"><input type="text" id="autoex-why" placeholder="예외 사유 (필수) 예: 원작 표기를 그대로 둠"><button type="button" class="btn primary" data-autoexsave="${esc(key)}">저장</button><button type="button" class="btn ghost" data-autoexcancel>취소</button></span>` : ''}`; }).join('')}${memoBtn(r)}${memoEditorHTML(r)}</div></div>`).join('')}</div>` : '<p class="okmsg">자동 점검에서 걸린 게 없음.</p>'}`;
+  if (rvTab === 'auto') inner = `<p class="sb">${F.issues.filter(v => v.r.btShift).length > 1 && !readOnly ? `<div class="ratbox"><b>검수 결과가 밀려 붙은 것으로 보이는 줄 ${F.issues.filter(v => v.r.btShift).length}개</b><small class="sb">역번역이 자기 원문보다 앞뒤 줄 원문과 훨씬 비슷함. 지우면 그 줄만 독립 검수 프롬프트에 다시 들어감</small><div class="iacts"><button type="button" class="btn primary" data-rvclear="@shift">모두 지우고 다시 검수</button></div></div>` : ''}숫자 · 변수 · 특수 기호 · 줄 수 · 한글 남음 · 같은 원문 다른 번역 · 길이 · 용어·금지 표현을 사이트가 바로 확인함. <b>FAIL</b>은 고치거나 예외 사유를 써야 넘어가고, <b>REVIEW</b>는 보고 ‘문제 없음’ 가능.</p>
+    ${F.issues.length ? `<div class="ilist">${F.issues.map(({ r, list }) => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b>${readOnly ? `<div style="white-space:pre-wrap">${esc(r.tr)}</div>` : `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>`}${r.note ? `<small class="sb">비고: ${esc(r.note)}</small>` : ''}${list.map(([k, m]) => { const sev = progSev(k, r), key = r.id + '|' + k; return `<span class="itag ${sev === 'FAIL' ? 'fail' : ''}"><b>${sev}</b> ${esc(m)}${readOnly ? '' : k === 'btShift' ? ` <button type="button" class="linkbtn" data-rvclear="${esc(r.id)}">검수 결과 지우고 다시 검수</button> <button type="button" class="linkbtn" data-autoex="${esc(key)}">예외 사유 쓰고 통과</button>` : sev === 'FAIL' ? ` <button type="button" class="linkbtn" data-autoex="${esc(key)}">예외 사유 쓰고 통과</button>` : ` <button type="button" class="linkbtn" data-autook="${esc(key)}">문제 없음</button>`}</span>${autoExEditing === key ? `<span class="exrow"><input type="text" id="autoex-why" placeholder="예외 사유 (필수) 예: 원작 표기를 그대로 둠"><button type="button" class="btn primary" data-autoexsave="${esc(key)}">저장</button><button type="button" class="btn ghost" data-autoexcancel>취소</button></span>` : ''}`; }).join('')}${memoBtn(r)}${memoEditorHTML(r)}</div></div>`).join('')}</div>` : '<p class="okmsg">자동 점검에서 걸린 게 없음.</p>'}`;
   if (rvTab === 'files') {
     const stored = gameFiles[id] || [];
     const common = F.rows.filter(r => !splitFiles(r.file).some(isFileName));
@@ -4428,6 +4445,9 @@ const chkRowHTML = chk => chk ? `<div class="chkrow">${AI_CHECKS.filter(k => chk
 document.addEventListener('click', async e => {
   const tb = e.target.closest('[data-rtab]'); if (tb) { rvTab = tb.dataset.rtab; render(true); return; }
   const ok = e.target.closest('[data-autook]'); if (ok) { const [id, k] = ok.dataset.autook.split('|'); return saveWork(items => { const x = items[id] = items[id] || {}; x.ok = [...new Set([...(x.ok || []), k])]; return 1; }, () => ''); }
+  const rc = e.target.closest('[data-rvclear]');
+  if (rc && !readOnly) { const key = rc.dataset.rvclear, F = flowState(cur().data, promptLang), ids = key === '@shift' ? F.rows.filter(r => r.btShift).map(r => r.id) : [key];
+    return saveWork(items => { ids.forEach(id => { const x = items[id]; if (!x) return; x.rvHist = [...(x.rvHist || []), { at: nowISO(), by: meName(), why: '줄 밀림 의심으로 지움', rv: x.rv, bt: x.bt }].slice(-10); x.rv = null; x.bt = null; x.gl = null; x.rel = null; x.hv = null; }); return ids.length; }, n => `${n}줄의 검수 결과를 지움. 독립 검수 프롬프트에 그 줄만 다시 들어감.`); }
   const ax = e.target.closest('[data-autoex]'); if (ax) { autoExEditing = ax.dataset.autoex; render(true); const el = document.getElementById('autoex-why'); if (el) el.focus(); return; }
   if (e.target.closest('[data-autoexcancel]')) { autoExEditing = null; render(true); return; }
   const as = e.target.closest('[data-autoexsave]'); if (as) { const [id, k] = as.dataset.autoexsave.split('|'), why = ((document.getElementById('autoex-why') || {}).value || '').trim();
