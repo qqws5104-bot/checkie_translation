@@ -7410,7 +7410,7 @@
     }
   },
   "fix-pix": {
-    "concept": "망가진 파일 복구",
+    "concept": "망가진 파일 복구하는 프로그램",
     "honorific": "반말. 무엇을 해라. 짤고 간단하게.\n~해라체",
     "lang": {
       "en": "시스템 메시지 톤, 마침표로 끝냄 (예: File damaged. Select the corrupted area.)",
@@ -7439,7 +7439,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-04T06:33:46.555Z",
+    "updatedAt": "2026-11-04T06:35:08.063Z",
     "progressBy": {
       "en": {},
       "ja": {},
