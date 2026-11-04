@@ -7439,7 +7439,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-04T06:33:40.879Z",
+    "updatedAt": "2026-11-04T06:33:46.555Z",
     "progressBy": {
       "en": {},
       "ja": {},
@@ -17728,6 +17728,9 @@
       "ja": {
         "cross": "Gemini"
       }
+    },
+    "ai": {
+      "ja": "Gemini"
     }
   },
   "game-ynr8w": {
