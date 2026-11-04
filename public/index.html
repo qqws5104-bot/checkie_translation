@@ -1625,6 +1625,8 @@ function autoChecks(t, lk, r, byKo) {
     });
   }
   if (r.b && r.b.rel && r.x.rel) { const rc = relCompare(r.b.rel, r.x.rel); if (rc && rc.v === 'FAIL') out.push(['relSwap', `행동 관계 ${rc.msg}`]); else if (rc && rc.v === 'REVIEW') out.push(['relDiff', `행동 관계 확인 — ${rc.msg}`]); }
+  const mf = (r.x.mergedFrom || []).filter(m => normKo(m.tr) && normKo(m.tr) !== normKo(tr));
+  if (mf.length) out.push(['mergeDiff', `같은 문구로 합친 줄의 번역이 달랐음: ${mf.map(m => `${m.id} ‘${String(m.tr).slice(0, 30)}’`).join(' / ')} — 지금 번역으로 통일해도 되는지 확인`]);
   if (r.ratStale) out.push(['ratStale', '번역이 바뀌었는데 이 버전의 한국어 의미·번역 이유가 없음 — ‘근거 다시 받기’ 또는 상세에서 변경 설명']);
   if (r.rat) {
     const R = r.rat;
@@ -1831,6 +1833,10 @@ async function uploadSource(file) {
   let stored = '';
   if (/\.xlsx$/i.test(file.name)) { try { busy('원본 엑셀 보관 중…'); stored = await storeRawFile(c.id, file, `SRC_${fileIdOf(file.name)}.xlsx`); } catch (e) { toast(e.message, 5000); } }
   done();
+  /* 같은 문구는 한 줄로 자동 합침. ‘분리 사유’를 쓴 줄만 따로 둠 */
+  const autoG = dupGroupsOf(rows.filter(r => !SPLIT_RE.test(r.note || ''))), MR = mergeRows(rows, autoG);
+  rows.length = 0; MR.rows.forEach(r => rows.push(r));
+  const autoN = autoG.length, autoGone = Object.keys(MR.map).length;
   /* 다시 올리면: 같은 ID·같은 원문·같은 분류인 줄은 승인을 이어받음 */
   const tf = (themes.find(g => g.id === c.id) || c).data;
   const prev = tf.source || {}, prevRows = new Map(((prev.sheet || {}).rows || []).map(r => [r.id, r])), prevItems = prev.items || {}, items = {};
@@ -1843,15 +1849,42 @@ async function uploadSource(file) {
   const newById = new Map(rows.map(r => [r.id, r])); let affected = 0;
   LANGS.forEach(l => { const w = (next.work || {})[l.key]; if (!w || !w.sheet || !w.sheet.ids) return; w.items = w.items || {};
     let hit = 0;
-    w.sheet.ids.forEach(id => { const o = prevRows.get(id), nr = newById.get(id); if (o && nr && normKo(o.ko) === normKo(nr.ko)) return; const x = w.items[id] = w.items[id] || {}; x.srcChg = nr ? 'changed' : 'removed'; x.rv = null; x.hv = null; affected++; hit++; });
+    w.sheet.ids.forEach(id => { if (MR.map[id]) return; const o = prevRows.get(id), nr = newById.get(id); if (o && nr && normKo(o.ko) === normKo(nr.ko)) return; const x = w.items[id] = w.items[id] || {}; x.srcChg = nr ? 'changed' : 'removed'; x.rv = null; x.hv = null; affected++; hit++; });
     /* 원문표에 새로 생긴 줄 → 이 언어 번역 표에도 빈 줄로 넣어 ‘번역 누락’으로 잡히게 */
     const have = new Set(w.sheet.ids), C = w.sheet.cols || {};
     rows.filter(r => !have.has(r.id)).forEach(r => { const row = new Array((w.sheet.head || []).length || 8).fill(''); row[0] = r.id; if (C.file >= 0) row[C.file] = r.file; if (C.screen >= 0) row[C.screen] = r.screen; if (C.elem >= 0) row[C.elem] = r.elem; row[C.ko] = r.ko; w.sheet.rows.push(row); w.sheet.ids.push(r.id); (w.items[r.id] = w.items[r.id] || {}).srcChg = 'added'; affected++; hit++; });
     if (hit && stageOf(next, l.key) >= 4) { next.progress = Object.assign({}, next.progress, { [l.key]: 3 }); const pb = Object.assign({}, ((next.progressBy || {})[l.key]) || {}); delete pb[4]; delete pb[5]; next.progressBy = Object.assign({}, next.progressBy, { [l.key]: pb }); } });
+  const movedN = mergeIntoLangs(next, MR.map);
+  if (autoN) next.source.merged = [...(next.source.merged || []), ...autoG.map(g => ({ into: g[0].id, ids: g.slice(1).map(b => b.id), by: '자동(같은 문구)', at: nowISO() }))];
   next.updatedAt = nowISO();
   try { await db.doc('themes/' + c.id).set(next); } catch (err) { writeErr(err); return; }
   render(true);
-  toast(`원문 ${rows.length}줄${answers.length ? ` · 정답 기준 ${answers.length}문제` : ''}을 올림.${dupIds.length ? ` 중복 ID ${dupIds.length}개(${dupIds.slice(0, 5).join(', ')}) — 고쳐서 다시 올려야 확정 가능.` : ''}${kept ? ` 그대로인 ${kept}줄은 승인을 이어받음.` : ''}${changed ? ` 원문이 바뀐 번역 ${affected}줄은 다시 확인 필요.` : ''}`, 7000);
+  toast(`${autoN ? `같은 문구 ${autoN}건(${autoGone + autoN}줄)을 한 줄씩으로 합침${movedN ? ` · 번역 표 ${movedN}줄도 정리` : ''}. ` : ''}원문 ${rows.length}줄${answers.length ? ` · 정답 기준 ${answers.length}문제` : ''}을 올림.${dupIds.length ? ` 중복 ID ${dupIds.length}개(${dupIds.slice(0, 5).join(', ')}) — 고쳐서 다시 올려야 확정 가능.` : ''}${kept ? ` 그대로인 ${kept}줄은 승인을 이어받음.` : ''}${changed ? ` 원문이 바뀐 번역 ${affected}줄은 다시 확인 필요.` : ''}`, 7000);
+}
+/* 같은 문구 합치기: 원문 줄을 한 줄로 + 이미 번역된 언어도 그 줄로 정리 (메모는 남은 줄로 옮김, 기록은 남김) */
+const SPLIT_RE = /분리\s*사유/;
+function dupGroupsOf(rows) { return Object.values(rows.reduce((m, b) => { const k = normKo(b.ko); (m[k] = m[k] || []).push(b); return m; }, {})).filter(g => g.length > 1); }
+function mergeRows(rows, groups) {
+  const map = {}; let out = rows.slice();
+  groups.forEach(g => { const keep = g[0], gone = g.slice(1); if (!gone.length) return;
+    const files = [...new Set(g.flatMap(b => splitFiles(b.file)))];
+    const merged = Object.assign({}, keep, { file: files.join(', '), screen: g.map(b => `${b.file}: ${[b.screen, b.elem].filter(Boolean).join(' ')}`.trim()).join(' / '), elem: '', note: [keep.note, `합침: ${g.map(b => b.id).join(', ')}`].filter(Boolean).join(' / ') });
+    gone.forEach(b => { map[b.id] = keep.id; });
+    out = out.filter(b => !map[b.id]).map(b => b.id === keep.id ? merged : b); });
+  return { rows: out, map };
+}
+function mergeIntoLangs(next, map) {
+  const goneIds = Object.keys(map); if (!goneIds.length) return 0; let moved = 0;
+  /* 정답 기준의 관련 원문 ID도 남은 줄로 */
+  ((next.source || {}).answers || []).forEach(a => { a.refs = [...new Set(String(a.refs || '').split(/[,，、\s/]+/).filter(Boolean).map(x => map[x.toUpperCase()] || x))].join(', '); });
+  LANGS.forEach(l => { const w = (next.work || {})[l.key]; if (!w || !w.sheet || !Array.isArray(w.sheet.ids)) return; w.items = w.items || {}; let hit = 0;
+    goneIds.forEach(gid => { const i = w.sheet.ids.indexOf(gid); if (i < 0) return; const keepId = map[gid], gx = w.items[gid] || {}, tr = gx.tr != null ? gx.tr : String((w.sheet.rows[i] || [])[w.sheet.cols.tr] ?? '');
+      const kx = w.items[keepId] = w.items[keepId] || {};
+      kx.mergedFrom = [...(kx.mergedFrom || []), { id: gid, tr, at: nowISO(), by: meName() }];
+      if ((gx.memos || []).length) kx.memos = [...(kx.memos || []), ...gx.memos.map(m => Object.assign({}, m, { from: `${gid}에서 옮김` }))];
+      w.sheet.ids.splice(i, 1); w.sheet.rows.splice(i, 1); delete w.items[gid]; hit++; moved++; });
+    if (hit) { w.merged = [...(w.merged || []), { map: Object.fromEntries(goneIds.filter(g => map[g]).map(g => [g, map[g]])), at: nowISO(), by: meName() }].slice(-20); if (stageOf(next, l.key) >= 4) { next.progress = Object.assign({}, next.progress, { [l.key]: 3 }); } } });
+  return moved;
 }
 function srcPanelHTML(id, t) {
   const has = srcHas(t), S = srcStats(t), conf = srcConfirmed(t), sg = (t.source && t.source.sign) || {};
@@ -1886,8 +1919,9 @@ function srcPanelHTML(id, t) {
     ${srcUploadHTML(t)}
     ${has ? `${clsBarHTML(brows.map(b => ({ cls: b.clsEff })))}
       <p class="sb">원문 유형: ${Object.entries(typeCnt).map(([k, v]) => `${esc(k)} ${v}`).join(' · ')} · 승인 ${S.ok}/${S.n}${sameKo ? ` · 같은 문구 ${sameKo}건 (분리 확인 ${sameKo - dupOpen.length})` : ''}</p>
-      ${dupOpen.length ? `<div class="ratbox"><b>합칠 후보 ${dupOpen.length}건 · 같은 문구가 여러 줄</b> <small class="sb">같은 문구는 원문표에 한 줄만 두고 파일 칸에 파일을 모두 적음. 화면마다 번역이 달라야 하면 나눈 채로 두기 (사유를 원문 분석 엑셀의 비고에 ‘분리 사유: …’로 쓰거나 여기서 확인)</small>
-        ${dupOpen.map(g => `<div class="irow"><code>${g.rows.map(b => esc(b.id)).join('<br>')}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(g.rows[0].ko)}</b><small>${g.rows.map(b => `${esc(b.id)}: ${esc([b.file, b.screen, b.elem].filter(Boolean).join(' · '))}${b.note ? ` (${esc(b.note)})` : ''}`).join('<br>')}</small>${readOnly || conf ? '' : `<div class="iacts"><button type="button" class="btn primary" data-srcmerge="${esc(g.key)}">한 줄로 합치기 (${esc(g.rows[0].id)}로)</button><button type="button" class="btn" data-srcsplitok="${esc(g.key)}">나눈 채로 두기</button></div>`}</div></div>`).join('')}</div>` : ''}
+      ${dupOpen.length ? `<div class="ratbox"><b>합칠 후보 ${dupOpen.length}건 · 같은 문구가 여러 줄</b>${readOnly || conf ? '' : ` <button type="button" class="btn primary" data-srcmerge="@all">모두 한 줄씩으로 합치기 (${dupOpen.length}건)</button>`} <small class="sb">같은 문구는 원문표에 한 줄만 두고 파일 칸에 파일을 모두 적음. 화면마다 번역이 달라야 하면 나눈 채로 두기 (사유를 원문 분석 엑셀의 비고에 ‘분리 사유: …’로 쓰거나 여기서 확인)</small>
+        ${dupOpen.map(g => `<div class="irow"><code>${g.rows.map(b => esc(b.id)).join('<br>')}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(g.rows[0].ko)}</b><small>${g.rows.map(b => `${esc(b.id)}: ${esc([b.file, b.screen, b.elem].filter(Boolean).join(' · '))}${b.note ? ` (${esc(b.note)})` : ''}`).join('<br>')}</small>${readOnly || conf ? '' : `<div class="iacts"><button type="button" class="btn" data-srcmerge="${esc(g.key)}">한 줄로 합치기 (${esc(g.rows[0].id)}로)</button><button type="button" class="btn" data-srcsplitok="${esc(g.key)}">나눈 채로 두기</button></div>`}</div></div>`).join('')}</div>` : ''}
+      ${conf && dupOpen.length ? `<p class="sb badtxt">같은 문구 ${dupOpen.length}건이 여러 줄로 확정돼 있음 — 합치려면 ‘확정 취소’ 뒤 ‘모두 한 줄씩으로 합치기’. 이미 번역된 언어도 그 줄로 정리됨</p>` : ''}
       ${dupIds.length ? `<p class="sb badtxt">중복 ID ${dupIds.length}개: ${esc(dupIds.join(', '))} — 원문 분석 엑셀에서 ID를 고쳐 다시 올려야 확정 가능 (FAIL)</p>` : ''}
       ${aTodo && !readOnly ? `<div class="iacts"><button type="button" class="btn" data-srcok="@A">A(직접 번역) ${aTodo}줄 한 번에 승인</button><small class="sb">B·C와 언어별 예외가 있는 줄은 하나씩 확인</small></div>` : ''}
       ${need.length ? `<h4 class="mh">사람이 볼 줄 ${need.length}개 <small>B·C·REVIEW·미분류·언어별 예외·다의어 문맥 확인 필요. 분류나 해석이 틀렸으면 고르고 승인</small></h4><div class="ilist">${need.map(card).join('')}</div>` : ''}
@@ -1928,21 +1962,19 @@ document.addEventListener('click', async e => {
   if ((mg || so) && !readOnly) {
     const t = cur().data, key = (mg || so).dataset[mg ? 'srcmerge' : 'srcsplitok'];
     if (srcConfirmed(t)) { toast('원문 확정 상태임. 바꾸려면 먼저 ‘확정 취소’.'); return; }
-    const rows0 = t.source.sheet.rows, g = rows0.filter(b => Merge.hash(normKo(b.ko)).slice(0, 10) === key); if (g.length < 2) return;
+    const rows0 = t.source.sheet.rows, splitOk = t.source.splitOk || {};
+    const groups = key === '@all' ? dupGroupsOf(rows0).filter(g => !splitOk[Merge.hash(normKo(g[0].ko)).slice(0, 10)] && !g.every(b => SPLIT_RE.test(b.note || ''))) : [rows0.filter(b => Merge.hash(normKo(b.ko)).slice(0, 10) === key)];
+    const g = groups[0] || []; if (!groups.length || g.length < 2 && key !== '@all') return;
     if (so) { await saveGameField(`source.splitOk.${key}`, { by: meName(), at: nowISO(), ids: g.map(b => b.id) }); render(true); toast('나눈 채로 둠 (화면마다 번역이 다를 수 있는 문구).'); return; }
-    const files = [...new Set(g.flatMap(b => splitFiles(b.file)))], keep = g[0], gone = new Set(g.slice(1).map(b => b.id));
-    const merged = Object.assign({}, keep, { file: files.join(', '), screen: g.map(b => `${b.file}: ${[b.screen, b.elem].filter(Boolean).join(' ')}`.trim()).join(' / '), elem: '', note: [keep.note, `합침: ${g.map(b => b.id).join(', ')}`].filter(Boolean).join(' / ') });
+    const MR = mergeRows(rows0, groups), gone = new Set(Object.keys(MR.map));
     const next = JSON.parse(JSON.stringify(t));
-    next.source.sheet.rows = rows0.filter(b => !gone.has(b.id)).map(b => b.id === keep.id ? merged : b);
+    next.source.sheet.rows = MR.rows;
     next.source.items = Object.fromEntries(Object.entries(next.source.items || {}).filter(([id]) => !gone.has(id)));
-    if (next.source.items[keep.id]) next.source.items[keep.id].ok = null;
-    next.source.merged = [...(next.source.merged || []), { into: keep.id, ids: [...gone], by: meName(), at: nowISO() }];
-    /* 이미 번역 표가 있는 언어: 합쳐져 없어진 줄은 ‘원문 기준표에서 빠진 줄’로 표시 */
-    LANGS.forEach(l => { const w = (next.work || {})[l.key]; if (!w || !w.sheet || !Array.isArray(w.sheet.ids)) return; w.items = w.items || {}; let hit = 0;
-      w.sheet.ids.filter(id => gone.has(id)).forEach(id => { const x = w.items[id] = w.items[id] || {}; x.srcChg = 'removed'; x.rv = null; x.hv = null; hit++; });
-      if (hit && stageOf(next, l.key) >= 4) { next.progress = Object.assign({}, next.progress, { [l.key]: 3 }); } });
+    groups.forEach(gg => { if (next.source.items[gg[0].id]) next.source.items[gg[0].id].ok = null; });
+    next.source.merged = [...(next.source.merged || []), ...groups.map(gg => ({ into: gg[0].id, ids: gg.slice(1).map(b => b.id), by: meName(), at: nowISO() }))];
+    const movedN = mergeIntoLangs(next, MR.map);
     next.updatedAt = nowISO();
-    try { await db.doc('themes/' + cur().id).set(next); render(true); toast(`${g.length}줄을 ${keep.id} 한 줄로 합침. 파일: ${files.join(', ')}. 다시 승인 필요.`, 5000); } catch (err) { writeErr(err); }
+    try { await db.doc('themes/' + cur().id).set(next); render(true); toast(`같은 문구 ${groups.length}건 · ${gone.size + groups.length}줄을 한 줄씩으로 합침${movedN ? ` · 번역 표 ${movedN}줄도 정리` : ''}. 합친 줄은 다시 승인 필요.`, 5000); } catch (err) { writeErr(err); }
     return;
   }
   const sg = e.target.closest('[data-srcsign]');
