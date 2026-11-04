@@ -396,6 +396,36 @@ function memoList(doc) {
   return out;
 }
 /* 새로 생긴 메모의 작성자·시간은 서버가 적는다 (이름을 바꿔 적을 수 없게) */
+/* 승인·검수·확정 규칙 중 서버에서도 지키는 것 (브라우저만 믿지 않음)
+   1) 사람 승인·AI 검수는 그때의 번역문 지문(trh)과 지금 번역문이 같을 때만 유효 → 다르면 지움
+   2) 원문 기준 언어는 모든 줄이 지금 번역문 기준으로 사람 승인돼야 확정(진행 4 이상)으로 올릴 수 있음 */
+function sheetTr(sh, id) {
+  if (!sh || !Array.isArray(sh.rows) || !sh.cols) return '';
+  const i = Array.isArray(sh.ids) ? sh.ids.indexOf(id) : (/^R\d+$/.test(id) ? Number(id.slice(1)) - 1 : -1);
+  const row = i >= 0 ? sh.rows[i] : null; return row ? String(row[sh.cols.tr] == null ? '' : row[sh.cols.tr]) : '';
+}
+function guardTheme(before, after, conflicts) {
+  if (!after || !after.work) return;
+  Object.entries(after.work).forEach(([lk, w]) => {
+    if (!w || !w.items) return;
+    const eff = id => { const x = w.items[id]; return x && x.tr != null ? x.tr : sheetTr(w.sheet, id); };
+    Object.entries(w.items).forEach(([id, x]) => {
+      if (!x || id.startsWith('@')) return;
+      const h = Merge.trHash(eff(id));
+      if (x.hv && x.hv.trh && x.hv.trh !== h) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (번역이 바뀌어 승인 무효)`); }
+      if (x.rv && x.rv.trh && x.rv.trh !== h) { x.rv = null; x.bt = null; x.gl = null; x.rel = null; conflicts.push(`work.${lk}.items.${id}.rv (번역이 바뀌어 검수 무효)`); }
+    });
+    const p0 = Number(((before || {}).progress || {})[lk] || 0), p1 = Number((after.progress || {})[lk] || 0);
+    if (p1 >= 4 && p0 < 4 && w.sheet && Array.isArray(w.sheet.ids)) {
+      const todo = w.sheet.ids.filter(id => { const x = w.items[id]; return !(x && x.hv && x.hv.v === '승인' && x.hv.trh === Merge.trHash(eff(id))); });
+      if (todo.length) {
+        after.progress = Object.assign({}, after.progress, { [lk]: p0 });
+        if (after.progressBy && after.progressBy[lk]) { const pb = Object.assign({}, after.progressBy[lk]); delete pb[4]; delete pb[5]; after.progressBy = Object.assign({}, after.progressBy, { [lk]: pb }); }
+        conflicts.push(`progress.${lk} (사람 승인 안 된 줄 ${todo.length}개 — 확정 불가)`);
+      }
+    }
+  });
+}
 function stampMemos(before, after, me) {
   const mkey = (lk, k, mm) => lk + '/' + (k === '@file' ? 'f' : 'i') + '/' + (mm.id || k + JSON.stringify(mm));   // 메모 id 기준 (엑셀을 다시 올려 줄 번호가 바뀌어도 같은 메모)
   const old = new Set(memoList(before).map(([lk, k, mm]) => mkey(lk, k, mm)));
@@ -744,7 +774,7 @@ http.createServer(async (req, res) => {
         const c = await writeCol(m[1], data => {
           denied = ''; conflicts = {};
           if (!ids.length) return false;
-          Object.entries(set).forEach(([id, doc]) => { if (m[1] === 'themes') stampMemos(data[id], doc, me); data[id] = doc; });
+          Object.entries(set).forEach(([id, doc]) => { if (m[1] === 'themes') { stampMemos(data[id], doc, me); const cf = []; guardTheme(data[id], doc, cf); if (cf.length) conflicts[id] = cf; } data[id] = doc; });
           /* 바뀐 부분만 최신본에 합친다 → 동시에 고쳐도 남의 변경을 지우지 않음. 같은 칸이면 먼저 저장된 값을 지키고 알린다 */
           Object.entries(patch).forEach(([id, d]) => {
             if (!data[id]) return;   // 그사이 삭제된 항목
@@ -753,6 +783,7 @@ http.createServer(async (req, res) => {
             if (cf.length) conflicts[id] = cf;
             if (m[1] !== 'themes') return;
             stampMemos(before, data[id], me);
+            guardTheme(before, data[id], cf); if (cf.length) conflicts[id] = cf;
             if (memoOnly && !memoAddOnly(before, data[id])) denied = '보기 전용 계정은 수정 요청 메모만 남길 수 있음.';
             else if (!memoOnly) { const lost = memoLost(before, data[id]); if (lost) denied = lost; }
           });

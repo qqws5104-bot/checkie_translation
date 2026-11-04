@@ -59,6 +59,9 @@
 
   /* conflicts가 배열이면 충돌을 검사한다(서버). 충돌한 칸은 서버 값을 그대로 둔다. */
   const IGNORE = /(^|\.)updatedAt$/;
+  /* 줄(번역 항목)은 한 덩어리로: 한 칸이라도 충돌하면 그 줄의 내 변경 전체를 반영하지 않음
+     (번역문은 충돌로 안 바뀌었는데 수정 이력만 붙는 식의 반쪽 반영을 막음) */
+  const ATOMIC = /^work\.[a-z]+\.items\.[^.]+$/;
   function clash(cur, op, path, conflicts) {
     if (!conflicts || !op || op.$h === undefined || IGNORE.test(path)) return false;
     if (hash(cur) === op.$h) return false;
@@ -74,6 +77,7 @@
       Object.keys(d.$o).forEach(k => {
         const op = d.$o[k], p = path ? path + '.' + k : k;
         if (op && op.$unset) { if (!clash(out[k], op, p, conflicts)) delete out[k]; }
+        else if (conflicts && ATOMIC.test(p)) { const n0 = conflicts.length, tmp = apply(clone(out[k]), op, conflicts, p); if (conflicts.length === n0) out[k] = tmp; }
         else out[k] = apply(out[k], op, conflicts, p);
       });
       return out;
@@ -97,6 +101,8 @@
     return cur;
   }
 
-  const api = { diff, apply, eq, clone, hash };
+  /* 번역문 지문: 승인·검수가 ‘어느 번역문에 대한 것인지’ 묶는 데 씀 (공백 차이는 무시) */
+  const trHash = s => hash(String(s == null ? '' : s).normalize('NFKC').replace(/\s+/g, ''));
+  const api = { diff, apply, eq, clone, hash, trHash };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.Merge = api;
 })(typeof self !== 'undefined' ? self : this);
