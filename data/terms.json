@@ -500,7 +500,7 @@
     "games": [
       "game-ynr8w"
     ],
-    "intent": "",
+    "intent": "ui 지시",
     "tr": {
       "en": {
         "text": "",
@@ -522,6 +522,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-05T07:27:04.832Z"
+    "updatedAt": "2026-11-05T07:27:14.800Z"
   }
 }
