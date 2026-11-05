@@ -515,13 +515,13 @@
         "avoidWhy": ""
       },
       "zh": {
-        "text": "",
-        "status": "미정",
+        "text": "按！",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-05T07:27:21.113Z"
+    "updatedAt": "2026-11-05T07:27:28.557Z"
   }
 }
