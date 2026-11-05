@@ -504,13 +504,13 @@
     "tr": {
       "en": {
         "text": "Press!",
-        "status": "후보",
+        "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       },
       "ja": {
-        "text": "",
-        "status": "미정",
+        "text": "押して！",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -522,6 +522,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-05T07:27:28.557Z"
+    "updatedAt": "2026-11-05T07:27:33.688Z"
   }
 }
