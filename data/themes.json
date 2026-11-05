@@ -23611,7 +23611,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-05T01:59:15.205Z",
+    "updatedAt": "2026-11-05T01:59:26.913Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -44851,7 +44851,7 @@
     },
     "revAi": {
       "ja": {
-        "cross": "Claude"
+        "cross": "ChatGPT"
       }
     }
   },
