@@ -417,6 +417,7 @@ function guardTheme(before, after, conflicts) {
       /* 의미 일치도 합계는 서버가 다시 계산 (화면이 보낸 합계를 믿지 않음) */
       if (x.rv && x.rv.sc && typeof x.rv.sc === 'object') { const tot = Object.values(x.rv.sc).reduce((a, v) => a + (Number(v) || 0), 0); if (x.rv.total !== tot) x.rv.total = tot; }
       /* 치명 오류가 있는 줄은 예외 사유 없이 승인 불가 */
+      if (x.hv && x.hv.v === '승인' && x.rv && x.rv.hold && !x.rv.exc) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (HOLD: 원문 확인 전에는 승인 불가)`); }
       if (x.hv && x.hv.v === '승인' && x.rv && Array.isArray(x.rv.crit) && x.rv.crit.length && !x.rv.exc) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (치명 오류가 있는 줄은 예외 사유 없이 승인 불가)`); }
     });
     const p0 = Number(((before || {}).progress || {})[lk] || 0), p1 = Number((after.progress || {})[lk] || 0);
