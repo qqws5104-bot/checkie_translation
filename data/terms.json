@@ -492,5 +492,36 @@
     },
     "memo": "",
     "updatedAt": "2026-11-02T07:03:16.736Z"
+  },
+  "item-us06p": {
+    "ko": "눌러~",
+    "type": "지시 동사",
+    "common": false,
+    "games": [
+      "game-ynr8w"
+    ],
+    "intent": "",
+    "tr": {
+      "en": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      },
+      "ja": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      },
+      "zh": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      }
+    },
+    "memo": "",
+    "updatedAt": "2026-11-05T07:27:04.832Z"
   }
 }
