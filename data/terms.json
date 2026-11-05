@@ -503,8 +503,8 @@
     "intent": "ui 지시",
     "tr": {
       "en": {
-        "text": "",
-        "status": "미정",
+        "text": "Press!",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -522,6 +522,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-05T07:27:14.800Z"
+    "updatedAt": "2026-11-05T07:27:21.113Z"
   }
 }
