@@ -843,6 +843,7 @@ a.btn { text-decoration: none; display: inline-flex; align-items: center; }
 .altc{border:1px solid var(--line);border-radius:10px;padding:10px;display:grid;gap:4px}
 .altc.on{border-color:var(--ok);box-shadow:0 0 0 1px var(--ok) inset}.altc.rec .alth b{color:var(--ok)}
 .altko{font-weight:600;font-size:15px;white-space:pre-wrap}
+.redobox{border:1px solid var(--warn);border-radius:10px;padding:8px 12px;margin:6px 0}
 .blindbox{border:1px dashed var(--line);border-radius:10px;padding:10px 12px;margin:0 0 12px}
 .chkl{display:inline-flex;gap:4px;align-items:center;font-size:13px}
 .chkl input{width:auto;height:auto;min-height:0;margin:0}
@@ -1609,7 +1610,7 @@ const AI_CHECK_Q = { 의미: '원문과 같은 뜻인가', 행동: '플레이어
 const chkGet = (chk, k) => !chk ? '' : chk[k] || (k === '문화' ? chk['현지화'] || '' : '');
 /* 프로그램 검사 등급: FAIL은 고치거나 예외 사유를 써야 넘어감, REVIEW는 사람이 보고 넘김 */
 const PROG_FAIL = new Set(['empty', 'var', 'term', 'avoid', 'hangul', 'script', 'srcChg', 'relSwap', 'btShift', 'neg']);
-function progSev(k, r) { if (k === 'num') return (r.cls === 'B' || r.cls === 'C' || /숫자\s*(변경|표기)?\s*허용/.test(`${r.clsDir} ${r.note}`)) ? 'REVIEW' : 'FAIL'; return PROG_FAIL.has(k) ? 'FAIL' : 'REVIEW'; }
+function progSev(k, r) { if (r.cls === 'C' && (k === 'neg' || k === 'relSwap')) return 'REVIEW'; if (k === 'num') return (r.cls === 'B' || r.cls === 'C' || /숫자\s*(변경|표기)?\s*허용/.test(`${r.clsDir} ${r.note}`)) ? 'REVIEW' : 'FAIL'; return PROG_FAIL.has(k) ? 'FAIL' : 'REVIEW'; }
 const ERR_TYPES = ['의미 오류', '행동 오류', '조건 오류', '정답 오류', '문화적 현지화 오류', '용어 불일치', '문법 오류', '자연스러움 문제', '누락', '추가 정보 생성', '숫자 및 변수 오류', '화면 길이 초과', '기타'];
 const CHK_ERR = { 의미: '의미 오류', 행동: '행동 오류', 조건: '조건 오류', 정답: '정답 오류', 자연스러움: '자연스러움 문제', 말투: '말투·존대 불일치', 문화: '문화적 현지화 오류', 현지화: '문화적 현지화 오류', '추가 정보': '추가 정보 생성', 용어: '용어 불일치' };
 const PROG_ERR = { relSwap: '행동 오류', relDiff: '행동 오류', empty: '누락', hangul: '누락', var: '숫자 및 변수 오류', num: '숫자 및 변수 오류', term: '용어 불일치', avoid: '용어 불일치', long: '화면 길이 초과', script: '문법 오류' };
@@ -2149,7 +2150,7 @@ function specialTag(t, row) {
 }
 
 /* ================= 번역 프롬프트 = 공통 지시 + AI별 지시 + 게임별 정보 + 언어별 블록 + 이번 작업 ================= */
-const PROMPT_VER = '2026.11-v13';
+const PROMPT_VER = '2026.11-v14';
 const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 
 1. 역할
@@ -2174,7 +2175,7 @@ const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 - 원문에 있는 조건, 숫자, 순서, 대상, 행동을 누락하지 않는다.
 - 선택과 이동, 누르기와 제출 등 서로 다른 행동을 바꾸지 않는다.
 - 정답에 영향을 주는 말장난이나 언어유희는 임의로 일반화하지 않는다.
-- 현지 언어로 같은 언어유희를 구현할 수 없으면 임의로 재설계하지 말고 대안을 제시한다.
+- 그대로 옮기면 문제가 작동하지 않는 줄(노래 가사, 한국 문화 지식, 한국어 말장난에 기대는 문제)은 C로 분류하고 재설계한다. 아래 ‘재설계’ 규칙을 따른다.
 
 5. 문체 및 표현
 - 해당 언어권에서 실제로 쓰는 자연스러운 표현을 쓴다. 한국어 어순을 그대로 옮기지 않는다.
@@ -2238,7 +2239,7 @@ ${honorBlock(lk, 'translate')}${lk === 'zh' ? enRefBlock(t, 'translate') : ''}${
 - 분류 근거: B·C는 ‘번역하기 어렵다’가 아니라 **왜 직접 번역이 안 되는지**를 구체적으로 쓴다. (예: 한국 문화 배경을 모르면 ‘청개구리’가 ‘반대로 하라’는 뜻인지 알 수 없음) A는 ‘-’.
 - 변경 방향: B·C는 어떻게 바꿨는지/바꿀지를 한국어로 쓴다. (예: ‘정답이 아닌 것을 고르세요’라는 뜻으로 옮김)
 - 원문 규칙 유지: 가능 / 불가 (바꾼 뒤에도 원래 규칙·정답이 그대로 작동하는가)
-- 재설계 여부: 필요 / 불필요. C는 ‘필요’이며 \`기획 확인\` 시트에도 쓴다.
+- 재설계 여부: 필요 / 불필요. C는 ‘필요’이며 번역 칸에 재설계안을 쓰고 \`재설계\` 시트에 정리한다.
 - 번역하기 귀찮거나 애매하다는 이유로 B·C로 올리지 않는다. B는 번역을 포기하고 다른 문장을 만드는 것이 아니다.
 
 # 이번 작업
@@ -2256,8 +2257,10 @@ ${honorBlock(lk, 'translate')}${lk === 'zh' ? enRefBlock(t, 'translate') : ''}${
    - 현지화 분류 ~ 재설계 여부: 아래 ‘현지화 분류’ 규칙대로. 모든 줄에 쓴다.
    - 비고: 모호하거나 확인이 필요한 것만. 추측이면 ‘(추측)’
    - 같은 문구가 여러 파일에 나오면 파일마다 한 줄씩 쓴다. (화면에 적용할 때 편하도록)
-2. 시트 \`기획 확인\` — 파일 | 한국어 원문 | 문제 | 대안 1 | 대안 2 (언어유희·퍼즐처럼 그대로 옮길 수 없거나 기획 판단이 필요한 것. 없으면 만들지 않음)
-   - 이 줄도 \`번역\` 시트에는 가장 가까운 번역을 넣고 비고에 ‘기획 확인’이라고 쓴다.
+2. 시트 \`재설계\` — C 줄 (아래 ‘재설계’ 규칙). 없으면 만들지 않음
+   - 시트 \`기획 확인\` — 파일 | 한국어 원문 | 문제 | 대안 1 | 대안 2 (아이콘·그림 교체처럼 번역 밖에서 기획이 정할 것만. 없으면 만들지 않음)
+
+${redoRules(lk, '파일', false)}
 3. 시트 \`제외 단어\` — 파일 | 단어 (뺀 것이 있을 때만)
 - 시트 \`번역 대안\` — 아래 ‘번역 대안’ 규칙대로 (필요한 줄이 없으면 만들지 않음)
 
@@ -2296,7 +2299,10 @@ function srcTranslateTail(t, lk, ab) {
 - 재구성 사유 (재구성만, 나머지는 ‘-’): ①그대로 번역하기 어려웠던 이유 ②원문이 전하려는 본래 의미와 의도 ③새 표현이 그 의도를 어떻게 반영하는지
 - 의미를 바꾸거나 뺀 것이 있으면 번역 이유에 반드시 그 이유를 쓴다. 원문에 없는 의미를 더하지 않는다.
 - 마지막으로 줄마다 원문의 의미와 ‘번역 결과의 한국어 의미’가 일치하는지 대조한다.
-2. 시트 \`기획 확인\` — ID | 한국어 원문 | 문제 | 대안 1 | 대안 2 (C 재설계 줄, 언어유희처럼 그대로 옮길 수 없는 것. 없으면 만들지 않음)
+2. 시트 \`재설계\` — C 줄 (아래 ‘재설계’ 규칙). 없으면 만들지 않음
+   - 시트 \`기획 확인\` — ID | 한국어 원문 | 문제 | 대안 1 | 대안 2 (아이콘·그림 교체처럼 번역 밖에서 기획이 정할 것만. 없으면 만들지 않음)
+
+${redoRules(lk, 'ID', true)}
 3. 시트 \`번역 대안\` — 아래 ‘번역 대안’ 규칙대로 (필요한 줄이 없으면 만들지 않음)
 
 ${altRules(lk, 'ID')}
@@ -2413,6 +2419,50 @@ function altPanelHTML(t, lk, F) {
       <b style="white-space:pre-wrap">${esc(r.ko)}</b>${r.altNeed ? ` <em class="chip">${esc(r.altNeed)}</em>` : ''}${sb.length ? ` <small class="sb">같은 어구 ${sb.length + 1}번 사용 (${esc(sb.join('·'))}) · 고르면 함께 바뀜</small>` : ''}
       ${altCardsHTML(r, lk)}${pickInfoHTML(r)}
       ${readOnly ? '' : `<div class="iacts">${pickOk(r) ? '' : `<button type="button" class="btn ghost" data-altpick="${esc(r.id)}|-1">지금 번역 유지</button>`}<label class="chkl"><input type="checkbox" data-altreq="${esc(r.id)}" ${altReq.has(r.id) ? 'checked' : ''}> 추가 대안 요청</label></div>${altEditing === r.id + '|-1' ? altWhyEd(r.id, -1, '지금 번역이 AI 추천과 다름 — 유지하는 이유 (한 줄, 필수)') : ''}`}</div></div>`; }).join('')}</div></details>`;
+}
+/* ---------- 재설계 (C 줄): 가장 가까운 번역이 아니라 같은 기능의 문제로 새로 만듦 ---------- */
+const REDO_COLS = idHead => `${idHead} | 한국어 원문 | 원래 기능 | 그대로 안 되는 이유 | 재설계 방식 | 재설계안의 한국어 의미 | 바뀐 정답·단서 | 함께 바꿔야 할 것 | 실존 작품 사용`;
+const redoRules = (lk, idHead, src) => {
+  const L = LANGS.find(l => l.key === lk);
+  return `# 재설계 (C 줄)
+- C로 분류한 줄(노래 가사, 한국 문화 지식, 한국어 발음·말장난에 기대는 문제)은 가장 가까운 번역으로 두지 않고 **재설계**한다. \`번역\` 시트의 번역 칸에는 재설계안을 쓴다.${src ? '\n- 원문표에 ‘재설계 제안’이 있으면 그 방향을 따른다. (사람이 승인한 방향)' : ''}
+- 목표는 같은 뜻이 아니라 **같은 기능**: 같은 종류의 문제, 같은 풀이 방식, 비슷한 난이도. ${L.region} 방문객이 한국 지식 없이 풀 수 있어야 한다.
+- 정답·숫자·소품은 되도록 그대로 둔다. 자물쇠 번호, 카드, 인쇄물처럼 실물을 바꿔야 하는 재설계는 피하고, 불가피하면 ‘함께 바꿔야 할 것’에 적는다.
+- 정답이나 단서가 바뀌면 그 정답·단서를 쓰는 모든 줄(문제, 힌트, 정답 확인 화면)을 같은 기준으로 함께 바꾸고 그 줄을 적는다.
+- 노래 가사: 원곡 가사를 번역하지 않는다. ${L.region} 방문객이 아는 노래로 바꾸되, 저작권이 남아 있을 수 있는 실제 가사를 그대로 옮겨 쓰지 않는다. 전래 동요·민요처럼 오래된 노래를 쓰거나 가사를 새로 쓴다. 실존 노래·작품을 썼으면 ‘실존 작품 사용’에 이름을 적는다 (저작권 확인은 기획이 함).
+- 문화 지식(속담, 한국 상식, 한국 연예인·브랜드·지명): ${L.region} 방문객이 아는 같은 종류의 지식으로 바꾼다. 정치·역사·종교·지역 갈등 소재와 실존 인물은 쓰지 않는다.
+- 말장난·발음: ${L.label}의 말장난으로 새로 만든다. 만들 수 없으면 말장난 없이도 풀리는 문제로 바꾸고 그 사실을 적는다.
+- 시트 \`재설계\` — ${REDO_COLS(idHead)}
+  - C 줄마다 한 행. 한국어 원문은 그대로 복사한다 (줄 밀림 확인용).
+  - 원래 기능: 이 문구·문제가 플레이어에게 무엇을 하게 하는지. 예: 노래 가사의 빈칸을 채워 네 자리 숫자를 얻음
+  - 재설계 방식: 같은 구조에 소재만 교체 / 문제를 새로 만듦 / 말장난 없이 풀리게 바꿈 중 하나
+  - 바뀐 정답·단서: 정답이 그대로면 ‘그대로’. 함께 바꿔야 할 것: 다른 줄(${idHead})·이미지·소품, 없으면 ‘없음’. 실존 작품 사용: 없으면 ‘없음(새로 씀)’
+  - 설명 칸은 모두 한국어. 재설계는 기획이 최종 확인한다.
+`;
+};
+const isRedoSheet = e => { const h = ((e && e.rows || [])[0] || []).map(normHead); return h.some(x => x.startsWith('원래기능')) && h.some(x => x.startsWith('재설계안') || x.startsWith('재설계방식')); };
+function parseRedo(rows2d, list) {
+  const out = new Map(); if (!rows2d || rows2d.length < 2) return out;
+  const h = rows2d[0].map(normHead), ix = f => h.findIndex(f), cell = (r, i) => i >= 0 ? String(r[i] ?? '').trim() : '';
+  const iId = ix(x => x === 'id' || x === '번호'), iFile = ix(x => x === '파일'), iKo = ix(x => x.startsWith('한국어원문') || x === '원문'), iFn = ix(x => x.startsWith('원래기능')), iWhy = ix(x => x.startsWith('그대로')), iHow = ix(x => x.startsWith('재설계방식')), iMean = ix(x => x.startsWith('재설계안')), iAns = ix(x => x.startsWith('바뀐정답')), iAlso = ix(x => x.startsWith('함께')), iCopy = ix(x => x.startsWith('실존'));
+  const byId = new Map(list.map(r => [normId(r.id), r]));
+  rows2d.slice(1).forEach(r => {
+    const ko = normKo(cell(r, iKo).replace(/\s\/\s/g, '\n')); let tg = [];
+    if (iId >= 0 && cell(r, iId)) { const o = byId.get(normId(cell(r, iId))); if (o && (!ko || normKo(o.ko) === ko || (simKo(ko, normKo(o.ko)) || 0) >= 0.7)) tg = [o]; }
+    else if (ko) { const f = cell(r, iFile), same = list.filter(o => normKo(o.ko) === ko); tg = same.filter(o => !f || splitFiles(o.file).some(x => f.includes(x) || x.includes(f))); if (!tg.length) tg = same; }
+    const v = { fn: cell(r, iFn), why: cell(r, iWhy), how: cell(r, iHow), mean: cell(r, iMean), ans: cell(r, iAns), also: cell(r, iAlso), copy: cell(r, iCopy) };
+    if (!v.fn && !v.mean) return;
+    tg.forEach(o => out.set(o.id, v));
+  });
+  return out;
+}
+const usesWork = v => v && v.copy && !/^(없음|-|없음\(새로\s*씀\))/.test(v.copy.replace(/\s/g, ''));
+const redoTag = v => !v ? '' : `재설계 · 원래 기능: ${v.fn || '-'} · 바뀐 정답·단서: ${v.ans || '-'}${v.also && v.also !== '없음' ? ` · 함께 바꿀 것: ${v.also}` : ''}${usesWork(v) ? ` · 실존 작품: ${v.copy}` : ''}`;
+function redoHTML(r) {
+  const v = r.x.redo; if (!v && r.cls !== 'C') return '';
+  if (!v) return '<p class="redobox"><b>재설계 줄 (C)</b> <small class="sb">재설계 정보(원래 기능·바뀐 정답)가 없음 — 지금 프롬프트로 다시 받으면 ‘재설계’ 시트가 같이 나옴</small></p>';
+  return `<div class="redobox"><b>재설계</b>${v.how ? ` <em class="chip">${esc(v.how)}</em>` : ''}${usesWork(v) ? ` <em class="chip warnchip">실존 작품: ${esc(v.copy)} · 저작권 확인</em>` : ''}
+    <dl class="ratdl">${[['원래 기능', v.fn], ['그대로 안 되는 이유', v.why], ['재설계안의 뜻', v.mean], ['바뀐 정답·단서', v.ans], ['함께 바꿔야 할 것', v.also]].filter(q => q[1] && q[1] !== '-').map(([k, x]) => `<dt>${k}</dt><dd>${esc(x)}</dd>`).join('')}</dl></div>`;
 }
 const ALT_COLS = idHead => `${idHead} | 한국어 원문 | 대안 사유 | 대안 | 번역문 | 한국어 의미 | 뉘앙스 | 직역·의역 | 쓸 상황 | 원문과 차이 | 캐릭터 적합성 | 추천 | 추천 이유`;
 const altRules = (lk, idHead) => {
@@ -2591,7 +2641,11 @@ ${CRIT_TYPES.map(([k, d]) => `  - ${k}: ${d}`).join('\n')}
 - PASS: 문제 없음
 - FAIL: 고칠 것이 분명함 → 고친 번역을 쓴다
 - REVIEW: 정답·행동이 바뀔 수 있는데 확신이 없음, 또는 말장난·아이콘처럼 기획이 정해야 함 → 사람이 판단
-- 원문과 다른 문제로 의도적으로 바꾼 줄(퍼즐 재설계 등)은 번역 오류가 아니다. 뜻과 정답이 맞으면 PASS로 두고 이유에 ‘의도된 재설계’라고 쓴다.
+- 원문과 다른 문제로 의도적으로 바꾼 줄(표의 기준 칸에 ‘재설계’)은 뜻이 달라도 번역 오류가 아니다. 이유에 ‘의도된 재설계’라고 쓰고, 점수는 원문의 뜻 대신 ‘원래 기능’ 기준으로 매긴다:
+  - 핵심 의미 = 원래 기능(같은 종류의 문제·풀이 방식·난이도)이 살아 있는가 / 행동 의도 = 플레이어가 할 행동이 같은가 / 대상·조건 = 숫자·조건·정답 형식이 맞는가 / 문맥 = 방문객이 한국 지식 없이 풀 수 있는가 / 말투 = 그대로인가
+  - 정답 칸 = 바뀐 정답이 실제로 풀리고, 같은 정답·단서를 쓰는 다른 줄과 모두 맞는가. 안 풀리거나 어긋나면 FAIL + 치명 오류 ‘정답·진행 조건 변경’
+  - 실존 노래 가사·작품을 그대로 옮긴 것으로 보이면 REVIEW, 이유에 ‘저작권 확인’
+  - 재설계가 필요한데(한국어 말장난·한국 문화 지식에 기대 방문객이 풀 수 없음) 그대로 번역한 줄은 문맥 0점 + 이유에 ‘재설계 필요’
 
 # 퍼즐 검수 (게임 전체)
 퍼즐·퀴즈·짝 맞추기마다 번역본 기준으로 아래 6가지를 확인한다. 줄 검수와 따로, 퍼즐 단위로 본다.
@@ -2649,7 +2703,7 @@ ${extra ? '5.' : '4.'} \`의견\` — 구분 | 내용
 - 엑셀을 만들 수 없으면 같은 표들을 위 순서대로 채팅에 표로 쓰고, 각 표 바로 위에 시트 이름을 쓴다.
 
 # 검수할 표
-${(() => { const sc = srcConfirmed(t), basis = r => [specialTag(t, r), sc && r.cls ? `${CLS[r.cls] || r.cls}${r.clsDir && r.clsDir !== '-' ? ` · 주의점: ${r.clsDir}` : ''}` : ''].filter(Boolean).join(' '), bh = sc ? '원문 분석 기준(사람 승인)' : '특수 규칙';
+${(() => { const sc = srcConfirmed(t), basis = r => [specialTag(t, r), r.x.redo ? redoTag(r.x.redo) : r.cls === 'C' ? '재설계 줄' : '', sc && r.cls ? `${CLS[r.cls] || r.cls}${r.clsDir && r.clsDir !== '-' ? ` · 주의점: ${r.clsDir}` : ''}` : ''].filter(Boolean).join(' '), bh = sc ? '원문 분석 기준(사람 승인)' : '특수 규칙';
     const bx = [...(anyBt0 ? ['독립 역번역 (원문 안 본 AI)'] : []), ...(multi ? ['비고(사용 횟수)'] : [])], bv = r => [...(anyBt0 ? [(b => b ? `${b.t.replace(/\n/g, ' / ')}${b.amb ? ` (애매: ${b.amb})` : ''}` : '(없음)')(bt0Of(r))] : []), ...(multi ? [r.used] : [])];
     return ref ? tsv(['번호', '확인값', '파일', '화면', '요소', '한국어 원문', 'English(확정, 참조)', LHEAD[lk], bh, ...bx], rows.map(r => [r.id, rowCk(r), r.file, r.screen, r.elem, r.ko.replace(/\n/g, ' / '), enCell(enFor(ref, r)), r.tr.replace(/\n/g, ' / '), basis(r), ...bv(r)]))
       : tsv(['번호', '확인값', '파일', '화면', '요소', '한국어 원문', LHEAD[lk], bh, ...bx], rows.map(r => [r.id, rowCk(r), r.file, r.screen, r.elem, r.ko.replace(/\n/g, ' / '), r.tr.replace(/\n/g, ' / '), basis(r), ...bv(r)])); })()}
@@ -2752,6 +2806,9 @@ async function uploadSheet(file) {
       if (!x.memos.some(y => y.text === text)) { x.memos.push({ id: Math.random().toString(36).slice(2, 8), kind: 'plan', by: '번역 AI', at: nowISO(), text, done: false }); nPlan++; }
     });
   }
+  /* 재설계 시트 → 줄마다 재설계 정보 (원래 기능·바뀐 정답·함께 바꿀 것) */
+  const redoX = extra.find(isRedoSheet), RD = redoX ? parseRedo(redoX.rows, rows.map((r, i) => ({ id: srcIds ? srcIds[i] : 'R' + String(i + 1).padStart(3, '0'), file: m.cols.file >= 0 ? String(r[m.cols.file] || '') : '', ko: String(r[m.cols.ko] || '') }))) : new Map();
+  RD.forEach((v, id) => { (items[id] = items[id] || {}).redo = Object.assign({ by: '번역 AI', at: nowISO() }, v); });
   /* C(재설계 필요)로 분류된 줄 → 기획 확인 메모 (기획 확인 시트에 없어도) */
   const baseMap = srcIds ? new Map(baseRows(t).map(b => [b.id, b])) : null;
   if (m.cols.cls >= 0 || baseMap) rows.forEach((r, i) => {
@@ -2761,7 +2818,8 @@ async function uploadSheet(file) {
     x.memos = x.memos || [];
     if (x.memos.some(y => y.kind === 'plan' && !y.done)) return;
     const why = lc ? (lc.why || '') : m.cols.why >= 0 ? String(r[m.cols.why] || '').trim() : '', dir = bb ? (bb.care || '') : m.cols.dir >= 0 ? String(r[m.cols.dir] || '').trim() : '';
-    x.memos.push({ id: Math.random().toString(36).slice(2, 8), kind: 'plan', by: '번역 AI', at: nowISO(), text: `[기획 확인] C. 재설계 필요 — ${why || '근거 없음'}${dir && dir !== '-' ? ` / 변경 방향: ${dir}` : ''}`, done: false }); nPlan++;
+    const rd = RD.get(id);
+    x.memos.push({ id: Math.random().toString(36).slice(2, 8), kind: 'plan', by: '번역 AI', at: nowISO(), text: rd ? `[기획 확인] 재설계안 확인 — 원래 기능: ${rd.fn || '-'} / 재설계안: ${rd.mean || '-'} / 바뀐 정답·단서: ${rd.ans || '-'}${rd.also && rd.also !== '없음' ? ` / 함께 바꿀 것: ${rd.also}` : ''}${usesWork(rd) ? ` / 실존 작품 사용: ${rd.copy} (저작권 확인)` : ''}` : `[기획 확인] C. 재설계 필요 — ${why || '근거 없음'}${dir && dir !== '-' ? ` / 변경 방향: ${dir}` : ''} (재설계 시트 없음)`, done: false }); nPlan++;
   });
   w.items = items; w.sign = {};
   w.uploads = [...(w.uploads || []), { name: file.name, file: stored, rows: rows.length, by: meName(), at: nowISO() }].slice(-20);
@@ -3475,7 +3533,7 @@ function reviewHTML(id, t, lk, F, reviewer) {
       ${lastErr.length ? `<p class="sb badtxt">지난 검수 결과에 ${lastErr.map(x => `${esc(x.kind)} ${x.n}줄`).join(' · ')} — 시스템 오류로 기록함. 아래 프롬프트에는 그 줄만 다시 들어감 (재시도).</p>` : ''}
       <details class="more"><summary>프롬프트 보기</summary><pre class="ptext" id="pt-p-cross">${esc(crossPrompt(id, t, lk))}</pre></details>` : ''}
       ${need.length ? `<h4 class="mh">사람이 볼 것 ${need.length}줄${need.length < need0.length ? ` <small>(같은 어구를 묶어서 · 실제 ${need0.length}줄)</small>` : ''} <small>원문과 역번역(한국어)을 비교해서 고르기</small></h4><div class="ilist">${need.map(r => { const x = r.x, v = x.rv; return `<div class="irow"><code><button type="button" class="linkbtn" data-item="${esc(lk)}|${esc(r.id)}">${esc(r.id)}</button><br>${esc(r.file)}<br><span class="vtag ${v.v === '수정 필요' ? 'fail' : 'rev'}">${v.v === '수정 필요' ? 'FAIL' : 'REVIEW'}</span></code><div class="ibody">${r.btShift || r.btFar ? `<p class="badtxt"><b>줄 밀림 의심</b> — 역번역·고친 번역·이유가 이 줄 원문(${esc(r.ko.slice(0, 20))})과 맞지 않음${r.btShift ? `. ${esc(r.btShift)} 줄의 결과로 보임` : ''}. 고친 번역을 쓰지 말고 다시 검수.${readOnly ? '' : ` <button type="button" class="btn primary" data-rvclear="${esc(r.id)}">검수 결과 지우고 다시 검수</button>`}</p>` : ''}${(() => { const sb = sibOf(r.id); return sb.length ? `<p class="sb"><em class="chip">같은 어구 ${sb.length + 1}번 사용</em> ${esc(sb.join('·'))}도 같은 원문·번역 — 여기서 고르면 함께 처리됨</p>` : ''; })()}
-        ${critHTML(r)}<div class="cmp"><div><span>원문</span><b style="white-space:pre-wrap">${esc(r.ko)}</b></div><div>${bt0Of(r) ? `<span>독립 역번역 (원문 안 본 AI)</span>${esc(bt0Of(r).t)}${bt0Of(r).amb ? `<small class="sb">애매: ${esc(bt0Of(r).amb)}</small>` : ''}<span>검수 AI 역번역</span>` : '<span>역번역</span>'}${esc((x.bt || [])[0] || '-')}</div></div>${scoreHTML(v)}${r.rat || x.gl ? `<div class="cmp"><div><span>번역 AI가 적은 의미 (번역할 때) · ${esc(r.rat && r.rat.meth || '방식 없음')}</span>${esc(r.rat && r.rat.intent || '-')}${r.rat && r.rat.wmap ? `<small class="sb">핵심어: ${esc(r.rat.wmap)}</small>` : ''}</div><div><span>검수 AI가 읽은 핵심어 뜻</span>${esc(x.gl || '-')}</div></div>` : ''}${lk === 'zh' && enRef(t) ? `<div class="cmp one"><div><span>영어 (확정 · 참조)${v.mis ? ` · <b class="badtxt">${esc(v.mis)}</b>` : ''}</span><span style="white-space:pre-wrap">${esc(enCell(enFor(enRef(t), r)))}</span></div></div>` : ''}
+        ${critHTML(r)}${redoHTML(r)}<div class="cmp"><div><span>원문</span><b style="white-space:pre-wrap">${esc(r.ko)}</b></div><div>${bt0Of(r) ? `<span>독립 역번역 (원문 안 본 AI)</span>${esc(bt0Of(r).t)}${bt0Of(r).amb ? `<small class="sb">애매: ${esc(bt0Of(r).amb)}</small>` : ''}<span>검수 AI 역번역</span>` : '<span>역번역</span>'}${esc((x.bt || [])[0] || '-')}</div></div>${scoreHTML(v)}${r.rat || x.gl ? `<div class="cmp"><div><span>번역 AI가 적은 의미 (번역할 때) · ${esc(r.rat && r.rat.meth || '방식 없음')}</span>${esc(r.rat && r.rat.intent || '-')}${r.rat && r.rat.wmap ? `<small class="sb">핵심어: ${esc(r.rat.wmap)}</small>` : ''}</div><div><span>검수 AI가 읽은 핵심어 뜻</span>${esc(x.gl || '-')}</div></div>` : ''}${lk === 'zh' && enRef(t) ? `<div class="cmp one"><div><span>영어 (확정 · 참조)${v.mis ? ` · <b class="badtxt">${esc(v.mis)}</b>` : ''}</span><span style="white-space:pre-wrap">${esc(enCell(enFor(enRef(t), r)))}</span></div></div>` : ''}
         <div class="cmp"><div><span>지금 번역</span>${xEditing.has(r.id) && !readOnly ? `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>` : `<span style="white-space:pre-wrap">${esc(r.tr)}</span>`}</div><div><span>AI가 고친 번역</span><span style="white-space:pre-wrap">${esc(v.fix || '-')}</span></div></div>
         ${chkRowHTML(v.chk)}
         ${r.alts.some(a => a.by === '검수 AI') ? `<h5 class="mh">검수 AI의 추가 대안</h5>${altCardsHTML(r, lk, '검수 AI')}` : ''}
@@ -4572,6 +4630,7 @@ function itemDetailHTML(gid, t, lk, id) {
       ${R && R.wmap ? `<h4 class="mh">핵심어 대응</h4><ul class="glist">${splitGl(R.wmap).map(g => `<li>${esc(g)}</li>`).join('')}</ul>` : ''}
       ${dl([['이 번역을 고른 이유', esc(R && R.reason || '')], [R && R.meth && R.meth !== '직역' ? `직역 대신 ${R.meth}한 이유` : '', R && R.meth && R.meth !== '직역' ? esc(R.reason || '기록 없음') : ''], ['재구성 사유', esc(R && R.redo || '')], ['검수 주의사항', esc(r.note || '')], ['번역 대안', esc(r.alt || '')]])}
     </details>
+    ${redoHTML(r) ? `<section class="isec"><h3>재설계</h3>${redoHTML(r)}</section>` : ''}
     ${r.alts.length || x.pick ? `<details class="isec" open><summary><h3>번역 대안 · 사람의 선택 <small>${r.alts.length}개</small></h3></summary>${altCardsHTML(r, lk)}${pickInfoHTML(r) || '<p class="sb">아직 고르지 않음 (지금 번역으로 진행)</p>'}</details>` : ''}
     <details class="isec" open><summary><h3>③ 검수 결과</h3></summary>
       ${critHTML(r)}${scoreHTML(rv)}
