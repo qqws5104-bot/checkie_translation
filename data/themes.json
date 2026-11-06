@@ -45777,7 +45777,7 @@
   "game-c4dl2": {
     "name": "Qbrick",
     "concept": "모노룸 형태의 문제방",
-    "situation": "",
+    "situation": "방에서 탈출",
     "honorific": "",
     "speakers": [
       {
@@ -45798,7 +45798,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-06T00:05:47.150Z",
+    "updatedAt": "2026-11-06T00:05:54.315Z",
     "progressBy": {
       "en": {}
     },
