@@ -23615,7 +23615,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-06T05:39:49.515Z",
+    "updatedAt": "2026-11-06T05:39:54.062Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -49521,7 +49521,12 @@
           "E_099_Q": true,
           "E_099_M": true,
           "E_098_Q": true,
-          "E_098_M": true
+          "E_098_M": true,
+          "E_097_M": true,
+          "E_097_Q": true,
+          "E_096_M": true,
+          "E_095_Q": true,
+          "E_096_Q": true
         }
       }
     },
