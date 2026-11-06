@@ -3579,8 +3579,8 @@ async function applyTermDec(tb) {
 }
 
 /* ---------- 05 최종 번역: 화면별 · 등장 순서 · 확정 번역만 ---------- */
-function finalRows(t) {
-  const langs = LANGS.filter(l => !Retention.isOff(t, l.key) && sheetOf(t, l.key)), FS = Object.fromEntries(langs.map(l => [l.key, flowState(t, l.key)]));
+function finalRows(t, only) {
+  const langs = LANGS.filter(l => (!only || l.key === only) && !Retention.isOff(t, l.key) && sheetOf(t, l.key)), FS = Object.fromEntries(langs.map(l => [l.key, flowState(t, l.key)]));
   const src = [], idx = new Map(), byId = new Map();
   baseRows(t).forEach((b, i) => { const row = { id: b.id, file: b.file, screen: b.screen, elem: b.elem, ord: b.ord, places: b.places, ko: b.ko, n: i, per: {} }; byId.set(b.id, row); src.push(row); });
   langs.forEach(l => { const seen = new Map(); FS[l.key].rows.forEach((r, i) => {
@@ -3595,8 +3595,8 @@ function finalRows(t) {
     places.forEach(pl => out.push({ row, file: pl.file, screen: pl.screen, elem: pl.elem, ord: parseFloat(String(pl.ord || '').replace(/[^\d.]/g, '')) })); });
   return { langs, FS, out };
 }
-function finalSheet(t) {
-  const { langs, FS, out } = finalRows(t), u = uOf(t), scrs = (u && u.draft && u.draft.screens) || [];
+function finalSheet(t, lk) {
+  const { langs, FS, out } = finalRows(t, lk), u = uOf(t), scrs = (u && u.draft && u.draft.screens) || [];
   const files = [...new Set(out.map(o => o.file))].sort((a, b) => { const ia = scrs.findIndex(x => normId(x.id) === normId(a)), ib = scrs.findIndex(x => normId(x.id) === normId(b)); return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib) || a.localeCompare(b, 'ko', { numeric: true }); });
   const imgs = (gameFiles[gidOf(t)] || []).map(f => f.name);
   const head = ['화면 ID', '화면 이름', '이미지', '순서', '요소', '번호', '한국어 원문', ...langs.map(l => `${l.label} 최종 번역`), '상태'];
@@ -3611,7 +3611,7 @@ function finalSheet(t) {
   return { name: '최종 번역', rows: [head, ...body], widths: [12, 18, 14, 6, 14, 8, 34, ...langs.map(() => 34), 18], filter: true, freezeCols: 0,
     style: (ri, ci, r) => /^■/.test(r[0]) ? 5 : ci === head.length - 1 ? (r[ci] === '확정' ? 4 : 3) : soft.has(`${ri}:${ci}`) ? 3 : r[ci] === '(번역 없음)' ? 2 : 0 };
 }
-function finalXlsx(t) { const sh = finalSheet(t); if (sh.rows.length < 2) { toast('번역 엑셀이 없음.'); return; } saveBlob(XS([sh]), `${abbrOf(t)}_최종번역.xlsx`); }
+function finalXlsx(t, lk) { const sh = finalSheet(t, lk); if (sh.rows.length < 2) { toast('이 언어의 번역 엑셀이 없음.'); return; } sh.name = `최종 번역 ${LSHORT[lk]}`; saveBlob(XS([sh]), `${abbrOf(t)}_${LSHORT[lk]}_최종번역.xlsx`); }
 function nativeXlsx(t, lk) { const sh = nativeSheet(t, lk); if (sh.rows.length < 2) { toast('현지인 검수가 필요한 줄이 없음.'); return; }
   const L = LANGS.find(l => l.key === lk), guide = { name: '안내 · Guide', rows: [['', '내용'], ['한국어', `이 시트는 AI 검수만으로 확정하기 어려운 ${L.label} 문구입니다. 줄마다 ‘질문’을 읽고 ‘답’ 칸에서 고른 뒤, 고칠 때는 ‘수정안’에 문구를 적어 주세요. 대안을 고를 때는 수정안 칸에 대안 이름(A, B…)을 적어 주세요.`], [L.label, lk === 'ja' ? 'このシートはAIだけでは確定しにくい文言です。各行の「質問」を読み、「答え」欄で選んでください。修正する場合は「修正案」に文言を、代案を選ぶ場合は代案の名前（A、B…）を書いてください。' : lk === 'zh' ? '此表列出仅靠AI难以确定的文本。请阅读每行的“问题”，在“回答”栏中选择；如需修改，请在“修改方案”中填写文字；如选择备选方案，请填写备选名称（A、B…）。' : 'These lines could not be confirmed by AI alone. Read each question, choose an answer, and write your fix (or the alternative label A, B…) in the fix column.']], widths: [12, 120] };
   saveBlob(XS([guide, sh]), `${abbrOf(t)}_${LSHORT[lk]}_현지인검수.xlsx`); }
@@ -4088,7 +4088,7 @@ function filesBoxHTML(id, t, lk, F) {
     <div class="librow"><span><b>① 검수 엑셀 (내부)</b><small>01 게임 이해·번역 기준 · 02 용어·표현별 검수 · 03 줄별 검수 작업 · 부록. 맨 앞 ‘검수 작업’ 시트에서 우선순위대로 보고 ‘사람 결정’을 고른 뒤 그대로 다시 올리면 반영됨. 뒤에 번역 · 원문·번역·역번역 · 비율 · 수정 이력 시트</small></span><span class="iacts"><button type="button" class="btn primary" data-xres>받기</button>${readOnly ? '' : `<label class="btn upl">결정 채운 파일 올리기<input type="file" hidden data-one="one:work" accept="${FILE_ACCEPT}"></label>`}</span></div>
     ${(() => { const F2 = flowState(t, lk), nN = F2.rows.filter(r => nativeOf(t, lk, r).length).length, nQ = F2.rows.filter(r => nativeOf(t, lk, r).length && !natDone(r) && !(r.x.natQ && r.x.natQ.trh === trCk(r.tr))).length, nD = F2.rows.filter(r => nativeOf(t, lk, r).length && natDone(r)).length;
       return `<div class="librow"><span><b>② 현지인 검수 엑셀 (${esc(LANGS.find(l => l.key === lk).label)} · 외부 전달용)</b><small>AI만으로 확정하기 어려운 ${nN}줄 · 확인 끝 ${nD}줄. 상황·뜻·질문이 한국어와 ${esc(LANGS.find(l => l.key === lk).label)}로 들어감.${nQ ? ` 질문이 아직 기본 문구인 줄 ${nQ}개 — ‘질문 만들기’ 프롬프트로 구체적인 질문을 받으면 좋음.` : ''}</small></span><span class="iacts">${nQ && !readOnly ? `<button type="button" class="btn" data-copy="p-natq">질문 만들기 프롬프트 복사</button><label class="btn upl">질문 올리기<input type="file" hidden data-one="one:natq" accept="${FILE_ACCEPT}"></label>` : ''}<button type="button" class="btn" data-xnat ${nN ? '' : 'disabled'}>받기</button>${readOnly ? '' : `<label class="btn upl">현지인 결과 올리기<input type="file" hidden data-one="one:nat" accept="${FILE_ACCEPT}"></label>`}</span></div>${nQ ? `<pre class="ptext" id="pt-p-natq" hidden>${esc(natQPrompt(t, lk))}</pre>` : ''}`; })()}
-    <div class="librow"><span><b>③ 최종 번역 엑셀 (게임 적용용 · 모든 언어)</b><small>화면별 · 화면 안 등장 순서 · 모든 줄에 지금 번역이 들어감. 사람 승인(+현지인 확인)까지 끝난 줄은 ‘확정’, 아직인 줄은 노란 칸 + ‘미확정(지금 번역)’. 같은 문구를 합친 줄은 화면마다 다시 풀어 놓음.</small></span><button type="button" class="btn" data-xfinal>받기</button></div>
+    <div class="librow"><span><b>③ 최종 번역 엑셀 (${esc(LANGS.find(l => l.key === lk).label)}만 · 게임 적용용)</b><small>화면별 · 화면 안 등장 순서 · 모든 줄에 지금 번역이 들어감. 사람 승인(+현지인 확인)까지 끝난 줄은 ‘확정’, 아직인 줄은 노란 칸 + ‘미확정(지금 번역)’. 같은 문구를 합친 줄은 화면마다 다시 풀어 놓음.</small></span><button type="button" class="btn" data-xfinal>받기</button></div>
     ${ups.map((u, i) => `<div class="librow"><span><b>${esc(u.name)}</b>${i === 0 ? ' <em class="chip">최신</em>' : ''}<small>${esc(u.by || '')} · ${fmtDate(u.at)} · ${u.rows}줄</small></span>${u.file ? `<a class="btn" href="/api/files/${encodeURIComponent(id)}/${encodeURIComponent(u.file)}" download="${esc(u.name)}">원본 받기</a>` : '<small class="sb">원본 없음</small>'}</div>`).join('')}
     <details class="more"${memoEditing ? ' open' : ''}><summary>번역 표 보기 · 수정 요청 메모 남기기</summary>${sheetViewHTML(t, lk)}</details>
   </section>`;
@@ -5608,7 +5608,7 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-xres]')) { resultXlsx(cur().data, promptLang); return; }
   if (e.target.closest('[data-xall]')) { gameXlsx(cur().id, cur().data); return; }
   if (e.target.closest('[data-xnat]')) { nativeXlsx(cur().data, promptLang); return; }
-  if (e.target.closest('[data-xfinal]')) { finalXlsx(cur().data); return; }
+  if (e.target.closest('[data-xfinal]')) { finalXlsx(cur().data, promptLang); return; }
   const vs = e.target.closest('[data-vsheet]'); if (vs) { viewSheet = +vs.dataset.vsheet; render(true); }
 });
 
