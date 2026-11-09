@@ -12859,7 +12859,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-09T06:05:20.933Z",
+    "updatedAt": "2026-11-09T06:05:26.124Z",
     "progressBy": {
       "en": {},
       "ja": {},
@@ -13267,14 +13267,32 @@
               "from": ""
             }
           },
-          "R005": {},
+          "R005": {
+            "pick": {
+              "k": "유지",
+              "tr": "Warning! File System Compromised.",
+              "mean": "",
+              "rec": "기본",
+              "recTr": "Warning! File System Compromised.",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-09T06:05:24.015Z",
+              "trh": "kxr865gacv1jw",
+              "from": ""
+            }
+          },
           "R006": {},
           "R007": {},
           "R008": {},
           "R009": {},
           "R010": {}
         },
-        "sign": {}
+        "sign": {
+          "excel": {
+            "by": "김예은",
+            "at": "2026-11-09T06:05:26.124Z"
+          }
+        }
       },
       "zh": {
         "uploads": [
