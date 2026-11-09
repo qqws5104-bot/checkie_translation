@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-09T00:52:07.298Z",
+    "updatedAt": "2026-11-09T00:52:14.306Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -9687,6 +9687,9 @@
     "revAi": {
       "ja": {
         "cross": "Claude"
+      },
+      "zh": {
+        "cross": "Gemini"
       }
     },
     "source": {
