@@ -12859,7 +12859,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-09T06:06:46.504Z",
+    "updatedAt": "2026-11-09T06:06:53.303Z",
     "progressBy": {
       "en": {},
       "ja": {},
@@ -23545,6 +23545,9 @@
     },
     "revAi": {
       "ja": {
+        "cross": "Gemini"
+      },
+      "en": {
         "cross": "Gemini"
       }
     },
