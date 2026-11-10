@@ -14623,7 +14623,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-10T02:36:29.478Z",
+    "updatedAt": "2026-11-10T02:36:42.376Z",
     "progressBy": {
       "en": {},
       "ja": {},
@@ -17370,9 +17370,7 @@
           },
           "R021": {
             "ok": [
-              "srcSuffix",
-              "read",
-              "clsB"
+              "read"
             ],
             "bt0": {
               "t": "운이 다하면 ... 010-%%%%-%%%%",
@@ -17381,49 +17379,10 @@
               "by": "Gemini",
               "trh": "1o3o088100nmze11"
             },
-            "bt": [
-              "운이 다하면 ... 010-%%%%-%%%%"
-            ],
-            "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
-            "rel": "-",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "When your luck runs out ... 010-%%%%-%%%%",
-              "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 67,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o3o088100nmze11",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -17431,7 +17390,52 @@
                 "at": "2026-11-10T02:35:53.552Z",
                 "total": 67
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:42.352Z",
+                "by": "김예은",
+                "from": "When your luck runs out ... 010-%%%%-%%%%",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                  "fix": "When your luck runs out ... 010-%%%%-%%%%",
+                  "exc": "",
+                  "bt": "운이 다하면 ... 010-%%%%-%%%%",
+                  "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "When your luck runs out ... 010-%%%%-%%%%",
+                "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
+            ],
+            "tr": "When your luck runs out ... 010-%%%%-%%%%",
+            "hv": null
           },
           "R022": {
             "ok": [
@@ -17573,9 +17577,7 @@
           },
           "R025": {
             "ok": [
-              "srcSuffix",
-              "read",
-              "clsB"
+              "read"
             ],
             "bt0": {
               "t": "운이 다하면 ... 010-%%%%-%%%%",
@@ -17585,50 +17587,55 @@
               "trh": "1o3o088100nmze11",
               "via": "R021"
             },
-            "rv": {
-              "v": "수정 필요",
-              "fix": "When your luck runs out ... 010-%%%%-%%%%",
-              "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 67,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o3o088100nmze11",
-              "err3": [],
-              "via": "R021"
-            },
-            "bt": [
-              "운이 다하면 ... 010-%%%%-%%%%"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:42.352Z",
+                "by": "김예은",
+                "from": "When your luck runs out ... 010-%%%%-%%%%",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                  "fix": "When your luck runs out ... 010-%%%%-%%%%",
+                  "exc": "",
+                  "bt": "운이 다하면 ... 010-%%%%-%%%%",
+                  "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "When your luck runs out ... 010-%%%%-%%%%",
+                "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
-            "rel": "-"
+            "tr": "When your luck runs out ... 010-%%%%-%%%%",
+            "hv": null
           },
           "R026": {
             "ok": [
@@ -20455,9 +20462,7 @@
           },
           "R084": {
             "ok": [
-              "read",
-              "srcSuffix",
-              "clsB"
+              "read"
             ],
             "bt0": {
               "t": "운이 다하면 ... 010-%%%%-%%%%",
@@ -20467,50 +20472,55 @@
               "trh": "1o3o088100nmze11",
               "via": "R021"
             },
-            "rv": {
-              "v": "수정 필요",
-              "fix": "When your luck runs out ... 010-%%%%-%%%%",
-              "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 67,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o3o088100nmze11",
-              "err3": [],
-              "via": "R021"
-            },
-            "bt": [
-              "운이 다하면 ... 010-%%%%-%%%%"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:42.352Z",
+                "by": "김예은",
+                "from": "When your luck runs out ... 010-%%%%-%%%%",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                  "fix": "When your luck runs out ... 010-%%%%-%%%%",
+                  "exc": "",
+                  "bt": "운이 다하면 ... 010-%%%%-%%%%",
+                  "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "When your luck runs out ... 010-%%%%-%%%%",
+                "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
-            "rel": "-"
+            "tr": "When your luck runs out ... 010-%%%%-%%%%",
+            "hv": null
           },
           "R085": {
             "ok": [
@@ -20652,9 +20662,7 @@
           },
           "R088": {
             "ok": [
-              "read",
-              "srcSuffix",
-              "clsB"
+              "read"
             ],
             "bt0": {
               "t": "운이 다하면 ... 010-%%%%-%%%%",
@@ -20664,50 +20672,55 @@
               "trh": "1o3o088100nmze11",
               "via": "R021"
             },
-            "rv": {
-              "v": "수정 필요",
-              "fix": "When your luck runs out ... 010-%%%%-%%%%",
-              "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 67,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o3o088100nmze11",
-              "err3": [],
-              "via": "R021"
-            },
-            "bt": [
-              "운이 다하면 ... 010-%%%%-%%%%"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:42.352Z",
+                "by": "김예은",
+                "from": "When your luck runs out ... 010-%%%%-%%%%",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                  "fix": "When your luck runs out ... 010-%%%%-%%%%",
+                  "exc": "",
+                  "bt": "운이 다하면 ... 010-%%%%-%%%%",
+                  "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "When your luck runs out ... 010-%%%%-%%%%",
+                "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
-            "rel": "-"
+            "tr": "When your luck runs out ... 010-%%%%-%%%%",
+            "hv": null
           },
           "R089": {
             "memos": [
