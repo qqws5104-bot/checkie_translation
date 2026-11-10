@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-10T03:44:51.463Z",
+    "updatedAt": "2026-11-10T03:50:21.873Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -9446,24 +9446,90 @@
           },
           "S002": {
             "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
+          "S003": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
+          "S004": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
+          "S005": {
+            "ok": [
               "srcSuffix"
             ]
           },
-          "S003": {},
-          "S004": {},
-          "S005": {},
-          "S007": {},
-          "S008": {},
-          "S009": {},
-          "S012": {},
-          "S013": {},
-          "S014": {},
-          "S017": {},
-          "S018": {},
-          "S019": {},
-          "S022": {},
-          "S023": {},
-          "S024": {},
+          "S007": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S008": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S009": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S012": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S013": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S014": {
+            "ok": [
+              "srcSuffix",
+              "negAdd"
+            ]
+          },
+          "S017": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S018": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S019": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S022": {
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
+          "S023": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S024": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
           "S027": {},
           "S028": {},
           "S029": {},
