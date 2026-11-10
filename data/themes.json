@@ -14623,7 +14623,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-10T02:13:54.086Z",
+    "updatedAt": "2026-11-10T02:22:05.328Z",
     "progressBy": {
       "en": {},
       "ja": {},
@@ -16432,68 +16432,157 @@
           "R001": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4"
+            }
           },
           "R002": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "아기 새 안전 캠페인",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "76lac416akbvgo"
+            }
           },
           "R003": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "아기 까치 한 마리가 길을 잃었습니다. 그 집을 찾아주세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "gfon4gv6nnziw"
+            }
           },
           "R004": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "새 경찰",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "1o8x8o61tzo4w2c"
+            }
           },
           "R005": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R006": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "아기 새 안전 캠페인",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "76lac416akbvgo",
+              "via": "R002"
+            }
           },
           "R007": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "아기 까치 한 마리가 길을 잃었습니다. 그 집을 찾아주세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "gfon4gv6nnziw",
+              "via": "R003"
+            }
           },
           "R008": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "새 경찰",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "1o8x8o61tzo4w2c",
+              "via": "R004"
+            }
           },
           "R009": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "나는 빨간 버섯 옆에 살아요. 내 집 위에는 사과나무가 있어요.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "2x1x8k1gsx3qg1i"
+            }
           },
           "R010": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "내 집은 장미 교차로에 있어요.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "1jxy25q30uijsw"
+            }
           },
           "R011": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R012": {
             "ok": [
               "srcSuffix",
               "long"
-            ]
+            ],
+            "bt0": {
+              "t": "이 영상은 카메라 촬영자가 큰 위험을 무릅쓰고 촬영했습니다.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "fuyfjanprzlw1h"
+            }
           },
           "R013": {
             "redo": {
@@ -16522,18 +16611,41 @@
             ],
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "내셔널 버드오그래픽(소리)",
+              "amb": "‘National Geographic’을 연상시키는 말장난일 수 있음.",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "zzr2vr6l1gyvm"
+            }
           },
           "R014": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R015": {
             "ok": [
               "srcSuffix",
               "long"
-            ]
+            ],
+            "bt0": {
+              "t": "이 영상은 카메라 촬영자가 큰 위험을 무릅쓰고 촬영했습니다.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "fuyfjanprzlw1h",
+              "via": "R012"
+            }
           },
           "R016": {
             "redo": {
@@ -16562,208 +16674,497 @@
             ],
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "내셔널 버드오그래픽(소리)",
+              "amb": "‘National Geographic’을 연상시키는 말장난일 수 있음.",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "zzr2vr6l1gyvm",
+              "via": "R013"
+            }
           },
           "R017": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "다른 플레이어의 화면에 있는 카메라 화면에 보이는 새들을 찾으세요.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "1frr3gddlfz3t1n"
+            }
           },
           "R018": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R019": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "출생 연도별 오늘의 부적",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "1qcj6do1if3rois"
+            }
           },
           "R020": {
             "ok": [
               "srcSuffix",
               "sym"
-            ]
+            ],
+            "bt0": {
+              "t": "두 마리의 새에게 각각 필요한 부적을 주세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "12fcgvsyke2e616"
+            }
           },
           "R021": {
             "ok": [
               "srcSuffix",
               "read",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "운이 다하면 ... 010-%%%%-%%%%",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "1o3o088100nmze11"
+            }
           },
           "R022": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R023": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "출생 연도별 오늘의 부적",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "1qcj6do1if3rois",
+              "via": "R019"
+            }
           },
           "R024": {
             "ok": [
               "srcSuffix",
               "sym"
-            ]
+            ],
+            "bt0": {
+              "t": "두 마리의 새에게 각각 필요한 부적을 주세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "12fcgvsyke2e616",
+              "via": "R020"
+            }
           },
           "R025": {
             "ok": [
               "srcSuffix",
               "read",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "운이 다하면 ... 010-%%%%-%%%%",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "1o3o088100nmze11",
+              "via": "R021"
+            }
           },
           "R026": {
             "ok": [
               "srcSuffix",
               "read"
-            ]
+            ],
+            "bt0": {
+              "t": "부적 라벨(카드 12장)",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "ng77go1vlr25kp"
+            }
           },
           "R027": {
             "ok": [
               "srcSuffix",
               "read"
-            ]
+            ],
+            "bt0": {
+              "t": "출생 연도 부적 카드",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "11fst881stdhowp"
+            }
           },
           "R028": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R029": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R030": {
             "ok": [
               "srcSuffix",
               "negAdd",
               "same"
-            ]
+            ],
+            "bt0": {
+              "t": "나는 로봇이 아닙니다.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "jm6wks1jxo0yyf"
+            }
           },
           "R031": {
             "ok": [
               "srcSuffix",
               "negAdd"
-            ]
+            ],
+            "bt0": {
+              "t": "비정상적인 트래픽이 감지되었습니다. 로봇이 아님을 확인해 주세요.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "1rg2bhit82que1s"
+            }
           },
           "R032": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "그것을 찾아주세요.",
+              "amb": "it이 가리키는 대상은 문장만으로 특정할 수 없음.",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "11z4p5t1vtrq9lf"
+            }
           },
           "R033": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "원본 파일이 성공적으로 복원되었습니다.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "yg7b2i1qtsq0219"
+            }
           },
           "R034": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R035": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "행운의 복권 동전 잭팟",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "1lhpkxp191eod1p"
+            }
           },
           "R036": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "픽셀들을 당첨 복권으로 되돌리세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "n1cg5n7wyhp117"
+            }
           },
           "R037": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "새 1,000마리",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "pnpy0e1urg3ywc"
+            }
           },
           "R038": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R039": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "행운의 복권 동전 잭팟",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "1lhpkxp191eod1p",
+              "via": "R035"
+            }
           },
           "R040": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "픽셀들을 당첨 복권으로 되돌리세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "n1cg5n7wyhp117",
+              "via": "R036"
+            }
           },
           "R041": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "새 1,000마리",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "pnpy0e1urg3ywc",
+              "via": "R037"
+            }
           },
           "R042": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R043": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "행운의 복권 동전 잭팟",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "1lhpkxp191eod1p",
+              "via": "R035"
+            }
           },
           "R044": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "픽셀들을 당첨 복권으로 되돌리세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "n1cg5n7wyhp117",
+              "via": "R036"
+            }
           },
           "R045": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "새 1,000마리",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "pnpy0e1urg3ywc",
+              "via": "R037"
+            }
           },
           "R046": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R047": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "행운의 복권 동전 잭팟",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "1lhpkxp191eod1p",
+              "via": "R035"
+            }
           },
           "R048": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "픽셀들을 당첨 복권으로 되돌리세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "n1cg5n7wyhp117",
+              "via": "R036"
+            }
           },
           "R049": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "새 1,000마리",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "pnpy0e1urg3ywc",
+              "via": "R037"
+            }
           },
           "R050": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "복권에 있는 기호들",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "12ew6vatbcr3r"
+            }
           },
           "R051": {
             "ok": [
               "srcSuffix",
               "same"
-            ]
+            ],
+            "bt0": {
+              "t": "741790747=",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "1lslveqc5jr9kc"
+            }
           },
           "R052": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R053": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R054": {
             "redo": {
@@ -16792,109 +17193,259 @@
             ],
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "[OO]를 아는 [OO]가 날아갑니다.",
+              "amb": "knows는 ‘알다’ 외에 문맥에 따라 ‘알고 있다/이해하다’로도 해석 가능.",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "kgm7msl9t7rks"
+            }
           },
           "R055": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "그 새는 구름 위쪽에서 오고 있습니다.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "8hvn6m19qoqtc10"
+            }
           },
           "R056": {
             "ok": [
               "srcSuffix",
               "long"
-            ]
+            ],
+            "bt0": {
+              "t": "공익 광고 협의회 -",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "gfbse51oorqwvy"
+            }
           },
           "R057": {
             "ok": [
               "srcSuffix",
               "long"
-            ]
+            ],
+            "bt0": {
+              "t": "공익 광고 협의회 -",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "gfbse51oorqwvy",
+              "via": "R056"
+            }
           },
           "R058": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R059": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "두뇌 파워! 가로세로 낱말퍼즐",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "1befz8dorapubz"
+            }
           },
           "R060": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R061": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "두뇌 파워! 가로세로 낱말퍼즐",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "1befz8dorapubz",
+              "via": "R059"
+            }
           },
           "R062": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "가로",
+              "amb": "낱말퍼즐의 가로 방향을 뜻함.",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "7h9jiq1ag070y8"
+            }
           },
           "R063": {
             "ok": [
               "srcSuffix",
               "clsKeep",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "길을 따라 심는 나무. 그 잎은 가을에 노랗게 변하고 떨어집니다.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "osbqkilwcxys1o"
+            }
           },
           "R064": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "세로",
+              "amb": "낱말퍼즐의 세로 방향을 뜻함.",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "4k1tpx1jt5ppp6"
+            }
           },
           "R065": {
             "ok": [
               "srcSuffix",
               "sym"
-            ]
+            ],
+            "bt0": {
+              "t": "누군가를 몰래 따라가다. “경찰은 용의자를 잡기 위해 며칠 동안 그를 ___.”",
+              "amb": "빈칸에 들어갈 단어를 설명하는 문장으로, 영어 원문에도 빈칸이 있음.",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "1qc1qnp1mufajj23"
+            }
           },
           "R066": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "비가 온 뒤 하늘에 나타나는 아름다운 색의 띠: 무지개.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "1ecwglksb5bx61q"
+            }
           },
           "R067": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R068": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "아기 새 안전 캠페인",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "76lac416akbvgo",
+              "via": "R002"
+            }
           },
           "R069": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "아기 까치 한 마리가 길을 잃었습니다. 그 집을 찾아주세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "gfon4gv6nnziw",
+              "via": "R003"
+            }
           },
           "R070": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R071": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "아기 새 안전 캠페인",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "76lac416akbvgo",
+              "via": "R002"
+            }
           },
           "R072": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "아기 까치 한 마리가 길을 잃었습니다. 그 집을 찾아주세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "gfon4gv6nnziw",
+              "via": "R003"
+            }
           },
           "R073": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "그것은 네잎클로버와 버섯 사이에 있습니다. 내 집 아래에는 해바라기가 있습니다.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "1f9zoa51q9m28n1y"
+            }
           },
           "R074": {
             "memos": [
@@ -16914,33 +17465,78 @@
               "srcSuffix",
               "gram",
               "read"
-            ]
+            ],
+            "bt0": {
+              "t": "내 집은 ... 사과나무입니다.",
+              "amb": "문장 구조상 ‘내 집은 사과나무…’처럼 미완성으로 읽힘. 말줄임표의 기능은 문장만으로 불명확함.",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "9196zf1339edpp"
+            }
           },
           "R075": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "픽셀 격자 안의 식물 및 나무 아이콘",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "y7sy551pxue1lx"
+            }
           },
           "R076": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R077": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R078": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "다른 플레이어의 화면에 있는 카메라 화면에 보이는 새를 찾으세요.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "1wb8cswv5cafw1m"
+            }
           },
           "R079": {
             "ok": [
               "srcSuffix",
               "long"
-            ]
+            ],
+            "bt0": {
+              "t": "이 영상은 카메라 촬영자가 큰 위험을 무릅쓰고 촬영했습니다.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "fuyfjanprzlw1h",
+              "via": "R012"
+            }
           },
           "R080": {
             "redo": {
@@ -16969,53 +17565,125 @@
             ],
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "내셔널 버드오그래픽(소리)",
+              "amb": "‘National Geographic’을 연상시키는 말장난일 수 있음.",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "zzr2vr6l1gyvm",
+              "via": "R013"
+            }
           },
           "R081": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R082": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "출생 연도별 오늘의 부적",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "1qcj6do1if3rois",
+              "via": "R019"
+            }
           },
           "R083": {
             "ok": [
               "sym",
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "두 마리의 새에게 각각 필요한 부적을 주세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "12fcgvsyke2e616",
+              "via": "R020"
+            }
           },
           "R084": {
             "ok": [
               "read",
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "운이 다하면 ... 010-%%%%-%%%%",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "1o3o088100nmze11",
+              "via": "R021"
+            }
           },
           "R085": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R086": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "출생 연도별 오늘의 부적",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "1qcj6do1if3rois",
+              "via": "R019"
+            }
           },
           "R087": {
             "ok": [
               "srcSuffix",
               "sym"
-            ]
+            ],
+            "bt0": {
+              "t": "두 마리의 새에게 각각 필요한 부적을 주세요!",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.301Z",
+              "by": "Gemini",
+              "trh": "12fcgvsyke2e616",
+              "via": "R020"
+            }
           },
           "R088": {
             "ok": [
               "read",
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "운이 다하면 ... 010-%%%%-%%%%",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "1o3o088100nmze11",
+              "via": "R021"
+            }
           },
           "R089": {
             "memos": [
@@ -17042,52 +17710,121 @@
                 "by": "김예은",
                 "at": "2026-11-10T02:13:36.596Z"
               }
+            },
+            "bt0": {
+              "t": "010326-할껄(소리)\n970519-뚜둥(소리)\n주식금융위원회",
+              "amb": "Hal-Kkeol과 Ddu-Ddung은 이름 또는 소리 표현으로 보이며, 정확한 의미는 문장만으로 알 수 없음. Stock and Finance Commission은 기관명처럼 쓰였으나 실제 고유명사 여부는 불명확함.",
+              "at": "2026-11-10T02:22:05.304Z",
+              "by": "Gemini",
+              "trh": "5rk4ik2b0l8e1p"
             }
           },
           "R090": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "원본 파일이 성공적으로 복원되었습니다.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "yg7b2i1qtsq0219",
+              "via": "R033"
+            }
           },
           "R091": {
             "ok": [
               "srcSuffix",
               "negAdd",
               "same"
-            ]
+            ],
+            "bt0": {
+              "t": "나는 로봇이 아닙니다.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.302Z",
+              "by": "Gemini",
+              "trh": "jm6wks1jxo0yyf",
+              "via": "R030"
+            }
           },
           "R092": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "비정상적인 트래픽이 감지되었습니다.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.304Z",
+              "by": "Gemini",
+              "trh": "brlvon1e6bs31w"
+            }
           },
           "R093": {
             "ok": [
               "srcSuffix",
               "negAdd"
-            ]
+            ],
+            "bt0": {
+              "t": "로봇이 아님을 확인해 주세요.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.304Z",
+              "by": "Gemini",
+              "trh": "1us49qwiybi4sy"
+            }
           },
           "R094": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R095": {
             "ok": [
               "srcSuffix",
               "long"
-            ]
+            ],
+            "bt0": {
+              "t": "공익 광고 협의회 -",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "gfbse51oorqwvy",
+              "via": "R056"
+            }
           },
           "R096": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R097": {
             "ok": [
               "srcSuffix",
               "long"
-            ]
+            ],
+            "bt0": {
+              "t": "공익 광고 협의회 -",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "gfbse51oorqwvy",
+              "via": "R056"
+            }
           },
           "R098": {
             "redo": {
@@ -17116,7 +17853,14 @@
             ],
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "나는 [O] 대신 사과를 먹습니다.",
+              "amb": "rather than은 ‘~대신’ 또는 ‘~라기보다는’의 의미로 읽힐 수 있음.",
+              "at": "2026-11-10T02:22:05.304Z",
+              "by": "Gemini",
+              "trh": "1hlwxj310945b1r"
+            }
           },
           "R099": {
             "redo": {
@@ -17145,43 +17889,105 @@
             ],
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "[O]도 [OO]와 함께 [O]를 먹고 있습니다.",
+              "amb": "with는 동반(함께) 또는 수단/곁들임의 의미일 수 있음.",
+              "at": "2026-11-10T02:22:05.304Z",
+              "by": "Gemini",
+              "trh": "130z5j7lgbmnrv"
+            }
           },
           "R100": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R101": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "두뇌 파워! 가로세로 낱말퍼즐",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "1befz8dorapubz",
+              "via": "R059"
+            }
           },
           "R102": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "AD (광고)",
+              "amb": "AD는 광고(Advertisement)의 약자일 수 있음.",
+              "at": "2026-11-10T02:22:05.300Z",
+              "by": "Gemini",
+              "trh": "ev610u1kin9fy4",
+              "via": "R001"
+            }
           },
           "R103": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "두뇌 파워! 가로세로 낱말퍼즐",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "1befz8dorapubz",
+              "via": "R059"
+            }
           },
           "R104": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "가로",
+              "amb": "낱말퍼즐의 가로 방향을 뜻함.",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "7h9jiq1ag070y8",
+              "via": "R062"
+            }
           },
           "R105": {
             "ok": [
               "srcSuffix",
               "negAdd"
-            ]
+            ],
+            "bt0": {
+              "t": "글이 아니라 대부분 그림으로 이루어진 일기.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.304Z",
+              "by": "Gemini",
+              "trh": "1h6iu9m1hw8ws212"
+            }
           },
           "R106": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "세로",
+              "amb": "낱말퍼즐의 세로 방향을 뜻함.",
+              "at": "2026-11-10T02:22:05.303Z",
+              "by": "Gemini",
+              "trh": "4k1tpx1jt5ppp6",
+              "via": "R064"
+            }
           },
           "R107": {
             "redo": {
@@ -17210,12 +18016,26 @@
             ],
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "36 + [mo] = ?",
+              "amb": "Thirty-six는 숫자 36을 뜻함. [mo]의 의미는 문장만으로 알 수 없음.",
+              "at": "2026-11-10T02:22:05.304Z",
+              "by": "Gemini",
+              "trh": "1pbi02l1n5v08fj"
+            }
           },
           "R108": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "신문과 잡지에 실릴 기사를 조사하거나 쓰거나 편집하는 사람.",
+              "amb": "",
+              "at": "2026-11-10T02:22:05.304Z",
+              "by": "Gemini",
+              "trh": "1aq6jcih7juru1z"
+            }
           },
           "R109": {
             "memos": [
@@ -17233,7 +18053,14 @@
             ],
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "“김 씨 ○○○가 오늘 ○○ 기자회견을 열 예정입니다.”",
+              "amb": "Mr. Kim은 ‘김 씨’ 또는 ‘김 선생님’으로 옮길 수 있음. press conference는 기자회견을 뜻함.",
+              "at": "2026-11-10T02:22:05.304Z",
+              "by": "Gemini",
+              "trh": "61inktnxsx4119"
+            }
           },
           "@plan": {
             "memos": [
