@@ -1,0 +1,29 @@
+{
+  "_note": "요청서 표의 텍스트로 만든 골든 세트. 그리드(매칭 부적 단어 배치)와 십자말 칸 위치, AI 번역의 십자말 답은 사람 번역 PNG를 보기 전에 정답이 성립하는 최소 가정으로 채움 — 이미지 확인 전. PNG(AD_xx_1p_en.png 등)는 img/에 넣고 다시 확인할 것.",
+  "puzzles": [
+    { "pid": "AD_06", "type": "blank_pair",
+      "human": { "spec": "문장=Migratory birds want to fly where there are no clouds. | 1P=R065 | 2P=R068", "tr": { "R065": "Migratory ( )( ) to fly where ( )( ) no ( ).", "R068": "( ) birds want ( )( ) ( ) there are ( ) clouds." } },
+      "ai": { "spec": "문장=Migratory birds want to fly where there are no clouds. | 1P=R065 | 2P=R068", "tr": { "R065": "What is the weather like in a place that knows migratory birds?", "R068": "I want to fly from a place with no clouds." } } },
+    { "pid": "AD_13", "type": "blank_pair",
+      "human": { "spec": "문장=I want to eat apples rather than bugs. | 1P=R133 | 2P=R136", "tr": { "R133": "( )( ) to ( ) apples rather than ( ).", "R136": "I want ( ) eat ( ) ( )( ) bugs." } },
+      "ai": { "spec": "문장=I want to eat apples rather than bugs. | 1P=R133 | 2P=R136", "tr": { "R133": "I would rather eat an apple than _____.", "R136": "I want to eat an apple instead of _____." } } },
+    { "pid": "AD_07", "type": "crossword", "assumed": "칸 위치 (4,1)→ · (1,2)↓ 는 겹치는 칸 E가 맞도록 가정",
+      "human": { "spec": "가로1=WEST@(4,1)→4 | 세로1=VASE@(1,2)↓4 | 단서=R073,R074", "tr": { "R073": "Across 1: The direction where the sun sets", "R074": "Down 1: Container for cut flowers" } },
+      "ai": { "spec": "가로1=GINKGO@(4,1)→4 | 세로1=TAILING@(1,2)↓4 | 단서=R073,R074", "tr": { "R073": "Across 1: A tree whose leaves turn yellow, the ginkgo", "R074": "Down 1: Secretly following someone" } } },
+    { "pid": "AD_14", "type": "crossword", "assumed": "칸 위치 (4,1)→ · (1,3)↓ 는 겹치는 칸 A가 맞도록 가정",
+      "human": { "spec": "가로1=HEAD@(4,1)→4 | 세로1=COLA@(1,3)↓4 | 단서=R141,R142", "tr": { "R141": "Across 1: The top part of your body", "R142": "Down 1: A fizzy brown drink" } },
+      "ai": { "spec": "가로1=PICTUREDIARY@(4,1)→4 | 세로1=REPORTER@(1,3)↓4 | 단서=R141,R142", "tr": { "R141": "Across 1: Picture diary", "R142": "Down 1: Thirty-six + a vowel = ?" } } },
+    { "pid": "AD_04", "type": "spot_diff",
+      "human": { "spec": "차이=2 | 쌍=R041:R048, R043:R050", "tr": { "R041": "Coll-Act", "R048": "Cell-Act", "R043": "DANCE!", "R050": "FINISH!" } },
+      "ai": { "spec": "차이=2 | 쌍=R041:R048, R043:R050", "tr": { "R041": "Coll-Act", "R048": "Coll-Act", "R043": "DANCE! FINISH!", "R050": "DANCE! FINISH!" } } },
+    { "pid": "AD_11", "type": "spot_diff",
+      "human": { "spec": "차이=2 | 쌍=R111:R118, R113:R120", "tr": { "R111": "Everything started from OO.", "R118": "Nothing started from OO.", "R113": "We keep fighting over this.", "R120": "We keep fighting ever this." } },
+      "ai": { "spec": "차이=2 | 쌍=R111:R118, R113:R120", "tr": { "R111": "Everything started from OO.", "R118": "Everything started from OO.", "R113": "We keep fighting over this.", "R120": "We keep fighting over this." } } },
+    { "pid": "AD_03", "type": "mapping", "assumed": "그리드는 정답 두 칸만 (이미지 확인 전)",
+      "human": { "spec": "카드=R026,R029 | 키=월 | 정답=JAN→SEED, SEP→DATE | 그리드=JAN:SEED, SEP:DATE", "tr": { "R026": "Jack Sparrow\n2006-JAN-23", "R029": "Black Swan\n2000-SEP-03" } },
+      "ai": { "spec": "카드=R026,R029 | 키=월 | 정답=JAN→SEED, SEP→DATE | 그리드=JAN:SEED, SEP:DATE", "tr": { "R026": "060123-CHIRP", "R029": "Born in 2006" } } },
+    { "pid": "AD_10", "type": "mapping", "assumed": "그리드는 정답 두 칸만 (이미지 확인 전)",
+      "human": { "spec": "카드=R096,R099 | 키=월 | 정답=AUG→SEED, MAY→MOVE | 그리드=AUG:SEED, MAY:MOVE", "tr": { "R096": "Mr. parrot\n2001-AUG-24", "R099": "Pingu Pinguin\n1997-MAY-19" } },
+      "ai": { "spec": "카드=R096,R099 | 키=월 | 정답=AUG→SEED, MAY→MOVE | 그리드=AUG:SEED, MAY:MOVE", "tr": { "R096": "010326-REGRET", "R099": "Born in 1997" } } }
+  ]
+}

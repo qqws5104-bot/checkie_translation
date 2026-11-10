@@ -10,7 +10,7 @@
  *   GITHUB_TOKEN     필수. 이 저장소에 Contents: Read and write 권한이 있는 fine-grained 토큰
  *   GITHUB_REPO      필수. "계정/저장소" 형식 (예: xphobia/checkie-translation)
  *   ADMIN_ID         선택. 관리자 아이디 (기본값 yeun)
- *   ADMIN_PASSWORD   선택. 관리자 비밀번호 (기본값 05197) — Render Environment에서 바꾸는 것을 권장
+ *   ADMIN_PASSWORD   필수. 관리자 비밀번호 (기본값 없음)
  *   ADMIN_NAME       선택. 관리자 이름 기본값 (기본값 김예은, 사이트의 ‘내 정보’에서도 바꿀 수 있음)
  *   SESSION_SECRET   선택. 로그인 유지용 서명 키 (없으면 GITHUB_TOKEN으로 만듦)
  *   DATA_BRANCH      선택. 기본값 data
@@ -191,6 +191,7 @@ const publicUser = (id, u) => Object.assign({ id }, norm(u));
 const AI = require('./ai');
 const Merge = require('./public/merge.js');
 const Retention = require('./public/retention.js');
+const Puzzle = require('./public/puzzle.js');
 const AI_KEY = AI.anyVision();
 const AI_LIMIT = Number(env.AI_HOURLY_LIMIT) || 200;
 const MAX_FILE = 12 * 1024 * 1024;
@@ -420,6 +421,19 @@ function guardTheme(before, after, conflicts) {
       if (x.hv && x.hv.v === '승인' && x.rv && x.rv.hold && !x.rv.exc) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (HOLD: 원문 확인 전에는 승인 불가)`); }
       if (x.hv && x.hv.v === '승인' && x.rv && Array.isArray(x.rv.crit) && x.rv.crit.length && !x.rv.exc) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (치명 오류가 있는 줄은 예외 사유 없이 승인 불가)`); }
     });
+    /* 퍼즐 ‘직접 확인함’: 프로그램 퍼즐 검사 FAIL이면 불가, 확인한 뒤 퍼즐 줄 번역이 바뀌면 무효 (화면과 같은 puzzle.js로 다시 계산) */
+    if (w.pzOk && typeof w.pzOk === 'object') {
+      const sh = w.sheet || {}, ids = new Set([...(Array.isArray(sh.ids) ? sh.ids : (sh.rows || []).map((_, i) => 'R' + String(i + 1).padStart(3, '0'))), ...Object.keys(w.items).filter(k => !k.startsWith('@'))]);
+      const tr = {}; ids.forEach(id => { tr[id] = eff(id); });
+      const list = Puzzle.run(((after.source || {}).answers) || [], w.pz || {}, sh.extra || [], tr, lk);
+      Object.entries(w.pzOk).forEach(([name, o]) => {
+        if (!o) return;
+        const q = (o.pid && list.find(x => x.pid === o.pid)) || Puzzle.matchPuzzle(name, '', list);
+        if (!q) return;
+        if (q.v === 'FAIL') { w.pzOk[name] = null; conflicts.push(`work.${lk}.pzOk.${name} (프로그램 퍼즐 검사 FAIL — 직접 확인 불가: ${(q.msgs[0] || '').slice(0, 80)})`); }
+        else if (o.h && o.h !== q.h) { w.pzOk[name] = null; conflicts.push(`work.${lk}.pzOk.${name} (퍼즐 줄 번역이나 구조가 바뀌어 확인 무효)`); }
+      });
+    }
     const p0 = Number(((before || {}).progress || {})[lk] || 0), p1 = Number((after.progress || {})[lk] || 0);
     if (p1 >= 4 && p0 < 4 && w.sheet && Array.isArray(w.sheet.ids)) {
       const todo = w.sheet.ids.filter(id => { const x = w.items[id]; return !(x && x.hv && x.hv.v === '승인' && x.hv.trh === Merge.trHash(eff(id))); });
