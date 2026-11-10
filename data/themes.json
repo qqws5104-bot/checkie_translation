@@ -14623,7 +14623,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-10T02:12:11.031Z",
+    "updatedAt": "2026-11-10T02:13:30.378Z",
     "progressBy": {
       "en": {},
       "ja": {},
@@ -16976,13 +16976,47 @@
               "srcSuffix"
             ]
           },
-          "R082": {},
-          "R083": {},
-          "R084": {},
-          "R085": {},
-          "R086": {},
-          "R087": {},
-          "R088": {},
+          "R082": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "R083": {
+            "ok": [
+              "sym",
+              "srcSuffix"
+            ]
+          },
+          "R084": {
+            "ok": [
+              "read",
+              "srcSuffix",
+              "clsB"
+            ]
+          },
+          "R085": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "R086": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "R087": {
+            "ok": [
+              "srcSuffix",
+              "sym"
+            ]
+          },
+          "R088": {
+            "ok": [
+              "read",
+              "srcSuffix",
+              "clsB"
+            ]
+          },
           "R089": {
             "memos": [
               {
