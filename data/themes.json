@@ -14623,7 +14623,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-10T02:36:06.643Z",
+    "updatedAt": "2026-11-10T02:36:17.031Z",
     "progressBy": {
       "en": {},
       "ja": {},
@@ -16504,10 +16504,7 @@
             }
           },
           "R002": {
-            "ok": [
-              "srcSuffix",
-              "clsB"
-            ],
+            "ok": [],
             "bt0": {
               "t": "아기 새 안전 캠페인",
               "amb": "",
@@ -16515,49 +16512,10 @@
               "by": "Gemini",
               "trh": "76lac416akbvgo"
             },
-            "bt": [
-              "아기 새 안전 캠페인"
-            ],
-            "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Baby Bird Safety Campaign",
-              "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "76lac416akbvgo",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -16565,7 +16523,52 @@
                 "at": "2026-11-10T02:35:53.552Z",
                 "total": 92
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:17.008Z",
+                "by": "김예은",
+                "from": "Baby Bird Safety Campaign",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                  "fix": "Baby Bird Safety Campaign",
+                  "exc": "",
+                  "bt": "아기 새 안전 캠페인",
+                  "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Baby Bird Safety Campaign",
+                "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
+            ],
+            "tr": "Baby Bird Safety Campaign",
+            "hv": null
           },
           "R003": {
             "ok": [
@@ -16712,10 +16715,7 @@
             }
           },
           "R006": {
-            "ok": [
-              "srcSuffix",
-              "clsB"
-            ],
+            "ok": [],
             "bt0": {
               "t": "아기 새 안전 캠페인",
               "amb": "",
@@ -16724,50 +16724,55 @@
               "trh": "76lac416akbvgo",
               "via": "R002"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Baby Bird Safety Campaign",
-              "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "76lac416akbvgo",
-              "err3": [],
-              "via": "R002"
-            },
-            "bt": [
-              "아기 새 안전 캠페인"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:17.008Z",
+                "by": "김예은",
+                "from": "Baby Bird Safety Campaign",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                  "fix": "Baby Bird Safety Campaign",
+                  "exc": "",
+                  "bt": "아기 새 안전 캠페인",
+                  "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Baby Bird Safety Campaign",
+                "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
-            "rel": "-"
+            "tr": "Baby Bird Safety Campaign",
+            "hv": null
           },
           "R007": {
             "ok": [
@@ -19738,10 +19743,7 @@
             }
           },
           "R068": {
-            "ok": [
-              "srcSuffix",
-              "clsB"
-            ],
+            "ok": [],
             "bt0": {
               "t": "아기 새 안전 캠페인",
               "amb": "",
@@ -19750,50 +19752,55 @@
               "trh": "76lac416akbvgo",
               "via": "R002"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Baby Bird Safety Campaign",
-              "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "76lac416akbvgo",
-              "err3": [],
-              "via": "R002"
-            },
-            "bt": [
-              "아기 새 안전 캠페인"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:17.008Z",
+                "by": "김예은",
+                "from": "Baby Bird Safety Campaign",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                  "fix": "Baby Bird Safety Campaign",
+                  "exc": "",
+                  "bt": "아기 새 안전 캠페인",
+                  "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Baby Bird Safety Campaign",
+                "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
-            "rel": "-"
+            "tr": "Baby Bird Safety Campaign",
+            "hv": null
           },
           "R069": {
             "ok": [
@@ -19877,10 +19884,7 @@
             }
           },
           "R071": {
-            "ok": [
-              "srcSuffix",
-              "clsB"
-            ],
+            "ok": [],
             "bt0": {
               "t": "아기 새 안전 캠페인",
               "amb": "",
@@ -19889,50 +19893,55 @@
               "trh": "76lac416akbvgo",
               "via": "R002"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Baby Bird Safety Campaign",
-              "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "76lac416akbvgo",
-              "err3": [],
-              "via": "R002"
-            },
-            "bt": [
-              "아기 새 안전 캠페인"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:17.008Z",
+                "by": "김예은",
+                "from": "Baby Bird Safety Campaign",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                  "fix": "Baby Bird Safety Campaign",
+                  "exc": "",
+                  "bt": "아기 새 안전 캠페인",
+                  "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Baby Bird Safety Campaign",
+                "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
-            "rel": "-"
+            "tr": "Baby Bird Safety Campaign",
+            "hv": null
           },
           "R072": {
             "ok": [
