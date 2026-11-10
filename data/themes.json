@@ -14623,7 +14623,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-10T02:36:17.031Z",
+    "updatedAt": "2026-11-10T02:36:21.347Z",
     "progressBy": {
       "en": {},
       "ja": {},
@@ -16583,10 +16583,7 @@
             }
           },
           "R004": {
-            "ok": [
-              "srcSuffix",
-              "clsB"
-            ],
+            "ok": [],
             "bt0": {
               "t": "새 경찰",
               "amb": "",
@@ -16594,49 +16591,10 @@
               "by": "Gemini",
               "trh": "1o8x8o61tzo4w2c"
             },
-            "bt": [
-              "새 경찰"
-            ],
-            "gl": "Bird Police = 새 경찰",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Bird Police",
-              "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 77,
-              "band": "REVIEW 수정 필수",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o8x8o61tzo4w2c",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -16644,7 +16602,52 @@
                 "at": "2026-11-10T02:35:53.552Z",
                 "total": 77
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:21.324Z",
+                "by": "김예은",
+                "from": "Bird Police",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
+                  "fix": "Bird Police",
+                  "exc": "",
+                  "bt": "새 경찰",
+                  "gl": "Bird Police = 새 경찰",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Bird Police",
+                "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
+            ],
+            "tr": "Bird Police",
+            "hv": null
           },
           "R005": {
             "ok": [
@@ -16788,10 +16791,7 @@
             }
           },
           "R008": {
-            "ok": [
-              "srcSuffix",
-              "clsB"
-            ],
+            "ok": [],
             "bt0": {
               "t": "새 경찰",
               "amb": "",
@@ -16800,50 +16800,55 @@
               "trh": "1o8x8o61tzo4w2c",
               "via": "R004"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Bird Police",
-              "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 77,
-              "band": "REVIEW 수정 필수",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o8x8o61tzo4w2c",
-              "err3": [],
-              "via": "R004"
-            },
-            "bt": [
-              "새 경찰"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:21.324Z",
+                "by": "김예은",
+                "from": "Bird Police",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
+                  "fix": "Bird Police",
+                  "exc": "",
+                  "bt": "새 경찰",
+                  "gl": "Bird Police = 새 경찰",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Bird Police",
+                "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "Bird Police = 새 경찰",
-            "rel": "-"
+            "tr": "Bird Police",
+            "hv": null
           },
           "R009": {
             "ok": [
