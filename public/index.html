@@ -1581,7 +1581,7 @@ function clsStats(rows) {
   return { n, done, A: c.A, B: c.B, C: c.C, R: c.R, none: c[''], pA: pct('A'), pB: pct('B'), pC: pct('C'), pHuman: n ? Math.round((c.B + c.C + c.R) / n * 1000) / 10 : 0 };
 }
 /* 번역 근거(엑셀 한 줄) → 근거 객체 */
-const ratFromCells = (r, c) => c.meth >= 0 ? { meth: methOf(r[c.meth]), methRaw: String(r[c.meth] || ''), intent: String(r[c.intent] || ''), sense: String(r[c.sense] || ''), reason: String(r[c.reason] || ''), redo: String(r[c.redoWhy] || ''), wmap: c.wmap >= 0 ? String(r[c.wmap] || '') : '', by: '번역 AI' } : null;
+const ratFromCells = (r, c) => c.meth >= 0 ? { meth: methOf(r[c.meth]), methRaw: String(r[c.meth] || ''), intent: String(r[c.intent] || ''), sense: String(r[c.sense] || ''), reason: String(r[c.reason] || ''), redo: String(r[c.redoWhy] || ''), wmap: c.wmap >= 0 ? String(r[c.wmap] || '') : '', sub: c.sub >= 0 ? String(r[c.sub] || '') : '', by: '번역 AI' } : null;
 /* 지금 번역문에 맞는 근거만 연결: 번역이 바뀌었는데 새 근거가 없으면 비워 두고 ‘근거 다시 받기’ 대상 (옛 근거를 새 번역에 붙이지 않음) */
 function resolveRat(r) {
   r.sheetRat = r.rat; r.ratStale = false;
@@ -1645,11 +1645,11 @@ const AI_CHECKS = ['의미', '행동', '조건', '정답', '자연스러움', '�
 const AI_CHECK_Q = { 의미: '원문과 같은 뜻인가', 행동: '플레이어가 해야 하는 행동이 같은가', 조건: '시간·횟수·순서·대상·조건이 그대로인가', 정답: '사실상 정답·게임상 정답과 선택지 관계가 그대로인가 (관계없으면 해당 없음)', 자연스러움: '처음 온 방문객이 자연스럽게 이해하는가', 말투: '존대 수준·상대와의 관계·화자의 말투가 원문과 같고 그 언어에서 자연스러운 대화체인가 (말하는 문장이 아니면 해당 없음)', 문화: '한국 문화를 몰라도 이해하는가', '추가 정보': '원문의 정보가 빠지지 않았고, 원문에 없는 힌트·조건·설명이 들어가지 않았는가', 용어: '확정 용어집과 맞고 금지 표현이 없는가' };
 const chkGet = (chk, k) => !chk ? '' : chk[k] || (k === '문화' ? chk['현지화'] || '' : '');
 /* 프로그램 검사 등급: FAIL은 고치거나 예외 사유를 써야 넘어감, REVIEW는 사람이 보고 넘김 */
-const PROG_FAIL = new Set(['empty', 'var', 'term', 'avoid', 'hangul', 'script', 'srcChg', 'relSwap', 'btShift', 'neg', 'ctxF']);
+const PROG_FAIL = new Set(['longF', 'empty', 'var', 'term', 'avoid', 'hangul', 'script', 'srcChg', 'relSwap', 'btShift', 'neg', 'ctxF']);
 function progSev(k, r) { if (r.cls === 'C' && (k === 'neg' || k === 'relSwap')) return 'REVIEW'; if (k === 'num') return (r.cls === 'B' || r.cls === 'C' || /숫자\s*(변경|표기)?\s*허용/.test(`${r.clsDir} ${r.note}`)) ? 'REVIEW' : 'FAIL'; return PROG_FAIL.has(k) ? 'FAIL' : 'REVIEW'; }
 const ERR_TYPES = ['의미 오류', '행동 오류', '조건 오류', '정답 오류', '문화적 현지화 오류', '용어 불일치', '문법 오류', '자연스러움 문제', '누락', '추가 정보 생성', '숫자 및 변수 오류', '화면 길이 초과', '기타'];
 const CHK_ERR = { 의미: '의미 오류', 행동: '행동 오류', 조건: '조건 오류', 정답: '정답 오류', 자연스러움: '자연스러움 문제', 말투: '말투·존대 불일치', 문화: '문화적 현지화 오류', 현지화: '문화적 현지화 오류', '추가 정보': '추가 정보 생성', 용어: '용어 불일치' };
-const PROG_ERR = { relSwap: '행동 오류', relDiff: '행동 오류', empty: '누락', hangul: '누락', var: '숫자 및 변수 오류', num: '숫자 및 변수 오류', term: '용어 불일치', avoid: '용어 불일치', long: '화면 길이 초과', script: '문법 오류' };
+const PROG_ERR = { relSwap: '행동 오류', relDiff: '행동 오류', empty: '누락', hangul: '누락', var: '숫자 및 변수 오류', num: '숫자 및 변수 오류', term: '용어 불일치', avoid: '용어 불일치', long: '화면 길이 초과', longF: '화면 길이 초과', typo: '문법 오류', gram: '문법 오류', unfin: '문법 오류', script: '문법 오류' };
 const errTypeOfRv = rv => { const chk = (rv && rv.chk) || {}; return Object.keys(chk).filter(k => chk[k] === 'FAIL').map(k => CHK_ERR[k]).filter(Boolean)[0] || ''; };
 /* 지금 번역문에 대한 사람 판정만 유효 (승인 뒤 번역이 바뀌면 무효) */
 const trCk = tr => Merge.trHash(tr);
@@ -1816,12 +1816,12 @@ const progW = (r, ks) => W4((r.open || []).filter(o => ks.includes(o[0])).map(o 
 /* 언어적 정확성과 게임 기능 적합성을 따로 판정 */
 function langFunc(r) {
   const rv = r.x.rv; if (!rv) return null; const crit = (rv.crit || []).join(' ');
-  const lang = W4([rvLv(rv, '핵심', '의미'), rvLv(rv, '말투', '말투'), rvLv(rv, '문맥', '자연스러움'), rvBin(rv, '추가 정보'), progW(r, ['honor', 'hangul', 'script', 'negAdd', 'lines', 'enOut', 'enWhy', 'xcmp', 'btShift', 'btFar'])]);
-  const func = W4([rvLv(rv, '의도', '행동'), rvLv(rv, '대상', '조건'), rvBin(rv, '정답'), rvBin(rv, '용어'), crit ? 'FAIL' : 'PASS', progW(r, ['neg', 'num', 'var', 'term', 'avoid', 'relSwap', 'long', 'enPz', 'ctx', 'ctxF', 'tm'])]);
+  const lang = W4([rvLv(rv, '핵심', '의미'), rvLv(rv, '말투', '말투'), rvLv(rv, '문맥', '자연스러움'), rvBin(rv, '추가 정보'), progW(r, ['honor', 'hangul', 'script', 'typo', 'gram', 'unfin', 'negAdd', 'lines', 'enOut', 'enWhy', 'xcmp', 'btShift', 'btFar'])]);
+  const func = W4([rvLv(rv, '의도', '행동'), rvLv(rv, '대상', '조건'), rvBin(rv, '정답'), rvBin(rv, '용어'), crit ? 'FAIL' : 'PASS', progW(r, ['neg', 'num', 'var', 'term', 'avoid', 'relSwap', 'long', 'longF', 'enPz', 'ctx', 'ctxF', 'tm'])]);
   return { lang, func };
 }
 /* 문제 유형: 담당자가 필터로 나눠 볼 수 있게 */
-const ISSUE_TYPES = ['번역 오류', '의미 불일치', '문맥 오류', '용어 불일치', '말투', '누락·추가', '기능(정답·규칙)', 'UI·표기', '방식 판정', '판정 번복', '원문 확인(HOLD)', '기타 점검'];
+const ISSUE_TYPES = ['번역 오류', '통사구조(문법·오탈자)', '의미 불일치', '문맥 오류', '용어 불일치', '말투', '누락·추가', '기능(정답·규칙)', 'UI·표기', '방식 판정', '판정 번복', '원문 확인(HOLD)', '기타 점검'];
 function issuesOf(r) {
   const rv = r.x.rv, out = [], add = (type, msg) => { if (msg) out.push({ type, msg }); }, op = k => (r.open || []).filter(o => o[0] === k).map(o => o[1]);
   if (rv) {
@@ -1837,12 +1837,234 @@ function issuesOf(r) {
     if (rvBin(rv, '용어') !== 'PASS') add('용어 불일치', `용어 ${rvBin(rv, '용어')}`);
     if (rv.flip) add('판정 번복', `같은 번역인데 이전 검수 ${rv.flip.from} → 이번 ${aiNow(rv)}`);
   }
-  [['hangul', '번역 오류'], ['script', 'UI·표기'], ['long', 'UI·표기'], ['sym', 'UI·표기'], ['enOut', '용어 불일치'], ['enWhy', '용어 불일치'], ['zhMix', '말투'], ['flip', null], ['ctx', null], ['ctxF', null], ['srcChg', '원문 확인(HOLD)'], ['srcDiff', '원문 확인(HOLD)']].forEach(([k, ty]) => ty && op(k).forEach(m => add(ty, m)));
-  const known = new Set(['hangul', 'script', 'long', 'sym', 'enOut', 'enWhy', 'zhMix', 'flip', 'ctx', 'ctxF', 'srcChg', 'srcDiff', 'xcmp', 'btShift', 'btFar', 'term', 'avoid', 'tm', 'honor', 'lines', 'empty', 'negAdd', 'neg', 'num', 'var', 'relSwap', 'enPz', 'methX', 'methChg', 'methInc']);
+  [['hangul', '번역 오류'], ['script', 'UI·표기'], ['long', 'UI·표기'], ['longF', 'UI·표기'], ['typo', '통사구조(문법·오탈자)'], ['gram', '통사구조(문법·오탈자)'], ['unfin', '통사구조(문법·오탈자)'], ['sym', 'UI·표기'], ['enOut', '용어 불일치'], ['enWhy', '용어 불일치'], ['zhMix', '말투'], ['flip', null], ['ctx', null], ['ctxF', null], ['srcChg', '원문 확인(HOLD)'], ['srcDiff', '원문 확인(HOLD)']].forEach(([k, ty]) => ty && op(k).forEach(m => add(ty, m)));
+  const known = new Set(['hangul', 'script', 'long', 'longF', 'typo', 'gram', 'unfin', 'sym', 'enOut', 'enWhy', 'zhMix', 'flip', 'ctx', 'ctxF', 'srcChg', 'srcDiff', 'xcmp', 'btShift', 'btFar', 'term', 'avoid', 'tm', 'honor', 'lines', 'empty', 'negAdd', 'neg', 'num', 'var', 'relSwap', 'enPz', 'methX', 'methChg', 'methInc']);
   (r.open || []).filter(o => !known.has(o[0])).forEach(o => add('기타 점검', o[1]));
   [['xcmp', '의미 불일치'], ['btShift', '의미 불일치'], ['btFar', '의미 불일치'], ['term', '용어 불일치'], ['avoid', '용어 불일치'], ['tm', '용어 불일치'], ['honor', '말투'], ['lines', '누락·추가'], ['empty', '누락·추가'], ['negAdd', '누락·추가'], ['neg', '기능(정답·규칙)'], ['num', '기능(정답·규칙)'], ['var', '기능(정답·규칙)'], ['relSwap', '기능(정답·규칙)'], ['enPz', '기능(정답·규칙)'], ['methX', '방식 판정'], ['methChg', '방식 판정'], ['methInc', '방식 판정']].forEach(([k, ty]) => op(k).forEach(m => add(ty, m)));
   op('ctx').concat(op('ctxF')).forEach(m => add(/용어/.test(m) ? '용어 불일치' : /말투/.test(m) ? '말투' : '문맥 오류', m));
   return out;
+}
+/* ===== 오류 유형: 정확성 · 가독성 · 통사구조 (게임 기능 판정과는 따로) ===== */
+const ERR3 = [['정확성', ['부정확한 의미', '누락']], ['가독성', ['맥락 오류', '배열 오류']], ['통사구조', ['미완성 문장', '문법 오류', '오탈자']]];
+const ERR3_SUB = Object.fromEntries(ERR3.flatMap(([c, L]) => L.map(x => [x, c])));
+const ERR3_DESC = { '부정확한 의미': '어휘·고유명사·관용어를 잘못 옮겨 뜻이 달라짐', '누락': '원문의 정보·단어·부사가 빠짐', '맥락 오류': '문장만 보면 맞지만 화면·상황·말투에 안 맞음', '배열 오류': '단어·절의 순서나 수식 관계가 꼬여 읽기 어려움', '미완성 문장': '문장이 끊기거나 필요한 성분이 없음', '문법 오류': '관사·단복수·시제·활용·어순 등이 틀림', '오탈자': '철자·띄어쓰기·문장부호·글자 오류' };
+function parseErr3(v) { const x = String(v || '').replace(/\s/g, ''); if (!x || /^(없음|-|none)$/i.test(x)) return []; return Object.keys(ERR3_SUB).filter(k => x.includes(k.replace(/\s/g, ''))); }
+const PROG_ERR3 = { empty: '누락', lines: '누락', hangul: '누락', num: '누락', var: '누락', neg: '부정확한 의미', negAdd: '부정확한 의미', relSwap: '부정확한 의미', relDiff: '부정확한 의미', xcmp: '부정확한 의미', btFar: '부정확한 의미', term: '부정확한 의미', avoid: '부정확한 의미', tm: '부정확한 의미', enOut: '부정확한 의미', ctx: '맥락 오류', ctxF: '맥락 오류', honor: '맥락 오류', zhMix: '맥락 오류', typo: '오탈자', sym: '오탈자', script: '오탈자', gram: '문법 오류', unfin: '미완성 문장' };
+function err3Of(r) {
+  const rv = r.x.rv, out = [], add = (sub, msg, by) => { if (sub && !out.some(o => o.sub === sub && o.by === by)) out.push({ cat: ERR3_SUB[sub], sub, msg, by }); };
+  if (rv) {
+    const w = rv.why && rv.why !== '-' ? rv.why : '';
+    (rv.err3 || []).forEach(x => add(x, w || '검수 AI 분류', '검수 AI'));
+    if (!rv.err3) {   /* 예전 검수(오류 유형 칸 없음): 점수에서 추정 */
+      if ((rv.crit || []).length || rvLv(rv, '핵심', '의미') !== 'PASS' || rvBin(rv, '용어') !== 'PASS') add('부정확한 의미', w || '핵심 의미·용어 점수', '점수 추정');
+      if (rvBin(rv, '추가 정보') !== 'PASS') add('누락', '누락·임의 추가 판정', '점수 추정');
+      if (rvLv(rv, '문맥', '자연스러움') !== 'PASS' || rvLv(rv, '말투', '말투') !== 'PASS') add('맥락 오류', '문맥·말투 점수', '점수 추정');
+    }
+  }
+  (r.open || []).forEach(o => add(PROG_ERR3[o[0]], o[1], '프로그램'));
+  return out;
+}
+const err3Txt = r => { const L = err3Of(r); return ERR3.map(([c]) => { const u = [...new Set(L.filter(x => x.cat === c).map(x => x.sub))]; return u.length ? `${c}: ${u.join('·')}` : ''; }).filter(Boolean).join(' / '); };
+/* 길이 한도: 원문표에 칸 한도(최대 글자 수)가 있으면 그것(넘으면 FAIL), 없으면 언어별 비율(넘으면 REVIEW) */
+const LEN_RATIO = { en: [2.6, 8], ja: [1.6, 4], zh: [1.3, 3] };
+const lenCount = v => [...String(v || '').replace(/\s/g, '')].length;
+function limOf(lk, r) {
+  const m = String((r.b && r.b.lim) || '').match(/\d+/);
+  if (m && Number(m[0]) > 0) return { n: Number(m[0]), hard: true, how: `칸 한도 ${m[0]}자` };
+  const k0 = lenCount(r.ko); if (!k0) return null; const [k, a] = LEN_RATIO[lk] || [1.5, 4];
+  return { n: Math.ceil(k0 * k + a), hard: false, how: `원문 ${k0}자 × ${k} + ${a}` };
+}
+function lenOf(lk, r) {
+  const L = limOf(lk, r); if (!L || !r.tr) return null;
+  const n = L.hard ? [...String(r.tr).replace(/\n/g, '')].length : lenCount(r.tr);
+  return Object.assign({}, L, { len: n, over: n > L.n, msg: `길이 한도를 넘음 (${n}자 / ${L.how} = ${L.n}자) — 칸 넘침 확인. 줄이거나 예외 사유` });
+}
+/* 통사구조: 프로그램이 확실히 잡을 수 있는 것만 (모두 REVIEW) */
+const EN_ADV = new Set(['very', 'just', 'also', 'only', 'still', 'even', 'again', 'now', 'then', 'here', 'there', 'too', 'soon', 'already', 'always', 'never', 'not', 'quite', 'really', 'together', 'back', 'away', 'once', 'almost', 'maybe', 'first', 'later', 'more', 'most']);
+const NOT_LY = new Set(['only', 'family', 'reply', 'fly', 'apply', 'early', 'holy', 'ugly', 'jelly', 'belly', 'supply', 'rely', 'july', 'lily', 'italy', 'butterfly', 'friendly', 'lovely', 'lonely', 'silly', 'daily', 'monthly', 'weekly', 'likely']);
+function synCheck(lk, ko, tr) {
+  const out = [], T = String(tr || ''), typo = [], gram = [], unfin = [];
+  const pairs = [['(', ')'], ['（', '）'], ['「', '」'], ['『', '』'], ['“', '”'], ['[', ']'], ['【', '】']], bal = (v, a, b) => v.split(a).length === v.split(b).length;
+  if (pairs.some(([a, b]) => !bal(T, a, b) && bal(String(ko), a, b))) typo.push('괄호·따옴표 짝이 안 맞음');
+  if (lk === 'en') {
+    const rp = T.match(/\b([A-Za-z]+)\s+\1\b/i); if (rp && !/^(ha|bye|no|yes|knock|go|tick|ho)$/i.test(rp[1])) typo.push(`같은 단어 반복 ‘${rp[0]}’`);
+    if (/[^\s] {2,}[^\s]/.test(T)) typo.push('공백 두 칸');
+    if (/[A-Za-z] [,.!?;:](?!\.)/.test(T)) typo.push('문장부호 앞 공백');
+    T.replace(/\ba\s+([A-Za-z]+)/gi, (m0, w) => { if (/^[aeiou]/i.test(w) && !/^(uni|use|usu|uti|one|once|eu|ur)/i.test(w)) gram.push(`‘${m0}’ → an`); return m0; });
+    T.replace(/\ban\s+([A-Za-z]+)/gi, (m0, w) => { if (/^[b-df-hj-np-tv-z]/i.test(w) && !/^(hour|honest|hono|heir|herb)/i.test(w)) gram.push(`‘${m0}’ → a`); return m0; });
+    const s0 = T.trim(), lc = s0.match(/[.!?]\s+([a-z]\w*)/);
+    if (s0.split(/\s+/).length >= 3 && /^[a-z]/.test(s0)) gram.push(`문장 첫 글자가 소문자 ‘${s0.slice(0, 12)}…’`); else if (lc) gram.push(`문장부호 뒤 소문자 ‘${lc[0]}’`);
+    if (/\b(and|or|but|the|a|an|to|of|with|for|your|my|their)$/i.test(s0)) unfin.push(`‘${s0.slice(-16)}’로 끝남`);
+  } else {
+    const hw = /(^|[^A-Za-z0-9!?])[!?]/.test(T); if (hw && /[！？]/.test(T)) typo.push('반각·전각 문장부호가 섞임');
+    const s0 = T.trim(); if (lk === 'ja' ? /[、を]$/.test(s0) : /[，、]$/.test(s0)) unfin.push(`‘${s0.slice(-8)}’로 끝남`);
+  }
+  const kl = String(ko || '').split('\n'), tl = T.split('\n');
+  if (kl.length === tl.length) kl.forEach((k, i) => { if (/[?？]\s*$/.test(k) && !/[?？]\s*$/.test(tl[i]) && tl[i].trim()) unfin.push(`원문 ${i + 1}째 줄은 물음표로 끝나는데 번역은 아님`); });
+  if (typo.length) out.push(['typo', `오탈자 의심: ${typo.join(', ')}`]);
+  if (gram.length) out.push(['gram', `문법 확인: ${gram.slice(0, 3).join(', ')}`]);
+  if (unfin.length) out.push(['unfin', `미완성 문장 의심: ${unfin.join(', ')}`]);
+  return out;
+}
+/* 검증 단계: 모든 줄이 같은 순서로 지나감. 먼저 걸린 단계부터 봄 */
+const VSTEPS = ['① 형식', '② 통사구조', '③ 정확성', '④ 가독성', '⑤ 게임 기능', '⑥ 길이', '⑦ 사람'];
+function verifySteps(t, lk, r) {
+  const rv = r.x.rv, op = ks => (r.open || []).filter(o => ks.includes(o[0])), sev = L => L.length ? W4(L.map(o => progSev(o[0], r))) : 'PASS';
+  const E = err3Of(r).filter(e => e.by !== '프로그램'), eS = c => E.filter(e => e.cat === c), S = [];
+  const st = (name, v, msg) => S.push({ name, v, msg: v === 'PASS' || v === '미검수' || v === '대기' ? '' : msg });
+  const f = op(['empty', 'var', 'num', 'sym', 'lines', 'hangul', 'script']); st(VSTEPS[0], sev(f), f.map(o => o[1]).join(' / '));
+  const sy = op(['typo', 'gram', 'unfin']), sA = eS('통사구조'); st(VSTEPS[1], W4([sev(sy), sA.length ? 'REVIEW' : 'PASS']), [...sy.map(o => o[1]), ...sA.map(e => `검수 AI: ${e.sub}`)].join(' / '));
+  if (!rv) { [2, 3, 4].forEach(i => st(VSTEPS[i], '미검수')); }
+  else {
+    const bc = btConfirm(r), aA = eS('정확성'), fl = r.vd && r.vd.P === 'FAIL';
+    const pa = op(['neg', 'negAdd', 'xcmp', 'btFar', 'term', 'avoid', 'tm', 'enOut']);
+    st(VSTEPS[2], W4([bc ? bc.v : 'PASS', aA.length ? (fl ? 'FAIL' : 'REVIEW') : 'PASS', sev(pa)]), [...(bc ? bc.why : []), ...aA.map(e => `${e.sub}${e.msg && e.by === '검수 AI' ? ` — ${e.msg}` : ''}`), ...pa.map(o => o[1])].filter(Boolean).join(' / '));
+    const aB = eS('가독성'), pb = op(['ctx', 'ctxF', 'honor', 'zhMix']);
+    st(VSTEPS[3], W4([rvLv(rv, '문맥', '자연스러움'), rvLv(rv, '말투', '말투'), aB.length ? 'REVIEW' : 'PASS', sev(pb)]), [...aB.map(e => `${e.sub}${e.msg && e.by === '검수 AI' ? ` — ${e.msg}` : ''}`), ...pb.map(o => o[1]), rvLv(rv, '문맥', '자연스러움') !== 'PASS' ? '문맥 점수' : '', rvLv(rv, '말투', '말투') !== 'PASS' ? '말투 점수' : ''].filter(Boolean).join(' / '));
+    const lf = langFunc(r); st(VSTEPS[4], lf ? lf.func : 'PASS', [...(rv.crit || []).map(c => `치명 오류: ${c}`), rvLv(rv, '의도', '행동') !== 'PASS' ? '행동 의도' : '', rvLv(rv, '대상', '조건') !== 'PASS' ? '대상·조건' : '', rvBin(rv, '정답') !== 'PASS' ? '정답' : '', ...op(['relSwap', 'enPz']).map(o => o[1])].filter(Boolean).join(' / ') || '게임 기능 판정');
+  }
+  const ln = op(['long', 'longF']); st(VSTEPS[5], sev(ln), ln.map(o => o[1]).join(' / '));
+  const hv = hvOf(r); st(VSTEPS[6], !hv ? '대기' : hv.v === '승인' ? 'PASS' : 'REVIEW', hv ? `사람 ${hv.v}${hv.why ? ': ' + hv.why : ''}` : '');
+  return S;
+}
+const stepsTxt = S => S.map(x => `${x.name} ${x.v}`).join(' → ');
+const firstTodo = S => { const x = S.find(y => y.v === 'FAIL') || S.find(y => y.v === 'HOLD') || S.find(y => y.v === 'REVIEW'); return x ? `${x.name} ${x.v}: ${x.msg || '확인'}` : S.some(y => y.v === '미검수') ? '독립 검수 전' : ''; };
+/* ===== 사람 번역 vs AI 번역 비교 =====
+   사람 번역 = 올린 사람 번역본(x.human) 또는 사이트에서 사람·현지인이 고친 번역. AI 번역 = 사람이 처음 고치기 전 번역.
+   판정 AI에게는 어느 쪽이 사람인지 숨김(번역 1·2를 줄마다 섞음) → ‘사람이 맞겠지’ 편향을 막음 */
+const HD_V = ['AI 오류', '사람 오류', '둘 다 가능', '둘 다 오류'];
+const HD_WHY = ['맥락 정보 부족', '용어·고유명사', '관용 표현', '문법(관사·단복수·시제)', '부사·강조', '길이·UI 제약', '말투·캐릭터', '문화 현지화', '직역·의역 선택', '단순 실수(오탈자·누락)', '기타'];
+const isHumanVer = h => h && (h.kind === 'human' || h.kind === 'native' || /사람|현지인/.test(`${h.stage || ''} ${h.type || ''}`));
+function hpairOf(r) {
+  const hs = r.x.hist || [], i = hs.findIndex(isHumanVer), ai = i >= 0 ? String(hs[i].from || '') : String(r.tr || '');
+  if (r.x.human && r.x.human.tr) return { ai, hu: String(r.x.human.tr), src: '사람 번역본', by: r.x.human.by || '' };
+  if (i >= 0 && normKo(r.tr) !== normKo(ai)) return { ai, hu: String(r.tr || ''), src: hs[i].kind === 'native' ? '현지인 수정' : '사이트 수정', by: hs[i].by || '' };
+  return null;
+}
+const hpKey = pr => trCk(pr.ai + '\u0001' + pr.hu);
+const hpSame = pr => String(pr.ai).replace(/\s+/g, ' ').trim() === String(pr.hu).replace(/\s+/g, ' ').trim();
+const hpFlip = id => [...String(id)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 9973, 7) % 2 === 1;   /* true면 번역 1 = 사람 */
+const ADV_JA = ['もう', 'まだ', 'また', 'すぐ', 'ちょっと', 'とても', '必ず', '全部', '一緒に', 'もっと', '先に', 'ぜひ', 'やっと', 'ずっと', 'きっと', '少し'];
+const ADV_ZH = ['再', '又', '也', '都', '还', '就', '才', '很', '一起', '马上', '已经', '一定', '一点', '更', '只'];
+function hDiff(lk, a, b) {
+  const D = { art: [], adv: [], num: [], rm: [], ad: [], len: 0, sim: 0 }, la = lenCount(a), lb = lenCount(b);
+  D.len = la ? Math.round((lb - la) / la * 100) : 0; D.sim = Math.round((simKo(a, b) || 0) * 100);
+  if (lk === 'en') {
+    const W = v => String(v).toLowerCase().match(/[a-z]+(?:'[a-z]+)?/g) || [], wa = W(a), wb = W(b), cnt = L => L.reduce((m, w) => m.set(w, (m.get(w) || 0) + 1), new Map()), ca = cnt(wa), cb = cnt(wb);
+    const df = pred => { const o = []; new Set([...ca.keys(), ...cb.keys()]).forEach(w => { if (!pred(w)) return; const x = ca.get(w) || 0, y = cb.get(w) || 0; if (x !== y) o.push(`${w} ${x}→${y}`); }); return o; };
+    const isAdv = w => EN_ADV.has(w) || (/ly$/.test(w) && w.length > 4 && !NOT_LY.has(w));
+    D.art = df(w => ['a', 'an', 'the'].includes(w)); D.adv = df(isAdv);
+    const stem = w => w.replace(/ies$/, 'y').replace(/(ch|sh|x|ss)es$/, '$1').replace(/s$/, ''), sa = new Map(wa.map(w => [stem(w), w])), sb = new Map(wb.map(w => [stem(w), w]));
+    sa.forEach((w, k) => { const v = sb.get(k); if (v && v !== w && k.length > 2 && !EN_ADV.has(w)) D.num.push(`${w} → ${v}`); });
+    const skip = w => ['a', 'an', 'the'].includes(w) || isAdv(w) || D.num.some(x => x.split(' → ').includes(w));
+    D.rm = [...ca.keys()].filter(w => !cb.has(w) && !skip(w)); D.ad = [...cb.keys()].filter(w => !ca.has(w) && !skip(w));
+  } else {
+    const has = (v, w) => String(v).split(w).length - 1;
+    (lk === 'ja' ? ADV_JA : ADV_ZH).forEach(w => { const x = has(a, w), y = has(b, w); if (x !== y) D.adv.push(`${w} ${x}→${y}`); });
+    (lk === 'ja' ? ['たち', '達'] : ['们']).forEach(w => { const x = has(a, w), y = has(b, w); if (x !== y) D.num.push(`${w} ${x}→${y}`); });
+  }
+  return D;
+}
+const hDiffTxt = D => [D.art.length ? `관사 ${D.art.join(', ')}` : '', D.adv.length ? `부사 ${D.adv.join(', ')}` : '', D.num.length ? `단복수 ${D.num.join(', ')}` : '', D.rm.length ? `AI에만: ${D.rm.slice(0, 6).join(' ')}` : '', D.ad.length ? `사람에만: ${D.ad.slice(0, 6).join(' ')}` : '', D.len ? `길이 ${D.len > 0 ? '+' : ''}${D.len}% (사람 기준)` : ''].filter(Boolean).join(' · ');
+function hcmpRows(rows, lk) { return rows.map(r => { const pr = hpairOf(r); if (!pr || !pr.hu.trim()) return null; const same = hpSame(pr), hd = r.x.hdiff && r.x.hdiff.k === hpKey(pr) ? r.x.hdiff : null; return { r, pr, same, D: same ? null : hDiff(lk, pr.ai, pr.hu), hd }; }).filter(Boolean); }
+function hcmpStats(L) {
+  const cnt = arr => arr.reduce((m, k) => (m[k] = (m[k] || 0) + 1, m), {}), dif = L.filter(o => !o.same), done = dif.filter(o => o.hd);
+  return { n: L.length, dif: dif.length, done: done.length, v: cnt(done.map(o => o.hd.v)), why: cnt(done.map(o => o.hd.why)), err: cnt(done.flatMap(o => o.hd.types || [])),
+    art: dif.filter(o => o.D.art.length).length, adv: dif.filter(o => o.D.adv.length).length, num: dif.filter(o => o.D.num.length).length };
+}
+const cntTxt = m => Object.entries(m).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(' · ') || '-';
+function hdiffPrompt(t, lk) {
+  const L = LANGS.find(l => l.key === lk), todo = hcmpRows(flowState(t, lk).rows, lk).filter(o => !o.same && !o.hd);
+  return `규칙 버전 ${PROMPT_VER} · 번역 비교 심사 · ${L.label}
+
+# 역할
+너는 같은 한국어 원문을 옮긴 두 ${L.label} 번역(번역 1, 번역 2)을 비교하는 심사자다. 두 번역이 누가 만든 것인지는 알려 주지 않는다. 원문·화면·게임 기능만 기준으로 판단한다.
+첨부한 PNG가 있으면 화면을 보고 판단한다.
+
+${gameInfoBlock(t, lk)}
+${understandBlock(t)}
+# 판단 기준
+- 판정: ‘1만 맞음’ / ‘2만 맞음’ / ‘둘 다 맞음’(둘 다 원문 뜻과 기능을 지키고 차이는 표현 취향) / ‘둘 다 틀림’ 중 하나.
+- 차이가 곧 오류는 아니다. 더 자연스럽다는 이유만으로 한쪽을 틀렸다고 하지 않는다. 틀렸다고 할 때는 원문의 무엇을 놓쳤는지 쓴다.
+- 틀린 쪽의 오류 유형 (해당하는 것 쉼표, 둘 다 맞으면 ‘없음’):
+${ERR3.map(([c, X]) => `  - ${c}: ${X.map(x => `${x}(${ERR3_DESC[x]})`).join(' / ')}`).join('\n')}
+- 차이가 생긴 이유 (하나만): ${HD_WHY.join(' / ')}
+${grammarFocus(lk, 'review')}
+- 관사·부사·단복수: 두 번역의 차이를 ‘번역 1: … / 번역 2: …’로 쓰고 어느 쪽이 원문에 맞는지 쓴다. 차이가 없으면 ‘-’.
+- 표의 ‘자동으로 찾은 차이’는 프로그램이 단어를 비교한 후보다. 틀릴 수 있으니 그대로 믿지 않는다.
+
+# 비교할 줄
+${tsv(['번호', '한국어 원문', '번역 1', '번역 2', '자동으로 찾은 차이'], todo.map(o => { const f = hpFlip(o.r.id), a = f ? o.pr.hu : o.pr.ai, b = f ? o.pr.ai : o.pr.hu; return [o.r.id, o.r.ko.replace(/\n/g, ' / '), a.replace(/\n/g, ' / '), b.replace(/\n/g, ' / '), hDiffTxt(f ? hDiff(lk, o.pr.hu, o.pr.ai) : o.D).replace(/AI에만/g, '1에만').replace(/사람에만/g, '2에만').replace(/\(사람 기준\)/, '(2 기준)')]; }))}
+
+# 결과물: 시트 \`차이 판정\` — 번호 | 차이 요약 | 판정 | 틀린 쪽의 오류 유형 | 차이가 생긴 이유 | 설명 | 관사·부사·단복수
+- 위 번호 ${todo.length}개를 같은 순서로 모두 쓴다. 설명은 한국어로, 원문의 어느 부분 때문인지 구체적으로.
+- 첫 행은 제목. 엑셀을 만들 수 없으면 같은 표를 채팅에 표로 쓴다.`;
+}
+async function applyHuman(tables) {
+  const t = cur().data, lk = promptLang, rows = sheetRows(t, lk), valid = new Map(rows.map(r => [normId(r.id), r])), byKo = new Map(rows.map(r => [normKo(r.ko), r]));
+  const tb = tables.find(r => (r[0] || []).map(normHead).some(h => h.startsWith('사람번역'))) || tables.find(r => (r[0] || []).some(h => TR_HEAD[lk].test(String(h).trim())));
+  if (!tb || tb.length < 2) { toast('사람 번역 열을 찾지 못함. 열: 번호 | 사람 번역 (또는 한국어 원문 | 사람 번역)', 6000); return; }
+  const h = tb[0].map(normHead), iNo = h.findIndex(x => x === '번호' || x === 'id'), iKo = h.findIndex(x => x.includes('원문')), iH = h.findIndex(x => x.startsWith('사람번역')) >= 0 ? h.findIndex(x => x.startsWith('사람번역')) : tb[0].findIndex(x => TR_HEAD[lk].test(String(x).trim()));
+  const got = []; let miss = 0;
+  tb.slice(1).forEach(r0 => { const tr = String(r0[iH] ?? '').trim(); if (!tr || tr === '-') return; const r = (iNo >= 0 && valid.get(normId(r0[iNo]))) || (iKo >= 0 && byKo.get(normKo(r0[iKo]))); if (!r) { miss++; return; } got.push([r.id, tr]); });
+  if (!got.length) { toast('맞는 줄이 없음. 번호나 한국어 원문이 이 게임과 같아야 함.', 5000); return; }
+  await saveWork(items => { got.forEach(([id, tr]) => { const x = items[id] = items[id] || {}; x.human = { tr, by: meName(), at: nowISO() }; }); return got.length; }, () => '');
+  rvTab = 'hcmp'; render(true);
+  const L = hcmpRows(sheetRows(cur().data, lk), lk);
+  toast(`사람 번역 ${got.length}줄 올림 · AI 번역과 다른 줄 ${L.filter(o => !o.same).length}개${miss ? ` · 맞는 줄이 없어 버린 행 ${miss}` : ''}. 차이 판정 프롬프트로 이유를 받기.`, 6000);
+}
+async function applyHdiff(tables) {
+  const tb = tables.find(r => r.sheet === '차이 판정') || tables.find(r => (r[0] || []).map(normHead).some(h => h.startsWith('차이가생긴')));
+  if (!tb || tb.length < 2) { toast('‘차이 판정’ 표를 찾지 못함. AI 답 전체를 붙여 넣기.', 5000); return; }
+  const h = tb[0].map(normHead), ix = f => h.findIndex(f), iNo = Math.max(0, ix(x => x === '번호' || x === 'id')), iV = ix(x => x === '판정'), iS = ix(x => x.startsWith('차이요약')), iE = ix(x => x.includes('오류유형')), iW = ix(x => x.startsWith('차이가생긴')), iN = ix(x => x === '설명'), iG = ix(x => x.startsWith('관사'));
+  const t = cur().data, lk = promptLang, L = hcmpRows(sheetRows(t, lk), lk), M = new Map(L.map(o => [normId(o.r.id), o])), out = []; let bad = 0;
+  tb.slice(1).forEach(r0 => { const o = M.get(normId(r0[iNo])); if (!o || o.same) return; const v0 = String(r0[iV] || '').replace(/\s/g, ''), f = hpFlip(o.r.id);
+    const v = /둘다맞|둘다가능/.test(v0) ? '둘 다 가능' : /둘다틀/.test(v0) ? '둘 다 오류' : /^1만/.test(v0) ? (f ? 'AI 오류' : '사람 오류') : /^2만/.test(v0) ? (f ? '사람 오류' : 'AI 오류') : '';
+    if (!v) { bad++; return; }
+    const w0 = String(r0[iW] || '').trim(), why = HD_WHY.find(k => normHead(w0).startsWith(normHead(k).slice(0, 4))) || '기타';
+    const swap = x => String(x || '').replace(/번역\s*1/g, '§A').replace(/번역\s*2/g, '§B').replace(/§A/g, f ? '사람' : 'AI').replace(/§B/g, f ? 'AI' : '사람');
+    out.push([o.r.id, { k: hpKey(o.pr), v, types: v === '둘 다 가능' ? [] : parseErr3(r0[iE]), why, why0: w0, sum: swap(r0[iS]), note: swap(r0[iN]), gram: iG >= 0 && String(r0[iG] || '').trim() !== '-' ? swap(r0[iG]) : '', at: nowISO(), by: revAiOf(t, lk, 'cross') }]); });
+  await saveWork(items => { out.forEach(([id, d]) => { const x = items[id] = items[id] || {}; x.hdiff = d; }); return out.length; }, () => '');
+  render(true);
+  toast(`차이 판정 ${out.length}줄 반영${bad ? ` · 판정 값이 이상한 ${bad}줄은 버림` : ''}. AI 오류로 판정된 이유는 다음 번역·검수 프롬프트에 들어감.`, 6000);
+}
+/* 지난 비교에서 AI가 틀린 점 → 번역·검수 프롬프트로 (모든 게임, 같은 언어) */
+function hcmpLessons(t, lk) {
+  const all = [];
+  (themes || []).forEach(g => { let rs = []; try { rs = sheetOf(g.data, lk) ? sheetRowsRaw(g.data, lk) : []; } catch (e) { rs = []; }
+    rs.forEach(r => { const pr = hpairOf(r); if (!pr || !r.x.hdiff || r.x.hdiff.k !== hpKey(pr) || r.x.hdiff.v !== 'AI 오류') return; all.push({ g: g.data.name || g.id, r, pr, d: r.x.hdiff }); }); });
+  if (!all.length) return '';
+  const by = {}; all.forEach(o => (by[o.d.why] = by[o.d.why] || []).push(o));
+  const top = Object.entries(by).sort((a, b) => b[1].length - a[1].length).slice(0, 5);
+  return `# 사람 번역과 비교했을 때 AI가 틀렸던 점 (지난 비교 ${all.length}건 · 같은 실수를 하지 않는다)
+${top.map(([w, L]) => `- ${w} ${L.length}건. 예: ${L.slice(0, 2).map(o => `‘${o.r.ko.replace(/\n/g, ' ').slice(0, 30)}’ AI ‘${o.pr.ai.replace(/\n/g, ' ').slice(0, 40)}’ → 사람 ‘${o.pr.hu.replace(/\n/g, ' ').slice(0, 40)}’${o.d.note ? ` (${o.d.note.slice(0, 60)})` : ''}`).join(' / ')}`).join('\n')}
+`;
+}
+function hcmpHTML(t, lk, F) {
+  const L = hcmpRows(F.rows, lk), S = hcmpStats(L), todo = L.filter(o => !o.same && !o.hd);
+  const vtag = v => v === 'AI 오류' ? 'fail' : v === '사람 오류' ? 'rev' : v === '둘 다 오류' ? 'fail' : 'ok';
+  return `<p class="sb">AI 번역과 사람 번역(올린 사람 번역본, 또는 사이트에서 사람·현지인이 고친 줄)을 줄마다 비교함. 관사·부사·단복수·길이 차이는 사이트가 바로 계산하고, <b>누가 틀렸는지·왜 생겼는지</b>는 판정 AI가 정함. 판정 AI에게는 어느 쪽이 사람인지 알리지 않음(번역 1·2를 줄마다 섞음). ‘AI 오류’의 이유는 다음 번역·검수 프롬프트에 자동으로 들어감.</p>
+    ${readOnly ? '' : `<p><label class="btn upl">사람 번역본 올리기 <small>열: 번호 | 사람 번역</small><input type="file" hidden data-one="one:human" accept="${FILE_ACCEPT}"></label>${pasteBtn('one:human', '붙여 넣기')}</p>`}
+    ${!L.length ? '<p class="sb">비교할 줄이 없음. 사람 번역본을 올리거나 사람 승인 단계에서 번역을 고치면 여기에 모임.</p>' : `
+    <div class="tprev"><table><tbody>
+      <tr><th>비교</th><td>${S.n}줄 · 다른 줄 ${S.dif} · 판정 ${S.done}/${S.dif}</td></tr>
+      <tr><th>판정</th><td>${esc(cntTxt(S.v))}</td></tr>
+      <tr><th>틀린 쪽 오류 유형</th><td>${esc(cntTxt(S.err))}</td></tr>
+      <tr><th>차이가 생긴 이유</th><td>${esc(cntTxt(S.why))}</td></tr>
+      <tr><th>자동 차이</th><td>${lk === 'en' ? `관사 ${S.art}줄 · ` : ''}부사 ${S.adv}줄 · 단복수 ${S.num}줄</td></tr>
+    </tbody></table></div>
+    ${todo.length ? `<ol class="do"><li><i>1</i><div><button type="button" class="btn primary" data-copy="p-hdiff">차이 판정 프롬프트 복사 <small>${todo.length}줄</small></button> <small class="sb">번역·검수와 다른 AI 새 대화에 붙여 넣고 PNG 첨부</small></div></li>
+      <li><i>2</i><div>${readOnly ? '' : `<label class="btn upl primary">받은 엑셀 올리기<input type="file" hidden data-one="one:hdiff" accept="${FILE_ACCEPT}"></label>`}${pasteBtn('one:hdiff', '답 붙여 넣기')}</div></li></ol>
+      <details class="more"><summary>프롬프트 보기</summary><pre class="ptext" id="pt-p-hdiff">${esc(hdiffPrompt(t, lk))}</pre></details>` : '<p class="okmsg">다른 줄을 모두 판정함.</p>'}
+    <div class="tprev"><table><thead><tr><th>번호</th><th>한국어 원문</th><th>AI 번역</th><th>사람 번역</th><th>자동 차이</th><th>판정 · 이유</th></tr></thead><tbody>${L.filter(o => !o.same).map(o => `<tr><td><button type="button" class="linkbtn" data-item="${esc(lk)}|${esc(o.r.id)}">${esc(o.r.id)}</button><br><small class="sb">${esc(o.pr.src)}</small></td><td style="white-space:pre-wrap">${esc(o.r.ko)}</td><td style="white-space:pre-wrap">${esc(o.pr.ai)}</td><td style="white-space:pre-wrap">${esc(o.pr.hu)}</td><td><small>${esc(hDiffTxt(o.D))}</small></td><td>${o.hd ? `<span class="vtag ${vtag(o.hd.v)}">${esc(o.hd.v)}</span> <b>${esc(o.hd.why)}</b>${(o.hd.types || []).length ? `<br><small>${esc(o.hd.types.join(', '))}</small>` : ''}${o.hd.note ? `<br><small class="sb">${esc(o.hd.note)}</small>` : ''}${o.hd.gram ? `<br><small class="sb">관사·부사·단복수: ${esc(o.hd.gram)}</small>` : ''}` : '<span class="sb">판정 전</span>'}</td></tr>`).join('')}</tbody></table></div>`}`;
+}
+function hcmpSheet(t, lk) {
+  const L = hcmpRows(flowState(t, lk).rows, lk); if (!L.length) return null;
+  const S = hcmpStats(L), head = ['번호', '한국어 원문', 'AI 번역', '사람 번역', '출처', '같음', '관사 차이', '부사 차이', '단복수 차이', '길이 차이(%)', '판정', '틀린 쪽 오류 유형', '차이가 생긴 이유', '설명', '관사·부사·단복수 (판정 AI)'];
+  const sum = [['요약', `비교 ${S.n}줄 · 다른 줄 ${S.dif} · 판정 ${S.done}`, `판정: ${cntTxt(S.v)}`, `오류 유형: ${cntTxt(S.err)}`, `이유: ${cntTxt(S.why)}`, '', `${S.art}줄`, `${S.adv}줄`, `${S.num}줄`, '', '', '', '', '', '']];
+  const body = L.map(o => [o.r.id, o.r.ko, o.pr.ai, o.pr.hu, o.pr.src, o.same ? '같음' : '', o.D ? o.D.art.join(', ') : '', o.D ? o.D.adv.join(', ') : '', o.D ? o.D.num.join(', ') : '', o.D ? o.D.len : 0, o.hd ? o.hd.v : o.same ? '' : '판정 전', o.hd ? (o.hd.types || []).join(', ') : '', o.hd ? o.hd.why : '', o.hd ? [o.hd.sum, o.hd.note].filter(v => v && v !== '-').join(' — ') : '', o.hd ? o.hd.gram : '']);
+  return { name: '04 사람 번역 비교', rows: [head, ...sum, ...body], widths: [8, 30, 30, 30, 10, 6, 16, 16, 16, 8, 10, 18, 16, 40, 30], filter: true, freezeCols: 2,
+    style: (ri, ci, r) => r[0] === '요약' ? 5 : ci === 10 ? (r[10] === 'AI 오류' || r[10] === '둘 다 오류' ? 2 : r[10] === '사람 오류' ? 3 : r[10] === '둘 다 가능' ? 4 : 0) : 0 };
 }
 /* 신뢰도: AI가 스스로 매긴 값이 아니라, 서로 독립된 근거가 몇 개나 맞아떨어지는지로 계산 */
 function confOf(t, lk, r) {
@@ -1861,7 +2083,8 @@ function confOf(t, lk, r) {
 }
 const confHTML = (t, lk, r) => { const c = confOf(t, lk, r); if (!c) return ''; return `<span class="chip ${c.lv === '높음' ? 'okchip' : c.lv === '낮음' ? 'critchip' : 'warnchip'}" title="${esc(c.miss.join(' / '))}">판정 신뢰도 ${c.lv} · 근거 ${c.ok}/${c.n}</span>${c.miss.length ? ` <small class="sb">부족: ${esc(c.miss.join(' · '))}</small>` : ''}`; };
 const lfHTML = r => { const f = langFunc(r); if (!f) return ''; const tag = v => v === 'PASS' ? 'okchip' : v === 'FAIL' ? 'critchip' : 'warnchip'; return `<span class="chip ${tag(f.lang)}">언어 정확성 ${f.lang}</span> <span class="chip ${tag(f.func)}">게임 기능 ${f.func}</span>`; };
-const issueChipsHTML = r => { const L = issuesOf(r); if (!L.length) return ''; const types = [...new Set(L.map(x => x.type))]; return `<p class="isschips">${types.map(ty => `<em class="chip warnchip" title="${esc(L.filter(x => x.type === ty).map(x => x.msg).join(' / '))}">${esc(ty)}</em>`).join(' ')}</p>`; };
+const issueChipsHTML0 = r => { const L = issuesOf(r); if (!L.length) return ''; const types = [...new Set(L.map(x => x.type))]; return `<p class="isschips">${types.map(ty => `<em class="chip warnchip" title="${esc(L.filter(x => x.type === ty).map(x => x.msg).join(' / '))}">${esc(ty)}</em>`).join(' ')}</p>`; };
+const issueChipsHTML = r => { const h = issueChipsHTML0(r), e = err3Txt(r); return h + (e ? `<p class="isschips"><em class="chip critchip" title="${esc(err3Of(r).map(x => `${x.sub} (${x.by}): ${x.msg}`).join(' / '))}">${esc(e)}</em></p>` : ''); };
 /* 다른 게임에서 사람이 승인한 번역 (같은 원문) — 확정 용어·스타일 유지용 */
 let TM_CACHE = { src: null, map: null };
 function tmIndex() {
@@ -1934,8 +2157,8 @@ function autoChecks(t, lk, r, byKo) {
   if (tok(ko) !== tok(tr)) out.push(['var', `변수·태그가 다름 (원문: ${tok(ko) || '없음'} / 번역: ${tok(tr) || '없음'})`]);
   const SYM = /[※★☆◆◇■□●○▲△▼▽▶◀→←↑↓♪♥♡✔✖×÷＋+#@&~]/g, sy = s => (String(s).match(SYM) || []).sort().join('');
   if (sy(ko) !== sy(tr)) out.push(['sym', `특수 기호가 다름 (원문: ${sy(ko) || '없음'} / 번역: ${sy(tr) || '없음'})`]);
-  const kl = [...ko.replace(/\s/g, '')].length, tl = [...tr.replace(/\s/g, '')].length;
-  if (kl && (lk === 'en' ? tl > Math.max(14, kl * 3) : tl > kl * 1.8 + 4)) out.push(['long', `원문보다 많이 긺 (${kl}자 → ${tl}자) · 칸 넘침 확인`]);
+  const lm = lenOf(lk, r); if (lm && lm.over) out.push([lm.hard ? 'longF' : 'long', lm.msg]);
+  synCheck(lk, ko, tr).forEach(c => out.push(c));
   if (/판독\s*불확실/.test(r.note)) out.push(['read', '판독 불확실 — 원문이 이미지와 같은지 확인']);
   if (srcHas(t) && r.srcType) {
     ((t.source.answers) || []).filter(a => String(a.refs).split(/[,，、\s/]+/).map(normId).includes(normId(r.id))).forEach(a => {
@@ -2129,8 +2352,9 @@ ${specialBlock(t, 'en', 'translate').replace(/\n- 영어 처리:[^\n]*/g, '')}
 - 규칙 설명: 정답을 어떻게 판정하는지 한 문장으로. 예: 사실에 맞지 않는 선택지를 고른다.
 
 # 결과물: 엑셀 파일 \`${abbrOf(t)}_원문분석.xlsx\`
-1. 시트 \`원문 분석\` — 열: ID | 파일 | 화면 | 요소 | 화면 순서 | 원문 | 원문 유형 | 원문 핵심 의미 | 행동 관계 | 다의어·중의 판단 | 현지화 분류 | 분류 근거 | 문화적 배경 | 번역 시 주의점 | 재설계 제안 | 언어별 예외 | 비고
+1. 시트 \`원문 분석\` — 열: ID | 파일 | 화면 | 요소 | 화면 순서 | 원문 | 원문 유형 | 원문 핵심 의미 | 행동 관계 | 다의어·중의 판단 | 현지화 분류 | 분류 근거 | 문화적 배경 | 번역 시 주의점 | 재설계 제안 | 언어별 예외 | 비고 | 칸 한도
    - 비고: 분리 사유 등 따로 알릴 것. 없으면 ‘-’.
+   - 칸 한도: 버튼·말풍선·칸처럼 글자가 들어갈 자리가 정해져 있고 화면에서 크기가 분명하면, 번역문이 넘으면 안 되는 최대 글자 수를 숫자로 (예: 12). 판단할 수 없으면 ‘-’ (사이트가 언어별 비율로 확인함).
    - 현지화 분류 칸은 ‘A. 직접 번역 가능’ / ‘B. 의미 현지화 필요’ / ‘C. 재설계 필요’ / ‘REVIEW’ 중 하나를 그대로 쓴다.
    - 같은 ID를 두 번 쓰지 않는다.
 2. 시트 \`정답 기준\` — 열: 문제 ID | 관련 원문 ID | 문제 | 선택지 | 사실상 정답 | 게임상 정답 | 판정 방식 | 규칙 설명 (문제가 없는 게임이면 만들지 않음)
@@ -2150,14 +2374,14 @@ async function uploadSource(file) {
   const cc = { id: ix(x => x === 'id' || x === '번호' || x.startsWith('원문id')), ord: ix(x => x.startsWith('화면순서') || x === '순서'), file: ix(x => x.startsWith('파일')), screen: ix(x => x.startsWith('화면') && !x.startsWith('화면순서')), elem: ix(x => x.startsWith('요소') || x.startsWith('위치')), ko: ix(x => x === '원문' || x.startsWith('한국어원문') || x === '원문(한국어)'),
     type: ix(x => x.startsWith('원문유형') || x === '유형'), cls: ix(x => x.startsWith('현지화분류') || x === '분류'), why: ix(x => x.startsWith('분류근거') || x.startsWith('근거')), care: ix(x => x.startsWith('번역시주의') || x.startsWith('주의')), ex: ix(x => x.startsWith('언어별예외') || x.startsWith('예외')),
     cult: ix(x => x.startsWith('문화')), redo: ix(x => x.startsWith('재설계')), note: ix(x => x.startsWith('비고')),
-    core: ix(x => x.startsWith('원문핵심') || x.startsWith('핵심의미')), sense: ix(x => x.startsWith('다의어') || x.startsWith('중의') || x.startsWith('단어의미')), rel: ix(x => x.startsWith('행동관계') || x.startsWith('주체')) };
+    core: ix(x => x.startsWith('원문핵심') || x.startsWith('핵심의미')), sense: ix(x => x.startsWith('다의어') || x.startsWith('중의') || x.startsWith('단어의미')), rel: ix(x => x.startsWith('행동관계') || x.startsWith('주체')), lim: ix(x => x.startsWith('칸한도') || x.startsWith('길이한도') || x.startsWith('최대글자')) };
   const g = (r, k) => cc[k] >= 0 ? String(r[cc[k]] ?? '').trim() : '';
   const seen = new Set(), dupIds = []; let n = 0;
   const dash = v => v === '-' ? '' : v;
   const rows = tb.slice(hi + 1).filter(r => g(r, 'ko')).map(r => {
     n++; let id = g(r, 'id').toUpperCase().replace(/\s/g, '') || ('S' + String(n).padStart(3, '0'));
     if (seen.has(id)) { dupIds.push(id); id = id + '-' + n; } seen.add(id);
-    return { id, file: g(r, 'file'), screen: g(r, 'screen'), ord: g(r, 'ord'), elem: g(r, 'elem'), ko: g(r, 'ko').replace(/\s\/\s/g, '\n'), type: g(r, 'type'), cls: clsOf(g(r, 'cls')), why: g(r, 'why'), care: g(r, 'care'), exRaw: dash(g(r, 'ex')), cult: dash(g(r, 'cult')), redo: dash(g(r, 'redo')), note: dash(g(r, 'note')), core: dash(g(r, 'core')), sense: dash(g(r, 'sense')), rel: dash(g(r, 'rel')) };
+    return { id, file: g(r, 'file'), screen: g(r, 'screen'), ord: g(r, 'ord'), elem: g(r, 'elem'), ko: g(r, 'ko').replace(/\s\/\s/g, '\n'), type: g(r, 'type'), cls: clsOf(g(r, 'cls')), why: g(r, 'why'), care: g(r, 'care'), exRaw: dash(g(r, 'ex')), cult: dash(g(r, 'cult')), redo: dash(g(r, 'redo')), note: dash(g(r, 'note')), core: dash(g(r, 'core')), sense: dash(g(r, 'sense')), rel: dash(g(r, 'rel')), lim: dash(g(r, 'lim')) };
   });
   /* 정답 기준 */
   const at = tables.find(x => x !== tb && x.slice(0, 5).some(r => r.some(c => /게임상정답|판정방식|사실상정답/.test(normHead(c)))));
@@ -2353,7 +2577,7 @@ function srcTableBlock(t, lk) {
 - 분류가 틀렸다고 보면 고치지 말고 비고에 ‘분류 이견: (이유)’를 쓴다.
 - 판단할 수 없는 줄은 추측하지 말고 비고를 ‘REVIEW: (판단이 필요한 부분)’으로 시작한다.
 - ‘핵심 의미·단어 해석’은 사람이 승인한 원문 해석이다. ‘관계’(주체 → 대상 : 행동)의 주체와 대상을 바꾸지 않는다. 다의어는 이 해석대로 번역하고, 이견이 있으면 검수 주의사항에 ‘해석 이견: (이유)’를 쓴다.
-${tsv(['ID', '파일', '화면', '요소', '원문', '유형', '핵심 의미·단어 해석', '분류', '번역 시 주의점'], rows.map(b => { const c = langCls(b, lk); return [b.id, b.file, b.screen, b.elem, b.ko.replace(/\n/g, ' / '), b.type, [b.core, b.rel ? `관계: ${b.rel}` : '', b.sense ? `단어: ${b.sense}` : ''].filter(Boolean).join(' / '), c.cls ? CLS[c.cls] : '', [b.rep ? `${b.rep}번 반복되는 문구 (파일: ${b.file}) · 모든 화면 같은 번역` : '', b.care, c.why && c.why !== '-' && c.cls !== 'A' ? `근거: ${c.why}` : '', b.cult ? `문화적 배경: ${b.cult}` : ''].filter(x => x && x !== '-').join(' / ')]; }))}
+${tsv(['ID', '파일', '화면', '요소', '원문', '유형', '핵심 의미·단어 해석', '분류', '번역 시 주의점', '길이 한도'], rows.map(b => { const c = langCls(b, lk), lm = limOf(lk, { ko: b.ko, b }); return [b.id, b.file, b.screen, b.elem, b.ko.replace(/\n/g, ' / '), b.type, [b.core, b.rel ? `관계: ${b.rel}` : '', b.sense ? `단어: ${b.sense}` : ''].filter(Boolean).join(' / '), c.cls ? CLS[c.cls] : '', [b.rep ? `${b.rep}번 반복되는 문구 (파일: ${b.file}) · 모든 화면 같은 번역` : '', b.care, c.why && c.why !== '-' && c.cls !== 'A' ? `근거: ${c.why}` : '', b.cult ? `문화적 배경: ${b.cult}` : ''].filter(x => x && x !== '-').join(' / '), lm ? `${lm.n}자${lm.hard ? ' (칸)' : ''}` : '']; }))}
 ${answersBlock(t, 'translate')}`;
 }
 function answersBlock(t, mode) {
@@ -2411,7 +2635,7 @@ function specialTag(t, row) {
 }
 
 /* ================= 번역 프롬프트 = 공통 지시 + AI별 지시 + 게임별 정보 + 언어별 블록 + 이번 작업 ================= */
-const PROMPT_VER = '2026.11-v19';
+const PROMPT_VER = '2026.11-v20';
 const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 
 1. 역할
@@ -2503,7 +2727,12 @@ ${prev}
    - 반복해서 나오는 핵심 용어·고유명사·게임 행동 동사. 번역 기준: 화면마다 같은 번역으로 통일할지, 상황에 따라 달라져야 하는지와 그 이유.
 5. 시트 \`화면 묶음\` — 묶음 이름 | 화면 ID들 | 왜 같이 봐야 하나
    - 따로 보면 뜻을 알 수 없어 여러 이미지를 한꺼번에 봐야 하는 화면들 (예: 1P·2P 화면, 문제 화면과 힌트 화면, 같은 퍼즐의 여러 장, 이어지는 대화). 화면 ID는 쉼표로. 없으면 만들지 않는다.
-6. 시트 \`질문\` — 번호 | 질문 | 왜 필요한가 | 관련 화면
+6. 시트 \`구성요소\` — 화면 ID | 퍼즐·과제 | 요소 종류 | 내용 | 언어에 기대는가 | 왜 | 재설계 필요
+   - 퍼즐·문제·과제가 있는 화면마다, 그것을 이루는 요소를 한 행씩: 요소 종류는 문제 / 단서 / 정답 / 장치(조작·판정 방식) / 안내 중 하나.
+   - 언어에 기대는가: 이 요소가 한국어의 소리·글자 모양·말장난·한국 문화 지식에 기대면 ‘예’, 아니면 ‘아니오’. 왜: 무엇에 기대는지.
+   - 재설계 필요: 언어에 기대는 요소가 정답·풀이에 쓰여 번역만으로는 같은 기능이 안 살면 ‘예’, 번역으로 살릴 수 있으면 ‘아니오’, 판단할 수 없으면 ‘확인 필요’. (재설계 여부는 이 표에서 먼저 정하고, 원문 분석의 C 분류는 이 표를 따른다)
+   - 퍼즐·과제가 없는 게임이면 만들지 않는다.
+7. 시트 \`질문\` — 번호 | 질문 | 왜 필요한가 | 관련 화면
    - 확실도가 ‘추정’이나 ‘모름’인 것 중 번역에 영향을 주는 것을 기획에게 묻는다. 답할 수 있게 구체적으로 (예: ‘메리는 플레이어보다 윗사람인가요, 동료인가요?’).`;
 }
 async function applyUnderstand(tables) {
@@ -2515,13 +2744,21 @@ async function applyUnderstand(tables) {
   const ch = rd(by('캐릭터', '이름'), [['name', x => x === '이름'], ['role', x => x.startsWith('역할')], ['trait', x => x.startsWith('성격')], ['to', x => x.startsWith('누구')], ['tone', x => x.startsWith('말투')], ['sure', x => x.startsWith('확실')]]);
   const tm = rd(by('용어', '뜻·기능'), [['ko', x => x === '한국어'], ['mean', x => x.startsWith('뜻')], ['scr', x => x.startsWith('나오는')], ['rule', x => x.startsWith('번역기준')], ['sure', x => x.startsWith('확실')]]);
   const sg = rd(by('화면 묶음', '왜같이봐야하나'), [['name', x => x.startsWith('묶음')], ['ids', x => x.startsWith('화면id')], ['why', x => x.startsWith('왜')]]).filter(g => g.ids).map(g => ({ name: g.name || g.ids, ids: g.ids.split(/[,，、\s/]+/).filter(Boolean), why: g.why }));
+  const comps = rd(by('구성요소', '요소종류'), [['scr', x => x.startsWith('화면id')], ['pz', x => x.startsWith('퍼즐')], ['kind', x => x.startsWith('요소종류')], ['text', x => x === '내용'], ['lang', x => x.startsWith('언어에')], ['why', x => x === '왜'], ['redo', x => x.startsWith('재설계')]]).filter(c => c.text || c.kind);
   const prevQ = ((uOf(cur().data) || {}).draft || {}).qs || [];
   const qs = rd(by('질문', '왜필요한가'), [['q', x => x === '질문'], ['why', x => x.startsWith('왜')], ['scr', x => x.startsWith('관련')]]).map(q => Object.assign(q, { ans: (prevQ.find(o => normKo(o.q) === normKo(q.q)) || {}).ans || '' }));
   const miss = U_ITEMS.filter(k => !ov.some(o => normKo(o.item) === normKo(k)));
   const u0 = uOf(cur().data) || {};
-  await saveGameField('understand', { draft: { overview: ov, screens: scr, chars: ch, terms: tm, qs, at: nowISO() }, ver: (u0.ver || 0) + 1, confirmed: null, memo: u0.memo || '', groups: sg.length ? sg : (u0.groups || []), hist: [...(u0.hist || []), ...(u0.confirmed ? [{ ver: u0.confirmed.ver, by: u0.confirmed.by, at: u0.confirmed.at }] : [])].slice(-10) });
+  await saveGameField('understand', { draft: { overview: ov, screens: scr, chars: ch, terms: tm, comps, qs, at: nowISO() }, ver: (u0.ver || 0) + 1, confirmed: null, memo: u0.memo || '', groups: sg.length ? sg : (u0.groups || []), hist: [...(u0.hist || []), ...(u0.confirmed ? [{ ver: u0.confirmed.ver, by: u0.confirmed.by, at: u0.confirmed.at }] : [])].slice(-10) });
   render(true);
-  toast(`게임 이해 정리를 넣음: 개요 ${ov.length} · 화면 ${scr.length} · 캐릭터 ${ch.length} · 용어 ${tm.length} · 화면 묶음 ${sg.length} · 질문 ${qs.length}${miss.length ? ` · 빠진 항목: ${miss.join(', ')}` : ''}. 질문에 답하고 ‘이해 확정’.`, 6000);
+  toast(`게임 이해 정리를 넣음: 개요 ${ov.length} · 화면 ${scr.length} · 캐릭터 ${ch.length} · 용어 ${tm.length} · 화면 묶음 ${sg.length} · 구성요소 ${comps.length}${comps.filter(c => /^예/.test(c.redo)).length ? ` (재설계 필요 ${comps.filter(c => /^예/.test(c.redo)).length})` : ''} · 질문 ${qs.length}${miss.length ? ` · 빠진 항목: ${miss.join(', ')}` : ''}. 질문에 답하고 ‘이해 확정’.`, 6000);
+}
+/* 관사·부사·단복수 (언어별) — 번역·검수 공통 기준 */
+function grammarFocus(lk, mode) {
+  const tag = mode === 'review' ? ' 틀리면 오류 유형에 ‘문법 오류’, 부사가 빠져 뜻이 약해지면 ‘누락’, 원문에 없는 부사로 뜻이 세지거나 바뀌면 ‘부정확한 의미’.' : '';
+  if (lk === 'en') return `- 영어 문법 (줄마다): 관사(a/an/the — 처음 나오는 것인가, 화면에서 이미 가리킨 특정한 것인가, 하나뿐인 것인가), 단수·복수(한국어는 복수를 잘 표시하지 않으므로 화면에 몇 개인지·‘들’·숫자·문맥을 보고 정함. ‘새들을’은 복수, ‘새 두 마리’는 two birds), 부사(only·just·again·still·even·all 같은 말이 원문에 있는가, 꾸미는 대상과 위치가 맞는가).${tag}`;
+  if (lk === 'ja') return `- 일본어 문법 (줄마다): 부사(もう·まだ·また·すぐ·必ず 등)가 원문의 ‘이미·아직·다시·바로·꼭’과 맞는가, 복수 표지(たち 등)를 원문에 없는데 붙이거나 필요한데 뺐는가, 조사·활용·존대 활용이 맞는가.${tag}`;
+  return `- 중국어 문법 (줄마다): 부사(再·又·还·也·都·就·才 등)가 원문의 ‘다시·또·아직·도·모두·바로’와 맞는가, 복수(们·量词+数)를 원문과 맞게 썼는가, 量词와 어순이 맞는가.${tag}`;
 }
 /* 함께 봐야 하는 화면 묶음 (게임 이해에서 AI가 제안 + 사람이 고침) */
 const sgOf = t => ((uOf(t) || {}).groups || []).filter(g => g.ids && g.ids.length >= 2);
@@ -2540,6 +2777,7 @@ ${d.overview.map(o => `- ${o.item}: ${o.text}${o.sure && o.sure !== '확인됨' 
 ${d.screens.length ? `## 화면 (진행 순서)\n${d.screens.map(x => `- ${x.id} ${x.name}: ${L([x.when, x.act])}${x.sure && x.sure !== '확인됨' ? ` (${x.sure})` : ''}`).join('\n')}` : ''}
 ${d.chars.length ? `## 캐릭터\n${d.chars.map(x => `- ${x.name} (${x.role}) → ${x.to || '-'}: ${L([x.trait, x.tone])}`).join('\n')}` : ''}
 ${d.terms.length ? `## 핵심 용어\n${d.terms.map(x => `- ${x.ko}: ${x.mean}${x.rule && x.rule !== '-' ? ` → ${x.rule}` : ''}`).join('\n')}` : ''}
+${(d.comps || []).length ? `## 퍼즐·과제 구성요소 (재설계는 이 표 기준)\n${d.comps.map(c => `- ${c.scr} ${c.pz ? c.pz + ' · ' : ''}${c.kind}: ${c.text}${/^예/.test(c.lang) ? ` [언어 의존: ${c.why || '-'}]` : ''}${/^예/.test(c.redo) ? ' → 재설계 필요 (C)' : /확인/.test(c.redo) ? ' → 재설계 확인 필요' : ''}`).join('\n')}\n- ‘재설계 필요’ 요소가 들어간 문구는 C(재설계)로 다루고, 같은 퍼즐의 다른 요소(문제·단서·정답)도 함께 맞춘다.` : ''}
 ${(d.qs || []).some(q => q.ans) ? `## 기획이 답한 것\n${d.qs.filter(q => q.ans).map(q => `- ${q.q} → ${q.ans}`).join('\n')}` : ''}
 - 위 내용으로 판단할 수 없는 문구는 추측하지 말고 비고(또는 이유)에 ‘맥락 불확실: …’로 남긴다.
 `;
@@ -2558,6 +2796,7 @@ function understandHTML(t) {
       ${d.screens.length ? `<details class="more"><summary>화면 ${d.screens.length}개</summary>${tb(['화면 ID', '이름', '언제', '플레이어가 하는 일', '불확실'], d.screens.map(x => [x.id, x.name, sure(x.sure) + x.when, x.act, x.unsure]))}</details>` : ''}
       ${d.chars.length ? `<details class="more"><summary>캐릭터 ${d.chars.length}명</summary>${tb(['이름', '역할', '성격', '누구에게', '말투 기준'], d.chars.map(x => [x.name, x.role, x.trait, x.to, sure(x.sure) + x.tone]))}</details>` : ''}
       ${d.terms.length ? `<details class="more"><summary>핵심 용어 ${d.terms.length}개</summary>${tb(['한국어', '뜻·기능', '나오는 화면', '번역 기준'], d.terms.map(x => [x.ko, sure(x.sure) + x.mean, x.scr, x.rule]))}</details>` : ''}
+      ${(d.comps || []).length ? `<details class="more"${d.comps.some(c => /^예|확인/.test(c.redo)) ? ' open' : ''}><summary>퍼즐·과제 구성요소 ${d.comps.length}개 · 재설계 필요 ${d.comps.filter(c => /^예/.test(c.redo)).length}${d.comps.some(c => /확인/.test(c.redo)) ? ` · 확인 필요 ${d.comps.filter(c => /확인/.test(c.redo)).length}` : ''}</summary>${tb(['화면', '퍼즐·과제', '요소', '내용', '언어 의존', '왜', '재설계'], d.comps.map(c => [c.scr, c.pz, c.kind, c.text, c.lang, c.why, c.redo]))}</details>` : ''}
       <h5 class="mh">함께 봐야 하는 화면 묶음 <small>한 묶음의 이미지는 번역·검수 때 한 번에 봄. 한 줄에 하나: 묶음 이름 | 화면 ID들(쉼표) | 이유</small></h5>
       ${readOnly ? `<pre class="ptext">${esc(sgOf(t).map(g => `${g.name} | ${g.ids.join(', ')} | ${g.why || ''}`).join('\n') || '(없음)')}</pre>` : `<textarea rows="3" data-sgroups placeholder="예) 낱말퀴즈 | AD_07, AD_14 | 문제 화면과 힌트 화면을 같이 봐야 정답 칸이 맞음">${esc((u.groups || []).map(g => `${g.name} | ${g.ids.join(', ')} | ${g.why || ''}`).join('\n'))}</textarea>`}
       <h5 class="mh">질문 ${(d.qs || []).length}개${qOpen ? ` · <span class="badtxt">답 안 한 것 ${qOpen}</span>` : ''}</h5>
@@ -2586,7 +2825,7 @@ ${COMMON_TRANSLATE}
 ${(TRANSLATE_TIPS[ai] || TRANSLATE_TIPS.ChatGPT).map((x, i) => `${i + 1}. ${x}`).join('\n')}
 
 ${gameInfoBlock(t, lk)}
-${understandBlock(t)}${sgBlock(t, 'translate')}${specialBlock(t, lk, 'translate')}
+${understandBlock(t)}${sgBlock(t, 'translate')}${hcmpLessons(t, lk)}${specialBlock(t, lk, 'translate')}
 # 용어집 (확정은 반드시 지킴)
 ${termLines(id, lk)}
 
@@ -2642,7 +2881,7 @@ function srcTranslateTail(t, lk, ab) {
   const L = LANGS.find(l => l.key === lk);
   return `${srcTableBlock(t, lk)}
 # 결과물: 엑셀 파일 \`${ab}_${LSHORT[lk]}.xlsx\`
-1. 시트 \`번역\` — 열: ID | 파일 | 한국어 원문 | ${LHEAD[lk]} | 번역 대안 | 번역 방식 | 번역 결과의 한국어 의미 | 단어 의미 판단 | 핵심어 대응 | 번역 이유 | 재구성 사유 | 검수 주의사항
+1. 시트 \`번역\` — 열: ID | 파일 | 한국어 원문 | ${LHEAD[lk]} | 번역 대안 | 번역 방식 | 번역 결과의 한국어 의미 | 단어 의미 판단 | 핵심어 대응 | 번역 이유 | 재구성 사유 | 검수 주의사항 | 대체 표현
    - 위 원문표의 ID ${baseRows(t).length}개를 같은 순서로 모두 쓴다. 한국어 원문 칸은 표 그대로 복사한다. 요약하거나 빼지 않는다.
    - 번역 대안: ‘번역 대안’ 시트에 쓴 추가 대안의 번역문만 ‘ / ’로. 없으면 ‘-’.
    - 아래 ‘번역 판단 및 근거 기록’ 규칙대로 모든 줄에 쓴다. 설명은 모두 한국어.
@@ -2662,6 +2901,9 @@ function srcTranslateTail(t, lk, ab) {
   - 직역한 줄은 짧게 ‘직역’만 써도 된다. 의역·재구성한 줄만 ‘무엇을 → 무엇으로, 왜’를 한 문장으로 쓴다. 예: ‘찾다 → 見つける: 숨은 차이를 발견하는 행동이라 探す(찾아다님)가 아님’
   - 여러 줄에 같은 이유를 그대로 복사하지 않는다. 같은 이유면 ‘S003과 같음’처럼 앞 번호를 쓴다.
 - 재구성 사유 (재구성만, 나머지는 ‘-’): ①그대로 번역하기 어려웠던 이유 ②원문이 전하려는 본래 의미와 의도 ③새 표현이 그 의도를 어떻게 반영하는지
+- 대체 표현: 핵심어 중 다른 말로도 옮길 수 있는 것만, 단어마다 최대 3개를 ‘원문 단어: 대체어1(한국어 뜻) / 대체어2(뜻) / 대체어3(뜻)’으로. 여러 단어는 ‘ ; ’로 구분. 지금 고른 번역어는 넣지 않는다. 바꿀 말이 없으면(숫자·고유명사·뜻이 하나뿐) ‘-’. 예: ${lk === 'ja' ? '찾다: 探す(찾아다니다) / 見つけ出す(찾아내다) / 捜す(행방을 찾다)' : lk === 'zh' ? '찾다: 寻找(찾아다니다) / 找到(찾아내다) / 发现(발견하다)' : '찾다: look for(찾아다니다) / spot(발견하다) / locate(위치를 알아내다)'}
+- 길이: 원문표의 ‘길이 한도’ 글자 수(공백 제외, ‘(칸)’이면 공백 포함)를 넘지 않는다. 한도를 지키려고 의미·행동·조건을 빼지 않는다. 줄일 수 없으면 검수 주의사항에 ‘길이: (이유)’를 쓴다. 같은 뜻이면 짧은 표현을 고른다.
+${grammarFocus(lk, 'translate')}
 - 의미를 바꾸거나 뺀 것이 있으면 번역 이유에 반드시 그 이유를 쓴다. 원문에 없는 의미를 더하지 않는다.
 - 마지막으로 줄마다 원문의 의미와 ‘번역 결과의 한국어 의미’가 일치하는지 대조한다.
 2. 시트 \`재설계\` — C 줄 (아래 ‘재설계’ 규칙). 없으면 만들지 않음
@@ -2957,7 +3199,7 @@ function crossPrompt(id, t, lk) {
 첨부한 PNG는 오프라인 게임 「${t.name || ''}」의 화면이다. 아래 표의 ${L.label} 번역을 한 줄씩 검수한다. 번역을 개선하는 것이 아니라 오류를 찾는 것이 목적이다.
 
 ${gameInfoBlock(t, lk)}
-${understandBlock(t)}${sgBlock(t, 'review')}${specialBlock(t, lk, 'review')}
+${understandBlock(t)}${sgBlock(t, 'review')}${hcmpLessons(t, lk)}${specialBlock(t, lk, 'review')}
 # 확정 용어집 (용어 칸 판정 기준)
 ${termLines(id, lk)}
 ${srcHas(t) ? answersBlock(t).replace('# 정답 기준 (게임상 정답과 판정 방식을 바꾸지 않음)', '# 정답 기준 (정답 칸은 이 표와 비교해서 판정 · 게임상 정답이 바뀌었으면 FAIL)') : ''}
@@ -2997,6 +3239,9 @@ ${SC_ITEMS.map(it => `- ${it.head} (${it.max}점): ${it.q}? → ${it.lv.map((v, 
 ${BIN_CHECKS.map(k => `  - ${k}: ${AI_CHECK_Q[k]}?`).join('\n')}
 - 치명 오류: 아래에 해당하면 점수와 관계없이 쓴다. 여러 개면 쉼표로. 없으면 ‘없음’.
 ${CRIT_TYPES.map(([k, d]) => `  - ${k}: ${d}`).join('\n')}
+- 오류 유형: PASS가 아닌 줄은 무엇이 틀렸는지 아래 7가지 중 해당하는 것을 쉼표로 쓴다 (점수와 별개로 오류의 종류를 나누는 칸). 문제가 없으면 ‘없음’.
+${ERR3.map(([c, L]) => `  - ${c}: ${L.map(x => `${x}(${ERR3_DESC[x]})`).join(' / ')}`).join('\n')}
+${grammarFocus(lk, 'review')}
 - 역번역 확정 조건: 핵심 의미 일치 · 행동 및 지시 일치 · 조건 및 제한 사항 일치 · 숫자 및 고유명사 일치 · 정보 누락 및 임의 추가 없음 · ${anyBt0 ? '독립 역번역과 모순 없음' : '역번역과 모순 없음'}. 모두 충족하면 PASS, 하나라도 불확실하면 REVIEW, 명백하게 잘못되면 FAIL.
 - HOLD: 원문 자체를 판단할 수 없을 때만 (원문이 모호하거나 판독 불가, 원문끼리 앞뒤가 안 맞음). 판정 칸에 HOLD, 이유에 원문의 무엇을 확인해야 하는지 쓴다. 번역이 어려운 것은 HOLD가 아니다.
 - 판정: 치명 오류가 있거나 정답·추가 정보·용어 중 FAIL이 있으면 FAIL. 합계 ${judgeCfg.fail}점 미만 FAIL, ${judgeCfg.fail}~${judgeCfg.pass - 1}점 REVIEW, ${judgeCfg.pass}점 이상이고 문제가 없으면 PASS. (사이트가 다시 계산하고 더 엄격한 쪽을 따름)
@@ -3040,7 +3285,7 @@ ${PUZZLE_CHECKS.map(([k, q], i) => `${i + 1}. ${k}: ${q}?`).join('\n')}
 # 결과물: 엑셀 파일 \`${abbrOf(t)}_${LSHORT[lk]}_교차검수.xlsx\`
 시트 순서와 이름, 열 이름을 아래와 똑같이 쓴다. 각 시트의 첫 행은 제목이다.
 
-1. \`줄 검수\` — 번호 | 확인값 | 번역문 관계 | 번역 방식 | 판정 | ${SC_ITEMS.map(it => it.head).join(' | ')} | ${BIN_CHECKS.join(' | ')} | 치명 오류 | ${ref ? '불일치 | ' : ''}검수한 원문 | 역번역 | 핵심어 뜻 | 점수 근거 | 고친 번역 | 이유
+1. \`줄 검수\` — 번호 | 확인값 | 번역문 관계 | 번역 방식 | 판정 | ${SC_ITEMS.map(it => it.head).join(' | ')} | ${BIN_CHECKS.join(' | ')} | 치명 오류 | 오류 유형 | ${ref ? '불일치 | ' : ''}검수한 원문 | 역번역 | 핵심어 뜻 | 점수 근거 | 고친 번역 | 이유
    - 아래 표의 모든 번호를 같은 순서로 빠짐없이 쓴다. 번호는 고치지 않는다.
    - 확인값은 아래 표의 확인값을 글자 그대로 복사한다. (검수한 번역문이 지금 번역문과 같은지 사이트가 확인하는 값)
    - 검수한 원문: 역번역을 쓰기 직전에 그 번호의 한국어 원문을 그대로 다시 쓴다. 이 줄의 판정·역번역·고친 번역·이유는 모두 이 원문에 대한 것이어야 한다. 앞뒤 줄의 내용이 섞이면 사이트가 ‘줄 밀림’으로 버리고 다시 검수를 맡긴다.
@@ -3119,7 +3364,7 @@ async function uploadSheet(file) {
     rows.forEach(r => { if (ii >= 0) byId.set(normId(r[ii]), r); byKo.set(normId(m.cols.file >= 0 ? r[m.cols.file] : '') + '|' + normKo(r[m.cols.ko]), r); byKo.set('|' + normKo(r[m.cols.ko]), byKo.get('|' + normKo(r[m.cols.ko])) || r); });
     const used = new Set();
     const hh = m.head.map(normHead), fi = f => hh.findIndex(f);
-    const iAlt = fi(x => x.startsWith('번역대안') || x === '대안'), iMeth = fi(x => x.startsWith('번역방식')), iInt = fi(x => x.startsWith('번역결과의한국어') || x.startsWith('한국어의미') || x.startsWith('번역의미')), iSense = fi(x => x.startsWith('단어의미') || x.startsWith('다의어')), iMap = fi(x => x.startsWith('핵심어')), iWhy = fi(x => x.startsWith('번역이유') || x.startsWith('이유')), iRedo = fi(x => x.startsWith('재구성사유')), iCare = fi(x => x.startsWith('검수주의'));
+    const iAlt = fi(x => x.startsWith('번역대안') || x === '대안'), iMeth = fi(x => x.startsWith('번역방식')), iInt = fi(x => x.startsWith('번역결과의한국어') || x.startsWith('한국어의미') || x.startsWith('번역의미')), iSense = fi(x => x.startsWith('단어의미') || x.startsWith('다의어')), iMap = fi(x => x.startsWith('핵심어')), iWhy = fi(x => x.startsWith('번역이유') || x.startsWith('이유')), iRedo = fi(x => x.startsWith('재구성사유')), iCare = fi(x => x.startsWith('검수주의')), iSub = fi(x => x.startsWith('대체표현') || x.startsWith('대체단어'));
     const cell = (r, i) => { if (!r || i < 0) return ''; const v = String(r[i] ?? '').trim(); return v === '-' ? '' : v; };
     const idMis = [];
     const loose = v => String(v || '').normalize('NFKC').replace(/[^\p{L}\p{N}]/gu, ''), srcDiff = {};
@@ -3128,9 +3373,9 @@ async function uploadSheet(file) {
       const same = rId && loose(their) === loose(b.ko), close = rId && !same && (simKo(loose(their), loose(b.ko)) || 0) >= 0.6, idOk = same || close;
       if (rId && !idOk) idMis.push(b.id); if (close) srcDiff[b.id] = their;
       let r = (idOk && rId) || byKo.get(normId(b.file) + '|' + normKo(b.ko)) || byKo.get('|' + normKo(b.ko)); if (r && used.has(r)) r = null; if (r) used.add(r); else srcMiss++;
-      return [b.id, b.file, b.screen, b.elem, b.ko, r ? String(r[m.cols.tr] ?? '') : '', cell(r, iAlt), [cell(r, iCare), cell(r, m.cols.note)].filter(Boolean).join(' / '), cell(r, iMeth), cell(r, iInt), cell(r, iSense), cell(r, iWhy), cell(r, iRedo), cell(r, iMap)]; });
+      return [b.id, b.file, b.screen, b.elem, b.ko, r ? String(r[m.cols.tr] ?? '') : '', cell(r, iAlt), [cell(r, iCare), cell(r, m.cols.note)].filter(Boolean).join(' / '), cell(r, iMeth), cell(r, iInt), cell(r, iSense), cell(r, iWhy), cell(r, iRedo), cell(r, iMap), cell(r, iSub)]; });
     srcExtra = rows.filter(r => !used.has(r)).length;
-    m = { sheet: m.sheet, hi: 0, head: ['ID', '파일', '화면', '요소', '한국어 원문', LHEAD[lk], '번역 대안', '검수 주의사항', '번역 방식', '번역 결과의 한국어 의미', '단어 의미 판단', '번역 이유', '재구성 사유', '핵심어 대응'], cols: { ko: 4, tr: 5, file: 1, screen: 2, elem: 3, alt: 6, note: 7, ...(iMeth < 0 && iInt < 0 && iWhy < 0 ? { meth: -1 } : { meth: 8, intent: 9, sense: 10, reason: 11, redoWhy: 12, wmap: 13 }), cls: -1, why: -1, dir: -1, keep: -1, re: -1 } };
+    m = { sheet: m.sheet, hi: 0, head: ['ID', '파일', '화면', '요소', '한국어 원문', LHEAD[lk], '번역 대안', '검수 주의사항', '번역 방식', '번역 결과의 한국어 의미', '단어 의미 판단', '번역 이유', '재구성 사유', '핵심어 대응', '대체 표현'], cols: { ko: 4, tr: 5, file: 1, screen: 2, elem: 3, alt: 6, note: 7, ...(iMeth < 0 && iInt < 0 && iWhy < 0 ? { meth: -1 } : { meth: 8, intent: 9, sense: 10, reason: 11, redoWhy: 12, wmap: 13, sub: 14 }), cls: -1, why: -1, dir: -1, keep: -1, re: -1 } };
     rows = aligned; srcIds = base.map(b => b.id); srcIdMis = idMis; srcDiff0 = srcDiff;
   }
   const extra = tables.filter(tb => tb !== m.sheet).map(tb => ({ name: tb.sheet || '시트', rows: tb.slice(0, 400).map(r => r.slice(0, 16)) }));
@@ -3249,6 +3494,7 @@ async function applyCross(tables) {
   /* 점수 형식이면 의미·행동·조건·자연스러움·문화·말투 칸은 점수가 대신함 */
   if (hasSc) CHK.forEach((k, jj) => { if (SC_ITEMS.some(it => it.chk.includes(k))) iChk[jj] = -1; });
   const vOf = s => { const x = String(s || '').trim().toUpperCase(); if (/HOLD|보류/.test(x)) return 'HOLD'; return /FAIL|오류|수정\s*필요/.test(x) && !/불필요/.test(x) ? 'FAIL' : /REVIEW|확인|판단/.test(x) ? 'REVIEW' : /PASS|통과|OK|일치|유지|불필요/.test(x) ? 'PASS' : /해당/.test(x) ? 'NA' : ''; };
+  const iErr3 = ix(x => x.startsWith('오류유형'));
   const iMis = ix(x => x.startsWith('불일치')), enIssues = [], ref = promptLang === 'zh' ? enRef(cur().data) : null;
   const iNo = Math.max(0, ix(x => x === '번호' || x === 'id')), iV = ix(x => x.startsWith('판정')), iB = ix(x => x.startsWith('역번역')), iGl = ix(x => x.startsWith('핵심어')), iRel = ix(x => x.startsWith('번역문관계') || x.startsWith('행동관계') || x === '관계'), iFix = ix(x => x.startsWith('고친')), iWhy = ix(x => x.startsWith('이유'));
   const valid = new Map(sheetRows(cur().data, promptLang).map(r => [normId(r.id), r.id]));
@@ -3335,6 +3581,7 @@ async function applyCross(tables) {
       if (x.hv) { x.hvHist = [...(x.hvHist || []), { v: '무효', by: '시스템', at: nowISO(), why: '새 검수 결과가 들어옴', was: x.hv.v }].slice(-20); x.hv = null; }
       const mis = iMis >= 0 ? String(r[iMis] || '').replace(/\s/g, '') : '';
       if (mis && mis !== '없음' && mis !== '-') x.rv = Object.assign({}, x.rv, { mis });
+      if (iErr3 >= 0) x.rv = Object.assign({}, x.rv, { err3: parseErr3(r[iErr3]) });
       if (/판단불가|원문확인/.test(mis) && x.rv.v === '통과') { x.rv = Object.assign({}, x.rv, { v: '사람 확인 필요', why: x.rv.why && x.rv.why !== '-' ? x.rv.why : '원문 확인 필요' }); rev++; }
       if (/판단불가|원문확인/.test(mis)) x.rv.hold = true;
       /* HOLD = 원문을 판단할 수 없음 → 기획에게 원문 확인 메모 */
@@ -3410,7 +3657,8 @@ function resultXlsx(t, lk) {
   const trCol = sh.cols.tr;
   const body = rows.map((r, i) => { const src = sh.rows[i].slice(0, sh.head.length); while (src.length < sh.head.length) src.push(''); src[trCol] = r.tr; const v = r.x.rv; return [...src, openMemosOf(r.x).map(m => `${m.text} (${m.by})`).join(' / '), v ? (v.kind === '사람 판단' ? 'PASS(사람)' : VLABEL[v.v] || v.v) : '검수 전', (r.x.bt || [])[0] || '', v ? [v.why, v.fix && v.v !== '통과' ? '수정안: ' + v.fix : ''].filter(Boolean).join(' / ') : '', r.tr !== r.tr0 ? r.tr0 : '']; });
   const vi = sh.head.length + 1;
-  const sheets = [understandSheet(t), termSheet(t, lk), workSheet(t, lk), { name: '부록 A 번역 원본', rows: [head, ...body], widths: [...sh.head.map((_, i) => i === sh.cols.ko || i === trCol ? 36 : i === sh.cols.note ? 30 : 12), 36, 12, 30, 30, 30], filter: true, style: (ri, ci, r) => r[vi - 1] ? 2 : /FAIL|REVIEW/.test(r[vi]) ? 2 : r[vi + 3] ? 3 : 0 }];
+  const hcs = hcmpSheet(t, lk);
+  const sheets = [understandSheet(t), termSheet(t, lk), workSheet(t, lk), ...(hcs ? [hcs] : []), { name: '부록 A 번역 원본', rows: [head, ...body], widths: [...sh.head.map((_, i) => i === sh.cols.ko || i === trCol ? 36 : i === sh.cols.note ? 30 : 12), 36, 12, 30, 30, 30], filter: true, style: (ri, ci, r) => r[vi - 1] ? 2 : /FAIL|REVIEW/.test(r[vi]) ? 2 : r[vi + 3] ? 3 : 0 }];
   /* 원문 · 번역문 · 역번역을 한눈에 (번역 시트 바로 뒤) */
   sheets.push(Object.assign(lookSheet([L], flowState(t, lk).rows.map(r => ({ id: r.id, file: r.file, ko: r.ko, per: { [lk]: r } }))), { name: '부록 B 원문·번역·역번역' }));
   /* 직역·의역·재창조 비율 (위 시트의 3분류 열을 COUNTIF) */
@@ -3676,7 +3924,7 @@ function reasonSheet(t, lk) {
     const wk = why[0].split('\n').filter(l => !/^대안 |^AI는 /.test(l)).join('\n'), dup = wk && wk !== NO_WHY && wk !== '직역' ? seenW.get(wk) : null; if (wk && !dup) seenW.set(wk, r.id);
     const mean0 = R.intent || (pk && pk.mean) || '', mean = /번역이 전하는 뜻|^-$/.test(mean0) || normKo(mean0) === normKo(r.ko) ? '' : mean0;
     if (why[0] === '직역') why[0] = ''; else why[0] = why[0].replace(/^직역\n/, '');
-    return [o.file, isNaN(o.ord) ? '' : o.ord, r.id, r.ko, r.tr, mean, R.meth || R.methRaw || '', dup ? `${dup} 줄과 같은 이유` : why[0], R.wmap && R.wmap !== '-' ? R.wmap.split(/\s\/\s/).join('\n') : '', [pickTxt, ...alts].filter(Boolean).join('\n'), hist.join('\n'), rvTxt, note.join('\n'), finalOk(t, L.key, r) ? '확정' : '미확정'];
+    return [o.file, isNaN(o.ord) ? '' : o.ord, r.id, r.ko, r.tr, mean, R.meth || R.methRaw || '', dup ? `${dup} 줄과 같은 이유` : why[0], [R.wmap && R.wmap !== '-' ? R.wmap.split(/\s\/\s/).join('\n') : '', R.sub && R.sub !== '-' ? '대체 표현: ' + R.sub.split(/\s;\s|;/).map(v => v.trim()).filter(Boolean).join('\n  ') : ''].filter(Boolean).join('\n'), [pickTxt, ...alts].filter(Boolean).join('\n'), hist.join('\n'), rvTxt, note.join('\n'), finalOk(t, L.key, r) ? '확정' : '미확정'];
   });
   return { name: `번역 이유 ${LSHORT[lk]}`, rows: [head, ...body], widths: [12, 6, 8, 30, 30, 30, 8, 44, 34, 40, 40, 40, 34, 8], filter: true, freezeCols: 5,
     style: (ri, ci, r) => ci === 7 && r[7] === NO_WHY ? 3 : ci === 7 && /줄과 같은 이유$/.test(r[7]) ? 5 : ci === 13 ? (r[13] === '확정' ? 4 : 3) : 0 };
@@ -3697,12 +3945,13 @@ function understandSheet(t) {
   d.screens.forEach(x => rows.push(['화면', `${x.id} ${x.name}`, [x.when, x.act].filter(Boolean).join(' / '), x.unsure || '', x.sure, '']));
   d.chars.forEach(x => rows.push(['캐릭터', `${x.name} (${x.role})`, x.trait, x.to, x.sure, x.tone]));
   d.terms.forEach(x => rows.push(['용어', x.ko, x.mean, x.scr, x.sure, x.rule]));
+  (d.comps || []).forEach(c => rows.push(['구성요소', `${c.scr} ${c.pz || ''} · ${c.kind}`.trim(), c.text, `언어 의존: ${c.lang || '-'}${c.why ? ' (' + c.why + ')' : ''}`, '', `재설계: ${c.redo || '-'}`]));
   (d.qs || []).forEach((q, i) => rows.push(['질문', `${i + 1}. ${q.q}`, q.ans || '(답 없음)', q.scr, '', q.why]));
   return { name: '01 게임 이해·번역 기준', rows, widths: [10, 30, 50, 22, 10, 44], filter: true, style: (ri, ci, r) => ci === 4 ? (r[4] === '확인됨' ? 4 : r[4] === '추정' ? 3 : r[4] === '모름' ? 2 : 0) : r[0] === '질문' && ci === 2 && /답 없음/.test(r[2]) ? 2 : 0 };
 }
 function workSheet(t, lk) {
   const F = flowState(t, lk), L = LANGS.find(l => l.key === lk);
-  const head = ['상태', '우선순위', '번호', '파일·화면', '한국어 원문', `${L.label} 현재 번역`, '독립 역번역 (한국어)', '판정', '언어 정확성', '게임 기능', '신뢰도', '문제 유형', '무엇이 다른가 · 판단 근거', 'AI 수정 제안', '수정 전 번역 · 수정 사유', '사람 결정', '사람 수정 번역', '사람 메모', '확인값'];
+  const head = ['상태', '우선순위', '확인할 것 (먼저 걸린 검증 단계)', '번호', '파일·화면', '한국어 원문', `${L.label} 현재 번역`, '독립 역번역 (한국어)', '판정', '언어 정확성', '게임 기능', '신뢰도', '문제 유형', '무엇이 다른가 · 판단 근거', 'AI 수정 제안', '수정 전 번역 · 수정 사유', '사람 결정', '사람 수정 번역', '사람 메모', '확인값', '오류 유형 (정확성·가독성·통사구조)', '검증 단계 (① 형식 → ⑦ 사람)'];
   const pri = r => { const rv = r.x.rv, hv = hvOf(r), c = confOf(t, lk, r); if (hv && hv.v === '승인') return 9; if (!rv) return 6; if ((rv.crit || []).length || (r.open || []).some(o => PROG_CRIT[o[0]] && progSev(o[0], r) === 'FAIL')) return 1; if (r.vd.P === 'FAIL') return 2; if (rv.hold && !rv.exc) return 3; if (r.vd.P === 'REVIEW' || issuesOf(r).length) return 4; if (c && c.lv === '낮음') return 5; return 7; };
   const PRI = { 1: '1 치명 오류', 2: '2 FAIL', 3: '3 원문 확인(HOLD)', 4: '4 REVIEW', 5: '5 신뢰도 낮음', 6: '6 미검수', 7: '7 PASS · 승인 대기', 9: '완료' };
   const rows = F.rows.map(r => ({ r, p: pri(r) })).sort((a, b) => a.p - b.p || a.r.id.localeCompare(b.r.id));
@@ -3711,10 +3960,11 @@ function workSheet(t, lk) {
     const verdict = !rv ? '미검수' : `${rv.hold && !rv.exc ? 'HOLD' : r.vd.P}${rv.total != null ? ` · ${rv.total}점` : ''}`;
     const why = [xc.st === '모순' ? `교차 비교 모순: ${xc.list.join(' / ')}` : '', ...iss.map(i => `[${i.type}] ${i.msg}`), rv && rv.why && rv.why !== '-' ? `검수 AI: ${rv.why}` : '', rv && rv.scWhy ? `점수 근거: ${rv.scWhy}` : '', r.rat && r.rat.reason ? `번역 AI: ${r.rat.meth || ''} · ${r.rat.reason}` : ''].filter(Boolean);
     const before = hs.length ? hs.map((h, i) => `V${i + 1}: ${String(h.from || '').replace(/\n/g, ' / ')} → V${i + 2} (${h.kind === 'pick' ? '대안 선택' : h.kind === 'fix' ? 'AI 수정안' : '수정'}: ${h.why || '사유 없음'})`).join('\n') : '';
-    return [st, PRI[p], r.id, [r.file, r.screen, r.elem].filter(Boolean).join(' · '), r.ko, r.tr, (bt0Of(r) || {}).t || ((r.x.bt || [])[0] ? `${r.x.bt[0]}\n(검수 AI가 원문을 보고 쓴 역번역)` : ''), verdict, lf ? lf.lang : '', lf ? lf.func : '', c ? `${c.lv} (${c.ok}/${c.n})${c.miss.length ? '\n부족: ' + c.miss.join(', ') : ''}` : '', [...new Set(iss.map(i => i.type))].join(', '), [...new Set(why)].join('\n'), rv && rv.fix && rv.v !== '통과' ? rv.fix : '', before, hv ? (hv.v === '수정 요청' ? '수정 요청' : hv.v) : '', '', hv && hv.why ? hv.why : '', rowCk(r)]; });
+    const VS = verifySteps(t, lk, r);
+    return [st, PRI[p], firstTodo(VS), r.id, [r.file, r.screen, r.elem].filter(Boolean).join(' · '), r.ko, r.tr, (bt0Of(r) || {}).t || ((r.x.bt || [])[0] ? `${r.x.bt[0]}\n(검수 AI가 원문을 보고 쓴 역번역)` : ''), verdict, lf ? lf.lang : '', lf ? lf.func : '', c ? `${c.lv} (${c.ok}/${c.n})${c.miss.length ? '\n부족: ' + c.miss.join(', ') : ''}` : '', [...new Set(iss.map(i => i.type))].join(', '), [...new Set(why)].join('\n'), rv && rv.fix && rv.v !== '통과' ? rv.fix : '', before, hv ? (hv.v === '수정 요청' ? '수정 요청' : hv.v) : '', '', hv && hv.why ? hv.why : '', rowCk(r), err3Txt(r), stepsTxt(VS)]; });
   const vcol = v => /^FAIL|^HOLD/.test(v) ? 2 : /^REVIEW/.test(v) ? 3 : /^PASS/.test(v) ? 4 : 0;
-  return { name: '03 줄별 검수 작업', rows: [head, ...body], widths: [14, 14, 8, 18, 30, 30, 30, 14, 10, 10, 16, 16, 50, 26, 36, 12, 26, 26, 8], filter: true, freezeCols: 5, lists: [{ col: 15, items: WORK_DEC }],
-    style: (ri, ci, r) => ci === 0 ? (/^완료/.test(r[0]) ? 4 : /^검수 필요/.test(r[0]) ? 2 : /^보류|수정 요청/.test(r[0]) ? 5 : 3) : ci === 1 ? (/^[12] /.test(r[1]) ? 2 : /^[345] /.test(r[1]) ? 3 : 0) : ci >= 7 && ci <= 9 ? vcol(String(r[ci])) : ci === 10 ? (/^낮음/.test(r[10]) ? 2 : /^보통/.test(r[10]) ? 3 : /^높음/.test(r[10]) ? 4 : 0) : ci === 11 && r[11] ? 3 : 0 };
+  return { name: '03 줄별 검수 작업', rows: [head, ...body], widths: [14, 14, 40, 8, 18, 30, 30, 30, 14, 10, 10, 16, 16, 50, 26, 36, 12, 26, 26, 8, 30, 70], filter: true, freezeCols: 6, lists: [{ col: 16, items: WORK_DEC }],
+    style: (ri, ci, r) => ci === 0 ? (/^완료/.test(r[0]) ? 4 : /^검수 필요/.test(r[0]) ? 2 : /^보류|수정 요청/.test(r[0]) ? 5 : 3) : ci === 1 ? (/^[12] /.test(r[1]) ? 2 : /^[345] /.test(r[1]) ? 3 : 0) : ci === 2 ? (/ FAIL:/.test(r[2]) ? 2 : r[2] ? 3 : 0) : ci >= 8 && ci <= 10 ? vcol(String(r[ci])) : ci === 11 ? (/^낮음/.test(r[11]) ? 2 : /^보통/.test(r[11]) ? 3 : /^높음/.test(r[11]) ? 4 : 0) : (ci === 12 || ci === 20) && r[ci] ? 3 : 0 };
 }
 async function applyWork(tables) {
   const tTerm = tables.find(r => (r[0] || []).map(normHead).includes('담당자결정')), nTerm = tTerm ? await applyTermDec(tTerm) : 0;
@@ -4172,7 +4422,7 @@ function sheetViewHTML(t, lk) {
   const e = all[k]; return tabs + `<div class="tprev"><table><tbody>${e.rows.map(r => `<tr>${r.map(c => `<td style="white-space:pre-wrap">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 function reviewHTML(id, t, lk, F, reviewer) {
-  const tabs = [['auto', '① 자동 점검', F.openAuto ? `${F.openAuto}줄 남음` : '완료'], ['cross', '② 독립 검수', `${F.pass}/${F.N}`], ...(F.ctxG.length ? [['ctx', '③ 맥락 검수', F.ctxTodo ? `${F.ctxTodo}묶음 남음` : '완료']] : []), ...(F.humanReq ? [['human', F.ctxG.length ? '④ 사람 승인' : '③ 사람 승인', `${F.hvOk}/${F.N}`]] : [])];
+  const tabs = [['auto', '① 자동 점검', F.openAuto ? `${F.openAuto}줄 남음` : '완료'], ['cross', '② 독립 검수', `${F.pass}/${F.N}`], ...(F.ctxG.length ? [['ctx', '③ 맥락 검수', F.ctxTodo ? `${F.ctxTodo}묶음 남음` : '완료']] : []), ...(F.humanReq ? [['human', F.ctxG.length ? '④ 사람 승인' : '③ 사람 승인', `${F.hvOk}/${F.N}`]] : []), ['hcmp', '+ 사람 번역 비교', (() => { const n = hcmpRows(F.rows, lk).filter(o => !o.same).length; return n ? `다른 줄 ${n}` : '선택'; })()]];
   if (rvTab === 'human' && !F.humanReq) rvTab = 'auto';
   if (rvTab === 'files') rvTab = 'auto';   /* 이미지 대조 단계는 없앰 */
   const cond = stepConds(t, lk, F);
@@ -4198,6 +4448,7 @@ function reviewHTML(id, t, lk, F, reviewer) {
   }
   if (rvTab === 'human') inner = humanHTML(id, t, lk, F);
   if (rvTab === 'ctx') inner = ctxHTML(t, lk, F);
+  if (rvTab === 'hcmp') inner = hcmpHTML(t, lk, F);
   if (rvTab === 'cross') {
     const need0 = F.rows.filter(r => r.x.rv && (r.x.rv.v !== '통과' || (r.xc && r.xc.st === '모순' && !(r.x.ok || []).includes('xcmp')))), sibOf = rvSibs(F.rows);
     const nX = F.rows.filter(r => r.xc && r.xc.st === '모순').length, nNo = F.rows.filter(r => r.xc && r.xc.st === '비교 불가').length;
@@ -5058,7 +5309,7 @@ document.addEventListener('change', e => {
 
 /* 붙여 넣기 */
 let pasteTarget = null;
-const PASTE_TITLES = { 'one:natq': '현지인 질문 답 붙여 넣기', 'one:und': '게임 이해 답 붙여 넣기', 'one:nat': '현지인 검수 결과 붙여 넣기', 'one:ctx': '맥락 검수 답 붙여 넣기', 'one:work': '검수 작업표 붙여 넣기', 'one:blind': '독립 역번역 답 붙여 넣기', 'one:alt': '추가 대안 답 붙여 넣기', 'one:rat': '바뀐 번역의 근거 답 붙여 넣기', 'ap:ocr': '이미지 글자 판독 답 붙여 넣기', 'ap:test': '처음 보는 사람 테스트 답 붙여 넣기', 'one:res': '번역 결과 표 붙여 넣기 (표 3개 모두 붙여 넣어도 됨)', 'one:cross': '교차 검수 답 붙여 넣기', 'one:x': 'AI 원문 추출 답 붙여 넣기', 'one:tr': 'AI 번역 답 붙여 넣기', 'one:rv': 'AI 검수 답 붙여 넣기', tr: '번역 결과', b: 'DeepL 결과', bt: '역번역 결과', rv: '검수 결과', ts: '테스트 결과', fx: '수정 결과', inputTable: '번역 입력표', enFinal: '영어 확정본' };
+const PASTE_TITLES = { 'one:human': '사람 번역본 붙여 넣기 (번호 | 사람 번역)', 'one:hdiff': '차이 판정 답 붙여 넣기', 'one:natq': '현지인 질문 답 붙여 넣기', 'one:und': '게임 이해 답 붙여 넣기', 'one:nat': '현지인 검수 결과 붙여 넣기', 'one:ctx': '맥락 검수 답 붙여 넣기', 'one:work': '검수 작업표 붙여 넣기', 'one:blind': '독립 역번역 답 붙여 넣기', 'one:alt': '추가 대안 답 붙여 넣기', 'one:rat': '바뀐 번역의 근거 답 붙여 넣기', 'ap:ocr': '이미지 글자 판독 답 붙여 넣기', 'ap:test': '처음 보는 사람 테스트 답 붙여 넣기', 'one:res': '번역 결과 표 붙여 넣기 (표 3개 모두 붙여 넣어도 됨)', 'one:cross': '교차 검수 답 붙여 넣기', 'one:x': 'AI 원문 추출 답 붙여 넣기', 'one:tr': 'AI 번역 답 붙여 넣기', 'one:rv': 'AI 검수 답 붙여 넣기', tr: '번역 결과', b: 'DeepL 결과', bt: '역번역 결과', rv: '검수 결과', ts: '테스트 결과', fx: '수정 결과', inputTable: '번역 입력표', enFinal: '영어 확정본' };
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-paste]'); if (!b) return;
   pasteTarget = b.dataset.paste;
@@ -5073,7 +5324,7 @@ $('#paste-form').addEventListener('submit', async e => {
     if (!tables.length) { $('#paste-err').textContent = '표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.'; return; }
     $('#pastedlg').close();
     if (pasteTarget.startsWith('ap:')) return applyUpload(pasteTarget.slice(3), tables);
-    return pasteTarget === 'one:natq' ? applyNatQ(tables) : pasteTarget === 'one:und' ? applyUnderstand(tables) : pasteTarget === 'one:nat' ? applyNative(tables) : pasteTarget === 'one:ctx' ? applyCtx(tables) : pasteTarget === 'one:work' ? applyWork(tables) : pasteTarget === 'one:blind' ? applyBlind(tables) : pasteTarget === 'one:alt' ? applyAltReq(tables) : pasteTarget === 'one:rat' ? applyRat(tables) : pasteTarget === 'one:cross' ? applyCross(tables) : pasteTarget === 'one:tr' ? applyTranslation(tables) : pasteTarget === 'one:x' ? applyExtraction(tables) : applyReview(tables);
+    return pasteTarget === 'one:human' ? applyHuman(tables) : pasteTarget === 'one:hdiff' ? applyHdiff(tables) : pasteTarget === 'one:natq' ? applyNatQ(tables) : pasteTarget === 'one:und' ? applyUnderstand(tables) : pasteTarget === 'one:nat' ? applyNative(tables) : pasteTarget === 'one:ctx' ? applyCtx(tables) : pasteTarget === 'one:work' ? applyWork(tables) : pasteTarget === 'one:blind' ? applyBlind(tables) : pasteTarget === 'one:alt' ? applyAltReq(tables) : pasteTarget === 'one:rat' ? applyRat(tables) : pasteTarget === 'one:cross' ? applyCross(tables) : pasteTarget === 'one:tr' ? applyTranslation(tables) : pasteTarget === 'one:x' ? applyExtraction(tables) : applyReview(tables);
   }
   const rows = parseTable($('#paste-text').value);
   if (rows.length < 2) { $('#paste-err').textContent = '표를 찾지 못함. 첫 행에 열 이름(ID 등)이 있어야 함.'; return; }
@@ -5208,7 +5459,7 @@ document.addEventListener('change', async e => {
     try {
       const tables = await readWorkbook(f);
       if (!tables.length || tables[0].length < 2) { toast('표를 찾지 못함.'); return; }
-      await (target === 'one:natq' ? applyNatQ(tables) : target === 'one:und' ? applyUnderstand(tables) : target === 'one:nat' ? applyNative(tables) : target === 'one:ctx' ? applyCtx(tables) : target === 'one:work' ? applyWork(tables) : target === 'one:blind' ? applyBlind(tables) : target === 'one:alt' ? applyAltReq(tables) : target === 'one:cross' ? applyCross(tables) : target === 'one:rat' ? applyRat(tables) : target === 'one:tr' ? applyTranslation(tables) : applyReview(tables));
+      await (target === 'one:human' ? applyHuman(tables) : target === 'one:hdiff' ? applyHdiff(tables) : target === 'one:natq' ? applyNatQ(tables) : target === 'one:und' ? applyUnderstand(tables) : target === 'one:nat' ? applyNative(tables) : target === 'one:ctx' ? applyCtx(tables) : target === 'one:work' ? applyWork(tables) : target === 'one:blind' ? applyBlind(tables) : target === 'one:alt' ? applyAltReq(tables) : target === 'one:cross' ? applyCross(tables) : target === 'one:rat' ? applyRat(tables) : target === 'one:tr' ? applyTranslation(tables) : applyReview(tables));
     } catch (err) { done(); toast(err.message || '파일을 읽지 못함.', 5000); }
     return;
   }
