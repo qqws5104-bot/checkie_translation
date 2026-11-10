@@ -14623,7 +14623,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-10T02:36:21.347Z",
+    "updatedAt": "2026-11-10T02:36:29.478Z",
     "progressBy": {
       "en": {},
       "ja": {},
@@ -16981,9 +16981,7 @@
                 "doneAt": "2026-11-10T02:08:38.570Z"
               }
             ],
-            "ok": [
-              "srcSuffix"
-            ],
+            "ok": [],
             "bt0": {
               "t": "내셔널 버드오그래픽(소리)",
               "amb": "‘National Geographic’을 연상시키는 말장난일 수 있음.",
@@ -16991,49 +16989,10 @@
               "by": "Gemini",
               "trh": "zzr2vr6l1gyvm"
             },
-            "bt": [
-              "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)"
-            ],
-            "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "National Birdographic",
-              "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 87,
-              "band": "REVIEW",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "zzr2vr6l1gyvm",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -17041,7 +17000,52 @@
                 "at": "2026-11-10T02:35:53.552Z",
                 "total": 87
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:29.454Z",
+                "by": "김예은",
+                "from": "National Birdographic",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                  "fix": "National Birdographic",
+                  "exc": "",
+                  "bt": "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)",
+                  "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "National Birdographic",
+                "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
+            ],
+            "tr": "National Birdographic",
+            "hv": null
           },
           "R014": {
             "ok": [
@@ -17150,9 +17154,7 @@
                 "doneAt": "2026-11-10T02:08:38.993Z"
               }
             ],
-            "ok": [
-              "srcSuffix"
-            ],
+            "ok": [],
             "bt0": {
               "t": "내셔널 버드오그래픽(소리)",
               "amb": "‘National Geographic’을 연상시키는 말장난일 수 있음.",
@@ -17161,50 +17163,55 @@
               "trh": "zzr2vr6l1gyvm",
               "via": "R013"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "National Birdographic",
-              "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 87,
-              "band": "REVIEW",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "zzr2vr6l1gyvm",
-              "err3": [],
-              "via": "R013"
-            },
-            "bt": [
-              "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:29.454Z",
+                "by": "김예은",
+                "from": "National Birdographic",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                  "fix": "National Birdographic",
+                  "exc": "",
+                  "bt": "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)",
+                  "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "National Birdographic",
+                "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
-            "rel": "-"
+            "tr": "National Birdographic",
+            "hv": null
           },
           "R017": {
             "ok": [
@@ -20249,9 +20256,7 @@
                 "doneAt": "2026-11-10T02:08:40.629Z"
               }
             ],
-            "ok": [
-              "srcSuffix"
-            ],
+            "ok": [],
             "bt0": {
               "t": "내셔널 버드오그래픽(소리)",
               "amb": "‘National Geographic’을 연상시키는 말장난일 수 있음.",
@@ -20260,50 +20265,55 @@
               "trh": "zzr2vr6l1gyvm",
               "via": "R013"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "National Birdographic",
-              "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 87,
-              "band": "REVIEW",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "zzr2vr6l1gyvm",
-              "err3": [],
-              "via": "R013"
-            },
-            "bt": [
-              "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:36:29.454Z",
+                "by": "김예은",
+                "from": "National Birdographic",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                  "fix": "National Birdographic",
+                  "exc": "",
+                  "bt": "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)",
+                  "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "National Birdographic",
+                "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
-            "rel": "-"
+            "tr": "National Birdographic",
+            "hv": null
           },
           "R081": {
             "ok": [
