@@ -14623,7 +14623,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-10T02:41:50.070Z",
+    "updatedAt": "2026-11-10T02:41:54.934Z",
     "progressBy": {
       "en": {},
       "ja": {},
@@ -19186,10 +19186,7 @@
             }
           },
           "R056": {
-            "ok": [
-              "srcSuffix",
-              "long"
-            ],
+            "ok": [],
             "bt0": {
               "t": "공익 광고 협의회 -",
               "amb": "",
@@ -19197,49 +19194,10 @@
               "by": "Gemini",
               "trh": "gfbse51oorqwvy"
             },
-            "bt": [
-              "공익 광고 협의회 -"
-            ],
-            "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Public Service Advertising Council -",
-              "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "gfbse51oorqwvy",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -19247,13 +19205,55 @@
                 "at": "2026-11-10T02:35:53.552Z",
                 "total": 92
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-10T02:41:51.583Z",
+                "by": "김예은",
+                "from": "Public Service Advertising Council -",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                  "fix": "Public Service Advertising Council -",
+                  "exc": "",
+                  "bt": "공익 광고 협의회 -",
+                  "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Public Service Advertising Council -",
+                "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
+            ],
+            "tr": "Public Service Advertising Council -",
+            "hv": null
           },
           "R057": {
-            "ok": [
-              "srcSuffix",
-              "long"
-            ],
+            "ok": [],
             "bt0": {
               "t": "공익 광고 협의회 -",
               "amb": "",
@@ -19262,50 +19262,55 @@
               "trh": "gfbse51oorqwvy",
               "via": "R056"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Public Service Advertising Council -",
-              "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "gfbse51oorqwvy",
-              "err3": [],
-              "via": "R056"
-            },
-            "bt": [
-              "공익 광고 협의회 -"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:41:51.583Z",
+                "by": "김예은",
+                "from": "Public Service Advertising Council -",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                  "fix": "Public Service Advertising Council -",
+                  "exc": "",
+                  "bt": "공익 광고 협의회 -",
+                  "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Public Service Advertising Council -",
+                "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
-            "rel": "-"
+            "tr": "Public Service Advertising Council -",
+            "hv": null
           },
           "R058": {
             "ok": [
@@ -19563,7 +19568,8 @@
           },
           "R062": {
             "ok": [
-              "srcSuffix"
+              "srcSuffix",
+              "xcmp"
             ],
             "bt0": {
               "t": "가로",
@@ -19579,8 +19585,8 @@
             "rel": "-",
             "rv": {
               "v": "통과",
-              "at": "2026-11-10T02:35:53.552Z",
-              "by": "AI",
+              "at": "2026-11-10T02:41:54.911Z",
+              "by": "김예은",
               "chk": {
                 "정답": "NA",
                 "추가 정보": "PASS",
@@ -19612,7 +19618,10 @@
               "aiV": "PASS",
               "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일치; 말투: 비발화 요소",
               "trh": "7h9jiq1ag070y8",
-              "err3": []
+              "err3": [],
+              "kind": "사람 판단",
+              "orig": "PASS",
+              "exc": "유지"
             },
             "rvLog": [
               {
@@ -19621,7 +19630,15 @@
                 "at": "2026-11-10T02:35:53.552Z",
                 "total": 100
               }
-            ]
+            ],
+            "okWhy": {
+              "xcmp": {
+                "why": "유지",
+                "msg": "역번역 AI가 애매하다고 본 부분(낱말퍼즐의 가로 방향을 뜻함.)이 있는데 검수는 모두 온전",
+                "by": "김예은",
+                "at": "2026-11-10T02:41:54.911Z"
+              }
+            }
           },
           "R063": {
             "ok": [
@@ -21065,10 +21082,7 @@
             }
           },
           "R095": {
-            "ok": [
-              "srcSuffix",
-              "long"
-            ],
+            "ok": [],
             "bt0": {
               "t": "공익 광고 협의회 -",
               "amb": "",
@@ -21077,50 +21091,55 @@
               "trh": "gfbse51oorqwvy",
               "via": "R056"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Public Service Advertising Council -",
-              "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "gfbse51oorqwvy",
-              "err3": [],
-              "via": "R056"
-            },
-            "bt": [
-              "공익 광고 협의회 -"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:41:51.583Z",
+                "by": "김예은",
+                "from": "Public Service Advertising Council -",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                  "fix": "Public Service Advertising Council -",
+                  "exc": "",
+                  "bt": "공익 광고 협의회 -",
+                  "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Public Service Advertising Council -",
+                "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
-            "rel": "-"
+            "tr": "Public Service Advertising Council -",
+            "hv": null
           },
           "R096": {
             "ok": [
@@ -21191,10 +21210,7 @@
             }
           },
           "R097": {
-            "ok": [
-              "srcSuffix",
-              "long"
-            ],
+            "ok": [],
             "bt0": {
               "t": "공익 광고 협의회 -",
               "amb": "",
@@ -21203,50 +21219,55 @@
               "trh": "gfbse51oorqwvy",
               "via": "R056"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Public Service Advertising Council -",
-              "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
-              "at": "2026-11-10T02:35:53.552Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "gfbse51oorqwvy",
-              "err3": [],
-              "via": "R056"
-            },
-            "bt": [
-              "공익 광고 협의회 -"
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hist": [
+              {
+                "at": "2026-11-10T02:41:51.583Z",
+                "by": "김예은",
+                "from": "Public Service Advertising Council -",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                  "fix": "Public Service Advertising Council -",
+                  "exc": "",
+                  "bt": "공익 광고 협의회 -",
+                  "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
+                  "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Public Service Advertising Council -",
+                "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
             ],
-            "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
-            "rel": "-"
+            "tr": "Public Service Advertising Council -",
+            "hv": null
           },
           "R098": {
             "redo": {
@@ -21676,7 +21697,8 @@
           },
           "R104": {
             "ok": [
-              "srcSuffix"
+              "srcSuffix",
+              "xcmp"
             ],
             "bt0": {
               "t": "가로",
@@ -21688,8 +21710,8 @@
             },
             "rv": {
               "v": "통과",
-              "at": "2026-11-10T02:35:53.552Z",
-              "by": "AI",
+              "at": "2026-11-10T02:41:54.911Z",
+              "by": "김예은",
               "chk": {
                 "정답": "NA",
                 "추가 정보": "PASS",
@@ -21722,13 +21744,24 @@
               "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일치; 말투: 비발화 요소",
               "trh": "7h9jiq1ag070y8",
               "err3": [],
-              "via": "R062"
+              "via": "R062",
+              "kind": "사람 판단",
+              "orig": "PASS",
+              "exc": "유지"
             },
             "bt": [
               "가로 (애매: 낱말퍼즐의 가로 방향을 뜻함.)"
             ],
             "gl": "ACROSS = 가로",
-            "rel": "-"
+            "rel": "-",
+            "okWhy": {
+              "xcmp": {
+                "why": "유지",
+                "msg": "역번역 AI가 애매하다고 본 부분(낱말퍼즐의 가로 방향을 뜻함.)이 있는데 검수는 모두 온전",
+                "by": "김예은",
+                "at": "2026-11-10T02:41:54.911Z"
+              }
+            }
           },
           "R105": {
             "ok": [
