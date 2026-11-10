@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-10T03:51:05.557Z",
+    "updatedAt": "2026-11-10T03:51:23.600Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -9675,23 +9675,69 @@
           },
           "S062": {
             "ok": [
-              "srcSuffix"
+              "srcSuffix",
+              "lines"
             ]
           },
           "S063": {
             "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
+          "S064": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
+          "S067": {
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
+          "S068": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
+          "S069": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
+          "S072": {
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
+          "S073": {
+            "ok": [
               "srcSuffix"
             ]
           },
-          "S064": {},
-          "S067": {},
-          "S068": {},
-          "S069": {},
-          "S072": {},
-          "S073": {},
-          "S074": {},
-          "S077": {},
-          "S078": {},
+          "S074": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
+          "S077": {
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
+          "S078": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
           "S079": {},
           "S082": {},
           "S084": {},
