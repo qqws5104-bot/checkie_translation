@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-10T03:54:35.786Z",
+    "updatedAt": "2026-11-10T03:56:17.567Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -9442,93 +9442,212 @@
             "bt": null,
             "gl": null,
             "rel": null,
-            "hv": null
+            "hv": null,
+            "bt0": {
+              "t": "산타 자격시험",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.550Z",
+              "by": "ChatGPT",
+              "trh": "3w1bom1sqz9fgo"
+            }
           },
           "S002": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "크리스마스는 ( )에 있어! 개굴!",
+              "amb": "Ribbit = 개구리 울음소리",
+              "at": "2026-11-10T03:56:17.550Z",
+              "by": "ChatGPT",
+              "trh": "pazf0lfopu3lp"
+            }
           },
           "S003": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "여름",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.550Z",
+              "by": "ChatGPT",
+              "trh": "1ywkjmujlqmy8"
+            }
           },
           "S004": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "겨울",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.550Z",
+              "by": "ChatGPT",
+              "trh": "1lt7vpm1qwd0rs8"
+            }
           },
           "S005": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "이거!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.550Z",
+              "by": "ChatGPT",
+              "trh": "1qp0mpg1c3n2xwa"
+            }
           },
           "S007": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "겨울은 ( ). 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.550Z",
+              "by": "ChatGPT",
+              "trh": "fifqbk939tb8k"
+            }
           },
           "S008": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "더운",
+              "amb": "‘뜨거운’ 또는 ‘매운’으로도 읽힘",
+              "at": "2026-11-10T03:56:17.550Z",
+              "by": "ChatGPT",
+              "trh": "dw071e81caqe5"
+            }
           },
           "S009": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "추운",
+              "amb": "‘차가운’으로도 읽힘",
+              "at": "2026-11-10T03:56:17.550Z",
+              "by": "ChatGPT",
+              "trh": "1d10czb1iak4lb6"
+            }
           },
           "S012": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "울면 선물을 ( ). 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.550Z",
+              "by": "ChatGPT",
+              "trh": "19rw0eh1yujyh3t"
+            }
           },
           "S013": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "받는다",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "3ekrdb1tzlhrj5"
+            }
           },
           "S014": {
             "ok": [
               "srcSuffix",
               "negAdd"
-            ]
+            ],
+            "bt0": {
+              "t": "안 받는다",
+              "amb": "‘못 받는다’(못 받게 된다)로도 읽힘",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "a6l57b1c54vi9a"
+            }
           },
           "S017": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "루돌프(소리)의 코는 ( ). 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "3ygh061xlw03mr"
+            }
           },
           "S018": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "빨간색",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "1190tvedi1iq25"
+            }
           },
           "S019": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "파란색",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "1hq5ycd1rmr2d16"
+            }
           },
           "S022": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "산타는 ( )(으)로 이동해. 개굴!",
+              "amb": "travels = ‘여행해’로도 읽힘",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "1lu6uya1vp4x2oq"
+            }
           },
           "S023": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "헬리콥터",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "1xg5lh2hc7rp6c"
+            }
           },
           "S024": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "썰매",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "y0to97yv7fyh8"
+            }
           },
           "S027": {
             "hist": [
@@ -9565,183 +9684,407 @@
               "ratStale",
               "lines",
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "크리스마스는 ( )번 달에 있어, 개굴!",
+              "amb": "다른 줄과 달리 ‘Ribbit’ 앞이 쉼표로 이어짐",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "zyssin1v15uhp15"
+            }
           },
           "S028": {
             "ok": [
               "srcSuffix",
               "same"
-            ]
+            ],
+            "bt0": {
+              "t": "8",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "n3l8tbrcurh53"
+            }
           },
           "S029": {
             "ok": [
               "srcSuffix",
               "same"
-            ]
+            ],
+            "bt0": {
+              "t": "12",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "3stm7s1q3udm44"
+            }
           },
           "S032": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "산타의 썰매는 ( )이/가 끌어. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "h7q1irziyqovz"
+            }
           },
           "S033": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "순록",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "kaf25n9a7uc9a"
+            }
           },
           "S034": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "당나귀",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "1ws8fbpt57v878"
+            }
           },
           "S037": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "산타는 선물을 ( ) 안에 넣어. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "cjrd6xt034ylt"
+            }
           },
           "S038": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "신발",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "wof3ww1oi2efi6"
+            }
           },
           "S039": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "스타킹",
+              "amb": "‘긴 양말’ 또는 ‘크리스마스 양말’로도 읽힘",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "lhxoln9xasjba"
+            }
           },
           "S042": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "크리스마스트리 꼭대기는 ( )(으)로 장식돼 있어. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "1txhwk1is6nnw1f"
+            }
           },
           "S043": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "해",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "wxfum817wqntq8"
+            }
           },
           "S044": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "별",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "mdcyuath33o7"
+            }
           },
           "S047": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "산타의 모자는 ( ). 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.551Z",
+              "by": "ChatGPT",
+              "trh": "12bv7o7x5qdsxo"
+            }
           },
           "S048": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "보라색",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "1q6mbt3fzv8nj8"
+            }
           },
           "S052": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "산타는 선물을 ( )에 담아 날라. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "1witqwmm7bvuaw"
+            }
           },
           "S053": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "자루",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "u38emf1cy6yih6"
+            }
           },
           "S054": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "여행 가방",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "q17tuy10c2mswa"
+            }
           },
           "S057": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "산타는 아이들에게 ( ) 선물을 줘. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "ejexk31l9jwln11"
+            }
           },
           "S058": {
             "ok": [
               "srcSuffix",
               "gram"
-            ]
+            ],
+            "bt0": {
+              "t": "아침에",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "drlvav1yup2cje"
+            }
           },
           "S059": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "밤에",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "mpd1z81xi0ccu9"
+            }
           },
           "S062": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "캐럴은 크리스마스 ( )(이)야. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "j70y8o1dd0lq8u"
+            }
           },
           "S063": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "노래",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "6zq2n61wkuqr46"
+            }
           },
           "S064": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "음식",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "1rdef9tqmnfsp6"
+            }
           },
           "S067": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "크리스마스에는 ( )을/를 들을 수도 있어. 개굴!",
+              "amb": "you = 듣는 사람 또는 ‘사람들’ 일반",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "192jei41q3pe52y"
+            }
           },
           "S068": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "종",
+              "amb": "‘종소리’, ‘벨’로도 읽힘",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "j6fcz11j7xp517"
+            }
           },
           "S069": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "북",
+              "amb": "‘드럼’으로도 읽힘",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "mk3psy19uaweo7"
+            }
           },
           "S072": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "크리스마스에 부르는 노래는 ( )(이)야. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "gvs358for1jo11"
+            }
           },
           "S073": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "캐럴",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "1pshcds1cgw2pe7"
+            }
           },
           "S074": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "군가",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "139plq71wmo0ude"
+            }
           },
           "S077": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "우리는 크리스마스트리를 ( )(으)로 꾸며. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "g6augxour0i914"
+            }
           },
           "S078": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "쓰레기",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "4tebphdij3xd7"
+            }
           },
           "S079": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "조명",
+              "amb": "‘전구’, ‘불빛’으로도 읽힘",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "ebkylecblr488"
+            }
           },
           "S082": {
             "ok": [
@@ -9756,47 +10099,103 @@
                 "by": "김예은",
                 "at": "2026-11-10T03:51:32.507Z"
               }
+            },
+            "bt0": {
+              "t": "크리스마스는 12월 ( )일이야. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "gmcjz76h9sz7x"
             }
           },
           "S084": {
             "ok": [
               "srcSuffix",
               "same"
-            ]
+            ],
+            "bt0": {
+              "t": "25",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "1ih4d8m1sffv2e4"
+            }
           },
           "S087": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "크리스마스 전날은 ( )(이)라고 불러. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "3372t2qa5wn615"
+            }
           },
           "S088": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "아담(소리)",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "1jtrbeoohhzea6"
+            }
           },
           "S089": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "이브",
+              "amb": "‘전날 밤(전야)’ 또는 사람 이름 ‘이브’로 읽힘",
+              "at": "2026-11-10T03:56:17.552Z",
+              "by": "ChatGPT",
+              "trh": "1mc9ecl1hp41lx5"
+            }
           },
           "S092": {
             "ok": [
               "lines",
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "크리스마스 인사는 ( ) 크리스마스야! 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "1buv4po1cay3h017"
+            }
           },
           "S093": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "메리",
+              "amb": "뜻으로는 ‘즐거운’",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "170r2ug1qm5uui7"
+            }
           },
           "S094": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "헤이",
+              "amb": "뜻으로는 ‘이봐/야’ (부르는 말)",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "ecsgbx192qnnp5"
+            }
           },
           "S097": {
             "ok": [
@@ -9804,128 +10203,275 @@
               "lines",
               "sym",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "( ) 사이로 썰매를 타면 재밌는 느낌이야! 개굴!",
+              "amb": "‘재밌을 것 같아’(추측)로도 읽힘",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "3gm8sz1os97pv16"
+            }
           },
           "S098": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "눈",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "x4ueogq1itxi6"
+            }
           },
           "S099": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "구름",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "euml9r3w50up8"
+            }
           },
           "S102": {
             "ok": [
               "lines",
               "sym",
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "루돌프(소리)의 코는 아주 ( ). 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "191oljm15768a0v"
+            }
           },
           "S103": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "반짝이는",
+              "amb": "‘윤기 나는’으로도 읽힘",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "zqro5a2oy8hc7"
+            }
           },
           "S104": {
             "ok": [
               "ratIntent",
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "아름다운",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "1xel7s21y5r7oyb"
+            }
           },
           "S107": {
             "ok": [
               "srcSuffix",
               "lines",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "크리스마스의 다른 이름은 ( )(이)야. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "i5tz3m1bbl3t011"
+            }
           },
           "S108": {
             "ok": [
               "srcSuffix",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "핼러윈",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "ynf7063a6onab"
+            }
           },
           "S109": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "노엘",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "1ii51s3sdyutv6"
+            }
           },
           "S112": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "산타 마을은 ( )에 있어. 개굴!",
+              "amb": "Santa's Village = 특정 장소 이름일 수도 있음",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "1iq05q91mhy6s7u"
+            }
           },
           "S113": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "이집트",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "1f345a61ptthxw7"
+            }
           },
           "S114": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "핀란드",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "y3mdzntgggsf9"
+            }
           },
           "S117": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "루돌프(소리)는 ( )(으)로 유명해. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "c0qdv518wb7gxw"
+            }
           },
           "S118": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "빛나는 코",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "1fmxdi7sc2e2xd"
+            }
           },
           "S119": {
             "ok": [
               "ratIntent",
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "날개",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "12lyxbf1giozax7"
+            }
           },
           "S122": {
             "ok": [
               "srcSuffix",
               "lines",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "어느 철자가 맞아? ( ). 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "1pehsgx117sfshz"
+            }
           },
           "S123": {
             "ok": [
               "srcSuffix",
               "same"
-            ]
+            ],
+            "bt0": {
+              "t": "Santa (산타)",
+              "amb": "철자 문제라 영어 철자 그대로 둠",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "1qye3vg12emxuu7"
+            }
           },
           "S124": {
             "ok": [
               "srcSuffix",
               "same"
-            ]
+            ],
+            "bt0": {
+              "t": "Satan (사탄)",
+              "amb": "철자 문제라 영어 철자 그대로 둠",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "1rkxhu1gut7xg7"
+            }
           },
           "S127": {
             "ok": [
               "srcSuffix",
               "lines",
               "sym"
-            ]
+            ],
+            "bt0": {
+              "t": "밤은 ( ) 조용해. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "46alhv142aid7u"
+            }
           },
           "S128": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "시끄럽고",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "15ceq391cv70tb7"
+            }
           },
           "S129": {
             "ok": [
               "srcSuffix",
               "ratIntent"
-            ]
+            ],
+            "bt0": {
+              "t": "고요하고",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.553Z",
+              "by": "ChatGPT",
+              "trh": "1fr1ar6a4kqk08"
+            }
           },
           "S132": {
             "ok": [
@@ -9933,20 +10479,41 @@
               "lines",
               "sym",
               "clsB"
-            ]
+            ],
+            "bt0": {
+              "t": "( ) 봐, ( ) 봐! 눈이 내리고 있어. 개굴!",
+              "amb": "빈칸 두 개에 같은 말이 들어가는지, 서로 다른 말이 들어가는지 알 수 없음",
+              "at": "2026-11-10T03:56:17.554Z",
+              "by": "ChatGPT",
+              "trh": "1qhzs0d1c289j311"
+            }
           },
           "S133": {
             "ok": [
               "gram",
               "long",
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "창밖",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.554Z",
+              "by": "ChatGPT",
+              "trh": "222yprj89087i"
+            }
           },
           "S134": {
             "ok": [
               "srcSuffix",
               "gram"
-            ]
+            ],
+            "bt0": {
+              "t": "집 안",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.554Z",
+              "by": "ChatGPT",
+              "trh": "iuun5a6v35s6g"
+            }
           },
           "S137": {
             "ok": [
@@ -9961,48 +10528,104 @@
                 "by": "김예은",
                 "at": "2026-11-10T03:54:22.681Z"
               }
+            },
+            "bt0": {
+              "t": "크리스마스이브는 12월 ( )일이야. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.554Z",
+              "by": "ChatGPT",
+              "trh": "ypryzs0zk1x10"
             }
           },
           "S139": {
             "ok": [
               "srcSuffix",
               "same"
-            ]
+            ],
+            "bt0": {
+              "t": "24",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.554Z",
+              "by": "ChatGPT",
+              "trh": "1rwu0bn1tddwhh4"
+            }
           },
           "S142": {
             "ok": [
               "clsB",
               "lines",
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "그 크리스마스 영화 제목은 Home ( )(이)야. 개굴!",
+              "amb": "‘The’ = 특정한 그 영화 / 제목 일부가 영어 그대로라 영어로 둠",
+              "at": "2026-11-10T03:56:17.554Z",
+              "by": "ChatGPT",
+              "trh": "l58anmzljc2o15"
+            }
           },
           "S143": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "Trip (여행)",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.554Z",
+              "by": "ChatGPT",
+              "trh": "1sjjvo81ksermo6"
+            }
           },
           "S144": {
             "ok": [
               "srcSuffix"
-            ]
+            ],
+            "bt0": {
+              "t": "Alone (혼자)",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.554Z",
+              "by": "ChatGPT",
+              "trh": "1i85zlekbvygc7"
+            }
           },
           "S147": {
             "ok": [
               "srcSuffix",
               "lines"
-            ]
+            ],
+            "bt0": {
+              "t": "크리스마스는 줄여서 ( )-MAS라고 해. 개굴!",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.554Z",
+              "by": "ChatGPT",
+              "trh": "u0wfeu1id77nu12"
+            }
           },
           "S148": {
             "ok": [
               "srcSuffix",
               "same"
-            ]
+            ],
+            "bt0": {
+              "t": "Z",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.554Z",
+              "by": "ChatGPT",
+              "trh": "1rbfy3h1ubth7f3"
+            }
           },
           "S149": {
             "ok": [
               "srcSuffix",
               "same"
-            ]
+            ],
+            "bt0": {
+              "t": "X",
+              "amb": "",
+              "at": "2026-11-10T03:56:17.554Z",
+              "by": "ChatGPT",
+              "trh": "1mvfzzz1w7pk1l3"
+            }
           }
         },
         "sign": {
