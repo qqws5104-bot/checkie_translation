@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-10T03:50:48.078Z",
+    "updatedAt": "2026-11-10T03:51:01.662Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -9607,17 +9607,67 @@
               "srcSuffix"
             ]
           },
-          "S039": {},
-          "S042": {},
-          "S043": {},
-          "S044": {},
-          "S047": {},
-          "S048": {},
-          "S052": {},
-          "S053": {},
-          "S054": {},
-          "S057": {},
-          "S058": {},
+          "S039": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S042": {
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
+          "S043": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
+          "S044": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S047": {
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
+          "S048": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S052": {
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
+          "S053": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S054": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S057": {
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
+          "S058": {
+            "ok": [
+              "srcSuffix",
+              "gram"
+            ]
+          },
           "S059": {},
           "S062": {},
           "S063": {},
