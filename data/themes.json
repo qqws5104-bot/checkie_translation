@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-10T03:50:21.873Z",
+    "updatedAt": "2026-11-10T03:50:30.719Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -9530,7 +9530,39 @@
               "ratIntent"
             ]
           },
-          "S027": {},
+          "S027": {
+            "hist": [
+              {
+                "at": "2026-11-10T03:50:30.706Z",
+                "by": "김예은",
+                "from": "Christmas is in the month numbered ( ).",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "크리스마스가 몇 월인지 묻는다.",
+                  "sense": "",
+                  "reason": "월 숫자 8 또는 12가 들어가는 구조를 ‘month numbered’로 명확히 했다.",
+                  "redo": "",
+                  "wmap": "크리스마스 → Christmas = 크리스마스 / 달 → month = 월",
+                  "sub": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": null,
+                "hvSnap": null,
+                "to": "Christmas is in the month numbered ( ), ribbit!",
+                "why": "직접 고침",
+                "type": "기타",
+                "stage": "자동 점검"
+              }
+            ],
+            "tr": "Christmas is in the month numbered ( ), ribbit!",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hv": null,
+            "ok": []
+          },
           "S028": {},
           "S029": {},
           "S032": {},
