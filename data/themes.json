@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-10T03:52:40.206Z",
+    "updatedAt": "2026-11-10T03:52:46.431Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -9855,16 +9855,28 @@
           },
           "S112": {
             "ok": [
-              "srcSuffix"
+              "srcSuffix",
+              "lines"
             ]
           },
           "S113": {
             "ok": [
-              "srcSuffix"
+              "srcSuffix",
+              "ratIntent"
             ]
           },
-          "S114": {},
-          "S117": {},
+          "S114": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
+          "S117": {
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
           "S118": {},
           "S119": {},
           "S122": {},
