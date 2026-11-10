@@ -14623,7 +14623,7 @@
         "who": "광고 팝업"
       }
     ],
-    "updatedAt": "2026-11-10T02:48:37.473Z",
+    "updatedAt": "2026-11-10T02:48:49.814Z",
     "progressBy": {
       "en": {},
       "ja": {},
@@ -16512,49 +16512,10 @@
               "by": "Gemini",
               "trh": "76lac416akbvgo"
             },
-            "bt": [
-              "아기 새 안전 캠페인"
-            ],
-            "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Baby Bird Safety Campaign",
-              "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "76lac416akbvgo",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -16610,6 +16571,47 @@
                   "by": "추정 (검수 AI 지적 기준)",
                   "est": true
                 }
+              },
+              {
+                "at": "2026-11-10T02:48:42.098Z",
+                "by": "김예은",
+                "from": "Baby Bird Safety Campaign",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                  "fix": "Baby Bird Safety Campaign",
+                  "exc": "",
+                  "bt": "아기 새 안전 캠페인",
+                  "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
+                  "at": "2026-11-10T02:48:19.716Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Baby Bird Safety Campaign",
+                "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
               }
             ],
             "tr": "Baby Bird Safety Campaign",
@@ -16636,49 +16638,10 @@
               "by": "Gemini",
               "trh": "1o8x8o61tzo4w2c"
             },
-            "bt": [
-              "새 경찰"
-            ],
-            "gl": "Bird Police = 새 경찰",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Bird Police",
-              "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 77,
-              "band": "REVIEW 수정 필수",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o8x8o61tzo4w2c",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -16719,6 +16682,47 @@
                   "bt": "새 경찰",
                   "gl": "Bird Police = 새 경찰",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Bird Police",
+                "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:42.839Z",
+                "by": "김예은",
+                "from": "Bird Police",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
+                  "fix": "Bird Police",
+                  "exc": "",
+                  "bt": "새 경찰",
+                  "gl": "Bird Police = 새 경찰",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -16817,50 +16821,10 @@
               "trh": "76lac416akbvgo",
               "via": "R002"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Baby Bird Safety Campaign",
-              "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "76lac416akbvgo",
-              "err3": [],
-              "via": "R002"
-            },
-            "bt": [
-              "아기 새 안전 캠페인"
-            ],
-            "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:36:17.008Z",
@@ -16887,6 +16851,47 @@
                   "bt": "아기 새 안전 캠페인",
                   "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Baby Bird Safety Campaign",
+                "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:42.098Z",
+                "by": "김예은",
+                "from": "Baby Bird Safety Campaign",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                  "fix": "Baby Bird Safety Campaign",
+                  "exc": "",
+                  "bt": "아기 새 안전 캠페인",
+                  "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -16930,50 +16935,10 @@
               "trh": "1o8x8o61tzo4w2c",
               "via": "R004"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Bird Police",
-              "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 77,
-              "band": "REVIEW 수정 필수",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o8x8o61tzo4w2c",
-              "err3": [],
-              "via": "R004"
-            },
-            "bt": [
-              "새 경찰"
-            ],
-            "gl": "Bird Police = 새 경찰",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:36:21.324Z",
@@ -17000,6 +16965,47 @@
                   "bt": "새 경찰",
                   "gl": "Bird Police = 새 경찰",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Bird Police",
+                "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:42.839Z",
+                "by": "김예은",
+                "from": "Bird Police",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "‘짹찰청’의 새소리/경찰청 말장난이 Bird Police에서 사라짐. 로고명으로 기능은 남지만 패러디 효과는 약화됨.",
+                  "fix": "Bird Police",
+                  "exc": "",
+                  "bt": "새 경찰",
+                  "gl": "Bird Police = 새 경찰",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -17159,49 +17165,10 @@
               "by": "Gemini",
               "trh": "zzr2vr6l1gyvm"
             },
-            "bt": [
-              "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)"
-            ],
-            "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "National Birdographic",
-              "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 87,
-              "band": "REVIEW",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "zzr2vr6l1gyvm",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -17242,6 +17209,47 @@
                   "bt": "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)",
                   "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "National Birdographic",
+                "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:44.786Z",
+                "by": "김예은",
+                "from": "National Birdographic",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                  "fix": "National Birdographic",
+                  "exc": "",
+                  "bt": "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)",
+                  "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -17378,50 +17386,10 @@
               "trh": "zzr2vr6l1gyvm",
               "via": "R013"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "National Birdographic",
-              "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 87,
-              "band": "REVIEW",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "zzr2vr6l1gyvm",
-              "err3": [],
-              "via": "R013"
-            },
-            "bt": [
-              "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)"
-            ],
-            "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:36:29.454Z",
@@ -17448,6 +17416,47 @@
                   "bt": "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)",
                   "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "National Birdographic",
+                "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:44.786Z",
+                "by": "김예은",
+                "from": "National Birdographic",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                  "fix": "National Birdographic",
+                  "exc": "",
+                  "bt": "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)",
+                  "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -17634,49 +17643,10 @@
               "by": "Gemini",
               "trh": "1o3o088100nmze11"
             },
-            "bt": [
-              "운이 다하면 ... 010-%%%%-%%%%"
-            ],
-            "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
-            "rel": "-",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "When your luck runs out ... 010-%%%%-%%%%",
-              "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 67,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o3o088100nmze11",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -17717,6 +17687,47 @@
                   "bt": "운이 다하면 ... 010-%%%%-%%%%",
                   "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "When your luck runs out ... 010-%%%%-%%%%",
+                "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:45.851Z",
+                "by": "김예은",
+                "from": "When your luck runs out ... 010-%%%%-%%%%",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                  "fix": "When your luck runs out ... 010-%%%%-%%%%",
+                  "exc": "",
+                  "bt": "운이 다하면 ... 010-%%%%-%%%%",
+                  "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -17887,50 +17898,10 @@
               "trh": "1o3o088100nmze11",
               "via": "R021"
             },
-            "rv": {
-              "v": "수정 필요",
-              "fix": "When your luck runs out ... 010-%%%%-%%%%",
-              "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 67,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o3o088100nmze11",
-              "err3": [],
-              "via": "R021"
-            },
-            "bt": [
-              "운이 다하면 ... 010-%%%%-%%%%"
-            ],
-            "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:36:42.352Z",
@@ -17972,6 +17943,47 @@
                   "by": "추정 (검수 AI 지적 기준)",
                   "est": true
                 }
+              },
+              {
+                "at": "2026-11-10T02:48:45.851Z",
+                "by": "김예은",
+                "from": "When your luck runs out ... 010-%%%%-%%%%",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                  "fix": "When your luck runs out ... 010-%%%%-%%%%",
+                  "exc": "",
+                  "bt": "운이 다하면 ... 010-%%%%-%%%%",
+                  "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
+                  "at": "2026-11-10T02:48:19.716Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "When your luck runs out ... 010-%%%%-%%%%",
+                "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
               }
             ],
             "tr": "When your luck runs out ... 010-%%%%-%%%%",
@@ -17988,51 +18000,10 @@
               "by": "Gemini",
               "trh": "ng77go1vlr25kp"
             },
-            "bt": [
-              "부적 라벨(카드 12장)"
-            ],
-            "gl": "labels = 라벨 / 12 cards = 카드 12장",
-            "rel": "-",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "Talisman labels (12 cards)",
-              "why": "표의 영어는 ‘라벨 12개’라는 설명만 번역하고 실제 12개 카드에 적힌 개별 한자/한글 라벨은 번역하지 않음. 카드 글자는 이미지에서 식별 가능하나 정답·대응표 없이 의미 확정은 어려움.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 67,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "ng77go1vlr25kp",
-              "err3": [
-                "누락"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -18073,6 +18044,47 @@
                   "bt": "부적 라벨(카드 12장)",
                   "gl": "labels = 라벨 / 12 cards = 카드 12장",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Talisman labels (12 cards)",
+                "why": "표의 영어는 ‘라벨 12개’라는 설명만 번역하고 실제 12개 카드에 적힌 개별 한자/한글 라벨은 번역하지 않음. 카드 글자는 이미지에서 식별 가능하나 정답·대응표 없이 의미 확정은 어려움.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:46.396Z",
+                "by": "김예은",
+                "from": "Talisman labels (12 cards)",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "표의 영어는 ‘라벨 12개’라는 설명만 번역하고 실제 12개 카드에 적힌 개별 한자/한글 라벨은 번역하지 않음. 카드 글자는 이미지에서 식별 가능하나 정답·대응표 없이 의미 확정은 어려움.",
+                  "fix": "Talisman labels (12 cards)",
+                  "exc": "",
+                  "bt": "부적 라벨(카드 12장)",
+                  "gl": "labels = 라벨 / 12 cards = 카드 12장",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -19502,49 +19514,10 @@
               "by": "Gemini",
               "trh": "kgm7msl9t7rks"
             },
-            "bt": [
-              "[OO]를 아는 [OO]가 날아갑니다. (애매: knows는 ‘알다’ 외에 문맥에 따라 ‘알고 있다/이해하다’로도 해석 가능.)"
-            ],
-            "gl": "knows = 알다 / flies = 날다 / [OO] = 빈칸",
-            "rel": "[OO](생략) → [OO] : 앎 / 비행",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "The [OO] that knows [OO] flies.",
-              "why": "[OO] 빈칸이 있는 문장을 그대로 옮겼지만 영어의 두 빈칸이 어떤 단어·정답으로 연결되는지 확인되지 않음. 문장 자체가 어색하고 퍼즐 재설계가 필요한 줄임.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 67,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "kgm7msl9t7rks",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -19600,6 +19573,47 @@
                   "by": "추정 (검수 AI 지적 기준)",
                   "est": true
                 }
+              },
+              {
+                "at": "2026-11-10T02:48:47.285Z",
+                "by": "김예은",
+                "from": "The [OO] that knows [OO] flies.",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "[OO] 빈칸이 있는 문장을 그대로 옮겼지만 영어의 두 빈칸이 어떤 단어·정답으로 연결되는지 확인되지 않음. 문장 자체가 어색하고 퍼즐 재설계가 필요한 줄임.",
+                  "fix": "The [OO] that knows [OO] flies.",
+                  "exc": "",
+                  "bt": "[OO]를 아는 [OO]가 날아갑니다. (애매: knows는 ‘알다’ 외에 문맥에 따라 ‘알고 있다/이해하다’로도 해석 가능.)",
+                  "gl": "knows = 알다 / flies = 날다 / [OO] = 빈칸",
+                  "at": "2026-11-10T02:48:19.716Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "The [OO] that knows [OO] flies.",
+                "why": "[OO] 빈칸이 있는 문장을 그대로 옮겼지만 영어의 두 빈칸이 어떤 단어·정답으로 연결되는지 확인되지 않음. 문장 자체가 어색하고 퍼즐 재설계가 필요한 줄임.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
               }
             ],
             "tr": "The [OO] that knows [OO] flies.",
@@ -19626,49 +19640,10 @@
               "by": "Gemini",
               "trh": "gfbse51oorqwvy"
             },
-            "bt": [
-              "공익 광고 협의회 -"
-            ],
-            "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Public Service Advertising Council -",
-              "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "gfbse51oorqwvy",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -19724,6 +19699,47 @@
                   "by": "추정 (검수 AI 지적 기준)",
                   "est": true
                 }
+              },
+              {
+                "at": "2026-11-10T02:48:48.439Z",
+                "by": "김예은",
+                "from": "Public Service Advertising Council -",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                  "fix": "Public Service Advertising Council -",
+                  "exc": "",
+                  "bt": "공익 광고 협의회 -",
+                  "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
+                  "at": "2026-11-10T02:48:19.716Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Public Service Advertising Council -",
+                "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
               }
             ],
             "tr": "Public Service Advertising Council -",
@@ -19739,50 +19755,10 @@
               "trh": "gfbse51oorqwvy",
               "via": "R056"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Public Service Advertising Council -",
-              "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "gfbse51oorqwvy",
-              "err3": [],
-              "via": "R056"
-            },
-            "bt": [
-              "공익 광고 협의회 -"
-            ],
-            "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:41:51.583Z",
@@ -19809,6 +19785,47 @@
                   "bt": "공익 광고 협의회 -",
                   "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Public Service Advertising Council -",
+                "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:48.439Z",
+                "by": "김예은",
+                "from": "Public Service Advertising Council -",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                  "fix": "Public Service Advertising Council -",
+                  "exc": "",
+                  "bt": "공익 광고 협의회 -",
+                  "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -20348,50 +20365,10 @@
               "trh": "76lac416akbvgo",
               "via": "R002"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Baby Bird Safety Campaign",
-              "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "76lac416akbvgo",
-              "err3": [],
-              "via": "R002"
-            },
-            "bt": [
-              "아기 새 안전 캠페인"
-            ],
-            "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:36:17.008Z",
@@ -20418,6 +20395,47 @@
                   "bt": "아기 새 안전 캠페인",
                   "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Baby Bird Safety Campaign",
+                "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:42.098Z",
+                "by": "김예은",
+                "from": "Baby Bird Safety Campaign",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                  "fix": "Baby Bird Safety Campaign",
+                  "exc": "",
+                  "bt": "아기 새 안전 캠페인",
+                  "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -20529,50 +20547,10 @@
               "trh": "76lac416akbvgo",
               "via": "R002"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Baby Bird Safety Campaign",
-              "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "76lac416akbvgo",
-              "err3": [],
-              "via": "R002"
-            },
-            "bt": [
-              "아기 새 안전 캠페인"
-            ],
-            "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:36:17.008Z",
@@ -20599,6 +20577,47 @@
                   "bt": "아기 새 안전 캠페인",
                   "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Baby Bird Safety Campaign",
+                "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:42.098Z",
+                "by": "김예은",
+                "from": "Baby Bird Safety Campaign",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "‘아기 짹픽이’는 캐릭터/새 이름의 말장난일 수 있으나 Baby Bird로 일반화됨. 캠페인 기능은 전달되지만 고유 캐릭터명 소실 여부 확인 필요.",
+                  "fix": "Baby Bird Safety Campaign",
+                  "exc": "",
+                  "bt": "아기 새 안전 캠페인",
+                  "gl": "Baby Bird = 아기 새 / Safety Campaign = 안전 캠페인",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -20929,50 +20948,10 @@
               "trh": "zzr2vr6l1gyvm",
               "via": "R013"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "National Birdographic",
-              "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 87,
-              "band": "REVIEW",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "zzr2vr6l1gyvm",
-              "err3": [],
-              "via": "R013"
-            },
-            "bt": [
-              "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)"
-            ],
-            "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:36:29.454Z",
@@ -20999,6 +20978,47 @@
                   "bt": "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)",
                   "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "National Birdographic",
+                "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:44.786Z",
+                "by": "김예은",
+                "from": "National Birdographic",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "National Birdographic은 National Geographic을 연상시키는 조어로 패러디 구조는 일부 재현하지만, ‘짹’의 새소리 요소가 직접 드러나지 않음. 퍼즐 이미지/정답 연결은 별도 확정 필요.",
+                  "fix": "National Birdographic",
+                  "exc": "",
+                  "bt": "내셔널 버드오그래픽(소리) (애매: ‘National Geographic’을 연상시키는 말장난일 수 있음.)",
+                  "gl": "National Birdographic = 내셔널 버드오그래픽(조어)",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -21169,50 +21189,10 @@
               "trh": "1o3o088100nmze11",
               "via": "R021"
             },
-            "rv": {
-              "v": "수정 필요",
-              "fix": "When your luck runs out ... 010-%%%%-%%%%",
-              "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 67,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o3o088100nmze11",
-              "err3": [],
-              "via": "R021"
-            },
-            "bt": [
-              "운이 다하면 ... 010-%%%%-%%%%"
-            ],
-            "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:36:42.352Z",
@@ -21239,6 +21219,47 @@
                   "bt": "운이 다하면 ... 010-%%%%-%%%%",
                   "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "When your luck runs out ... 010-%%%%-%%%%",
+                "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:45.851Z",
+                "by": "김예은",
+                "from": "When your luck runs out ... 010-%%%%-%%%%",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                  "fix": "When your luck runs out ... 010-%%%%-%%%%",
+                  "exc": "",
+                  "bt": "운이 다하면 ... 010-%%%%-%%%%",
+                  "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -21409,50 +21430,10 @@
               "trh": "1o3o088100nmze11",
               "via": "R021"
             },
-            "rv": {
-              "v": "수정 필요",
-              "fix": "When your luck runs out ... 010-%%%%-%%%%",
-              "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "NA"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 67,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1o3o088100nmze11",
-              "err3": [],
-              "via": "R021"
-            },
-            "bt": [
-              "운이 다하면 ... 010-%%%%-%%%%"
-            ],
-            "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:36:42.352Z",
@@ -21479,6 +21460,47 @@
                   "bt": "운이 다하면 ... 010-%%%%-%%%%",
                   "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "When your luck runs out ... 010-%%%%-%%%%",
+                "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:45.851Z",
+                "by": "김예은",
+                "from": "When your luck runs out ... 010-%%%%-%%%%",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "NA"
+                  },
+                  "why": "원문 ‘조생미 만풀릴 때’는 이미지상 오탈자/말장난 가능성이 있어 정확한 원문 뜻을 확정할 수 없음. When your luck runs out은 ‘운이 다하면’으로 해석되어 원문과 대응하는지 확인 불가.",
+                  "fix": "When your luck runs out ... 010-%%%%-%%%%",
+                  "exc": "",
+                  "bt": "운이 다하면 ... 010-%%%%-%%%%",
+                  "gl": "luck runs out = 운이 다하다 / 010-%%%%-%%%% = 전화번호 형식",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -21823,50 +21845,10 @@
               "trh": "gfbse51oorqwvy",
               "via": "R056"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Public Service Advertising Council -",
-              "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "gfbse51oorqwvy",
-              "err3": [],
-              "via": "R056"
-            },
-            "bt": [
-              "공익 광고 협의회 -"
-            ],
-            "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:41:51.583Z",
@@ -21893,6 +21875,47 @@
                   "bt": "공익 광고 협의회 -",
                   "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Public Service Advertising Council -",
+                "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:48.439Z",
+                "by": "김예은",
+                "from": "Public Service Advertising Council -",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                  "fix": "Public Service Advertising Council -",
+                  "exc": "",
+                  "bt": "공익 광고 협의회 -",
+                  "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -21991,50 +22014,10 @@
               "trh": "gfbse51oorqwvy",
               "via": "R056"
             },
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Public Service Advertising Council -",
-              "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
-              "at": "2026-11-10T02:48:19.716Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일부 손실 또는 확인 필요; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "gfbse51oorqwvy",
-              "err3": [],
-              "via": "R056"
-            },
-            "bt": [
-              "공익 광고 협의회 -"
-            ],
-            "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
-            "rel": "-",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
             "hist": [
               {
                 "at": "2026-11-10T02:41:51.583Z",
@@ -22061,6 +22044,47 @@
                   "bt": "공익 광고 협의회 -",
                   "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Public Service Advertising Council -",
+                "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:48.439Z",
+                "by": "김예은",
+                "from": "Public Service Advertising Council -",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "Public Service Advertising Council은 직역형 명칭으로 이해는 가능하지만, 기관의 공식 영문명인지 확인되지 않음. 원문 기관명을 고유명사로 취급할 필요가 있음.",
+                  "fix": "Public Service Advertising Council -",
+                  "exc": "",
+                  "bt": "공익 광고 협의회 -",
+                  "gl": "Public Service Advertising Council = 공익광고협의회(직역)",
+                  "at": "2026-11-10T02:48:19.716Z",
                   "by": ""
                 },
                 "hvSnap": null,
@@ -22114,51 +22138,10 @@
               "by": "Gemini",
               "trh": "1hlwxj310945b1r"
             },
-            "bt": [
-              "나는 [O] 대신 사과를 먹습니다. (애매: rather than은 ‘~대신’ 또는 ‘~라기보다는’의 의미로 읽힐 수 있음.)"
-            ],
-            "gl": "rather than = ~보다 / apple = 사과 / [O] = 빈칸",
-            "rel": "화자(생략) → 플레이어 : 사과를 먹음([O]와 비교)",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "I eat an apple rather than [O].",
-              "why": "한국어는 ‘저 O보다는 사과 O 먹어요’로 두 개의 O 표지가 있으나 영어 번역은 [O] 하나만 남김. 원문 퍼즐의 빈칸 위치·정답 구조가 보존되지 않음.",
-              "at": "2026-11-10T02:48:19.717Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "REVIEW",
-                "조건": "REVIEW",
-                "자연스러움": "FAIL",
-                "문화": "FAIL",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 20,
-                "의도": 10,
-                "대상": 10,
-                "문맥": 0,
-                "말투": 10
-              },
-              "total": 50,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "1hlwxj310945b1r",
-              "err3": [
-                "누락"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -22214,6 +22197,47 @@
                   "by": "추정 (검수 AI 지적 기준)",
                   "est": true
                 }
+              },
+              {
+                "at": "2026-11-10T02:48:49.319Z",
+                "by": "김예은",
+                "from": "I eat an apple rather than [O].",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "REVIEW",
+                    "조건": "REVIEW",
+                    "자연스러움": "FAIL",
+                    "문화": "FAIL",
+                    "말투": "NA"
+                  },
+                  "why": "한국어는 ‘저 O보다는 사과 O 먹어요’로 두 개의 O 표지가 있으나 영어 번역은 [O] 하나만 남김. 원문 퍼즐의 빈칸 위치·정답 구조가 보존되지 않음.",
+                  "fix": "I eat an apple rather than [O].",
+                  "exc": "",
+                  "bt": "나는 [O] 대신 사과를 먹습니다. (애매: rather than은 ‘~대신’ 또는 ‘~라기보다는’의 의미로 읽힐 수 있음.)",
+                  "gl": "rather than = ~보다 / apple = 사과 / [O] = 빈칸",
+                  "at": "2026-11-10T02:48:19.717Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "I eat an apple rather than [O].",
+                "why": "한국어는 ‘저 O보다는 사과 O 먹어요’로 두 개의 O 표지가 있으나 영어 번역은 [O] 하나만 남김. 원문 퍼즐의 빈칸 위치·정답 구조가 보존되지 않음.",
+                "kind": "fix",
+                "type": "자연스러움 문제",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
               }
             ],
             "tr": "I eat an apple rather than [O].",
@@ -22252,51 +22276,10 @@
               "by": "Gemini",
               "trh": "130z5j7lgbmnrv"
             },
-            "bt": [
-              "[O]도 [OO]와 함께 [O]를 먹고 있습니다. (애매: with는 동반(함께) 또는 수단/곁들임의 의미일 수 있음.)"
-            ],
-            "gl": "also = 또한 / eating = 먹는 중 / with = ~와 함께 / [O] = 빈칸",
-            "rel": "[O](생략) → [O] : 벌레와 함께 먹음",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "[O] is also eating an [O] with [OO].",
-              "why": "원문에는 O 표지가 네 군데(주어·벌레 뒤·목적어 앞·동사 앞)에 있으나 영어 번역은 세 개의 빈칸만 표시함. 빈칸 수와 조합 구조가 달라짐.",
-              "at": "2026-11-10T02:48:19.717Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "REVIEW",
-                "용어": "REVIEW",
-                "의미": "REVIEW",
-                "행동": "REVIEW",
-                "조건": "REVIEW",
-                "자연스러움": "FAIL",
-                "문화": "FAIL",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 20,
-                "의도": 10,
-                "대상": 10,
-                "문맥": 0,
-                "말투": 10
-              },
-              "total": 50,
-              "band": "FAIL",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상·조건: 일치; 문맥: 일부 손실 또는 확인 필요; 말투: 비발화 요소",
-              "trh": "130z5j7lgbmnrv",
-              "err3": [
-                "누락"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -22337,6 +22320,47 @@
                   "bt": "[O]도 [OO]와 함께 [O]를 먹고 있습니다. (애매: with는 동반(함께) 또는 수단/곁들임의 의미일 수 있음.)",
                   "gl": "also = 또한 / eating = 먹는 중 / with = ~와 함께 / [O] = 빈칸",
                   "at": "2026-11-10T02:35:53.552Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "[O] is also eating an [O] with [OO].",
+                "why": "원문에는 O 표지가 네 군데(주어·벌레 뒤·목적어 앞·동사 앞)에 있으나 영어 번역은 세 개의 빈칸만 표시함. 빈칸 수와 조합 구조가 달라짐.",
+                "kind": "fix",
+                "type": "자연스러움 문제",
+                "stage": "교차 검수",
+                "byAi": "Gemini",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              },
+              {
+                "at": "2026-11-10T02:48:49.791Z",
+                "by": "김예은",
+                "from": "[O] is also eating an [O] with [OO].",
+                "ratFrom": null,
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "REVIEW",
+                    "용어": "REVIEW",
+                    "의미": "REVIEW",
+                    "행동": "REVIEW",
+                    "조건": "REVIEW",
+                    "자연스러움": "FAIL",
+                    "문화": "FAIL",
+                    "말투": "NA"
+                  },
+                  "why": "원문에는 O 표지가 네 군데(주어·벌레 뒤·목적어 앞·동사 앞)에 있으나 영어 번역은 세 개의 빈칸만 표시함. 빈칸 수와 조합 구조가 달라짐.",
+                  "fix": "[O] is also eating an [O] with [OO].",
+                  "exc": "",
+                  "bt": "[O]도 [OO]와 함께 [O]를 먹고 있습니다. (애매: with는 동반(함께) 또는 수단/곁들임의 의미일 수 있음.)",
+                  "gl": "also = 또한 / eating = 먹는 중 / with = ~와 함께 / [O] = 빈칸",
+                  "at": "2026-11-10T02:48:19.717Z",
                   "by": ""
                 },
                 "hvSnap": null,
