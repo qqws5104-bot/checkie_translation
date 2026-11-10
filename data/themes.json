@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-10T03:51:23.600Z",
+    "updatedAt": "2026-11-10T03:51:45.886Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -9738,16 +9738,72 @@
               "ratIntent"
             ]
           },
-          "S079": {},
-          "S082": {},
-          "S084": {},
-          "S087": {},
-          "S088": {},
-          "S089": {},
-          "S092": {},
-          "S093": {},
-          "S094": {},
-          "S097": {},
+          "S079": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S082": {
+            "ok": [
+              "num",
+              "srcSuffix",
+              "lines"
+            ],
+            "okWhy": {
+              "num": {
+                "why": "무방",
+                "msg": "원문의 숫자 12이(가) 번역에 없음",
+                "by": "김예은",
+                "at": "2026-11-10T03:51:32.507Z"
+              }
+            }
+          },
+          "S084": {
+            "ok": [
+              "srcSuffix",
+              "same"
+            ]
+          },
+          "S087": {
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
+          "S088": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
+          "S089": {
+            "ok": [
+              "srcSuffix",
+              "ratIntent"
+            ]
+          },
+          "S092": {
+            "ok": [
+              "lines",
+              "srcSuffix"
+            ]
+          },
+          "S093": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S094": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S097": {
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ]
+          },
           "S098": {},
           "S099": {},
           "S102": {},
