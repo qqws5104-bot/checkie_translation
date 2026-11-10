@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-10T03:39:19.026Z",
+    "updatedAt": "2026-11-10T03:39:31.056Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -9409,9 +9409,37 @@
         },
         "items": {
           "S001": {
-            "ok": [
-              "srcSuffix"
-            ]
+            "ok": [],
+            "hist": [
+              {
+                "at": "2026-11-10T03:39:31.041Z",
+                "by": "김예은",
+                "from": "Santa Certification Exam",
+                "ratFrom": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "산타 자격을 얻기 위한 시험",
+                  "sense": "",
+                  "reason": "‘산타 자격을 얻기 위한 시험’이라는 뜻을 살리고, 공식 자격시험을 패러디한 제목으로 Certification Exam을 선택했다.",
+                  "redo": "",
+                  "wmap": "산타자격 → Santa certification = 산타 자격 / 검정시험 → exam = 시험",
+                  "sub": "검정시험: qualification test(자격 시험) / certification test(자격 인증 시험)",
+                  "by": "번역 AI"
+                },
+                "rvSnap": null,
+                "hvSnap": null,
+                "to": "Santa Qualification Exam",
+                "why": "직접 고침",
+                "type": "용어 불일치",
+                "stage": "자동 점검"
+              }
+            ],
+            "tr": "Santa Qualification Exam",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hv": null
           },
           "S002": {},
           "S003": {},
