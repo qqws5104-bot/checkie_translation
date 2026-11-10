@@ -9922,7 +9922,8 @@
           },
           "S129": {
             "ok": [
-              "srcSuffix"
+              "srcSuffix",
+              "ratIntent"
             ]
           },
           "S132": {
