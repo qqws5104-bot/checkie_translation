@@ -192,6 +192,7 @@ const AI = require('./ai');
 const Merge = require('./public/merge.js');
 const Retention = require('./public/retention.js');
 const Puzzle = require('./public/puzzle.js');
+const Rules = require('./public/rules.js');
 const AI_KEY = AI.anyVision();
 const AI_LIMIT = Number(env.AI_HOURLY_LIMIT) || 200;
 const MAX_FILE = 12 * 1024 * 1024;
@@ -406,6 +407,13 @@ function sheetTr(sh, id) {
   const row = i >= 0 ? sh.rows[i] : null; return row ? String(row[sh.cols.tr] == null ? '' : row[sh.cols.tr]) : '';
 }
 function guardTheme(before, after, conflicts) {
+  /* 원문 확정: 판독 의심 쌍(한두 글자만 다른 원문)을 사람이 정하기 전에는 불가 (화면과 같은 rules.js로 다시 계산) */
+  const sc = after && after.source, wasConf = !!(before && before.source && before.source.sign && before.source.sign.confirm);
+  if (sc && sc.sign && sc.sign.confirm && !wasConf && sc.sheet && Array.isArray(sc.sheet.rows)) {
+    const it = sc.items || {}, ok = sc.nearOk || {};
+    const open = Rules.nearPairs(sc.sheet.rows.map(r => ({ id: r.id, ko: (it[r.id] && it[r.id].koFix) || r.ko }))).filter(p => !ok[p.key]);
+    if (open.length) { sc.sign = Object.assign({}, sc.sign, { confirm: null }); conflicts.push(`source.sign.confirm (판독 의심 ${open.length}쌍을 정하기 전에는 원문 확정 불가: ${open.slice(0, 2).map(p => `${p.a}·${p.b}`).join(', ')})`); }
+  }
   if (!after || !after.work) return;
   Object.entries(after.work).forEach(([lk, w]) => {
     if (!w || !w.items) return;

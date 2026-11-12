@@ -1,0 +1,16 @@
+{
+  "_note": "요청서 3장 ‘문장 오류 고정 자료’. AD_08 문구와 ‘…에 픽셀을 올려주세요’ 계열 세 줄의 나머지 문구는 테스트용으로 만든 것.",
+  "op": { "id": "OP1", "ko": "올리다", "forms": "올려·올리·올린·올립", "fix": "en: place / ja: 置く / zh: 放", "avoid": "en: return, put back" },
+  "opFail": { "id": "R040", "ko": "당첨 복권에 픽셀을 올려주세요!", "tr": "Return the pixels to the winning lottery ticket!" },
+  "opPass": { "id": "R040", "ko": "당첨 복권에 픽셀을 올려주세요!", "tr": "Please place pixels on the winning lottery ticket!" },
+  "near": [ { "id": "R040", "ko": "당첨 복권에 픽셀을 돌려주세요!" }, { "id": "R033", "ko": "당첨 복권에 픽셀을 올려주세요!" } ],
+  "share": [
+    { "id": "R081", "ko": "네잎클로버와 버섯 사이에 있어.", "tr": "It's between a four-leaf clover and a mushroom.", "share": "네잎클로버=four-leaf clover, 버섯=mushroom" },
+    { "id": "R088", "ko": "버섯 위에 사과나무가 있어.", "tr": "There is an apple tree above the toadstool.", "share": "버섯=toadstool, 사과나무=apple tree" }
+  ],
+  "nearIncons": [
+    { "id": "R033", "ko": "TV 위에 픽셀을 올려주세요", "tr": "Place the pixels on the TV" },
+    { "id": "R034", "ko": "시계 위에 픽셀을 올려주세요", "tr": "Place the pixels on the clock" },
+    { "id": "R035", "ko": "라디오 위에 픽셀을 올려주세요", "tr": "Put the pixels on the radio" }
+  ]
+}
