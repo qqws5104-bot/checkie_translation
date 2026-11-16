@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T06:57:08.222Z",
+    "updatedAt": "2026-11-16T06:57:18.888Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -14511,10 +14511,7 @@
             ]
           },
           "S112": {
-            "ok": [
-              "srcSuffix",
-              "lines"
-            ],
+            "ok": [],
             "bt0": {
               "t": "산타 마을은 ( )에 있어. 개굴!",
               "amb": "Santa's Village = 특정 장소 이름일 수도 있음",
@@ -14522,51 +14519,10 @@
               "by": "ChatGPT",
               "trh": "1iq05q91mhy6s7u"
             },
-            "bt": [
-              "산타 마을은 ( )에 있어. 개굴!"
-            ],
-            "gl": "Santa's Village = 산타 마을(다르게 읽힐 수 있음: 미국 뉴햄프셔·캘리포니아 등의 같은 이름 테마파크) / Finland = 핀란드",
-            "rel": "개구리(생략) → 플레이어 : '산타 마을은 ( )에 있다' 빈칸 문제를 냄",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "Santa Claus Village is in ( ). Ribbit!",
-              "why": "원문 ‘산타클로스 마을’은 핀란드 로바니에미의 공식 명칭 Santa Claus Village를 가리킨다. 번역의 Santa's Village는 미국 테마파크 이름과 같아 고유명사가 흐려진다. 공식 명칭으로 바꾸면 원문과 정확히 같고 정답 Finland가 분명해진다.",
-              "at": "2026-11-16T06:06:08.041Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 92,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 고유명사가 공식 이름(Santa Claus Village)과 다름; 행동: 일치; 대상: 일치; 문맥: Santa's Village는 미국에 있는 테마파크 이름과 같아 미국 방문객이 다른 곳을 떠올릴 수 있음; 말투: 일치",
-              "trh": "1iq05q91mhy6s7u",
-              "err3": [
-                "부정확한 의미"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -14606,7 +14562,85 @@
                 "by": "검수 AI",
                 "at": "2026-11-16T06:06:08.042Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-16T06:57:18.865Z",
+                "by": "김예은",
+                "from": "Santa's Village is in ( ). Ribbit!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "산타클로스 마을이 있는 나라를 묻는다.",
+                  "sense": "",
+                  "reason": "산타클로스 마을이 있는 나라를 묻는 뜻을 그대로 유지했다.",
+                  "redo": "",
+                  "wmap": "산타클로스 마을 → Santa's Village = 산타 마을 / 있다 → be = 있다",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "원문 ‘산타클로스 마을’은 핀란드 로바니에미의 공식 명칭 Santa Claus Village를 가리킨다. 번역의 Santa's Village는 미국 테마파크 이름과 같아 고유명사가 흐려진다. 공식 명칭으로 바꾸면 원문과 정확히 같고 정답 Finland가 분명해진다.",
+                  "fix": "Santa Claus Village is in ( ). Ribbit!",
+                  "exc": "",
+                  "bt": "산타 마을은 ( )에 있어. 개굴!",
+                  "gl": "Santa's Village = 산타 마을(다르게 읽힐 수 있음: 미국 뉴햄프셔·캘리포니아 등의 같은 이름 테마파크) / Finland = 핀란드",
+                  "at": "2026-11-16T06:06:08.041Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Santa Claus Village is in ( ). Ribbit!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "산타클로스 마을은 ( )에 있어. 개굴!",
+                  "sense": "",
+                  "reason": "로바니에미 공식 명칭 / 원문과 같음",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "원문과 같음",
+                  "by": "김예은",
+                  "at": "2026-11-16T06:57:18.865Z"
+                }
+              }
+            ],
+            "tr": "Santa Claus Village is in ( ). Ribbit!",
+            "hv": null,
+            "pick": {
+              "k": "수정",
+              "tr": "Santa Claus Village is in ( ). Ribbit!",
+              "mean": "산타클로스 마을은 ( )에 있어. 개굴!",
+              "rec": "수정",
+              "recTr": "Santa Claus Village is in ( ). Ribbit!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-16T06:57:18.865Z",
+              "trh": "1tskwzx17g20elx",
+              "from": "검수 AI"
+            }
           },
           "S113": {
             "ok": [
