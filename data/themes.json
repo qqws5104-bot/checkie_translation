@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T06:06:35.491Z",
+    "updatedAt": "2026-11-16T06:06:40.774Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -13522,8 +13522,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
                 "text": "[기획 확인] 영어 원곡 가사로: Dashing through the ( ), in a one-horse open sleigh ~♪ Ribbit!",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:38.936Z"
               }
             ],
             "bt": [
@@ -13759,8 +13761,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
                 "text": "[기획 확인] ~♪ 복원. 영어 원곡 가사 사용 여부는 저작권 확인",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:39.779Z"
               }
             ],
             "bt": [
@@ -14516,8 +14520,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
                 "text": "[기획 확인] 화면 확인: 연잎 칸 길이 초과 가능. S133 → outside, S134 → inside, S074 → army song 권장. S058·S118은 두 줄 배치 또는 문장 재구성 [기획 확인]",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:40.751Z"
               }
             ],
             "bt": [
