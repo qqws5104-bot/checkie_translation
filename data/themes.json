@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T05:37:04.498Z",
+    "updatedAt": "2026-11-16T05:37:05.882Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -10554,7 +10554,8 @@
             "ok": [
               "srcSuffix",
               "lines",
-              "num"
+              "num",
+              "srcNear"
             ],
             "okWhy": {
               "num": {
