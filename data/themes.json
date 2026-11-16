@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T07:12:15.757Z",
+    "updatedAt": "2026-11-16T07:12:20.993Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -16030,11 +16030,7 @@
             ]
           },
           "S142": {
-            "ok": [
-              "clsB",
-              "lines",
-              "srcSuffix"
-            ],
+            "ok": [],
             "bt0": {
               "t": "그 크리스마스 영화 제목은 Home ( )(이)야. 개굴!",
               "amb": "‘The’ = 특정한 그 영화 / 제목 일부가 영어 그대로라 영어로 둠",
@@ -16055,52 +16051,10 @@
                 "doneAt": "2026-11-16T06:06:49.990Z"
               }
             ],
-            "bt": [
-              "그 크리스마스 영화 제목은 Home ( )(이)야. 개굴!"
-            ],
-            "gl": "The Christmas movie = 그(특정) 크리스마스 영화 / is called = ~라고 불린다 / Home = 집",
-            "rel": "개구리(생략) → 플레이어 : '그 크리스마스 영화 제목은 Home ( )이다' 빈칸 문제를 냄",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "A famous Christmas movie is ( ) Alone. Ribbit!",
-              "why": "원문 정답은 ‘집에’, 오답은 ‘여행’이다. 번역은 빈칸을 Alone 자리로 옮겨 정답 단어가 원문과 달라졌고 ‘Home Trip’이라는 어색한 오답이 생겼다. 빈칸을 Home 자리로 두면(분석 제안: Home vs Trip) 정답 Home·오답 Trip이 원문 ‘집에·여행’과 그대로 대응하고 ‘Trip Alone’도 말이 된다. The는 특정 영화 하나만 있는 듯 읽혀 A famous로 바꿨다. S144를 Home으로 함께 바꿔야 한다.",
-              "at": "2026-11-16T06:06:08.041Z",
-              "chk": {
-                "정답": "REVIEW",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "PASS"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 16,
-                "문맥": 7,
-                "말투": 10
-              },
-              "total": 83,
-              "band": "REVIEW",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 영화 제목 빈칸 채우기 유지; 행동: 일치; 대상: 빈칸 위치가 바뀌어 원문 정답 ‘집에’가 Alone으로, 대비 ‘집 vs 여행’이 ‘혼자 vs 여행’으로 달라짐; 문맥: 분석 제안(Home vs Trip 대비) 미반영, ‘The Christmas movie’는 영화가 하나뿐인 듯 읽힘; 말투: 일치",
-              "trh": "l58anmzljc2o15",
-              "err3": [
-                "맥락 오류"
-              ],
-              "plan": true
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -16140,7 +16094,63 @@
                 "by": "검수 AI",
                 "at": "2026-11-16T06:06:08.042Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-16T07:12:19.863Z",
+                "by": "김예은",
+                "from": "The Christmas movie is called Home ( ). Ribbit!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "영화 제목 Home Alone의 마지막 단어를 완성한다.",
+                  "sense": "",
+                  "reason": "한국 영화 제목의 직역 대신 영어권 개봉 제목 Home Alone의 형태로 문장을 바꿨다. 빈칸은 Alone/Trip 대비다.",
+                  "redo": "",
+                  "wmap": "나홀로 집에 → Home Alone = 나 홀로 집에 / 영화 → movie = 영화",
+                  "sub": "영화 제목 완성: Alone(홀로) / Home Alone(나 홀로 집에)",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "REVIEW",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "PASS"
+                  },
+                  "why": "원문 정답은 ‘집에’, 오답은 ‘여행’이다. 번역은 빈칸을 Alone 자리로 옮겨 정답 단어가 원문과 달라졌고 ‘Home Trip’이라는 어색한 오답이 생겼다. 빈칸을 Home 자리로 두면(분석 제안: Home vs Trip) 정답 Home·오답 Trip이 원문 ‘집에·여행’과 그대로 대응하고 ‘Trip Alone’도 말이 된다. The는 특정 영화 하나만 있는 듯 읽혀 A famous로 바꿨다. S144를 Home으로 함께 바꿔야 한다.",
+                  "fix": "A famous Christmas movie is ( ) Alone. Ribbit!",
+                  "exc": "",
+                  "bt": "그 크리스마스 영화 제목은 Home ( )(이)야. 개굴!",
+                  "gl": "The Christmas movie = 그(특정) 크리스마스 영화 / is called = ~라고 불린다 / Home = 집",
+                  "at": "2026-11-16T06:06:08.041Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "A famous Christmas movie is ( ) Alone. Ribbit!",
+                "why": "원문 정답은 ‘집에’, 오답은 ‘여행’이다. 번역은 빈칸을 Alone 자리로 옮겨 정답 단어가 원문과 달라졌고 ‘Home Trip’이라는 어색한 오답이 생겼다. 빈칸을 Home 자리로 두면(분석 제안: Home vs Trip) 정답 Home·오답 Trip이 원문 ‘집에·여행’과 그대로 대응하고 ‘Trip Alone’도 말이 된다. The는 특정 영화 하나만 있는 듯 읽혀 A famous로 바꿨다. S144를 Home으로 함께 바꿔야 한다.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Claude",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
+            ],
+            "tr": "A famous Christmas movie is ( ) Alone. Ribbit!",
+            "hv": null
           },
           "S143": {
             "ok": [
@@ -16205,9 +16215,7 @@
             ]
           },
           "S144": {
-            "ok": [
-              "srcSuffix"
-            ],
+            "ok": [],
             "bt0": {
               "t": "Alone (혼자)",
               "amb": "",
@@ -16228,52 +16236,10 @@
                 "doneAt": "2026-11-16T06:06:50.633Z"
               }
             ],
-            "bt": [
-              "Alone(혼자)"
-            ],
-            "gl": "Alone = 혼자",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Home",
-              "why": "원문 선택지 ‘집에’는 영화 제목 Home Alone의 Home에 해당한다. 번역은 빈칸 위치를 바꾸면서 정답 단어를 Alone으로 바꿨다. S142를 ‘( ) Alone’으로 고치면 이 선택지는 Home이 되어 원문과 뜻이 일치하고, 오답 Trip과의 ‘집 vs 여행’ 대비도 살아난다.",
-              "at": "2026-11-16T06:06:08.041Z",
-              "chk": {
-                "정답": "REVIEW",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 72,
-              "band": "REVIEW 수정 필수",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 원문 정답 ‘집에(home)’가 ‘혼자(alone)’로 바뀜; 행동: 일치; 대상: 정답 단어 변경; 문맥: 제목 완성은 되지만 원문 대비 구조와 다름; 말투: 해당 없음",
-              "trh": "1i85zlekbvygc7",
-              "err3": [
-                "부정확한 의미"
-              ],
-              "plan": true
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -16313,7 +16279,63 @@
                 "by": "검수 AI",
                 "at": "2026-11-16T06:06:08.042Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-16T07:12:20.971Z",
+                "by": "김예은",
+                "from": "Alone",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "혼자 있는 상태를 나타내는 ‘Alone’",
+                  "sense": "Alone: 혼자인/홀로 → 영화 제목 Home Alone의 일부",
+                  "reason": "영어 영화 제목 Home Alone을 완성하도록 원문의 ‘집에’를 Alone으로 바꿨다. 단어 대 단어 번역이 아닌 제목 기능 보존이다.",
+                  "redo": "",
+                  "wmap": "집에 → Alone = 홀로",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "REVIEW",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "원문 선택지 ‘집에’는 영화 제목 Home Alone의 Home에 해당한다. 번역은 빈칸 위치를 바꾸면서 정답 단어를 Alone으로 바꿨다. S142를 ‘( ) Alone’으로 고치면 이 선택지는 Home이 되어 원문과 뜻이 일치하고, 오답 Trip과의 ‘집 vs 여행’ 대비도 살아난다.",
+                  "fix": "Home",
+                  "exc": "",
+                  "bt": "Alone(혼자)",
+                  "gl": "Alone = 혼자",
+                  "at": "2026-11-16T06:06:08.041Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Home",
+                "why": "원문 선택지 ‘집에’는 영화 제목 Home Alone의 Home에 해당한다. 번역은 빈칸 위치를 바꾸면서 정답 단어를 Alone으로 바꿨다. S142를 ‘( ) Alone’으로 고치면 이 선택지는 Home이 되어 원문과 뜻이 일치하고, 오답 Trip과의 ‘집 vs 여행’ 대비도 살아난다.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Claude",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
+            ],
+            "tr": "Home",
+            "hv": null
           },
           "S147": {
             "ok": [
