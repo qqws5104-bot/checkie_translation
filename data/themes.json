@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T06:56:38.405Z",
+    "updatedAt": "2026-11-16T06:56:43.091Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -13731,12 +13731,7 @@
             }
           },
           "S097": {
-            "ok": [
-              "srcSuffix",
-              "lines",
-              "sym",
-              "clsB"
-            ],
+            "ok": [],
             "bt0": {
               "t": "( ) 사이로 썰매를 타면 재밌는 느낌이야! 개굴!",
               "amb": "‘재밌을 것 같아’(추측)로도 읽힘",
@@ -13757,53 +13752,10 @@
                 "doneAt": "2026-11-16T06:06:38.936Z"
               }
             ],
-            "bt": [
-              "( ) 사이로 썰매를 타면 재밌는 느낌이야! 개굴!"
-            ],
-            "gl": "sleigh ride = 썰매 타기 / through = ~ 사이로 / feels like fun = 재미있는 느낌이다(어색)",
-            "rel": "개구리(생략) → 플레이어 : '( ) 사이로 썰매를 타면 재미있다' 빈칸 문제를 냄",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Dashing through the ( ), in a one-horse open sleigh ~♪ Ribbit!",
-              "why": "원문은 Jingle Bells 한국어 가사(흰 눈 사이로 썰매를 타고)를 인용한 문제다. 주의점은 ‘노래 인용 유지, 현지 가사에 맞춤’인데 번역은 일반 문장으로 바꾸고 ♬를 뺐으며 ‘feels like fun’도 어색하다. 영어 원곡 가사 ‘Dashing through the snow’로 바꾸면 영어권 방문객이 바로 알아보고, 선택지 snow/clouds가 그대로 들어간다. Jingle Bells(1857)는 퍼블릭 도메인이라 저작권 문제는 없는 것으로 보이나 최종 확인 권장.",
-              "at": "2026-11-16T06:06:08.041Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "PASS"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 7,
-                "말투": 8
-              },
-              "total": 85,
-              "band": "REVIEW",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 썰매 타고 달리는 기분은 대체로 전달; 행동: 일치; 대상: 일치; 문맥: 노래 인용(~♬)이 사라졌고 주의점의 ‘현지 가사에 맞춤’이 반영되지 않음, ‘feels like fun’은 어색한 영어; 말투: 노래 흥얼거림 느낌 손실",
-              "trh": "3gm8sz1os97pv16",
-              "err3": [
-                "누락",
-                "맥락 오류"
-              ],
-              "plan": true
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -13843,7 +13795,85 @@
                 "by": "검수 AI",
                 "at": "2026-11-16T06:06:08.042Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-16T06:56:41.653Z",
+                "by": "김예은",
+                "from": "A sleigh ride through ( ) feels like fun! Ribbit!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "눈 사이로 썰매를 타는 장면을 묻는 새 문장이다.",
+                  "sense": "",
+                  "reason": "한국어 징글벨 가사를 옮기지 않고, 눈 사이로 썰매를 타는 장면을 새 문장으로 표현했다. 정답 snow와 오답 clouds의 대비를 유지한다.",
+                  "redo": "",
+                  "wmap": "흰 눈 → snow = 눈 / 썰매 → sleigh = 썰매 / 달리다 → ride = 타고 달리다",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "PASS"
+                  },
+                  "why": "원문은 Jingle Bells 한국어 가사(흰 눈 사이로 썰매를 타고)를 인용한 문제다. 주의점은 ‘노래 인용 유지, 현지 가사에 맞춤’인데 번역은 일반 문장으로 바꾸고 ♬를 뺐으며 ‘feels like fun’도 어색하다. 영어 원곡 가사 ‘Dashing through the snow’로 바꾸면 영어권 방문객이 바로 알아보고, 선택지 snow/clouds가 그대로 들어간다. Jingle Bells(1857)는 퍼블릭 도메인이라 저작권 문제는 없는 것으로 보이나 최종 확인 권장.",
+                  "fix": "Dashing through the ( ), in a one-horse open sleigh ~♪ Ribbit!",
+                  "exc": "",
+                  "bt": "( ) 사이로 썰매를 타면 재밌는 느낌이야! 개굴!",
+                  "gl": "sleigh ride = 썰매 타기 / through = ~ 사이로 / feels like fun = 재미있는 느낌이다(어색)",
+                  "at": "2026-11-16T06:06:08.041Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Dashing through the ( ), in a one-horse open sleigh ~♪ Ribbit!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "( ) 사이로 말 한 마리가 끄는 썰매를 타고 달려~♪ 개굴!",
+                  "sense": "",
+                  "reason": "원문의 노래 인용 기능을 현지 가사로 살림(퍼블릭 도메인 확인 권장) / 원곡(Jingle Bells) 영어 가사로 교체",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "원곡(Jingle Bells) 영어 가사로 교체",
+                  "by": "김예은",
+                  "at": "2026-11-16T06:56:41.653Z"
+                }
+              }
+            ],
+            "tr": "Dashing through the ( ), in a one-horse open sleigh ~♪ Ribbit!",
+            "hv": null,
+            "pick": {
+              "k": "수정",
+              "tr": "Dashing through the ( ), in a one-horse open sleigh ~♪ Ribbit!",
+              "mean": "( ) 사이로 말 한 마리가 끄는 썰매를 타고 달려~♪ 개굴!",
+              "rec": "수정",
+              "recTr": "Dashing through the ( ), in a one-horse open sleigh ~♪ Ribbit!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-16T06:56:41.653Z",
+              "trh": "sycyvjq0rkb1h",
+              "from": "검수 AI"
+            }
           },
           "S098": {
             "ok": [
@@ -13971,11 +14001,7 @@
             ]
           },
           "S102": {
-            "ok": [
-              "lines",
-              "sym",
-              "srcSuffix"
-            ],
+            "ok": [],
             "bt0": {
               "t": "루돌프(소리)의 코는 아주 ( ). 개굴!",
               "amb": "",
@@ -13996,52 +14022,10 @@
                 "doneAt": "2026-11-16T06:06:39.779Z"
               }
             ],
-            "bt": [
-              "루돌프의 코는 아주 ( ). 개굴!"
-            ],
-            "gl": "Rudolph = 루돌프 / nose = 코 / very = 매우",
-            "rel": "개구리(생략) → 플레이어 : '루돌프의 코는 아주 ( )' 빈칸 문제를 냄",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Rudolph's nose is very ( ) ~♪ Ribbit!",
-              "why": "원문은 ‘루돌프 사슴 코’ 노래 가사 인용(~♬)인데 번역에서 음표가 빠져 노래 문제라는 단서가 사라졌다. 최소 수정으로 ~♪를 되살린다. 영어 원곡 가사(had a very shiny nose)로 바꾸면 더 잘 알아보지만, 이 곡은 아직 저작권이 살아 있을 수 있어 저작권 확인 후 결정해야 하므로 REVIEW로 둔다.",
-              "at": "2026-11-16T06:06:08.041Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 30,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 8
-              },
-              "total": 90,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 코 묘사는 유지, ‘사슴’과 노래 인용(~♬) 빠짐; 행동: 일치; 대상: 일치; 문맥: 주의점 ‘노래 인용임(~♬) 유지’ 미반영; 말투: 노래 흥얼거림 느낌 손실",
-              "trh": "191oljm15768a0v",
-              "err3": [
-                "누락"
-              ],
-              "plan": true
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -14081,7 +14065,85 @@
                 "by": "검수 AI",
                 "at": "2026-11-16T06:06:08.042Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-16T06:56:43.068Z",
+                "by": "김예은",
+                "from": "Rudolph's nose is very ( ). Ribbit!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "루돌프의 코가 어떤 상태인지 묻는다.",
+                  "sense": "",
+                  "reason": "루돌프 노래의 특정 가사를 복제하지 않고, 코가 매우 반짝인다는 핵심 속성을 평서형 퀴즈로 옮겼다.",
+                  "redo": "",
+                  "wmap": "루돌프 → Rudolph = 루돌프 / 반짝이는 → shiny = 반짝이는",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "원문은 ‘루돌프 사슴 코’ 노래 가사 인용(~♬)인데 번역에서 음표가 빠져 노래 문제라는 단서가 사라졌다. 최소 수정으로 ~♪를 되살린다. 영어 원곡 가사(had a very shiny nose)로 바꾸면 더 잘 알아보지만, 이 곡은 아직 저작권이 살아 있을 수 있어 저작권 확인 후 결정해야 하므로 REVIEW로 둔다.",
+                  "fix": "Rudolph's nose is very ( ) ~♪ Ribbit!",
+                  "exc": "",
+                  "bt": "루돌프의 코는 아주 ( ). 개굴!",
+                  "gl": "Rudolph = 루돌프 / nose = 코 / very = 매우",
+                  "at": "2026-11-16T06:06:08.041Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Rudolph's nose is very ( ) ~♪ Ribbit!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "루돌프의 코는 아주 ( )~♪ 개굴!",
+                  "sense": "",
+                  "reason": "최소 수정으로 노래 단서 복원 / 사슴은 여전히 생략",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "사슴은 여전히 생략",
+                  "by": "김예은",
+                  "at": "2026-11-16T06:56:43.068Z"
+                }
+              }
+            ],
+            "tr": "Rudolph's nose is very ( ) ~♪ Ribbit!",
+            "hv": null,
+            "pick": {
+              "k": "수정",
+              "tr": "Rudolph's nose is very ( ) ~♪ Ribbit!",
+              "mean": "루돌프의 코는 아주 ( )~♪ 개굴!",
+              "rec": "수정",
+              "recTr": "Rudolph's nose is very ( ) ~♪ Ribbit!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-16T06:56:43.068Z",
+              "trh": "vspjh61czqbk0w",
+              "from": "검수 AI"
+            }
           },
           "S103": {
             "ok": [
