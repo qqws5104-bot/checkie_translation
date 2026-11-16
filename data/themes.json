@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T07:09:18.177Z",
+    "updatedAt": "2026-11-16T07:12:11.996Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -15604,11 +15604,7 @@
             ]
           },
           "S133": {
-            "ok": [
-              "gram",
-              "long",
-              "srcSuffix"
-            ],
+            "ok": [],
             "bt0": {
               "t": "창밖",
               "amb": "",
@@ -15629,52 +15625,10 @@
                 "doneAt": "2026-11-16T06:06:48.103Z"
               }
             ],
-            "bt": [
-              "창밖"
-            ],
-            "gl": "outside the window = 창문 밖",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "outside",
-              "why": "뜻은 맞지만 원문(창 밖, 2글자)보다 크게 길어 연잎 칸을 넘칠 가능성이 크다. ‘Look outside, look outside! Snow is falling.’도 자연스러운 영어라 outside로 줄여도 뜻(밖을 봐라)과 정답 대비가 유지된다. S134와 함께 바꿔야 한다.",
-              "at": "2026-11-16T06:06:08.041Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상: 일치; 문맥: 18글자라 연잎 칸에 들어가지 않을 가능성이 매우 큼; 말투: 해당 없음",
-              "trh": "222yprj89087i",
-              "err3": [
-                "맥락 오류"
-              ],
-              "plan": true
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -15714,7 +15668,85 @@
                 "by": "검수 AI",
                 "at": "2026-11-16T06:06:08.042Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-16T07:12:11.972Z",
+                "by": "김예은",
+                "from": "outside the window",
+                "ratFrom": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "창문 바깥",
+                  "sense": "Outside: 바깥/외부 → 창문을 기준으로 한 바깥쪽",
+                  "reason": "창문 바깥이라는 위치를 뜻하는 outside the window를 사용했다.",
+                  "redo": "",
+                  "wmap": "창 밖 → outside the window = 창문 바깥",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "뜻은 맞지만 원문(창 밖, 2글자)보다 크게 길어 연잎 칸을 넘칠 가능성이 크다. ‘Look outside, look outside! Snow is falling.’도 자연스러운 영어라 outside로 줄여도 뜻(밖을 봐라)과 정답 대비가 유지된다. S134와 함께 바꿔야 한다.",
+                  "fix": "outside",
+                  "exc": "",
+                  "bt": "창밖",
+                  "gl": "outside the window = 창문 밖",
+                  "at": "2026-11-16T06:06:08.041Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "outside",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "밖",
+                  "sense": "",
+                  "reason": "Look outside, look outside!로 자연스러움 / ‘창’ 생략",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "‘창’ 생략",
+                  "by": "김예은",
+                  "at": "2026-11-16T07:12:11.972Z"
+                }
+              }
+            ],
+            "tr": "outside",
+            "hv": null,
+            "pick": {
+              "k": "수정",
+              "tr": "outside",
+              "mean": "밖",
+              "rec": "수정",
+              "recTr": "outside",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-16T07:12:11.972Z",
+              "trh": "ew0fhu8f9ziu9",
+              "from": "검수 AI"
+            }
           },
           "S134": {
             "ok": [
