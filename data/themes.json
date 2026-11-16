@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T06:12:56.476Z",
+    "updatedAt": "2026-11-16T06:13:23.570Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -13238,10 +13238,7 @@
             ]
           },
           "S087": {
-            "ok": [
-              "srcSuffix",
-              "lines"
-            ],
+            "ok": [],
             "bt0": {
               "t": "크리스마스 전날은 ( )(이)라고 불러. 개굴!",
               "amb": "",
@@ -13262,52 +13259,10 @@
                 "doneAt": "2026-11-16T06:06:35.468Z"
               }
             ],
-            "bt": [
-              "크리스마스 전날은 ( )(이)라고 불러. 개굴!"
-            ],
-            "gl": "day before Christmas = 크리스마스 전날 / is called = ~라고 불린다",
-            "rel": "개구리(생략) → 플레이어 : '크리스마스 전날은 ( )라고 부른다' 빈칸 문제를 냄",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "The day before Christmas is called Christmas ( ). Ribbit!",
-              "why": "영어에서 크리스마스 전날은 ‘Christmas Eve’라고 부르고 ‘Eve’만 쓰는 경우는 드물다. 빈칸 앞에 Christmas를 넣으면 선택지 Eve/Adam을 그대로 쓰면서 자연스러운 이름이 완성된다. 덤으로 ‘Christmas Adam’(12월 23일을 부르는 영어권 농담)과 연결되어 오답 Adam의 말장난도 살아난다. 현지 자연스러움 확인 필요로 REVIEW.",
-              "at": "2026-11-16T06:06:08.041Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상: 일치; 문맥: 영어로는 ‘Christmas Eve’라고 부르며 Eve 단독은 부자연스러움(한국어는 ‘이브’ 단독 사용이 흔함); 말투: 일치",
-              "trh": "3372t2qa5wn615",
-              "err3": [
-                "맥락 오류"
-              ],
-              "plan": true
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -13358,7 +13313,85 @@
                 "by": "검수 AI",
                 "at": "2026-11-16T06:06:08.042Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-16T06:13:23.547Z",
+                "by": "김예은",
+                "from": "The day before Christmas is called ( ). Ribbit!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "크리스마스 전날의 명칭을 묻는다.",
+                  "sense": "",
+                  "reason": "크리스마스 전날의 명칭을 묻는다. Eve를 정답으로 하고 Adam과의 말장난 대비를 유지했다.",
+                  "redo": "",
+                  "wmap": "크리스마스 전날 → day before Christmas = 크리스마스 전날 / 부르다 → call = 부르다",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "영어에서 크리스마스 전날은 ‘Christmas Eve’라고 부르고 ‘Eve’만 쓰는 경우는 드물다. 빈칸 앞에 Christmas를 넣으면 선택지 Eve/Adam을 그대로 쓰면서 자연스러운 이름이 완성된다. 덤으로 ‘Christmas Adam’(12월 23일을 부르는 영어권 농담)과 연결되어 오답 Adam의 말장난도 살아난다. 현지 자연스러움 확인 필요로 REVIEW.",
+                  "fix": "The day before Christmas is called Christmas ( ). Ribbit!",
+                  "exc": "",
+                  "bt": "크리스마스 전날은 ( )(이)라고 불러. 개굴!",
+                  "gl": "day before Christmas = 크리스마스 전날 / is called = ~라고 불린다",
+                  "at": "2026-11-16T06:06:08.041Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "The day before Christmas is called Christmas ( ). Ribbit!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "크리스마스 전날은 크리스마스 ( )(이)라고 불러. 개굴!",
+                  "sense": "",
+                  "reason": "Christmas Eve 완성, Christmas Adam 농담과 연결 / 빈칸 앞에 Christmas 추가",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "빈칸 앞에 Christmas 추가",
+                  "by": "김예은",
+                  "at": "2026-11-16T06:13:23.547Z"
+                }
+              }
+            ],
+            "tr": "The day before Christmas is called Christmas ( ). Ribbit!",
+            "hv": null,
+            "pick": {
+              "k": "수정",
+              "tr": "The day before Christmas is called Christmas ( ). Ribbit!",
+              "mean": "크리스마스 전날은 크리스마스 ( )(이)라고 불러. 개굴!",
+              "rec": "수정",
+              "recTr": "The day before Christmas is called Christmas ( ). Ribbit!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-16T06:13:23.547Z",
+              "trh": "dhe8y61dao4681e",
+              "from": "검수 AI"
+            }
           },
           "S088": {
             "ok": [
