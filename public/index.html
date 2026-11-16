@@ -2430,6 +2430,20 @@ function srcExceptions(raw) {   // "EN:B 띠 개념 설명 필요 / JA:A" → { 
     if (lk) out[lk] = { cls: k.toUpperCase(), why: why.trim() }; return ''; });
   return out;
 }
+/* 언어별 예외 원문 중 ‘EN:B 이유’ 형식으로 읽히지 않은 부분: 이 언어를 가리키거나 언어를 안 가리키는 조각 */
+const LK_RE = { en: /\b(EN|ENG)\b|영어|英/i, ja: /\b(JA|JP|JPN)\b|일본어|日本/i, zh: /\b(ZH|CN|CHN)\b|중국어|中文/i };
+function exRawFor(b, lk) {
+  const raw = String(b.exRaw || '').trim(); if (!raw || raw === '-') return '';
+  return raw.split(/\s*[/;\n]\s*/).map(x => x.trim()).filter(Boolean).filter(seg => {
+    if (/\b(EN|JA|ZH|영어|일본어|중국어)\s*[:：]\s*[ABC]\b/i.test(seg)) return false;   /* 정상 형식은 분류·근거로 이미 들어감 */
+    const hit = Object.keys(LK_RE).filter(k => LK_RE[k].test(seg)); return !hit.length || hit.includes(lk);
+  }).join(' / ');
+}
+/* 번역 프롬프트에 넣을 ‘원문 분석 제안’: 재설계 제안 + 형식이 다른 언어별 예외 + 비고 */
+function srcAdvice(b, lk) {
+  const note = String(b.note || '').trim(), ex = exRawFor(b, lk);
+  return [b.redo && b.redo !== '-' ? `재설계 제안: ${b.redo}` : '', ex ? `언어별 메모: ${ex}` : '', note && note !== '-' ? `비고: ${note}` : ''].filter(Boolean).join(' / ');
+}
 function baseRows(t) {
   if (!srcHas(t)) return [];
   const it = t.source.items || {};
@@ -2722,12 +2736,13 @@ function srcTableBlock(t, lk) {
 # 번역할 원문 (확정된 원문 기준표 · 다시 뽑지 않음)
 - 아래 표의 모든 ID를 같은 순서로 하나도 빠짐없이 번역한다. ID를 바꾸거나 줄을 합치거나 나누거나 더하지 않는다.
 - 첨부한 PNG는 화면 맥락 확인용이다. 원문은 이 표를 기준으로 한다. (이미지와 다르면 비고에 ‘원문 불일치’)
-- 분류와 번역 시 주의점은 사람이 승인한 기준이다. B는 원문 규칙을 유지한 채 뜻만 ${L.label} 표현으로, C는 가장 가까운 번역을 넣고 \`기획 확인\` 시트에 대안을 쓴다. 말장난·발음 문제를 임의로 해결하지 않는다.
+- 분류·번역 시 주의점·분석 제안은 사람이 승인한 기준이다. A는 그대로 번역, B는 원문 규칙을 유지한 채 뜻만 ${L.label} 표현으로, C는 아래 ‘재설계’ 규칙대로 재설계안을 쓴다.
+- **‘분석 제안’ 칸이 있으면 분류와 관계없이 그 방향대로 옮긴다** (예: ‘EN은 Dashing through the snow로 맞추면 해결’ → 그 노래로 바꿈). 따르지 않았으면 검수 주의사항에 ‘분석 제안 미반영: (이유)’를 쓴다. 말장난·발음 문제는 제안이 없으면 임의로 해결하지 않는다.
 - 원문의 [ICON:이름]은 그림 자리 표시다. 번역문에도 같은 자리에 그대로 둔다.
 - 분류가 틀렸다고 보면 고치지 말고 비고에 ‘분류 이견: (이유)’를 쓴다.
 - 판단할 수 없는 줄은 추측하지 말고 비고를 ‘REVIEW: (판단이 필요한 부분)’으로 시작한다.
 - ‘핵심 의미·단어 해석’은 사람이 승인한 원문 해석이다. ‘관계’(주체 → 대상 : 행동)의 주체와 대상을 바꾸지 않는다. 다의어는 이 해석대로 번역하고, 이견이 있으면 검수 주의사항에 ‘해석 이견: (이유)’를 쓴다.
-${tsv(['ID', '파일', '화면', '요소', '원문', '유형', '핵심 의미·단어 해석', '분류', '번역 시 주의점', '길이 한도', '게임 역할', '조작', '공유 대상'], rows.map(b => { const c = langCls(b, lk), lm = limOf(lk, { ko: b.ko, b }), oo = opOf(t, { ko: b.ko, b }); return [b.id, b.file, b.screen, b.elem, b.ko.replace(/\n/g, ' / '), b.type, [b.core, b.rel ? `관계: ${b.rel}` : '', b.sense ? `단어: ${b.sense}` : ''].filter(Boolean).join(' / '), c.cls ? CLS[c.cls] : '', [b.rep ? `${b.rep}번 반복되는 문구 (파일: ${b.file}) · 모든 화면 같은 번역` : '', b.care, c.why && c.why !== '-' && c.cls !== 'A' ? `근거: ${c.why}` : '', b.cult ? `문화적 배경: ${b.cult}` : ''].filter(x => x && x !== '-').join(' / '), lm ? `${lm.n}자${lm.hard ? ' (칸)' : ''}` : '', b.role || '-', oo && oo.op ? `${oo.op.id} → ${((oo.op.fix || {})[lk] || []).join('/') || '-'}` : '-', b.share || '-']; }))}
+${tsv(['ID', '파일', '화면', '요소', '원문', '유형', '핵심 의미·단어 해석', '분류', '번역 시 주의점', '분석 제안', '길이 한도', '게임 역할', '조작', '공유 대상'], rows.map(b => { const c = langCls(b, lk), lm = limOf(lk, { ko: b.ko, b }), oo = opOf(t, { ko: b.ko, b }); return [b.id, b.file, b.screen, b.elem, b.ko.replace(/\n/g, ' / '), b.type, [b.core, b.rel ? `관계: ${b.rel}` : '', b.sense ? `단어: ${b.sense}` : ''].filter(Boolean).join(' / '), c.cls ? CLS[c.cls] : '', [b.rep ? `${b.rep}번 반복되는 문구 (파일: ${b.file}) · 모든 화면 같은 번역` : '', b.care, c.why && c.why !== '-' ? `근거: ${c.why}` : '', b.cult ? `문화적 배경: ${b.cult}` : ''].filter(x => x && x !== '-').join(' / '), srcAdvice(b, lk) || '-', lm ? `${lm.n}자${lm.hard ? ' (칸)' : ''}` : '', b.role || '-', oo && oo.op ? `${oo.op.id} → ${((oo.op.fix || {})[lk] || []).join('/') || '-'}` : '-', b.share || '-']; }))}
 ${answersBlock(t, 'translate')}`;
 }
 function answersBlock(t, mode) {
@@ -2785,7 +2800,7 @@ function specialTag(t, row) {
 }
 
 /* ================= 번역 프롬프트 = 공통 지시 + AI별 지시 + 게임별 정보 + 언어별 블록 + 이번 작업 ================= */
-const PROMPT_VER = '2026.11-v23';
+const PROMPT_VER = '2026.11-v24';
 const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 
 1. 역할
@@ -3496,7 +3511,7 @@ ${extra ? '5.' : '4.'} \`의견\` — 구분 | 내용
 - 엑셀을 만들 수 없으면 같은 표들을 위 순서대로 채팅에 표로 쓰고, 각 표 바로 위에 시트 이름을 쓴다.
 
 # 검수할 표
-${(() => { const sc = srcConfirmed(t), basis = r => [specialTag(t, r), r.x.redo ? redoTag(r.x.redo) : r.cls === 'C' ? '재설계 줄' : '', sc && r.cls ? `${CLS[r.cls] || r.cls}${r.clsDir && r.clsDir !== '-' ? ` · 주의점: ${r.clsDir}` : ''}` : ''].filter(Boolean).join(' '), bh = sc ? '원문 분석 기준(사람 승인)' : '특수 규칙';
+${(() => { const sc = srcConfirmed(t), basis = r => [specialTag(t, r), r.x.redo ? redoTag(r.x.redo) : r.cls === 'C' ? '재설계 줄' : '', sc && r.cls ? `${CLS[r.cls] || r.cls}${r.clsDir && r.clsDir !== '-' ? ` · 주의점: ${r.clsDir}` : ''}` : '', sc && r.b && srcAdvice(r.b, lk) ? `· 분석 제안: ${srcAdvice(r.b, lk)} (반영됐는지 보고, 안 됐으면 문맥 감점 + 이유에 ‘분석 제안 미반영’)` : ''].filter(Boolean).join(' '), bh = sc ? '원문 분석 기준(사람 승인)' : '특수 규칙';
     const bx = [...(anyBt0 ? ['독립 역번역 (원문 안 본 AI)'] : []), ...(multi ? ['비고(사용 횟수)'] : [])], bv = r => [...(anyBt0 ? [(b => b ? `${b.t.replace(/\n/g, ' / ')}${b.amb ? ` (애매: ${b.amb})` : ''}` : '(없음)')(bt0Of(r))] : []), ...(multi ? [r.used] : [])];
     return ref ? tsv(['번호', '확인값', '파일', '화면', '요소', '한국어 원문', 'English(확정, 참조)', LHEAD[lk], bh, ...bx], rows.map(r => [r.id, rowCk(r), r.file, r.screen, r.elem, r.ko.replace(/\n/g, ' / '), enCell(enFor(ref, r)), r.tr.replace(/\n/g, ' / '), basis(r), ...bv(r)]))
       : tsv(['번호', '확인값', '파일', '화면', '요소', '한국어 원문', LHEAD[lk], bh, ...bx], rows.map(r => [r.id, rowCk(r), r.file, r.screen, r.elem, r.ko.replace(/\n/g, ' / '), r.tr.replace(/\n/g, ' / '), basis(r), ...bv(r)])); })()}
