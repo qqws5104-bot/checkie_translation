@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T07:09:13.536Z",
+    "updatedAt": "2026-11-16T07:09:18.177Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -15303,11 +15303,7 @@
             }
           },
           "S127": {
-            "ok": [
-              "srcSuffix",
-              "lines",
-              "sym"
-            ],
+            "ok": [],
             "bt0": {
               "t": "밤은 ( ) 조용해. 개굴!",
               "amb": "",
@@ -15315,52 +15311,10 @@
               "by": "ChatGPT",
               "trh": "46alhv142aid7u"
             },
-            "bt": [
-              "밤은 ( ) 조용해. 개굴!"
-            ],
-            "gl": "night = 밤 / quiet = 조용한 / and = 그리고",
-            "rel": "개구리(생략) → 플레이어 : '밤은 ( )하고 조용하다' 빈칸 문제를 냄",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "( ) night, holy night ~♪ Ribbit!",
-              "why": "원문은 ‘고요한 밤 거룩한 밤’ 가사 인용인데, 번역은 가사를 버리고 원문에 없는 quiet를 넣었다. quiet가 정답 silent와 같은 뜻이라 힌트가 추가되었고(noisy and quiet는 모순), ‘거룩한 밤’과 ♬도 빠졌다. 영어권 원곡 가사 ‘Silent night, holy night’에 빈칸을 두면 원문 구조 그대로 되고 방문객이 바로 알아본다. 이 영어 가사(1859년 번역)는 퍼블릭 도메인으로 보이나 최종 확인 권장.",
-              "at": "2026-11-16T06:06:08.041Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "FAIL",
-                "용어": "PASS",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "REVIEW",
-                "문화": "REVIEW",
-                "말투": "PASS"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 16,
-                "문맥": 7,
-                "말투": 8
-              },
-              "total": 71,
-              "band": "REVIEW 수정 필수",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: ‘거룩한 밤, 어둠에 묻힌 밤’과 노래 인용이 사라짐; 행동: 일치; 대상: quiet가 추가되어 정답(silent)을 미리 알려 줌; 문맥: silent and quiet는 같은 말 반복이고, noisy and quiet는 모순이라 오답이 바로 걸러짐; 말투: 노래 흥얼거림 느낌 손실",
-              "trh": "46alhv142aid7u",
-              "err3": [
-                "부정확한 의미",
-                "누락"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -15400,7 +15354,63 @@
                 "by": "검수 AI",
                 "at": "2026-11-16T06:06:08.042Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-16T07:09:18.154Z",
+                "by": "김예은",
+                "from": "The night is ( ) and quiet. Ribbit!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "밤의 분위기가 시끄러운지 고요한지 묻는다.",
+                  "sense": "",
+                  "reason": "노래 가사를 인용하지 않고 밤의 상태를 설명하는 새 문장으로 바꿨다.",
+                  "redo": "",
+                  "wmap": "밤 → night = 밤 / 시끄러운 → noisy = 시끄러운 / 고요한 → quiet = 조용한",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "FAIL",
+                    "용어": "PASS",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "REVIEW",
+                    "문화": "REVIEW",
+                    "말투": "PASS"
+                  },
+                  "why": "원문은 ‘고요한 밤 거룩한 밤’ 가사 인용인데, 번역은 가사를 버리고 원문에 없는 quiet를 넣었다. quiet가 정답 silent와 같은 뜻이라 힌트가 추가되었고(noisy and quiet는 모순), ‘거룩한 밤’과 ♬도 빠졌다. 영어권 원곡 가사 ‘Silent night, holy night’에 빈칸을 두면 원문 구조 그대로 되고 방문객이 바로 알아본다. 이 영어 가사(1859년 번역)는 퍼블릭 도메인으로 보이나 최종 확인 권장.",
+                  "fix": "( ) night, holy night ~♪ Ribbit!",
+                  "exc": "",
+                  "bt": "밤은 ( ) 조용해. 개굴!",
+                  "gl": "night = 밤 / quiet = 조용한 / and = 그리고",
+                  "at": "2026-11-16T06:06:08.041Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "( ) night, holy night ~♪ Ribbit!",
+                "why": "원문은 ‘고요한 밤 거룩한 밤’ 가사 인용인데, 번역은 가사를 버리고 원문에 없는 quiet를 넣었다. quiet가 정답 silent와 같은 뜻이라 힌트가 추가되었고(noisy and quiet는 모순), ‘거룩한 밤’과 ♬도 빠졌다. 영어권 원곡 가사 ‘Silent night, holy night’에 빈칸을 두면 원문 구조 그대로 되고 방문객이 바로 알아본다. 이 영어 가사(1859년 번역)는 퍼블릭 도메인으로 보이나 최종 확인 권장.",
+                "kind": "fix",
+                "type": "추가 정보 생성",
+                "stage": "교차 검수",
+                "byAi": "Claude",
+                "change": {
+                  "kind": "의미",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
+            ],
+            "tr": "( ) night, holy night ~♪ Ribbit!",
+            "hv": null
           },
           "S128": {
             "ok": [
