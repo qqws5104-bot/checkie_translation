@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T07:08:04.607Z",
+    "updatedAt": "2026-11-16T07:08:06.201Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -15009,11 +15009,7 @@
             ]
           },
           "S122": {
-            "ok": [
-              "srcSuffix",
-              "lines",
-              "clsB"
-            ],
+            "ok": [],
             "bt0": {
               "t": "어느 철자가 맞아? ( ). 개굴!",
               "amb": "",
@@ -15034,53 +15030,10 @@
                 "doneAt": "2026-11-16T06:06:54.185Z"
               }
             ],
-            "bt": [
-              "어느 철자가 맞아? ( ). 개굴!"
-            ],
-            "gl": "spelling = 철자 / correct = 맞는, 올바른",
-            "rel": "개구리(생략) → 플레이어 : '어느 철자가 맞나?' 하고 묻고 ( )를 고르게 함",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "The old man in the red suit is ( ) Claus. Ribbit!",
-              "why": "원문은 ‘산타클로스의 영어 이름’을 묻는데 번역은 ‘어느 철자가 맞나?’만 묻는다. Santa와 Satan은 둘 다 올바른 영어 단어라 무엇의 철자인지 없으면 정답이 하나로 정해지지 않는다. ‘빨간 옷을 입은 할아버지는 ( ) Claus’로 바꾸면 Santa라는 단어를 문제에 노출하지 않으면서 빈칸에 Santa/Satan이 그대로 들어가 철자 장난도 유지된다. B 현지화 줄이라 기획 확인이 필요해 REVIEW.",
-              "at": "2026-11-16T06:06:08.041Z",
-              "chk": {
-                "정답": "REVIEW",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "REVIEW",
-                "행동": "PASS",
-                "조건": "REVIEW",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 20,
-                "의도": 20,
-                "대상": 10,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 72,
-              "band": "REVIEW 수정 필수",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: ‘산타클로스의 이름’이라는 대상이 빠짐; 행동: 고르기 유지; 대상: 무엇의 철자인지 없어 Santa·Satan 둘 다 ‘올바른 철자’가 됨; 문맥: 화면의 선택지를 보면 의도는 짐작 가능; 말투: 일치",
-              "trh": "1pehsgx117sfshz",
-              "err3": [
-                "누락",
-                "맥락 오류"
-              ],
-              "plan": true
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -15131,7 +15084,85 @@
                 "by": "검수 AI",
                 "at": "2026-11-16T06:06:08.042Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-16T07:08:06.177Z",
+                "by": "김예은",
+                "from": "Which spelling is correct? ( ). Ribbit!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "Santa와 Satan 중 올바른 철자를 고르게 한다.",
+                  "sense": "Correct: 맞는/정확한 → 두 철자 중 올바른 표기를 고르라는 뜻",
+                  "reason": "Santa/Satan의 철자 장난을 유지하기 위해 질문을 ‘올바른 철자는?’로 바꿨다. 두 선택지는 원문 그대로 유지했다.",
+                  "redo": "",
+                  "wmap": "영어 이름 → spelling = 철자 / 올바른 → correct = 올바른",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "REVIEW",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "REVIEW",
+                    "행동": "PASS",
+                    "조건": "REVIEW",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "원문은 ‘산타클로스의 영어 이름’을 묻는데 번역은 ‘어느 철자가 맞나?’만 묻는다. Santa와 Satan은 둘 다 올바른 영어 단어라 무엇의 철자인지 없으면 정답이 하나로 정해지지 않는다. ‘빨간 옷을 입은 할아버지는 ( ) Claus’로 바꾸면 Santa라는 단어를 문제에 노출하지 않으면서 빈칸에 Santa/Satan이 그대로 들어가 철자 장난도 유지된다. B 현지화 줄이라 기획 확인이 필요해 REVIEW.",
+                  "fix": "The old man in the red suit is ( ) Claus. Ribbit!",
+                  "exc": "",
+                  "bt": "어느 철자가 맞아? ( ). 개굴!",
+                  "gl": "spelling = 철자 / correct = 맞는, 올바른",
+                  "at": "2026-11-16T06:06:08.041Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "The old man in the red suit is ( ) Claus. Ribbit!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "빨간 옷을 입은 할아버지는 ( ) 클로스야. 개굴!",
+                  "sense": "",
+                  "reason": "정답이 하나로 정해지고 철자 장난 유지 / ‘영어 이름’ 대신 이름 빈칸 채우기",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "‘영어 이름’ 대신 이름 빈칸 채우기",
+                  "by": "김예은",
+                  "at": "2026-11-16T07:08:06.177Z"
+                }
+              }
+            ],
+            "tr": "The old man in the red suit is ( ) Claus. Ribbit!",
+            "hv": null,
+            "pick": {
+              "k": "수정",
+              "tr": "The old man in the red suit is ( ) Claus. Ribbit!",
+              "mean": "빨간 옷을 입은 할아버지는 ( ) 클로스야. 개굴!",
+              "rec": "수정",
+              "recTr": "The old man in the red suit is ( ) Claus. Ribbit!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-16T07:08:06.177Z",
+              "trh": "1xiqc4vc87eq914",
+              "from": "검수 AI"
+            }
           },
           "S123": {
             "ok": [
