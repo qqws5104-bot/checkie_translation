@@ -2431,18 +2431,19 @@ function srcExceptions(raw) {   // "EN:B 띠 개념 설명 필요 / JA:A" → { 
   return out;
 }
 /* 언어별 예외 원문 중 ‘EN:B 이유’ 형식으로 읽히지 않은 부분: 이 언어를 가리키거나 언어를 안 가리키는 조각 */
-const LK_RE = { en: /\b(EN|ENG)\b|영어|英/i, ja: /\b(JA|JP|JPN)\b|일본어|日本/i, zh: /\b(ZH|CN|CHN)\b|중국어|中文/i };
+const LK_RE = { en: /\b(EN|ENG)\b|영어|영미|미국|영국|英/i, ja: /\b(JA|JP|JPN)\b|일본|日本/i, zh: /\b(ZH|CN|CHN)\b|중국|중화|中文|中国/i };
+/* 글을 조각으로 나눠, 이 언어를 가리키거나 아무 언어도 안 가리키는 조각만 남김 (다른 언어용 제안이 새지 않게) */
+const langSegs = (raw, lk) => String(raw || '').split(/\s*[/;\n]\s*/).map(x => x.trim()).filter(x => x && x !== '-').filter(seg => { const hit = Object.keys(LK_RE).filter(k => LK_RE[k].test(seg)); return !hit.length || hit.includes(lk); });
 function exRawFor(b, lk) {
   const raw = String(b.exRaw || '').trim(); if (!raw || raw === '-') return '';
-  return raw.split(/\s*[/;\n]\s*/).map(x => x.trim()).filter(Boolean).filter(seg => {
-    if (/\b(EN|JA|ZH|영어|일본어|중국어)\s*[:：]\s*[ABC]\b/i.test(seg)) return false;   /* 정상 형식은 분류·근거로 이미 들어감 */
-    const hit = Object.keys(LK_RE).filter(k => LK_RE[k].test(seg)); return !hit.length || hit.includes(lk);
-  }).join(' / ');
+  return langSegs(raw, lk).filter(seg => !/\b(EN|JA|ZH|영어|일본어|중국어)\s*[:：]\s*[ABC]\b/i.test(seg)).join(' / ');   /* 정상 형식은 분류·근거로 이미 들어감 */
 }
 /* 번역 프롬프트에 넣을 ‘원문 분석 제안’: 재설계 제안 + 형식이 다른 언어별 예외 + 비고 */
 function srcAdvice(b, lk) {
   const note = String(b.note || '').trim(), ex = exRawFor(b, lk);
-  return [b.redo && b.redo !== '-' ? `재설계 제안: ${b.redo}` : '', ex ? `언어별 메모: ${ex}` : '', note && note !== '-' ? `비고: ${note}` : ''].filter(Boolean).join(' / ');
+  /* 임시: 카드 모델 전까지 재설계 제안도 언어 조각으로 거름 */
+  const rd = langSegs(b.redo, lk).join(' / ');
+  return [rd ? `재설계 제안: ${rd}` : '', ex ? `언어별 메모: ${ex}` : '', note && note !== '-' ? `비고: ${note}` : ''].filter(Boolean).join(' / ');
 }
 function baseRows(t) {
   if (!srcHas(t)) return [];
@@ -2742,7 +2743,7 @@ function srcTableBlock(t, lk) {
 - 분류가 틀렸다고 보면 고치지 말고 비고에 ‘분류 이견: (이유)’를 쓴다.
 - 판단할 수 없는 줄은 추측하지 말고 비고를 ‘REVIEW: (판단이 필요한 부분)’으로 시작한다.
 - ‘핵심 의미·단어 해석’은 사람이 승인한 원문 해석이다. ‘관계’(주체 → 대상 : 행동)의 주체와 대상을 바꾸지 않는다. 다의어는 이 해석대로 번역하고, 이견이 있으면 검수 주의사항에 ‘해석 이견: (이유)’를 쓴다.
-${tsv(['ID', '파일', '화면', '요소', '원문', '유형', '핵심 의미·단어 해석', '분류', '번역 시 주의점', '분석 제안', '길이 한도', '게임 역할', '조작', '공유 대상'], rows.map(b => { const c = langCls(b, lk), lm = limOf(lk, { ko: b.ko, b }), oo = opOf(t, { ko: b.ko, b }); return [b.id, b.file, b.screen, b.elem, b.ko.replace(/\n/g, ' / '), b.type, [b.core, b.rel ? `관계: ${b.rel}` : '', b.sense ? `단어: ${b.sense}` : ''].filter(Boolean).join(' / '), c.cls ? CLS[c.cls] : '', [b.rep ? `${b.rep}번 반복되는 문구 (파일: ${b.file}) · 모든 화면 같은 번역` : '', b.care, c.why && c.why !== '-' ? `근거: ${c.why}` : '', b.cult ? `문화적 배경: ${b.cult}` : ''].filter(x => x && x !== '-').join(' / '), srcAdvice(b, lk) || '-', lm ? `${lm.n}자${lm.hard ? ' (칸)' : ''}` : '', b.role || '-', oo && oo.op ? `${oo.op.id} → ${((oo.op.fix || {})[lk] || []).join('/') || '-'}` : '-', b.share || '-']; }))}
+${tsv(['ID', '파일', '화면', '요소', '원문', '유형', '핵심 의미·단어 해석', '분류', '번역 시 주의점', '분석 제안', '길이 한도', '게임 역할', '조작', '공유 대상'], rows.map(b => { const c = langCls(b, lk), lm = limOf(lk, { ko: b.ko, b }), oo = opOf(t, { ko: b.ko, b }); return [b.id, b.file, b.screen, b.elem, b.ko.replace(/\n/g, ' / '), b.type, [b.core, b.rel ? `관계: ${b.rel}` : '', b.sense ? `단어: ${b.sense}` : ''].filter(Boolean).join(' / '), c.cls ? CLS[c.cls] : '', [b.rep ? `${b.rep}번 반복되는 문구 (파일: ${b.file}) · 모든 화면 같은 번역` : '', b.care, langSegs(c.why, lk).length ? `근거: ${langSegs(c.why, lk).join(' / ')}` : '', b.cult ? `문화적 배경: ${b.cult}` : ''].filter(x => x && x !== '-').join(' / '), srcAdvice(b, lk) || '-', lm ? `${lm.n}자${lm.hard ? ' (칸)' : ''}` : '', b.role || '-', oo && oo.op ? `${oo.op.id} → ${((oo.op.fix || {})[lk] || []).join('/') || '-'}` : '-', b.share || '-']; }))}
 ${answersBlock(t, 'translate')}`;
 }
 function answersBlock(t, mode) {
