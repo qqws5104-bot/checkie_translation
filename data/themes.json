@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T06:06:40.774Z",
+    "updatedAt": "2026-11-16T06:07:02.823Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -14696,8 +14696,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
                 "text": "[기획 확인] 철자 대상 명시: The old man in the red suit is ( ) Claus. Ribbit!",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:54.185Z"
               }
             ],
             "bt": [
@@ -15236,8 +15238,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
                 "text": "[기획 확인] 화면 확인: 연잎 칸 길이 초과 가능. S133 → outside, S134 → inside, S074 → army song 권장. S058·S118은 두 줄 배치 또는 문장 재구성 [기획 확인]",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:48.103Z"
               }
             ],
             "bt": [
@@ -15346,8 +15350,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
                 "text": "[기획 확인] 화면 확인: 연잎 칸 길이 초과 가능. S133 → outside, S134 → inside, S074 → army song 권장. S058·S118은 두 줄 배치 또는 문장 재구성 [기획 확인]",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:49.338Z"
               }
             ],
             "bt": [
@@ -15593,8 +15599,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
                 "text": "[기획 확인] 빈칸을 Home 자리로: A famous Christmas movie is ( ) Alone. Ribbit! / S144 → Home",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:49.990Z"
               }
             ],
             "bt": [
@@ -15764,8 +15772,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
                 "text": "[기획 확인] 빈칸을 Home 자리로: A famous Christmas movie is ( ) Alone. Ribbit! / S144 → Home",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:50.633Z"
               }
             ],
             "bt": [
@@ -16052,8 +16062,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
                 "text": "[기획 확인] 라운드 공통(개구리 규칙): 청개구리 반대 선택 규칙 여부와 가운데 흰 버튼 역할 확정. 반대 규칙이면 영어 규칙 설명에 명시 필요(영어 frog에는 ‘반대로 하기’ 뜻 없음)",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:07:02.801Z"
               },
               {
                 "id": "gk6lqu",
@@ -16061,8 +16073,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
                 "text": "[기획 확인] Ribbit 표기 전체: 용어집 표기 ‘ribbit!’(원문처럼 쉼표 뒤 소문자)와 현재 29줄의 ‘. Ribbit!’ 중 하나로 통일. 문장부호(! / .)도 통일",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:07:02.320Z"
               }
             ]
           },
@@ -16072,136 +16086,166 @@
                 "id": "i3eseg",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "plan",
                 "text": "[퍼즐] Q01 round3_1_jp.png (S002, S003, S004) · 풀이 가능성 확인 필요 — S002: 남반구 방문객에게는 summer도 사실이 되어 풀이가 흔들릴 수 있음 .",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:51.259Z"
               },
               {
                 "id": "lu32he",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "puzzle",
                 "text": "[퍼즐] Q06 round3_6_jp.png (S027, S028, S029) · 조합 관계 확인 필요 — S027: ‘month numbered ( )’가 어색함. S029(12)가 Q17·Q28 날짜 선택지와 공유되어 월 이름으로 바꾸면 조합이 깨지므로 숫자 유지 필요.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:51.973Z"
               },
               {
                 "id": "229omo",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "puzzle",
                 "text": "[퍼즐] Q07 round3_7_jp.png (S032, S033, S034) · 조합 관계 문제 — S034: ‘pulled by donkey.’로 관사 없이 들어가 문장이 성립하지 않음 → donkeys.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:52.581Z"
               },
               {
                 "id": "mchrzb",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "puzzle",
                 "text": "[퍼즐] Q12 round3_12_jp.png (S057, S058, S059) · 정답 보존 확인 필요, 풀이 가능성 확인 필요 — S057: gives는 ‘아이들이 선물을 받는 때’로 읽혀 크리스마스 아침에 선물을 여는 미국 방문객에게 오답(in the morning)이 그럴듯해짐 → delivers. S058 길이 확인.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:53.636Z"
               },
               {
                 "id": "7uz387",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "puzzle",
                 "text": "[퍼즐] Q14 round3_14_jp.png (S067, S068, S069) · 정답 보존 문제, 풀이 가능성 문제, 단서 보존 문제 — S067: ‘울리는 것’이 빠지고 may hear가 들어가 ‘북소리를 들을 수도 있다’도 참이 됨 → 정답이 하나로 정해지지 않음. ringing 복원 필요.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:55.059Z"
               },
               {
                 "id": "y70g98",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "plan",
                 "text": "[퍼즐] Q18 round3_18_jp.png (S087, S088, S089) · 언어유희 확인 필요 — S087: ‘is called Eve’보다 ‘Christmas ( )’ 형태가 자연스럽고 ‘Christmas Adam’ 영어권 농담과 연결되어 아담/이브 말장난이 더 살아남.  문장 앞에 Christmas 추가 제안.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:55.668Z"
               },
               {
                 "id": "p5uz29",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "plan",
                 "text": "[퍼즐] Q19 round3_19_jp.png (S092, S093, S094) · 언어유희 확인 필요 — 원문 ‘메리’는 비서 메리 이름과 겹치는 말장난일 수 있음. 영어판 비서 이름을 Merry로 하면 Merry + Chris×Mas 말장난이 유지됨(이 표에는 비서 이름 줄이 없어 확인 필요).",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:56.178Z"
               },
               {
                 "id": "zr96ve",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "plan",
                 "text": "[퍼즐] Q20 round3_20_jp.png (S097, S098, S099) · 단서 보존 문제, 언어유희 문제 — S097: 노래 인용(Jingle Bells 한국어 가사)이 일반 문장으로 바뀌어 ‘노래 가사를 완성한다’는 단서가 사라짐.  영어 원곡 가사 Dashing through the ( ) 제안.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:56.503Z"
               },
               {
                 "id": "l5a0ve",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "plan",
                 "text": "[퍼즐] Q21 round3_21_jp.png (S102, S103, S104) · 단서 보존 확인 필요, 언어유희 확인 필요 — S102: ~♬가 빠져 노래 문제라는 단서 약화.  영어 원곡 가사(had a very shiny nose) 사용 여부는 저작권 확인 필요.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:57.336Z"
               },
               {
                 "id": "bkma1w",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "puzzle",
                 "text": "[퍼즐] Q22 round3_22_jp.png (S107, S108, S109) · 풀이 가능성 확인 필요 — S109: Noel 인지도가 비원어민 방문객에게 낮을 수 있음. Halloween 오답 현지화는 적절.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:57.734Z"
               },
               {
                 "id": "fmy53e",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "puzzle",
                 "text": "[퍼즐] Q23 round3_23_jp.png (S112, S113, S114) · 단서 보존 확인 필요 — S112: Santa's Village는 미국 테마파크 이름과 같아 혼동 가능 → 공식 명칭 Santa Claus Village.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:58.057Z"
               },
               {
                 "id": "iketwe",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "plan",
                 "text": "[퍼즐] Q25 round3_25_jp.png (S122, S123, S124) · 정답 보존 확인 필요, 풀이 가능성 확인 필요, 단서 보존 문제 — S122: 무엇의 철자인지 빠져 Santa·Satan 둘 다 ‘올바른 철자’가 됨. Santa/Satan 철자 장난 자체는 유지.  ‘The old man in the red suit is ( ) Claus.’ 제안.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:58.941Z"
               },
               {
                 "id": "ysrb87",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "plan",
                 "text": "[퍼즐] Q26 round3_26_jp.png (S127, S128, S129) · 단서 보존 문제, 언어유희 문제 — S127: 원문에 없는 quiet가 정답 silent를 미리 알려 주고(noisy and quiet는 모순), 노래 인용(고요한 밤 거룩한 밤)이 사라짐.  ‘( ) night, holy night ~♪’ 제안.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:59.584Z"
               },
               {
                 "id": "9dytec",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "puzzle",
                 "text": "[퍼즐] Q29 round3_29_jp.png (S142, S143, S144) · 정답 보존 확인 필요, 언어유희 문제, 조합 관계 문제 — S142·S144: 빈칸을 Alone 자리로 옮겨 원문 정답 ‘집에’(Home)가 Alone으로 바뀌고 ‘집 vs 여행’ 대비가 ‘혼자 vs 여행’이 됨. 제목 완성으로는 풀림. ‘( ) Alone’ + Trip/Home으로 바꾸면 원문 대응 복원.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:07:00.472Z"
               },
               {
                 "id": "7ts2ss",
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
-                "done": false,
+                "done": true,
                 "kind": "plan",
                 "text": "[퍼즐] 라운드 공통: 개구리 진행자·가운데 흰 버튼 (S001~S149 전체) · 정답 보존 확인 필요, 풀이 가능성 확인 필요, 단서 보존 확인 필요, 언어유희 확인 필요 — 진행자가 ‘개굴!’ 하는 초록 개구리라 ‘청개구리(반대로 하기)’ 규칙일 가능성이 있음. 한국어에서는 청개구리=반대로 행동한다는 관용 의미가 단서가 되지만, 영어 frog/Ribbit에는 그런 의미가 없어 영어권 방문객은 반대 규칙을 개구리에서 짐작할 수 없다. 반대 규칙이라면 규칙 설명 화면(영어)에 명시해야 함. 가운데 흰 버튼의 역할도 화면만으로 확인 불가. 상단 빨강·초록 진행 바로 보아 2인 대결형이며 1P·2P 정보 분리는 없는 것으로 보임.",
-                "addedBy": "김예은"
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:07:01.721Z"
               }
             ]
           }
