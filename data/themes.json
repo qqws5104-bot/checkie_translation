@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T07:12:11.996Z",
+    "updatedAt": "2026-11-16T07:12:15.757Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -15749,10 +15749,7 @@
             }
           },
           "S134": {
-            "ok": [
-              "srcSuffix",
-              "gram"
-            ],
+            "ok": [],
             "bt0": {
               "t": "집 안",
               "amb": "",
@@ -15773,52 +15770,10 @@
                 "doneAt": "2026-11-16T06:06:49.338Z"
               }
             ],
-            "bt": [
-              "집 안"
-            ],
-            "gl": "inside the house = 집 안",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "inside",
-              "why": "S133과 같은 길이 문제다. inside로 줄이면 ‘Look inside, look inside!’로 문장이 성립하고 outside와 짝이 맞는다. 화면 확인 후 S133과 함께 결정한다.",
-              "at": "2026-11-16T06:06:08.041Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 일치; 행동: 일치; 대상: 일치; 문맥: 16글자라 연잎 칸에 들어가지 않을 가능성이 매우 큼; 말투: 해당 없음",
-              "trh": "iuun5a6v35s6g",
-              "err3": [
-                "맥락 오류"
-              ],
-              "plan": true
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -15858,7 +15813,85 @@
                 "by": "검수 AI",
                 "at": "2026-11-16T06:06:08.042Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-16T07:12:15.734Z",
+                "by": "김예은",
+                "from": "inside the house",
+                "ratFrom": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "집 안",
+                  "sense": "Inside: 안쪽/내부 → 집의 내부",
+                  "reason": "집 안쪽이라는 위치를 뜻하는 inside the house를 사용했다.",
+                  "redo": "",
+                  "wmap": "집 안 → inside the house = 집 안",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "S133과 같은 길이 문제다. inside로 줄이면 ‘Look inside, look inside!’로 문장이 성립하고 outside와 짝이 맞는다. 화면 확인 후 S133과 함께 결정한다.",
+                  "fix": "inside",
+                  "exc": "",
+                  "bt": "집 안",
+                  "gl": "inside the house = 집 안",
+                  "at": "2026-11-16T06:06:08.041Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "inside",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "안",
+                  "sense": "",
+                  "reason": "outside와 짝 / ‘집’ 생략",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "‘집’ 생략",
+                  "by": "김예은",
+                  "at": "2026-11-16T07:12:15.734Z"
+                }
+              }
+            ],
+            "tr": "inside",
+            "hv": null,
+            "pick": {
+              "k": "수정",
+              "tr": "inside",
+              "mean": "안",
+              "rec": "수정",
+              "recTr": "inside",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-16T07:12:15.734Z",
+              "trh": "1o6qw8t1uy9xbz8",
+              "from": "검수 AI"
+            }
           },
           "S137": {
             "ok": [
