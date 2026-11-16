@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-16T06:06:30.706Z",
+    "updatedAt": "2026-11-16T06:06:35.491Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -13084,8 +13084,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-16T06:06:08.039Z",
                 "text": "[기획 확인] The day before Christmas is called Christmas ( ). Ribbit! (Christmas Adam 말장난과 연결)",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-16T06:06:35.468Z"
               }
             ],
             "bt": [
