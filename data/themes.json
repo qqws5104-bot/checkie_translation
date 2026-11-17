@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-17T01:46:24.230Z",
+    "updatedAt": "2026-11-17T01:48:15.986Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -12569,7 +12569,8 @@
           "S068": {
             "ok": [
               "srcSuffix",
-              "ratIntent"
+              "ratIntent",
+              "xcmp"
             ],
             "bt0": {
               "t": "종",
