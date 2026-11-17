@@ -725,6 +725,13 @@ h1 { font-size: 22px; }
 .resetdlg h2 { font-size: 19px; }
 .reset-box { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; display: grid; gap: 6px; font-size: 15px; }
 .reset-box p { margin: 0; }
+.frlangs { display: grid; gap: 6px; }
+.frlangs label { display: flex; gap: 10px; align-items: flex-start; justify-content: flex-start; text-align: left; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 14.5px; margin: 0; }
+.frlangs label > span { flex: 1; min-width: 0; }
+.frlangs input[type=checkbox] { width: 18px; height: 18px; min-height: 0; flex: none; margin: 2px 0 0; padding: 0; }
+.frlangs small { display: block; }
+.frlangs small { color: var(--muted); }
+#fr-confirm { width: 100%; margin-top: 4px; }
 .btn.danger-fill { background: var(--warn); border-color: var(--warn); color: #fff; font-weight: 700; }
 .xextra { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
 .xpri { border: 2px solid var(--accent); border-radius: 10px; padding: 10px 12px; display: grid; gap: 6px; }
@@ -955,6 +962,21 @@ a.btn { text-decoration: none; display: inline-flex; align-items: center; }
 <dialog id="imgdlg" class="wide imgdlg">
   <div class="fstack"><p id="img-cap" style="margin:0"></p><img id="img-view" alt="원본 캡처"><div class="row"><button type="button" class="btn primary" data-close>닫기</button></div></div>
 </dialog>
+<dialog id="fullresetdlg" class="resetdlg" aria-labelledby="fr-title">
+  <div class="fstack">
+    <h2 id="fr-title">번역 기록 전체 리셋</h2>
+    <div class="frlangs" id="fr-langs" role="group" aria-label="리셋할 언어"></div>
+    <div class="reset-box">
+      <p><b>지워지는 것</b> · 고른 언어의 번역, 검수, 승인, 수정 이력, 사람 번역 비교, 퍼즐 확인, 진행 단계, 올린 번역 엑셀</p>
+      <p><b>남는 것</b> · 원문 분석, 게임 이해, 게임 정보, 용어집, 금지 짝, 리셋 기록(누가 언제)</p>
+      <p><b>순서</b> · ① 이 게임 백업 파일 자동 다운로드 → ② 리셋</p>
+      <p><b>되돌리기</b> · 대표 관리자가 ‘회원 관리 → 운영 점검 → 백업으로 되돌리기’에 그 백업 파일을 올림 (이 게임만 되돌아감)</p>
+    </div>
+    <label class="sb" for="fr-confirm">확인을 위해 게임 이름 <b id="fr-name"></b> 입력</label>
+    <input id="fr-confirm" autocomplete="off" spellcheck="false">
+    <div class="row"><button type="button" class="btn" data-close>취소</button><button type="button" class="btn danger-fill" id="fr-yes" disabled>백업 받고 리셋</button></div>
+  </div>
+</dialog>
 <dialog id="resetdlg" class="resetdlg">
   <div class="fstack">
     <h2 id="reset-title">처음부터 다시?</h2>
@@ -976,11 +998,12 @@ a.btn { text-decoration: none; display: inline-flex; align-items: center; }
   </form>
 </dialog>
 <dialog id="purgedlg"><h2>자료 삭제 예정 알림</h2><p class="sb">전체 완료 후 30일이 지나면 게임 정보만 남기고 엑셀·이미지·검수 기록을 지움. 필요한 파일은 미리 받아 두기.</p><ul id="purge-list" class="purge-list"></ul><div class="iacts"><button type="button" class="btn primary" id="purge-close">확인</button></div></dialog>
-<dialog id="restoredlg"><h2>백업으로 되돌리기</h2><p id="restore-sum" class="sb"></p><p>지금의 게임·용어집·폰트 목록이 이 백업으로 <b>모두 바뀜</b>. 지금 상태는 GitHub 기록에 남음. 진행할까요?</p><div class="iacts"><button type="button" class="btn" id="restore-no">아니요</button><button type="button" class="btn danger" id="restore-yes">예, 되돌리기</button></div></dialog>
+<dialog id="restoredlg"><h2>백업으로 되돌리기</h2><p id="restore-sum" class="sb"></p><p id="restore-warn">지금의 게임·용어집·폰트 목록이 이 백업으로 <b>모두 바뀜</b>. 지금 상태는 GitHub 기록에 남음. 진행할까요?</p><div class="iacts"><button type="button" class="btn" id="restore-no">아니요</button><button type="button" class="btn danger" id="restore-yes">예, 되돌리기</button></div></dialog>
 <script src="merge.js"></script>
 <script src="retention.js"></script>
 <script src="puzzle.js"></script>
 <script src="rules.js"></script>
+<script src="reset.js"></script>
 <script src="store.js"></script>
 
 <script>
@@ -1198,7 +1221,7 @@ function cardHTML({ id, data: t }) {
 
 
   ${readOnly ? '' : `<div class="dangerzone">${armedDelete === 'game:' + id
-    ? `<span>이 게임 카드를 삭제?? 용어집은 남음.</span><button type="button" class="btn danger" id="game-del-yes">삭제</button><button type="button" class="btn" id="game-del-no">취소</button>`
+    ? `<span>이 게임 카드를 삭제? 용어집은 남음.</span><button type="button" class="btn danger" id="game-del-yes">삭제</button><button type="button" class="btn" id="game-del-no">취소</button>`
     : `<button type="button" class="btn danger" id="game-del">이 게임 삭제</button>`}</div>`}`;
 }
 
@@ -4693,7 +4716,7 @@ function workHTML({ id, data: t }) {
     ${Retention.isOff(t, lk) ? langOffHTML(id, t, lk) : `${memoBannerHTML(t, lk)}${fileMemoBannerHTML(t, lk)}
     <ol class="checklist">${items}</ol>
     ${filesBoxHTML(id, t, lk, F)}`}
-    <div class="gfoot"><button type="button" class="btn ghost" id="gp-open">용어집</button><span class="spacer"></span>${readOnly ? '' : `<button type="button" class="btn ghost reset" data-reset title="이 언어의 엑셀·검수·확인 기록을 지우고 처음부터 시작">${esc(L.label)} 처음부터 다시</button>`}</div>`;
+    <div class="gfoot"><button type="button" class="btn ghost" id="gp-open">용어집</button><span class="spacer"></span>${readOnly ? '' : `<button type="button" class="btn ghost reset" data-reset title="이 언어의 엑셀·검수·확인 기록을 지우고 처음부터 시작">${esc(L.label)} 처음부터 다시</button>`}${!readOnly && meNow && meNow.isAdmin ? '<button type="button" class="btn ghost reset" id="fullreset-open" title="관리자: 고른 언어의 번역 기록을 백업 받은 뒤 모두 지움">번역 기록 전체 리셋</button>' : ''}</div>`;
 }
 /* 자료실: 누구나 받아 볼 수 있게 */
 function filesBoxHTML(id, t, lk, F) {
@@ -6589,13 +6612,56 @@ function opsHTML() {
     <div class="iacts"><a class="btn" href="/api/admin/backup" download>백업 받기</a>${meNow.isOwner ? '<label class="btn upl">백업으로 되돌리기<input type="file" hidden id="restore-file" accept=".json"></label>' : ''}</div>
     <p class="hint">백업 = 게임·용어집·폰트 목록. 큰 작업 전에 받아 두기. 이미지·엑셀 파일은 GitHub data 브랜치 기록에 남음.</p></div>`;
 }
+/* ---- 관리자: 게임 번역 기록 전체 리셋 (언어별) ---- */
+function frRender() {
+  const t = (themes.find(x => x.id === gameId) || {}).data || {};
+  $('#fr-title').textContent = `${t.name || '(이름 없음)'} · 번역 기록 전체 리셋`;
+  $('#fr-name').textContent = `‘${t.name || ''}’`;
+  $('#fr-langs').innerHTML = LANGS.map(l => { const m = Reset.summary(t, l.key); return `<label><input type="checkbox" value="${l.key}"${m.empty ? ' disabled' : ''}><span><b>${l.label}</b> <small>${m.empty ? '기록 없음' : `번역 ${m.rows}줄 · 검수 ${m.reviewed} · 승인 ${m.approved} · 수정 이력 ${m.edited} · 사람 번역 ${m.human}`}</small></span></label>`; }).join('');
+  $('#fr-confirm').value = ''; frCheck();
+}
+function frPicked() { return [...document.querySelectorAll('#fr-langs input:checked')].map(x => x.value); }
+function frCheck() { const t = (themes.find(x => x.id === gameId) || {}).data || {}; $('#fr-yes').disabled = !(frPicked().length && Reset.nameOk(t, $('#fr-confirm').value)); }
+document.addEventListener('input', e => { if (e.target.id === 'fr-confirm') frCheck(); });
+document.addEventListener('change', e => { if (e.target.closest('#fr-langs')) frCheck(); });
+document.addEventListener('click', async e => {
+  if (e.target.closest('#fullreset-open')) { if (!meNow || !meNow.isAdmin) return; frRender(); $('#fullresetdlg').showModal(); $('#fullresetdlg [data-close]').focus(); return; }
+  if (!e.target.closest('#fr-yes')) return;
+  const id = gameId, langs = frPicked(), typed = $('#fr-confirm').value, t = (themes.find(x => x.id === id) || {}).data || {};
+  if (!langs.length || !Reset.nameOk(t, typed)) return;
+  $('#fullresetdlg').close();
+  try {
+    if (window.Store && Store.flush) await Store.flush();   // 아직 안 보낸 내 변경을 먼저 저장 (리셋 뒤에 옛 기록이 다시 올라가지 않게)
+    busy('① 이 게임 백업 받는 중…');
+    const br = await fetch(`/api/admin/reset-backup?game=${encodeURIComponent(id)}&langs=${langs.join(',')}`, { credentials: 'same-origin', cache: 'no-store' });
+    if (!br.ok) { const j = await br.json().catch(() => ({})); done(); toast(j.message || '백업을 받지 못해 리셋하지 않음.', 6000); return; }
+    const blob = await br.blob(), fn = ((br.headers.get('Content-Disposition') || '').match(/filename="([^"]+)"/) || [, `checkie_reset_backup_${id}.json`])[1];
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = decodeURIComponent(fn); document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    busy('② 리셋 중…');
+    const r = await fetch('/api/admin/reset', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ game: id, langs, confirm: typed }) });
+    const j = await r.json().catch(() => ({})); done();
+    if (!r.ok) { toast(j.message || '리셋하지 못함.', 6000); return; }
+    if (window.Store && Store.reload) await Store.reload('themes');
+    langs.forEach(lk => { delete viewStep[id + ':' + lk]; });
+    delete gameFiles[id]; rvTab = 'auto'; render(true);
+    toast(`${langs.map(lk => LANGS.find(l => l.key === lk).label).join('·')} 번역 기록을 지움. 백업 파일 받음. 번역 엑셀 ${j.removed.length}개 삭제${j.failed.length ? ` · 삭제 실패 ${j.failed.length}개(${j.failed.join(', ')}) — 자료 탭에서 직접 지우기` : ''}.`, 8000);
+  } catch (err) { done(); toast(err.message || '리셋하지 못함.', 6000); }
+});
+
 let restoreData = null;
 document.addEventListener('change', async e => {
   if (e.target.id !== 'restore-file' || !e.target.files[0]) return;
   const f = e.target.files[0]; e.target.value = '';
   try { restoreData = JSON.parse(await f.text()); } catch { toast('백업 파일을 읽지 못함.'); return; }
+  if (restoreData.kind === 'checkie-game-backup') {
+    if (!meNow || !meNow.isOwner) { restoreData = null; toast('게임 백업 되돌리기는 대표 관리자만 할 수 있음.'); return; }
+    $('#restore-sum').textContent = `${fmtDate(restoreData.at)} 게임 백업 (${restoreData.by || ''}) · 게임 ‘${restoreData.name || restoreData.game}’만 백업 시점으로 되돌림 · 번역 엑셀 ${Object.keys(restoreData.files || {}).length}개 · 다른 게임은 그대로`;
+    $('#restore-warn').innerHTML = '이 게임의 지금 내용이 백업 시점으로 <b>바뀜</b> (리셋 뒤에 새로 한 작업도 사라짐). 지금 상태는 GitHub 기록에 남음. 진행할까요?';
+    $('#restoredlg').showModal(); return;
+  }
   if (restoreData.kind !== 'checkie-backup') { restoreData = null; toast('이 사이트의 백업 파일이 아님.'); return; }
   const n = k => Object.keys(restoreData[k] || {}).length;
+  $('#restore-warn').innerHTML = '지금의 게임·용어집·폰트 목록이 이 백업으로 <b>모두 바뀜</b>. 지금 상태는 GitHub 기록에 남음. 진행할까요?';
   $('#restore-sum').textContent = `${fmtDate(restoreData.at)} 백업 (${restoreData.by || ''}) · 게임 ${n('themes')}개 · 용어 ${n('terms')}개 · 폰트 ${n('fonts')}개`;
   $('#restoredlg').showModal();
 });

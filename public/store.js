@@ -164,6 +164,8 @@
       return j.users || [];
     },
     adminAction: (id, action, extra) => post('/api/admin/users/' + encodeURIComponent(id), Object.assign({ action }, extra || {})),
+    /* 서버 최신본 다시 받기 (관리자 리셋 뒤) */
+    reload: col => load(col),
     pending: () => Object.values(stores).some(s => s.dirty.size || s.deleted.size || s.saving),
     /* 기다리지 않고 바로 저장 */
     async flush() {
