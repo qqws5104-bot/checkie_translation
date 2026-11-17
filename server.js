@@ -280,6 +280,7 @@ const MEDIA = { xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheet
 /* ---------- 게임 자료 파일 저장 (GitHub data 브랜치) ---------- */
 const FILE_RE = /^[\p{L}\p{N}_.-]{1,100}\.(png|jpe?g|webp|pdf|xlsx)$/iu;
 const FONT_RE = /^[\p{L}\p{N}_.-]{1,100}\.(ttf|otf|woff2?|ttc|zip)$/iu;
+const BAK_DIR = '_resetbak', BAK_DAYS = 30;   // 리셋 직전 게임 백업 사본 (관리자만, 30일 보관)
 const FONT_DIR = '_fonts';   // 폰트 보관함 (게임 자료가 아님 → 자동 삭제 대상 아님)
 const mediaOf = n => MEDIA[(String(n).match(/\.([a-z0-9]+)$/i) || [, ''])[1].toLowerCase()] || '';
 const fileCache = new Map();   // "게임/이름" → { sha, buf }
@@ -290,6 +291,17 @@ async function listFiles(game, fresh) {
   if (r.status === 404) return [];
   if (!r.ok) throw new Error('자료 목록을 읽지 못함 (' + r.status + ').');
   return ((await r.json()) || []).filter(x => x.type === 'file').map(x => ({ name: x.name, size: x.size, sha: x.sha }));
+}
+/* 리셋 백업 사본 이름: <게임>__<YYYYMMDDTHHMMSS>__<언어-언어>.json */
+function bakMeta(name) {
+  const m = /^([\w-]+)__(\d{8}T\d{6})__([a-z-]+)\.json$/.exec(String(name || ''));
+  if (!m) return {};
+  const d = m[2];
+  return { game: m[1], at: `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}T${d.slice(9, 11)}:${d.slice(11, 13)}:${d.slice(13, 15)}Z`, langs: m[3].split('-') };
+}
+async function pruneBackups() {
+  const old = Date.now() - BAK_DAYS * 864e5;
+  for (const f of await listFiles(BAK_DIR, true)) { const at = bakMeta(f.name).at; if (at && Date.parse(at) < old) await deleteFile(BAK_DIR, f.name, `리셋 백업 사본 ${BAK_DAYS}일 지나 삭제 · ${f.name}`); }
 }
 async function readFileBuf(game, name) {
   const key = game + '/' + name, c = fileCache.get(key);
@@ -678,10 +690,30 @@ http.createServer(async (req, res) => {
       const names = Reset.filesFor((await listFiles(game, true)).map(f => f.name), langs), files = {};
       for (const n of names) { const b = await readFileBuf(game, n); if (b) files[n] = b.toString('base64'); }
       const at = new Date().toISOString();
+      const out = { kind: 'checkie-game-backup', version: 2, at, by: me.name, game, name: t.name || '', langs, theme: t, files };
+      /* 서버에도 사본 (30일). 저장에 실패하면 리셋도 못 함 */
+      const bakName = `${game}__${at.replace(/[-:]/g, '').replace(/\..*$/, '')}__${langs.join('-')}.json`;
+      try { await writeFileBuf(BAK_DIR, bakName, Buffer.from(JSON.stringify(out)), `리셋 전 백업 사본 · ${game} · ${langs.join(',')} · ${me.name}`); }
+      catch (e) { return send(res, 500, { message: '서버 백업 사본을 저장하지 못해 리셋을 막음. 잠시 뒤 다시 하기. (' + e.message + ')' }); }
+      await pruneBackups().catch(() => {});
       resetBackups.set(`${me.id}|${game}|${langs.join(',')}`, Date.now());
-      const out = { kind: 'checkie-game-backup', version: 1, at, by: me.name, game, name: t.name || '', langs, theme: t, files };
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Disposition': `attachment; filename="checkie_reset_backup_${encodeURIComponent(game)}_${at.slice(0, 16).replace(/[-:T]/g, '')}.json"` });
       return res.end(JSON.stringify(out));
+    }
+    if (p === '/api/admin/reset-backups' && req.method === 'GET') {
+      if (!me || !me.isAdmin) return send(res, 403, { message: '관리자만 할 수 있음.' });
+      await pruneBackups().catch(() => {});
+      return send(res, 200, { days: BAK_DAYS, list: (await listFiles(BAK_DIR, true)).map(f => Object.assign({ name: f.name, size: f.size }, bakMeta(f.name))).filter(x => x.at).sort((a, b) => b.at.localeCompare(a.at)) });
+    }
+    const bm = p.match(/^\/api\/admin\/reset-backups\/([^/]+)$/);
+    if (bm && req.method === 'GET') {
+      if (!me || !me.isAdmin) return send(res, 403, { message: '관리자만 할 수 있음.' });
+      const n = decodeURIComponent(bm[1]);
+      if (!bakMeta(n).at) return send(res, 400, { message: '백업 이름이 올바르지 않음.' });
+      const buf = await readFileBuf(BAK_DIR, n);
+      if (!buf) return send(res, 404, { message: '없는 백업임 (30일이 지나 지워졌을 수 있음).' });
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Disposition': `attachment; filename="checkie_reset_backup.json"; filename*=UTF-8''${encodeURIComponent(n)}` });
+      return res.end(buf);
     }
     if (p === '/api/admin/reset' && req.method === 'POST') {
       if (!me || !me.isAdmin) return send(res, 403, { message: '관리자만 할 수 있음.' });
@@ -689,8 +721,18 @@ http.createServer(async (req, res) => {
       if (!langs) return send(res, 400, { message: '리셋할 언어를 1개 이상 고르기.' });
       const bk = resetBackups.get(`${me.id}|${game}|${langs.join(',')}`);
       if (!bk || Date.now() - bk > 15 * 60000) return send(res, 409, { message: '리셋 직전 백업이 없음. 백업을 먼저 받기 (15분 안).' });
+      const lessons = b.lessons && typeof b.lessons === 'object' ? b.lessons : null;
+      if (!lessons || langs.some(lk => !Array.isArray(lessons[lk]))) return send(res, 400, { message: '사람 번역 비교 교훈을 함께 보내지 않았음. 화면을 새로고침한 뒤 다시 하기.' });
       const files = Reset.filesFor((await listFiles(game, true)).map(f => f.name), langs);
       let bad = '', by = me.name, at = new Date().toISOString();
+      /* 1) 교훈을 언어 프로필로 먼저 옮김 (옮긴 뒤에 리셋) */
+      const moved = {};
+      await writeCol('settings', data => {
+        let prof = data.langprof || {};
+        langs.forEach(lk => { const r = Reset.addLessons(prof, lk, lessons[lk].map(x => Object.assign({}, x, { movedAt: at, movedBy: by }))); prof = r.prof; moved[lk] = r.added; });
+        if (!Object.values(moved).some(n => n)) return false;
+        prof.updatedAt = at; data.langprof = prof;
+      }, `사람 번역 비교 교훈 → 언어 프로필 · ${game} · ${langs.join(',')} · ${me.name}`);
       const c = await writeCol('themes', data => {
         bad = '';
         const t = data[game];
@@ -702,7 +744,7 @@ http.createServer(async (req, res) => {
       resetBackups.delete(`${me.id}|${game}|${langs.join(',')}`);
       const removed = [], failed = [];
       for (const n of files) { try { await deleteFile(game, n, `번역 기록 리셋 · 번역 엑셀 삭제 · ${game}/${n} · ${me.name}`); removed.push(n); } catch { failed.push(n); } }
-      return send(res, 200, { ok: true, langs, removed, failed, data: c.data[game] });
+      return send(res, 200, { ok: true, langs, removed, failed, moved, data: c.data[game] });
     }
     if (p === '/api/admin/restore' && req.method === 'POST') {
       if (!me || !me.isOwner) return send(res, 403, { message: '복구는 대표 관리자만 할 수 있음.' });
@@ -711,10 +753,12 @@ http.createServer(async (req, res) => {
       if (b && b.kind === 'checkie-game-backup') {
         const game = String(b.game || '');
         if (!/^[\w-]+$/.test(game) || !b.theme || typeof b.theme !== 'object' || Array.isArray(b.theme)) return send(res, 400, { message: '게임 백업 파일이 올바르지 않음.' });
-        await writeCol('themes', data => { data[game] = b.theme; }, `게임 백업으로 복구 · ${game} · ${b.at || ''} · ${me.name}`);
+        const langs = Reset.cleanLangs(b.langs);
+        if (!langs) return send(res, 400, { message: '게임 백업에 언어 정보가 없음.' });
+        await writeCol('themes', data => { data[game] = data[game] ? Reset.restoreLangs(data[game], b.theme, langs) : b.theme; data[game].updatedAt = new Date().toISOString(); }, `게임 백업으로 복구(${langs.join('·')}만) · ${game} · ${b.at || ''} · ${me.name}`);
         let nf = 0;
-        for (const [n, d] of Object.entries(b.files || {})) { if (!FILE_RE.test(n)) continue; await writeFileBuf(game, n, Buffer.from(String(d), 'base64'), `게임 백업으로 복구 · ${game}/${n} · ${me.name}`); nf++; }
-        return send(res, 200, { ok: true, restored: [`게임 ‘${b.name || game}’`, `번역 엑셀 ${nf}개`] });
+        for (const [n, d] of Object.entries(b.files || {})) { if (!FILE_RE.test(n) || !Reset.filesFor([n], langs).length) continue; await writeFileBuf(game, n, Buffer.from(String(d), 'base64'), `게임 백업으로 복구 · ${game}/${n} · ${me.name}`); nf++; }
+        return send(res, 200, { ok: true, restored: [`게임 ‘${b.name || game}’ ${langs.map(l => Reset.SHORT[l]).join('·')}`, `번역 엑셀 ${nf}개`] });
       }
       if (!b || b.kind !== 'checkie-backup') return send(res, 400, { message: '이 사이트의 백업 파일이 아님.' });
       const done = [];
@@ -751,6 +795,7 @@ http.createServer(async (req, res) => {
     if (fm) {
       if (!me || !me.canView) return send(res, 401, { message: '로그인이 필요함.' });
       const game = fm[1], fname = fm[2] ? decodeURIComponent(fm[2]) : '';
+      if (game === BAK_DIR) return send(res, 403, { message: '백업은 관리자 메뉴에서만 볼 수 있음.' });
       const isFont = game === FONT_DIR, nameRe = isFont ? FONT_RE : FILE_RE;
       if (fname && (isFont || fname !== 'zip') && !nameRe.test(fname)) return send(res, 400, { message: '파일 이름이 올바르지 않음.' });
       if (req.method === 'GET' && !fname) return send(res, 200, { files: await listFiles(game) });

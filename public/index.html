@@ -968,24 +968,14 @@ a.btn { text-decoration: none; display: inline-flex; align-items: center; }
     <div class="frlangs" id="fr-langs" role="group" aria-label="리셋할 언어"></div>
     <div class="reset-box">
       <p><b>지워지는 것</b> · 고른 언어의 번역, 검수, 승인, 수정 이력, 사람 번역 비교, 퍼즐 확인, 진행 단계, 올린 번역 엑셀</p>
+      <p><b>옮기는 것</b> · 사람 번역 비교 교훈(‘AI 오류’ 판정) → 언어 프로필. 다른 게임 번역에도 계속 들어감</p>
       <p><b>남는 것</b> · 원문 분석, 게임 이해, 게임 정보, 용어집, 금지 짝, 리셋 기록(누가 언제)</p>
-      <p><b>순서</b> · ① 이 게임 백업 파일 자동 다운로드 → ② 리셋</p>
-      <p><b>되돌리기</b> · 대표 관리자가 ‘회원 관리 → 운영 점검 → 백업으로 되돌리기’에 그 백업 파일을 올림 (이 게임만 되돌아감)</p>
+      <p><b>순서</b> · ① 백업 파일 다운로드 + 서버 사본(30일) → ② 교훈 옮기기 → ③ 리셋</p>
+      <p><b>되돌리기</b> · 대표 관리자가 ‘회원 관리 → 운영 점검 → 백업으로 되돌리기’에 그 백업 파일을 올림 (이 게임의 그 언어만 되돌아감)</p>
     </div>
     <label class="sb" for="fr-confirm">확인을 위해 게임 이름 <b id="fr-name"></b> 입력</label>
     <input id="fr-confirm" autocomplete="off" spellcheck="false">
     <div class="row"><button type="button" class="btn" data-close>취소</button><button type="button" class="btn danger-fill" id="fr-yes" disabled>백업 받고 리셋</button></div>
-  </div>
-</dialog>
-<dialog id="resetdlg" class="resetdlg">
-  <div class="fstack">
-    <h2 id="reset-title">처음부터 다시?</h2>
-    <div class="reset-box">
-      <p><b>지워지는 것</b> · 엑셀 내용, 검수 결과, 단계별 확인 기록, 확정 상태</p>
-      <p><b>남는 것</b> · 게임 정보, 올린 원본 엑셀, 리셋 기록(누가 언제)</p>
-    </div>
-    <p class="sb" style="margin:0">되돌릴 수 없음.</p>
-    <div class="row"><button type="button" class="btn" data-close>아니요</button><button type="button" class="btn danger-fill" id="reset-yes">예, 처음부터 다시</button></div>
   </div>
 </dialog>
 <dialog id="pwdlg">
@@ -1004,6 +994,7 @@ a.btn { text-decoration: none; display: inline-flex; align-items: center; }
 <script src="puzzle.js"></script>
 <script src="rules.js"></script>
 <script src="reset.js"></script>
+<script src="cards.js"></script>
 <script src="store.js"></script>
 
 <script>
@@ -1046,6 +1037,11 @@ function termsFor(themeId) { return terms.filter(x => x.data.common || (x.data.g
 function trOf(term, k) { return (term.tr && term.tr[k]) || { text: '', status: '미정', avoid: '', avoidWhy: '' }; }
 const stLabel = st => st === '미정' ? '미입력' : st;
 const stClass = st => st === '확정' ? 'ok' : st === '후보' ? 'cand' : 'empty';
+/* 일본어·중국어 용어집 항목은 ‘근거’가 있어야 씀. 없으면 ‘미확인’ → 프롬프트·자동 검사에 넣지 않음 (영어는 그대로) */
+const TERM_EV_LANGS = ['ja', 'zh'];
+function termEvOk(term, k) { return !TERM_EV_LANGS.includes(k) || !!String(trOf(term, k).ev || '').trim(); }
+function trUse(term, k) { return termEvOk(term, k) ? trOf(term, k) : { text: '', status: '미확인', avoid: '', avoidWhy: '' }; }
+function statusUse(term, k) { const r = trUse(term, k); return r.text ? (r.status === '확정' ? '확정' : '후보') : '미정'; }
 function statusOf(term, k) { const r = trOf(term, k); return r.text ? (r.status === '확정' ? '확정' : '후보') : '미정'; }
 function themeName(id) { const t = themes.find(x => x.id === id); return t ? (t.data.name || '(이름 없음)') : ''; }
 const cur = () => themes.find(t => t.id === gameId);
@@ -1480,8 +1476,8 @@ function toneLines(t, lk) {
 }
 function termLines(gameIdx, lk) {
   const list = termsFor(gameIdx).map(x => x.data).filter(d => d.ko);
-  const keep = list.filter(d => trOf(d, lk).text && statusOf(d, lk) === '확정').map(d => `- ${d.ko} → ${trOf(d, lk).text}${lk === 'zh' && trOf(d, 'en').text ? ` (영어: ${trOf(d, 'en').text})` : ''}`);
-  const avoid = list.filter(d => trOf(d, lk).avoid).map(d => `- ${d.ko}: ‘${trOf(d, lk).avoid}’ 쓰지 말 것${trOf(d, lk).avoidWhy ? ` (${trOf(d, lk).avoidWhy})` : ''}`);
+  const keep = list.filter(d => trUse(d, lk).text && statusUse(d, lk) === '확정').map(d => `- ${d.ko} → ${trUse(d, lk).text}${lk === 'zh' && trUse(d, 'en').text ? ` (영어: ${trUse(d, 'en').text})` : ''}`);
+  const avoid = list.filter(d => trUse(d, lk).avoid).map(d => `- ${d.ko}: ‘${trUse(d, lk).avoid}’ 쓰지 말 것${trUse(d, lk).avoidWhy ? ` (${trUse(d, lk).avoidWhy})` : ''}`);
   return (keep.length ? keep.join('\n') : '- (아직 없음)') + (avoid.length ? '\n' + avoid.join('\n') : '');
 }
 
@@ -2067,15 +2063,28 @@ async function applyHdiff(tables) {
   toast(`차이 판정 ${out.length}줄 반영${bad ? ` · 판정 값이 이상한 ${bad}줄은 버림` : ''}. AI 오류로 판정된 이유는 다음 번역·검수 프롬프트에 들어감.`, 6000);
 }
 /* 지난 비교에서 AI가 틀린 점 → 번역·검수 프롬프트로 (모든 게임, 같은 언어) */
+/* 사람 번역 비교에서 ‘AI 오류’로 판정된 줄 → 교훈 (게임별). 리셋할 때 언어 프로필로 옮김 */
+function lessonsOfGame(g, lk) {
+  let rs = []; try { rs = sheetOf(g.data, lk) ? sheetRowsRaw(g.data, lk) : []; } catch (e) { rs = []; }
+  const out = [];
+  rs.forEach(r => { const pr = hpairOf(r); if (!pr || !r.x.hdiff || r.x.hdiff.k !== hpKey(pr) || r.x.hdiff.v !== 'AI 오류') return; out.push({ k: `${g.id}|${r.id}|${hpKey(pr)}`, g: g.data.name || g.id, id: r.id, ko: r.ko, ai: pr.ai, hu: pr.hu, why: r.x.hdiff.why || '', note: r.x.hdiff.note || r.x.hdiff.sum || '', err: (r.x.hdiff.types || []).join(', '), at: r.x.hdiff.at || '' }); });
+  return out;
+}
+/* 프롬프트에 넣는 교훈 = 지금 게임들의 교훈 + 언어 프로필에 옮겨 둔 교훈 (같은 키는 한 번) */
+function lessonsAll(lk) {
+  const seen = new Set(), all = [];
+  (themes || []).forEach(g => lessonsOfGame(g, lk).forEach(o => { if (!seen.has(o.k)) { seen.add(o.k); all.push(o); } }));
+  ((((langProf || {})[lk] || {}).lessons) || []).forEach(o => { if (o && o.k && !seen.has(o.k)) { seen.add(o.k); all.push(Object.assign({ prof: true }, o)); } });
+  return all;
+}
 function hcmpLessons(t, lk) {
-  const all = [];
-  (themes || []).forEach(g => { let rs = []; try { rs = sheetOf(g.data, lk) ? sheetRowsRaw(g.data, lk) : []; } catch (e) { rs = []; }
-    rs.forEach(r => { const pr = hpairOf(r); if (!pr || !r.x.hdiff || r.x.hdiff.k !== hpKey(pr) || r.x.hdiff.v !== 'AI 오류') return; all.push({ g: g.data.name || g.id, r, pr, d: r.x.hdiff }); }); });
+  const all = lessonsAll(lk).filter(o => o.why);
   if (!all.length) return '';
-  const by = {}; all.forEach(o => (by[o.d.why] = by[o.d.why] || []).push(o));
+  const by = {}; all.forEach(o => (by[o.why] = by[o.why] || []).push(o));
   const top = Object.entries(by).sort((a, b) => b[1].length - a[1].length).slice(0, 5);
+  const one = s => String(s || '').replace(/\n/g, ' ');
   return `# 사람 번역과 비교했을 때 AI가 틀렸던 점 (지난 비교 ${all.length}건 · 같은 실수를 하지 않는다)
-${top.map(([w, L]) => `- ${w} ${L.length}건. 예: ${L.slice(0, 2).map(o => `‘${o.r.ko.replace(/\n/g, ' ').slice(0, 30)}’ AI ‘${o.pr.ai.replace(/\n/g, ' ').slice(0, 40)}’ → 사람 ‘${o.pr.hu.replace(/\n/g, ' ').slice(0, 40)}’${o.d.note ? ` (${o.d.note.slice(0, 60)})` : ''}`).join(' / ')}`).join('\n')}
+${top.map(([w, L]) => `- ${w} ${L.length}건. 예: ${L.slice(0, 2).map(o => `‘${one(o.ko).slice(0, 30)}’ AI ‘${one(o.ai).slice(0, 40)}’ → 사람 ‘${one(o.hu).slice(0, 40)}’${o.note ? ` (${one(o.note).slice(0, 60)})` : ''}`).join(' / ')}`).join('\n')}
 `;
 }
 function hcmpHTML(t, lk, F) {
@@ -2095,7 +2104,7 @@ function hcmpHTML(t, lk, F) {
     ${todo.length ? `<ol class="do"><li><i>1</i><div><button type="button" class="btn primary" data-copy="p-hdiff">차이 판정 프롬프트 복사 <small>${todo.length}줄</small></button> <small class="sb">번역·검수와 다른 AI 새 대화에 붙여 넣고 PNG 첨부</small></div></li>
       <li><i>2</i><div>${readOnly ? '' : `<label class="btn upl primary">받은 엑셀 올리기<input type="file" hidden data-one="one:hdiff" accept="${FILE_ACCEPT}"></label>`}${pasteBtn('one:hdiff', '답 붙여 넣기')}</div></li></ol>
       <details class="more"><summary>프롬프트 보기</summary><pre class="ptext" id="pt-p-hdiff">${esc(hdiffPrompt(t, lk))}</pre></details>` : '<p class="okmsg">다른 줄을 모두 판정함.</p>'}
-    <div class="tprev"><table><thead><tr><th>번호</th><th>한국어 원문</th><th>AI 번역</th><th>사람 번역</th><th>자동 차이</th><th>판정 · 이유</th></tr></thead><tbody>${L.filter(o => !o.same).map(o => `<tr><td><button type="button" class="linkbtn" data-item="${esc(lk)}|${esc(o.r.id)}">${esc(o.r.id)}</button><br><small class="sb">${esc(o.pr.src)}</small></td><td style="white-space:pre-wrap">${esc(o.r.ko)}</td><td style="white-space:pre-wrap">${esc(o.pr.ai)}</td><td style="white-space:pre-wrap">${esc(o.pr.hu)}</td><td><small>${esc(hDiffTxt(o.D))}</small></td><td>${o.hd && o.hd.v === 'AI 오류' && meNow && meNow.isAdmin && !readOnly ? `<details class="more"><summary>금지 짝으로 추가</summary><input data-bpko="${esc(o.r.id)}" placeholder="원문 표현 (예: 올리다)"><input data-bpav="${esc(o.r.id)}" placeholder="쓰지 말 것 (예: return)" value="${esc((o.D && o.D.rm || []).slice(0, 1).join(''))}"><button type="button" class="btn" data-bpadd="${esc(o.r.id)}">추가</button></details>` : ''}${o.hd ? `<span class="vtag ${vtag(o.hd.v)}">${esc(o.hd.v)}</span> <b>${esc(o.hd.why)}</b>${(o.hd.types || []).length ? `<br><small>${esc(o.hd.types.join(', '))}</small>` : ''}${o.hd.note ? `<br><small class="sb">${esc(o.hd.note)}</small>` : ''}${o.hd.gram ? `<br><small class="sb">관사·부사·단복수: ${esc(o.hd.gram)}</small>` : ''}` : '<span class="sb">판정 전</span>'}</td></tr>`).join('')}</tbody></table></div>`}`;
+    <div class="tprev"><table><thead><tr><th>번호</th><th>한국어 원문</th><th>AI 번역</th><th>사람 번역</th><th>자동 차이</th><th>판정 · 이유</th></tr></thead><tbody>${L.filter(o => !o.same).map(o => `<tr><td><button type="button" class="linkbtn" data-item="${esc(lk)}|${esc(o.r.id)}">${esc(o.r.id)}</button><br><small class="sb">${esc(o.pr.src)}</small></td><td style="white-space:pre-wrap">${esc(o.r.ko)}</td><td style="white-space:pre-wrap">${esc(o.pr.ai)}</td><td style="white-space:pre-wrap">${esc(o.pr.hu)}</td><td><small>${esc(hDiffTxt(o.D))}</small></td><td>${o.hd && o.hd.v === 'AI 오류' && meNow && meNow.isAdmin && !readOnly ? `<details class="more"><summary>금지 짝으로 추가</summary><input data-bpko="${esc(o.r.id)}" placeholder="원문 표현 (예: 올리다)"><input data-bpav="${esc(o.r.id)}" placeholder="쓰지 말 것 (예: return)" value="${esc((o.D && o.D.rm || []).slice(0, 1).join(''))}">${TERM_EV_LANGS.includes(lk) ? `<input data-bpwhy="${esc(o.r.id)}" placeholder="근거 (없으면 ‘미확인’ → 안 씀)">` : ''}<button type="button" class="btn" data-bpadd="${esc(o.r.id)}">추가</button></details>` : ''}${o.hd ? `<span class="vtag ${vtag(o.hd.v)}">${esc(o.hd.v)}</span> <b>${esc(o.hd.why)}</b>${(o.hd.types || []).length ? `<br><small>${esc(o.hd.types.join(', '))}</small>` : ''}${o.hd.note ? `<br><small class="sb">${esc(o.hd.note)}</small>` : ''}${o.hd.gram ? `<br><small class="sb">관사·부사·단복수: ${esc(o.hd.gram)}</small>` : ''}` : '<span class="sb">판정 전</span>'}</td></tr>`).join('')}</tbody></table></div>`}`;
 }
 function hpzHTML(t, lk) {
   const P = pzState(t, lk).list.filter(p => p.spec), w = (t.work || {})[lk] || {}, H = w.hpz || {};
@@ -2119,7 +2128,7 @@ document.addEventListener('click', async e => {
   const b = e.target.closest('[data-bpadd]'); if (!b || readOnly) return;
   const id = b.dataset.bpadd, ko = (document.querySelector(`[data-bpko="${CSS.escape(id)}"]`) || {}).value || '', av = (document.querySelector(`[data-bpav="${CSS.escape(id)}"]`) || {}).value || '', lk = promptLang;
   if (!ko.trim() || !av.trim()) { toast('원문 표현과 쓰지 말 것을 모두 쓰기.'); return; }
-  const L = [...(banCfg[lk] || []).filter(p => !(p.ko === ko.trim() && p.avoid === av.trim())), { ko: ko.trim(), avoid: av.trim(), from: `${cur().data.name || ''} ${id}`, by: meName(), at: nowISO() }];
+  const L = [...(banCfg[lk] || []).filter(p => !(p.ko === ko.trim() && p.avoid === av.trim())), { ko: ko.trim(), avoid: av.trim(), from: `${cur().data.name || ''} ${id}`, why: ((document.querySelector(`[data-bpwhy="${CSS.escape(id)}"]`) || {}).value || '').trim(), by: meName(), at: nowISO() }];
   try { await db.doc('settings/banpairs').set(Object.assign({}, banCfg, { [lk]: L })); toast(`금지 짝 추가: ${ko} → ${av}. 다음 번역 프롬프트와 자동 점검에 들어감.`); } catch (err) { writeErr(err); }
 });
 function hcmpSheet(t, lk) {
@@ -2151,11 +2160,15 @@ const issueChipsHTML0 = r => { const L = issuesOf(r); if (!L.length) return ''; 
 const issueChipsHTML = r => { const h = issueChipsHTML0(r), e = err3Txt(r); return h + (e ? `<p class="isschips"><em class="chip critchip" title="${esc(err3Of(r).map(x => `${x.sub} (${x.by}): ${x.msg}`).join(' / '))}">${esc(e)}</em></p>` : ''); };
 /* 다른 게임에서 사람이 승인한 번역 (같은 원문) — 확정 용어·스타일 유지용 */
 let TM_CACHE = { src: null, map: null };
+/* 번역 메모리에는 새 규칙으로 만든 번역만: 규칙 버전 v24 이후 엑셀 + 카드 줄은 카드 모델 승인만(아직 없음 → 제외) */
+const TM_MIN_VER = 24;
+const verNum = v => Number((String(v || '').match(/v(\d+)/) || [])[1] || 0);
+const tmVerOk = v => verNum(v) >= TM_MIN_VER;
 function tmIndex() {
   if (TM_CACHE.src === themes && TM_CACHE.map) return TM_CACHE.map;
   const m = new Map();
-  themes.forEach(g => LANGS.forEach(l => { let rs = []; try { rs = sheetOf(g.data, l.key) ? sheetRowsRaw(g.data, l.key) : []; } catch (e) { rs = []; }
-    rs.forEach(r => { const h = hvOf(r); if (!h || h.v !== '승인') return; const k = l.key + '|' + normKo(r.ko); if (normKo(r.ko).length < 2) return; const L = m.get(k) || []; if (!L.some(y => y.gid === g.id)) L.push({ gid: g.id, name: g.data.name || g.id, tr: r.tr }); m.set(k, L); }); }));
+  themes.forEach(g => LANGS.forEach(l => { let rs = []; const sh = sheetOf(g.data, l.key); if (!sh || !tmVerOk(sh.ver)) return; const cardIds = Cards.rowIds(g.data); try { rs = sheetRowsRaw(g.data, l.key); } catch (e) { rs = []; }
+    rs.forEach(r => { if (cardIds.has(r.id)) return; const h = hvOf(r); if (!h || h.v !== '승인') return; const k = l.key + '|' + normKo(r.ko); if (normKo(r.ko).length < 2) return; const L = m.get(k) || []; if (!L.some(y => y.gid === g.id)) L.push({ gid: g.id, name: g.data.name || g.id, tr: r.tr }); m.set(k, L); }); }));
   TM_CACHE = { src: themes, map: m }; return m;
 }
 const BTC_ITEMS = ['핵심 의미 일치', '행동 및 지시 일치', '조건 및 제한 사항 일치', '숫자 및 고유명사 일치', '정보 누락·임의 추가 없음', '독립 검수와 모순 없음'];
@@ -2211,8 +2224,10 @@ function opOf(t, r, ops) {
   if (r.b && r.b.role && r.b.role !== '조작 지시') return null;
   const hit = ops.filter(o => Rules.opInKo(o, r.ko)); return hit.length === 1 && Rules.IMPER.test(r.ko) ? { op: hit[0], how: '활용형으로 자동 연결' } : null;
 }
-let banCfg = {};
-function banBlock(lk) { const L = banCfg[lk] || []; return L.length ? `# 쓰지 말 것 (사람 번역 비교에서 확인된 금지 짝)\n${L.map(p => `- ${p.ko} → ‘${p.avoid}’ 쓰지 않음${p.note ? ` (${p.note})` : ''}`).join('\n')}\n` : ''; }
+let banCfg = {}, langProf = {};   // langProf: 언어 프로필 (게임과 상관없는 교훈·스타일)
+/* 금지 짝: 일본어·중국어는 근거(why)가 있는 것만 씀. 없으면 ‘미확인’ */
+function banUse(lk) { return (banCfg[lk] || []).filter(p => !TERM_EV_LANGS.includes(lk) || String(p.why || '').trim()); }
+function banBlock(lk) { const L = banUse(lk); return L.length ? `# 쓰지 말 것 (사람 번역 비교에서 확인된 금지 짝)\n${L.map(p => `- ${p.ko} → ‘${p.avoid}’ 쓰지 않음${p.note ? ` (${p.note})` : ''}`).join('\n')}\n` : ''; }
 /* 원문 판독 의심 쌍: 같은 게임에서 원문이 한두 음절만 다름. 사람이 정할 때까지 원문 확정 막음 */
 function nearState(t, rows) {
   const ok = (t.source && t.source.nearOk) || {}, P = Rules.nearPairs(rows), open = P.filter(p => !ok[p.key]);
@@ -2244,7 +2259,7 @@ function autoChecks(t, lk, r, byKo) {
   ((byKo && byKo.SH ? byKo.SH.get(r.id) : null) || []).forEach(m => out.push(['shareTerm', m]));
   if (byKo && byKo.NI && byKo.NI.get(r.id)) out.push(['nearIncons', byKo.NI.get(r.id)]);
   if (byKo && byKo.NEAR && byKo.NEAR.get(r.id)) out.push(['srcNear', byKo.NEAR.get(r.id)]);
-  { const bp = Rules.banHit(lk, banCfg[lk] || [], ko, tr, OPS); if (bp.length) out.push(['banPair', `금지 짝: ${bp.map(p => `${p.ko} → ${p.avoid}`).join(', ')} — 사람 번역 비교에서 확인된 잘못된 단어 선택`]); }
+  { const bp = Rules.banHit(lk, banUse(lk), ko, tr, OPS); if (bp.length) out.push(['banPair', `금지 짝: ${bp.map(p => `${p.ko} → ${p.avoid}`).join(', ')} — 사람 번역 비교에서 확인된 잘못된 단어 선택`]); }
   if (byKo && byKo.CS && byKo.CS.get(r.id)) out.push(['clsSim', `비슷한 문구인데 현지화 분류가 다름 (이 줄 ${r.cls} / ${byKo.CS.get(r.id).slice(0, 3).join(', ')}) — 같은 기능이면 분류를 맞추기`]);
   if (byKo && byKo.MS && byKo.MS.get(r.id)) out.push(['methSim', `비슷한 문구인데 번역 방식이 다름 (이 줄 ${methFinal(r).m} / ${byKo.MS.get(r.id).slice(0, 3).join(', ')}) — 판단 순서(재구성 → 직역 조건 → 의역)로 다시 확인`]);
   if (byKo && byKo.SU && splitFiles(r.file).filter(isFileName).length && !splitFiles(r.file).filter(isFileName).some(f => byKo.SU.has(normId(fileIdOf(f))))) out.push(['uScreen', `번역 AI의 ‘화면 이해’에 이 화면(${splitFiles(r.file)[0]})이 없음 — 게임 이해를 보고 번역했는지 확인`]);
@@ -2316,7 +2331,7 @@ function autoChecks(t, lk, r, byKo) {
   const same = (byKo.get(normKo(ko)) || []).filter(o => o.id !== r.id && normKo(o.tr) !== normKo(tr));
   if (same.length) out.push(['incons', `같은 원문인데 번역이 다름 (${same.map(o => o.id).join(', ')})`]);
   (byKo.TL || termsFor(gidOf(t)).map(v => v.data)).forEach(d => {
-    const tx = trOf(d, lk);
+    const tx = trUse(d, lk);
     if (d.ko && ko.includes(d.ko) && tx.text && statusOf(d, lk) === '확정' && !tr.toLowerCase().includes(tx.text.toLowerCase())) out.push(['term', `용어 ‘${d.ko}’ → ‘${tx.text}’를 안 씀`]);
     if (d.ko && ko.includes(d.ko) && tx.avoid && tr.toLowerCase().includes(tx.avoid.toLowerCase())) out.push(['avoid', `쓰지 말 것 ‘${tx.avoid}’을 씀`]);
   });
@@ -2574,7 +2589,10 @@ async function uploadSource(file) {
   /* 같은 문구는 한 줄로 자동 합침. ‘분리 사유’를 쓴 줄만 따로 둠 */
   /* 틀린 그림 퍼즐의 줄은 띄어쓰기만 달라도 합치지 않음 (차이가 사라짐) */
   const noMerge = new Set(answers.filter(a => a.pzType === 'spot_diff').flatMap(a => [...String(a.refs || '').split(/[,，、\s/]+/), ...Puzzle.rowsOf('spot_diff', a.pzSpec)]).map(x => String(x).trim().toUpperCase()).filter(Boolean));
-  const autoG = dupGroupsOf(rows.filter(r => !SPLIT_RE.test(r.note || '') && !noMerge.has(r.id) && !/틀린\s*그림/.test(r.note || ''))), MR = mergeRows(rows, autoG);
+  /* 카드(문제·선택지) 줄은 같은 문구라도 합치지 않음 → 카드마다 따로 번역 */
+  const tf0 = (themes.find(g => g.id === c.id) || c).data, prevById = new Map((((tf0.source || {}).sheet || {}).rows || []).map(r => [r.id, r]));
+  const cardKo = new Set([...Cards.rowIds(tf0)].map(id => prevById.get(id)).filter(Boolean).map(r => normKo(r.ko)));
+  const autoG = dupGroupsOf(rows.filter(r => !SPLIT_RE.test(r.note || '') && !noMerge.has(r.id) && !cardKo.has(normKo(r.ko)) && !/틀린\s*그림/.test(r.note || ''))), MR = mergeRows(rows, autoG);
   rows.length = 0; MR.rows.forEach(r => rows.push(r));
   const autoN = autoG.length, autoGone = Object.keys(MR.map).length;
   /* 다시 올리면: 같은 ID·같은 원문·같은 분류인 줄은 승인을 이어받음 */
@@ -2646,7 +2664,7 @@ async function mergeDupGroups(gid, groups, auto) {
 }
 /* 원문표에 같은 문구가 여러 줄이면 어느 단계에서든 맨 위에 알림 + 한 번에 합치기 */
 const autoMerged = new Set();
-const openDupGroups = t => { const splitOk = t.source.splitOk || {}; return dupGroupsOf(t.source.sheet.rows).filter(g => !splitOk[Merge.hash(normKo(g[0].ko)).slice(0, 10)] && !g.every(b => SPLIT_RE.test(b.note || ''))); };
+const openDupGroups = t => { const splitOk = t.source.splitOk || {}, cids = Cards.rowIds(t); return dupGroupsOf(t.source.sheet.rows.filter(r => !cids.has(r.id))).filter(g => !splitOk[Merge.hash(normKo(g[0].ko)).slice(0, 10)] && !g.every(b => SPLIT_RE.test(b.note || ''))); };
 function dupBannerHTML(t) {
   if (!srcHas(t)) return '';
   const open = openDupGroups(t);
@@ -2656,6 +2674,35 @@ function dupBannerHTML(t) {
   const n = open.reduce((a, g) => a + g.length, 0);
   return `<div class="ratbox"><b>원문표에 같은 문구 ${open.length}건이 ${n}줄로 반복됨</b> <small class="sb">예: ‘${esc(open[0][0].ko.slice(0, 20))}’ ${open[0].length}줄 (${esc(open[0].map(b => b.id).join(', '))}). 이대로면 번역·검수·승인을 줄마다 반복함. 합치면 이미 받은 번역 표도 같이 정리되고, 화면마다 번역이 달라야 하는 문구는 원문 준비에서 ‘나눈 채로 두기’</small>${readOnly ? '' : `<div class="iacts"><button type="button" class="btn primary" data-srcmerge="@all">모두 한 줄씩으로 합치기</button></div>`}</div>`;
 }
+/* ---- 카드 모델 1단계: 2지선다 카드 (문제·선택지·사람이 정한 정답·정답 위치·유형 태그) ---- */
+function cardsPanelHTML(t) {
+  const rows = (t.source && t.source.sheet && t.source.sheet.rows) || [], L = Cards.listOf(t), st = Cards.stats(t), ko = id => (rows.find(r => r.id === id) || {}).ko || '(원문표에 없음)';
+  const bk = new Set(Cards.broken(t).map(c => c.id)), cd = t.cards || {};
+  return `<details class="more"${L.length ? '' : ''} id="cards-box"><summary>퀴즈 카드 ${L.length ? `${st.n}개 · ${Cards.TAGS.map(k => `${k} ${st.by[k]}`).join(' · ')}${st.needRepl ? ` · <b>대체 카드 필요 ${st.needRepl}</b>` : ''}${st.broken ? ` · <b class="badtxt">원문 줄 없음 ${st.broken}</b>` : ''}` : '없음'}</summary>
+    <p class="sb">2지선다 문제는 카드(문제 + 선택지 2개)로 묶어 번역·검수함. 정답은 <b>사람이 정한 값만</b> 씀 (AI 결과로 바꾸지 않음). 카드 줄은 같은 문구 자동 합치기에서 빠짐. 노래·말장난·문화 카드는 언어마다 상식형 대체 카드가 있어야 출시 가능.</p>
+    ${L.length ? `<div class="tprev"><table><thead><tr><th>카드</th><th>문제</th><th>선택지1</th><th>선택지2</th><th>정답 · 위치</th><th>태그</th><th>정답 입력</th></tr></thead><tbody>${L.map(c => `<tr${bk.has(c.id) ? ' class="badrow"' : ''}><td>${esc(c.id)}</td><td><small>${esc(c.q)}</small> ${esc(ko(c.q))}</td>${c.opts.map((o, i) => `<td${c.answer === i ? ' style="font-weight:700"' : ''}><small>${esc(o)}</small> ${esc(ko(o))}</td>`).join('')}<td>${c.answer + 1}번 · ${c.pos === 'L' ? '왼쪽' : '오른쪽'}</td><td>${esc(c.tag)}${c.tagWhy ? `<br><small>${esc(c.tagWhy)}</small>` : ''}</td><td><small>${esc((c.answerBy || {}).n || '')} ${fmtShort((c.answerBy || {}).at || '')}</small></td></tr>`).join('')}</tbody></table></div>` : ''}
+    ${readOnly ? '' : `<p class="sb">붙여 넣기 형식 (한 줄에 카드 1개, 탭 또는 |): <code>번호 | 문제 | 선택지1 | 선택지2 | 정답(1·2) | 정답 위치(왼쪽·오른쪽, 비우면 정답 번호대로) | 태그(상식·노래·말장난·문화) | 태그 근거</code><br>문제·선택지 칸에는 원문표 줄 번호(S012) 또는 원문 글자. 다시 저장하면 카드 목록 전체가 바뀜.</p>
+      <textarea id="cards-in" rows="5" style="width:100%" placeholder="Q01 | S012 | S013 | S014 | 2 | 오른쪽 | 상식">${esc(cd.raw || '')}</textarea>
+      <p><button type="button" class="btn primary" id="cards-save">카드 저장</button> <span id="cards-err" class="badtxt"></span></p>`}
+  </details>`;
+}
+document.addEventListener('click', async e => {
+  if (!e.target.closest('#cards-save') || readOnly) return;
+  const c = cur(), t = c.data, raw = $('#cards-in').value, rows = (t.source && t.source.sheet && t.source.sheet.rows) || [];
+  if (!rows.length) { toast('원문표를 먼저 올리기.'); return; }
+  const P = Cards.parse(raw, rows);
+  if (P.errors.length) { $('#cards-err').textContent = `저장 안 함 · 고칠 것 ${P.errors.length}개: ${P.errors.slice(0, 4).join(' / ')}${P.errors.length > 4 ? ' …' : ''}`; return; }
+  if (!P.list.length) { $('#cards-err').textContent = '카드가 없음.'; return; }
+  const old = new Map(Cards.listOf(t).map(x => [x.id, x])), at = nowISO(), me = meName();
+  /* 정답이 그대로면 처음 정한 사람 기록을 유지, 바뀌었으면 지금 입력한 사람으로 */
+  const list = P.list.map(x => { const o = old.get(x.id); return Object.assign(x, { answerBy: o && o.answer === x.answer && o.answerBy ? o.answerBy : { n: me, at } }); });
+  const next = JSON.parse(JSON.stringify(t));
+  next.cards = Object.assign({}, next.cards, { list, raw, by: me, at, hist: [...((next.cards || {}).hist || []), { by: me, at, n: list.length }].slice(-30) });
+  next.updatedAt = at;
+  await db.doc('themes/' + c.id).set(next); render(true);
+  const st = Cards.stats(next);
+  toast(`카드 ${st.n}개 저장 · ${Cards.TAGS.map(k => `${k} ${st.by[k]}`).join(' · ')}${st.needRepl ? ` · 대체 카드 필요 ${st.needRepl}` : ''}`, 6000);
+});
 function srcPanelHTML(id, t) {
   const has = srcHas(t), S = srcStats(t), conf = srcConfirmed(t), sg = (t.source && t.source.sign) || {};
   if (!srcRequired(t) && !has) return `<p class="sb">이 게임은 언어별로 원문을 따로 뽑는 예전 방식으로 진행 중임. 원문 기준표로 바꾸려면 아래에서 원문 분석 엑셀을 올리기 (이미 올린 번역은 다시 맞춰야 함).</p>${srcUploadHTML(t)}`;
@@ -2664,7 +2711,8 @@ function srcPanelHTML(id, t) {
   const need = brows.filter(b => b.clsEff === 'B' || b.clsEff === 'C' || b.clsEff === 'R' || /확인\s*필요/.test((b.sense || '') + (b.rel || '')) || Object.keys(b.ex).length || !b.clsEff || (b.x.cls && b.x.cls !== b.cls));
   const dupIds = (t.source && t.source.sheet && t.source.sheet.dupIds) || [], koCnt = {}; brows.forEach(b => { const k = normKo(b.ko); koCnt[k] = (koCnt[k] || 0) + 1; });
   /* 같은 문구 여러 줄: 모두 ‘분리 사유’가 있거나 사람이 확인했으면 해결, 아니면 합칠 후보 (원문 확정 막음) */
-  const dupG = Object.values(brows.reduce((m, b) => { const k = normKo(b.ko); (m[k] = m[k] || []).push(b); return m; }, {})).filter(g => g.length > 1).map(g => ({ key: Merge.hash(normKo(g[0].ko)).slice(0, 10), rows: g }));
+  const cardIds = Cards.rowIds(t);
+  const dupG = Object.values(brows.filter(b => !cardIds.has(b.id)).reduce((m, b) => { const k = normKo(b.ko); (m[k] = m[k] || []).push(b); return m; }, {})).filter(g => g.length > 1).map(g => ({ key: Merge.hash(normKo(g[0].ko)).slice(0, 10), rows: g }));
   const splitOk = (t.source && t.source.splitOk) || {}, dupOpen = dupG.filter(g => !splitOk[g.key] && !g.rows.every(b => /분리\s*사유/.test(b.note || '')));
   const sameKo = dupG.length;
   const aTodo = brows.filter(b => b.clsEff === 'A' && !Object.keys(b.ex).length && !b.x.ok).length;
@@ -2703,6 +2751,7 @@ function srcPanelHTML(id, t) {
       ${need.length ? `<h4 class="mh">사람이 볼 줄 ${need.length}개 <small>B·C·REVIEW·미분류·언어별 예외·다의어 문맥 확인 필요. 분류나 해석이 틀렸으면 고르고 승인</small></h4><div class="ilist">${need.map(card).join('')}</div>` : ''}
       <details class="more"><summary>원문 전체 보기 (${S.n}줄)</summary><div class="tprev"><table><thead><tr><th>ID</th><th>파일</th><th>원문</th><th>유형</th><th>분류</th><th>승인</th></tr></thead><tbody>${brows.map(b => `<tr><td>${esc(b.id)}</td><td>${esc(b.file)}</td><td style="white-space:pre-wrap">${esc(b.ko)}</td><td>${esc(b.type)}</td><td>${esc(b.clsEff || '-')}</td><td>${b.x.ok ? '✓ ' + esc(b.x.ok.by) : ''}</td></tr>`).join('')}</tbody></table></div></details>
       ${ansHTML}
+      ${cardsPanelHTML(t)}
       ${conf ? `<div class="signrow ok"><span class="sg-ok">✓ 원문 확정</span><small>${esc(sg.confirm.by)} · ${fmtDate(sg.confirm.at)}</small>${readOnly ? '' : '<button type="button" class="linkbtn" data-srcsign="confirm" data-off="1">확정 취소</button>'}</div>`
         : readOnly ? '' : `<div class="signrow"><button type="button" class="btn${allOk ? ' primary' : ''}" data-srcsign="confirm" ${allOk ? '' : 'disabled'}>원문 확정</button><small>${allOk ? '확정하면 언어별 번역 프롬프트에 이 원문표가 들어감' : `모든 줄 분류 승인${S.ans.length ? ' + 정답 기준 확인' : ''}${dupIds.length ? ' + 중복 ID 해결' : ''}${dupOpen.length ? ' + 합칠 후보 확인' : ''}을 하면 누를 수 있음 (남은 줄 ${S.todo})`}</small></div>`}` : ''}
     ${!has && !readOnly && !anySheet(t) ? '<p class="sb"><button type="button" class="linkbtn" data-srcskip>원문 준비 없이 예전 방식(언어별로 원문을 뽑음)으로 진행</button></p>' : ''}`;
@@ -2743,7 +2792,7 @@ document.addEventListener('click', async e => {
     const t = cur().data, key = (mg || so).dataset[mg ? 'srcmerge' : 'srcsplitok'];
     if (srcConfirmed(t) && key !== '@all') { toast('원문 확정 상태임. 바꾸려면 먼저 ‘확정 취소’.'); return; }
     const rows0 = t.source.sheet.rows, splitOk = t.source.splitOk || {};
-    const groups = key === '@all' ? dupGroupsOf(rows0).filter(g => !splitOk[Merge.hash(normKo(g[0].ko)).slice(0, 10)] && !g.every(b => SPLIT_RE.test(b.note || ''))) : [rows0.filter(b => Merge.hash(normKo(b.ko)).slice(0, 10) === key)];
+    const groups = key === '@all' ? dupGroupsOf(rows0.filter(r => !Cards.rowIds(t).has(r.id))).filter(g => !splitOk[Merge.hash(normKo(g[0].ko)).slice(0, 10)] && !g.every(b => SPLIT_RE.test(b.note || ''))) : [rows0.filter(b => Merge.hash(normKo(b.ko)).slice(0, 10) === key)];
     const g = groups[0] || []; if (!groups.length || g.length < 2 && key !== '@all') return;
     if (so) { await saveGameField(`source.splitOk.${key}`, { by: meName(), at: nowISO(), ids: g.map(b => b.id) }); render(true); toast('나눈 채로 둠 (화면마다 번역이 다를 수 있는 문구).'); return; }
     await mergeDupGroups(cur().id, groups, false);
@@ -2824,7 +2873,7 @@ function specialTag(t, row) {
 }
 
 /* ================= 번역 프롬프트 = 공통 지시 + AI별 지시 + 게임별 정보 + 언어별 블록 + 이번 작업 ================= */
-const PROMPT_VER = '2026.11-v24';
+const PROMPT_VER = '2026.11-v25';
 const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 
 1. 역할
@@ -4100,7 +4149,7 @@ function termGroups(t, lk, F) {
   const gl = termsFor(gidOf(t)).map(v => v.data).filter(d => d.ko), ut = ((uOf(t) || {}).draft || {}).terms || [];
   F.rows.forEach(r => {
     splitWmap(r.rat && r.rat.wmap).forEach(e => add(e.src, e.src, r, e.tgt, e.mean, '핵심어 대응'));
-    gl.filter(d => r.ko.includes(d.ko)).forEach(d => add(d.ko, d.ko, r, trOf(d, lk).text ? `${trOf(d, lk).text} (용어집)` : '', '', '용어집'));
+    gl.filter(d => r.ko.includes(d.ko)).forEach(d => add(d.ko, d.ko, r, trUse(d, lk).text ? `${trUse(d, lk).text} (용어집)` : '', '', '용어집'));
     ut.filter(d => d.ko && r.ko.includes(d.ko)).forEach(d => add(d.ko, d.ko, r, '', d.mean, '게임 이해'));
   });
   return [...G.values()].filter(g => g.rows.length >= 2).sort((a, b) => b.rows.length - a.rows.length);
@@ -4119,7 +4168,7 @@ function termSheet(t, lk) {
     /* 핵심어 대응에 적은 번역어가 실제 번역문에 없으면 (기록과 번역이 어긋남) */
     const lead = x => (String(x || '').replace(/[（(][^)）]*[)）]/g, '').match(/^[\p{Script=Han}\p{Script=Katakana}ー]+|^[A-Za-z]+|^[\p{Script=Hiragana}]{2,}/u) || [''])[0], off = g.rows.filter(x => x.tgt && !/용어집/.test(x.tgt) && lead(x.tgt) && !x.r.tr.toLowerCase().includes(lead(x.tgt).toLowerCase())).map(x => x.r.id);
     const verdict = off.length ? `확인 필요 — 핵심어 대응에 적은 번역어가 실제 번역문에 없음 (${off.join(', ')})` : tg.length <= 1 ? '일관' : ctxT.length ? '불일치 (맥락 검수 지적)' : g.rows.every(x => x.r.rat && x.r.rat.reason) ? '문맥상 다름 — 이유가 타당한지 확인' : '불일치 의심 — 다르게 쓴 이유 없음';
-    const basis = [verdict, g0 && trOf(g0, lk).text ? `용어집 ${statusOf(g0, lk)}: ${trOf(g0, lk).text}` : '', u0 && u0.rule ? `게임 이해: ${u0.rule}` : '', ...ctxT.slice(0, 2)].filter(Boolean).join('\n');
+    const basis = [verdict, g0 && trUse(g0, lk).text ? `용어집 ${statusUse(g0, lk)}: ${trUse(g0, lk).text}` : '', u0 && u0.rule ? `게임 이해: ${u0.rule}` : '', ...ctxT.slice(0, 2)].filter(Boolean).join('\n');
     const d0 = dec[g.key];
     body.push(['묶음', g.label, `${g.rows.length}곳`, '', '', u0 ? u0.mean : '', '', '', cnt ? `쓰인 번역어: ${cnt}` : '', '', '', '', basis, d0 ? d0.dec : '', d0 ? d0.memo || '' : '']);
     g.rows.forEach(({ r, tgt, mean }) => { const sc = scr(r.file), b = btConfirm(r);
@@ -4574,23 +4623,6 @@ document.addEventListener('click', async e => {
     next.progressBy = { ...(next.progressBy || {}), [lk]: { ...((next.progressBy || {})[lk] || {}), 4: { n: meName(), c: (meNow && meNow.color) || '#5f3dc4', at: nowISO(), forced: true } } };
     await db.doc('themes/' + c.id).set(next); render(true); toast('확정 처리함. 누가 했는지 기록됨.'); return;
   }
-  const rs = e.target.closest('[data-reset]');
-  if (rs) {
-    $('#reset-title').textContent = `${themeName(gameId)} · ${LANGS.find(l => l.key === promptLang).label} 진행을 처음부터 다시?`;
-    $('#resetdlg').showModal(); $('#resetdlg [data-close]').focus(); return;
-  }
-  if (e.target.closest('#reset-yes')) {
-    $('#resetdlg').close();
-    const c = cur(), lk = promptLang, next = JSON.parse(JSON.stringify(c.data)), w = (next.work || {})[lk] || {};
-    next.work = next.work || {};
-    next.work[lk] = { uploads: w.uploads || [], resets: [...(w.resets || []), { by: meName(), at: nowISO() }] };
-    next.progress = { ...(next.progress || {}), [lk]: 0 };
-    next.progressBy = { ...(next.progressBy || {}), [lk]: {} };
-    next.updatedAt = nowISO();
-    await db.doc('themes/' + c.id).set(next);
-    const vk = c.id + ':' + lk; delete viewStep[vk]; rvTab = 'auto';
-    render(true); toast(`${LANGS.find(l => l.key === lk).label} 진행을 처음으로 돌림. 올린 원본 엑셀 기록은 남김.`, 5000); return;
-  }
   const sb = e.target.closest('[data-sign]'), ub = e.target.closest('[data-unsign]'); if (!sb && !ub) return;
   const key = (sb || ub).dataset.sign || (ub && ub.dataset.unsign), val = sb ? { by: meName(), at: nowISO() } : null;
   await saveGameField(key === 'info' ? 'sign.info' : `work.${promptLang}.sign.${key}`, val);
@@ -4716,7 +4748,7 @@ function workHTML({ id, data: t }) {
     ${Retention.isOff(t, lk) ? langOffHTML(id, t, lk) : `${memoBannerHTML(t, lk)}${fileMemoBannerHTML(t, lk)}
     <ol class="checklist">${items}</ol>
     ${filesBoxHTML(id, t, lk, F)}`}
-    <div class="gfoot"><button type="button" class="btn ghost" id="gp-open">용어집</button><span class="spacer"></span>${readOnly ? '' : `<button type="button" class="btn ghost reset" data-reset title="이 언어의 엑셀·검수·확인 기록을 지우고 처음부터 시작">${esc(L.label)} 처음부터 다시</button>`}${!readOnly && meNow && meNow.isAdmin ? '<button type="button" class="btn ghost reset" id="fullreset-open" title="관리자: 고른 언어의 번역 기록을 백업 받은 뒤 모두 지움">번역 기록 전체 리셋</button>' : ''}</div>`;
+    <div class="gfoot"><button type="button" class="btn ghost" id="gp-open">용어집</button><span class="spacer"></span>${!readOnly && meNow && meNow.isAdmin ? `<button type="button" class="btn ghost reset" id="fullreset-open" data-frlang="${lk}" title="관리자: 백업을 받은 뒤 고른 언어의 번역 기록을 지움">${esc(L.label)} 번역 기록 리셋</button>` : ''}</div>`;
 }
 /* 자료실: 누구나 받아 볼 수 있게 */
 function filesBoxHTML(id, t, lk, F) {
@@ -4848,14 +4880,14 @@ function termRowHTML(id, d, isDraft) {
     <select data-f="game" aria-label="사용 게임" ${dis}><option value="common" ${gv === 'common' ? 'selected' : ''}>모든 게임 공통</option>${themes.map(t => `<option value="${esc(t.id)}" ${gv === t.id ? 'selected' : ''}>${esc(t.data.name || '(이름 없음)')}</option>`).join('')}<option value="" ${gv === '' ? 'selected' : ''}>미지정</option></select></div></td>
     ${LANGS.map(l => { const x = trOf(d, l.key), st = statusOf(d, l.key); return `
     <td data-label="${l.label}"><div class="lcell"><textarea class="grow" rows="1" data-f="tr.${l.key}.text" placeholder="번역 입력" aria-label="${l.label} 번역" ${dis}>${esc(x.text)}</textarea>
-      <button type="button" class="st ${stClass(st)}" data-st="${l.key}" ${readOnly || !x.text || isDraft ? 'disabled' : ''} title="${x.text ? '누르면 후보 ↔ 확정' : '번역을 입력하면 후보가 됨'}">${stLabel(st)}${x.avoid ? ' · 금지 있음' : ''}</button></div></td>`; }).join('')}
+      <button type="button" class="st ${stClass(st)}" data-st="${l.key}" ${readOnly || !x.text || isDraft ? 'disabled' : ''} title="${x.text ? '누르면 후보 ↔ 확정' : '번역을 입력하면 후보가 됨'}">${stLabel(st)}${x.avoid ? ' · 금지 있음' : ''}${(x.text || x.avoid) && !termEvOk(d, l.key) ? ' · 미확인(근거 없음·사용 안 함)' : ''}</button></div></td>`; }).join('')}
     <td class="c-acts"><div class="racts">
       <button type="button" class="iconbtn" data-more="${esc(id)}" aria-expanded="${expanded.has(id)}" title="금지 번역·메모">${expanded.has(id) ? '접기' : '금지·메모'}</button>
       ${readOnly ? '' : `<button type="button" class="iconbtn ${armedDelete === id ? 'warn' : ''}" data-del="${esc(id)}" title="삭제" aria-label="삭제">${armedDelete === id ? '삭제?' : '✕ 삭제'}</button>`}
     </div></td>
   </tr>
   ${expanded.has(id) ? `<tr class="detail" data-${k}="${esc(id)}"><td colspan="7"><div class="dgrid">
-    ${LANGS.map(l => { const x = trOf(d, l.key); return `<label class="field"><span>${l.label} 금지 번역</span><input data-f="tr.${l.key}.avoid" value="${esc(x.avoid)}" placeholder="쓰면 안 되는 번역" ${dis}></label><label class="field"><span>${l.label} 금지 이유</span><input data-f="tr.${l.key}.avoidWhy" value="${esc(x.avoidWhy)}" ${dis}></label>`; }).join('')}
+    ${LANGS.map(l => { const x = trOf(d, l.key); return `<label class="field"><span>${l.label} 금지 번역</span><input data-f="tr.${l.key}.avoid" value="${esc(x.avoid)}" placeholder="쓰면 안 되는 번역" ${dis}></label><label class="field"><span>${l.label} 금지 이유</span><input data-f="tr.${l.key}.avoidWhy" value="${esc(x.avoidWhy)}" ${dis}></label>${TERM_EV_LANGS.includes(l.key) ? `<label class="field" style="grid-column:1/-1"><span>${l.label} 근거 (없으면 ‘미확인’ → 번역·검사에 안 씀)</span><input data-f="tr.${l.key}.ev" value="${esc(x.ev || '')}" placeholder="예: 공식 현지판 표기, 사전·공식 사이트 주소, 사람 번역 비교 결과" ${dis}></label>` : ''}`; }).join('')}
     <label class="field" style="grid-column:1/-1"><span>메모</span><input data-f="memo" value="${esc(d.memo)}" ${dis}></label>
   </div></td></tr>` : ''}`;
 }
@@ -6471,7 +6503,7 @@ document.addEventListener('change', async e => {
     render(); retentionAlert();
   }, () => toast('게임 목록을 불러오지 못함. 새로고침 필요.'));
   db.collection('fonts').onSnapshot(snap => { fonts = snap.docs.filter(d => d.exists).map(d => ({ id: d.id, data: d.data() })); if (view === 'fonts') render(); }, () => {});
-  db.collection('settings').onSnapshot(snap => { const d = snap.docs.find(x => x.id === 'judge' && x.exists), ek = snap.docs.find(x => x.id === 'enkeep' && x.exists), bpd = snap.docs.find(x => x.id === 'banpairs' && x.exists); banCfg = bpd ? bpd.data() : {}; const ipd = snap.docs.find(x => x.id === 'ipwords' && x.exists); ipCfg = Object.assign({ words: ['Jack Sparrow', 'Pingu', 'National Geographic'] }, ipd ? ipd.data() : {}); judgeCfg = Object.assign({}, JUDGE0, d ? d.data() : {}); enKeepCfg = Object.assign({ words: ENKEEP0.slice() }, ek ? ek.data() : {}); render(); });
+  db.collection('settings').onSnapshot(snap => { const d = snap.docs.find(x => x.id === 'judge' && x.exists), ek = snap.docs.find(x => x.id === 'enkeep' && x.exists), bpd = snap.docs.find(x => x.id === 'banpairs' && x.exists); banCfg = bpd ? bpd.data() : {}; const lpd = snap.docs.find(x => x.id === 'langprof' && x.exists); langProf = lpd ? lpd.data() : {}; const ipd = snap.docs.find(x => x.id === 'ipwords' && x.exists); ipCfg = Object.assign({ words: ['Jack Sparrow', 'Pingu', 'National Geographic'] }, ipd ? ipd.data() : {}); judgeCfg = Object.assign({}, JUDGE0, d ? d.data() : {}); enKeepCfg = Object.assign({ words: ENKEEP0.slice() }, ek ? ek.data() : {}); render(); });
   db.collection('terms').onSnapshot(snap => {
     terms = snap.docs.filter(d => d.exists).map(d => ({ id: d.id, data: d.data() }));
     render();
@@ -6610,14 +6642,15 @@ function opsHTML() {
   return `<div class="section opsbox"><h2>운영 점검</h2>
     <p>${tokenNote()}</p>
     <div class="iacts"><a class="btn" href="/api/admin/backup" download>백업 받기</a>${meNow.isOwner ? '<label class="btn upl">백업으로 되돌리기<input type="file" hidden id="restore-file" accept=".json"></label>' : ''}</div>
-    <p class="hint">백업 = 게임·용어집·폰트 목록. 큰 작업 전에 받아 두기. 이미지·엑셀 파일은 GitHub data 브랜치 기록에 남음.</p></div>`;
+    <p class="hint">백업 = 게임·용어집·폰트 목록. 큰 작업 전에 받아 두기. 이미지·엑셀 파일은 GitHub data 브랜치 기록에 남음.</p>
+    <details class="more" id="bak-list"><summary>번역 기록 리셋 백업 (서버 사본 30일)</summary><div id="bak-body"><p class="sb">여는 중…</p></div></details></div>`;
 }
 /* ---- 관리자: 게임 번역 기록 전체 리셋 (언어별) ---- */
-function frRender() {
+function frRender(pre) {
   const t = (themes.find(x => x.id === gameId) || {}).data || {};
   $('#fr-title').textContent = `${t.name || '(이름 없음)'} · 번역 기록 전체 리셋`;
   $('#fr-name').textContent = `‘${t.name || ''}’`;
-  $('#fr-langs').innerHTML = LANGS.map(l => { const m = Reset.summary(t, l.key); return `<label><input type="checkbox" value="${l.key}"${m.empty ? ' disabled' : ''}><span><b>${l.label}</b> <small>${m.empty ? '기록 없음' : `번역 ${m.rows}줄 · 검수 ${m.reviewed} · 승인 ${m.approved} · 수정 이력 ${m.edited} · 사람 번역 ${m.human}`}</small></span></label>`; }).join('');
+  $('#fr-langs').innerHTML = LANGS.map(l => { const m = Reset.summary(t, l.key); const les = lessonsOfGame({ id: gameId, data: t }, l.key).length; return `<label><input type="checkbox" value="${l.key}"${m.empty ? ' disabled' : pre === l.key ? ' checked' : ''}><span><b>${l.label}</b> <small>${m.empty ? '기록 없음' : `번역 ${m.rows}줄 · 검수 ${m.reviewed} · 승인 ${m.approved} · 수정 이력 ${m.edited} · 사람 번역 ${m.human}${les ? ` · 교훈 ${les}건은 언어 프로필로 옮김` : ''}`}</small></span></label>`; }).join('');
   $('#fr-confirm').value = ''; frCheck();
 }
 function frPicked() { return [...document.querySelectorAll('#fr-langs input:checked')].map(x => x.value); }
@@ -6625,7 +6658,7 @@ function frCheck() { const t = (themes.find(x => x.id === gameId) || {}).data ||
 document.addEventListener('input', e => { if (e.target.id === 'fr-confirm') frCheck(); });
 document.addEventListener('change', e => { if (e.target.closest('#fr-langs')) frCheck(); });
 document.addEventListener('click', async e => {
-  if (e.target.closest('#fullreset-open')) { if (!meNow || !meNow.isAdmin) return; frRender(); $('#fullresetdlg').showModal(); $('#fullresetdlg [data-close]').focus(); return; }
+  if (e.target.closest('#fullreset-open')) { if (!meNow || !meNow.isAdmin) return; frRender(e.target.closest('#fullreset-open').dataset.frlang); $('#fullresetdlg').showModal(); $('#fullresetdlg [data-close]').focus(); return; }
   if (!e.target.closest('#fr-yes')) return;
   const id = gameId, langs = frPicked(), typed = $('#fr-confirm').value, t = (themes.find(x => x.id === id) || {}).data || {};
   if (!langs.length || !Reset.nameOk(t, typed)) return;
@@ -6638,16 +6671,25 @@ document.addEventListener('click', async e => {
     const blob = await br.blob(), fn = ((br.headers.get('Content-Disposition') || '').match(/filename="([^"]+)"/) || [, `checkie_reset_backup_${id}.json`])[1];
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = decodeURIComponent(fn); document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     busy('② 리셋 중…');
-    const r = await fetch('/api/admin/reset', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ game: id, langs, confirm: typed }) });
+    const r = await fetch('/api/admin/reset', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ game: id, langs, confirm: typed, lessons: Object.fromEntries(langs.map(lk => [lk, lessonsOfGame({ id, data: t }, lk)])) }) });
     const j = await r.json().catch(() => ({})); done();
     if (!r.ok) { toast(j.message || '리셋하지 못함.', 6000); return; }
     if (window.Store && Store.reload) await Store.reload('themes');
     langs.forEach(lk => { delete viewStep[id + ':' + lk]; });
     delete gameFiles[id]; rvTab = 'auto'; render(true);
-    toast(`${langs.map(lk => LANGS.find(l => l.key === lk).label).join('·')} 번역 기록을 지움. 백업 파일 받음. 번역 엑셀 ${j.removed.length}개 삭제${j.failed.length ? ` · 삭제 실패 ${j.failed.length}개(${j.failed.join(', ')}) — 자료 탭에서 직접 지우기` : ''}.`, 8000);
+    const mv = Object.values(j.moved || {}).reduce((a, n) => a + n, 0);
+    toast(`${langs.map(lk => LANGS.find(l => l.key === lk).label).join('·')} 번역 기록을 지움. 백업 파일 받음(서버 사본 30일 보관).${mv ? ` 교훈 ${mv}건 언어 프로필로 옮김.` : ''} 번역 엑셀 ${j.removed.length}개 삭제${j.failed.length ? ` · 삭제 실패 ${j.failed.length}개(${j.failed.join(', ')}) — 자료 탭에서 직접 지우기` : ''}.`, 8000);
   } catch (err) { done(); toast(err.message || '리셋하지 못함.', 6000); }
 });
 
+document.addEventListener('toggle', async e => {
+  if (e.target.id !== 'bak-list' || !e.target.open) return;
+  try {
+    const j = await fetch('/api/admin/reset-backups', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.json());
+    const lab = lk => (LANGS.find(l => l.key === lk) || {}).label || lk;
+    $('#bak-body').innerHTML = (j.list || []).length ? `<ul class="plain">${j.list.map(b => `<li><a href="/api/admin/reset-backups/${encodeURIComponent(b.name)}" download>${esc(themeName(b.game) || b.game)} · ${esc(b.langs.map(lab).join('·'))} · ${fmtDT(b.at)}</a> <small>${Math.round(b.size / 1024)}KB · ${Math.max(0, Math.ceil(j.days - (Date.now() - Date.parse(b.at)) / 864e5))}일 남음</small></li>`).join('')}</ul><p class="hint">받은 파일을 ‘백업으로 되돌리기’에 올리면 그 게임의 그 언어만 되돌아감.</p>` : '<p class="sb">보관 중인 리셋 백업 없음.</p>';
+  } catch (err) { $('#bak-body').innerHTML = '<p class="sb">목록을 불러오지 못함.</p>'; }
+}, true);
 let restoreData = null;
 document.addEventListener('change', async e => {
   if (e.target.id !== 'restore-file' || !e.target.files[0]) return;
@@ -6655,8 +6697,11 @@ document.addEventListener('change', async e => {
   try { restoreData = JSON.parse(await f.text()); } catch { toast('백업 파일을 읽지 못함.'); return; }
   if (restoreData.kind === 'checkie-game-backup') {
     if (!meNow || !meNow.isOwner) { restoreData = null; toast('게임 백업 되돌리기는 대표 관리자만 할 수 있음.'); return; }
-    $('#restore-sum').textContent = `${fmtDate(restoreData.at)} 게임 백업 (${restoreData.by || ''}) · 게임 ‘${restoreData.name || restoreData.game}’만 백업 시점으로 되돌림 · 번역 엑셀 ${Object.keys(restoreData.files || {}).length}개 · 다른 게임은 그대로`;
-    $('#restore-warn').innerHTML = '이 게임의 지금 내용이 백업 시점으로 <b>바뀜</b> (리셋 뒤에 새로 한 작업도 사라짐). 지금 상태는 GitHub 기록에 남음. 진행할까요?';
+    const rl = Reset.cleanLangs(restoreData.langs) || [], curT = (themes.find(x => x.id === restoreData.game) || {}).data, lab = lk => LANGS.find(l => l.key === lk).label;
+    if (!rl.length) { restoreData = null; toast('게임 백업에 언어 정보가 없음.'); return; }
+    $('#restore-sum').textContent = `${fmtDate(restoreData.at)} 게임 백업 (${restoreData.by || ''}) · ‘${restoreData.name || restoreData.game}’ ${rl.map(lab).join('·')}만 되돌림 · 번역 엑셀 ${Object.keys(restoreData.files || {}).length}개 · 다른 언어·다른 게임·원문 분석은 그대로`;
+    const loss = curT ? Reset.lossOf(curT, rl) : null;
+    $('#restore-warn').innerHTML = `${loss ? `<b>사라지는 지금 작업</b>: ${rl.map(lk => `${esc(lab(lk))} ${loss[lk].n ? `${loss[lk].n}줄 (검수 ${loss[lk].reviewed} · 승인 ${loss[lk].approved} · 수정 이력 ${loss[lk].edited})` : '없음'}`).join(' / ')}<br>` : '이 게임이 지금 없음 → 백업 전체로 다시 만듦.<br>'}교훈(언어 프로필)은 그대로 둠. 지금 상태는 GitHub 기록에 남음. 진행할까요?`;
     $('#restoredlg').showModal(); return;
   }
   if (restoreData.kind !== 'checkie-backup') { restoreData = null; toast('이 사이트의 백업 파일이 아님.'); return; }
