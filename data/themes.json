@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-17T01:44:43.098Z",
+    "updatedAt": "2026-11-17T01:44:49.683Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -11363,7 +11363,8 @@
           },
           "S039": {
             "ok": [
-              "srcSuffix"
+              "srcSuffix",
+              "xcmp"
             ],
             "bt0": {
               "t": "스타킹",
