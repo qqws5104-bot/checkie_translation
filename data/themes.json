@@ -13507,7 +13507,8 @@
           },
           "R007": {
             "ok": [
-              "srcSuffix"
+              "srcSuffix",
+              "long"
             ]
           },
           "R008": {},
