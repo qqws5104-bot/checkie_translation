@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-17T01:44:31.547Z",
+    "updatedAt": "2026-11-17T01:44:35.076Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -10793,7 +10793,10 @@
             "gl": null,
             "rel": null,
             "hv": null,
-            "ok": [],
+            "ok": [
+              "srcSuffix",
+              "lines"
+            ],
             "bt0": {
               "t": "크리스마스는 ( )번 달에 있어, 개굴!",
               "amb": "다른 줄과 달리 ‘Ribbit’ 앞이 쉼표로 이어짐",
