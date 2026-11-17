@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-17T01:44:16.585Z",
+    "updatedAt": "2026-11-17T01:44:22.020Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -10247,7 +10247,8 @@
           "S014": {
             "ok": [
               "srcSuffix",
-              "negAdd"
+              "negAdd",
+              "xcmp"
             ],
             "bt0": {
               "t": "안 받는다",
