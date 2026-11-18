@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T01:37:58.093Z",
+    "updatedAt": "2026-11-18T01:38:11.360Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -10886,7 +10886,69 @@
                 "doneBy": "김예은",
                 "doneAt": "2026-11-18T01:33:41.015Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-18T01:38:11.326Z",
+                "by": "김예은",
+                "from": "Foundation Day",
+                "ratFrom": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "(한국의) 개천절",
+                  "sense": "Foundation Day: 건국기념일/창립기념일 → 개천절(한국 건국기념일)",
+                  "reason": "원문 의미를 유지해 직역. 'National Foundation Day'는 길이 한도(16자) 초과라 줄임",
+                  "redo": "",
+                  "wmap": "개천절 → Foundation Day = 건국 기념일",
+                  "sub": "개천절: National Foundation Day(개천절, 길이 초과)",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": null,
+                "hvSnap": null,
+                "to": "Halloween",
+                "why": "오답을 보여줘야해서",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "번역 AI",
+                "rat": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "핼러윈",
+                  "sense": "",
+                  "reason": "원문 소재(개천절)가 바뀜",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "번역 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "원문 소재(개천절)가 바뀜",
+                  "by": "김예은",
+                  "at": "2026-11-18T01:38:11.326Z"
+                }
+              }
+            ],
+            "tr": "Halloween",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "A",
+              "tr": "Halloween",
+              "mean": "핼러윈",
+              "rec": "기본",
+              "recTr": "Foundation Day",
+              "why": "오답을 보여줘야해서",
+              "by": "김예은",
+              "at": "2026-11-18T01:38:11.326Z",
+              "trh": "ynf7063a6onab",
+              "from": "번역 AI"
+            }
           },
           "S069": {},
           "S072": {},
