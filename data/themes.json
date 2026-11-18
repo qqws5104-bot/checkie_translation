@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T01:57:55.518Z",
+    "updatedAt": "2026-11-18T01:58:30.006Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -10792,7 +10792,11 @@
               "srcSuffix"
             ]
           },
-          "S047": {},
+          "S047": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
           "S048": {
             "hist": [
               {
@@ -10843,7 +10847,10 @@
             "gl": null,
             "rel": null,
             "hv": null,
-            "ok": [],
+            "ok": [
+              "srcSuffix",
+              "ratMap"
+            ],
             "pick": {
               "k": "B",
               "tr": "Marches",
@@ -10857,7 +10864,12 @@
               "from": "번역 AI"
             }
           },
-          "S052": {},
+          "S052": {
+            "ok": [
+              "uTerm",
+              "srcSuffix"
+            ]
+          },
           "S054": {},
           "S057": {},
           "S058": {},
