@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T01:37:06.335Z",
+    "updatedAt": "2026-11-18T01:37:28.381Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -10663,7 +10663,70 @@
           "S043": {},
           "S044": {},
           "S047": {},
-          "S048": {},
+          "S048": {
+            "hist": [
+              {
+                "at": "2026-11-18T01:37:28.346Z",
+                "by": "김예은",
+                "from": "Army songs",
+                "ratFrom": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "군대 노래",
+                  "sense": "",
+                  "reason": "쉬운 단어 규칙에 따라 military 대신 army. 버튼 길이도 짧음",
+                  "redo": "",
+                  "wmap": "군가 → Army songs = 군대 노래",
+                  "sub": "군가: Military songs(군가) / Marches(행진곡)",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": null,
+                "hvSnap": null,
+                "to": "Marches",
+                "why": "의역 필요하다고 생각함",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "번역 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "행진곡",
+                  "sense": "",
+                  "reason": "'3월(March)'과 헷갈릴 수 있음",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "번역 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "'3월(March)'과 헷갈릴 수 있음",
+                  "by": "김예은",
+                  "at": "2026-11-18T01:37:28.345Z"
+                }
+              }
+            ],
+            "tr": "Marches",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "B",
+              "tr": "Marches",
+              "mean": "행진곡",
+              "rec": "기본",
+              "recTr": "Army songs",
+              "why": "의역 필요하다고 생각함",
+              "by": "김예은",
+              "at": "2026-11-18T01:37:28.346Z",
+              "trh": "e0yusiuaeqkq9",
+              "from": "번역 AI"
+            }
+          },
           "S052": {},
           "S054": {},
           "S057": {},
