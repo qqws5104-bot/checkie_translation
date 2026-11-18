@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T02:16:57.709Z",
+    "updatedAt": "2026-11-18T02:17:03.485Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -11126,7 +11126,12 @@
             "gl": null,
             "rel": null,
             "hv": null,
-            "ok": [],
+            "ok": [
+              "srcSuffix",
+              "ratMap",
+              "ratRedo",
+              "ratMis"
+            ],
             "pick": {
               "k": "A",
               "tr": "Halloween",
