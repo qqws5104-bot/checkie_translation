@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T02:30:00.451Z",
+    "updatedAt": "2026-11-18T02:30:16.842Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -11492,20 +11492,72 @@
           },
           "S031": {
             "ok": [
-              "uTerm"
+              "uTerm",
+              "srcSuffix",
+              "typo"
             ]
           },
-          "S035": {},
-          "S036": {},
-          "S040": {},
-          "S041": {},
-          "S045": {},
-          "S046": {},
-          "S049": {},
-          "S050": {},
-          "S051": {},
-          "S055": {},
-          "S056": {},
+          "S035": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S036": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S040": {
+            "ok": [
+              "srcSuffix",
+              "uTerm",
+              "typo"
+            ]
+          },
+          "S041": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S045": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S046": {
+            "ok": [
+              "srcSuffix",
+              "uTerm",
+              "typo"
+            ]
+          },
+          "S049": {
+            "ok": [
+              "srcSuffix",
+              "typo"
+            ]
+          },
+          "S050": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S051": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S055": {
+            "ok": [
+              "srcSuffix",
+              "typo"
+            ]
+          },
+          "S056": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
           "S060": {
             "memos": [
               {
@@ -11531,7 +11583,10 @@
               "at": "2026-11-18T01:46:06.416Z",
               "trh": "ecsgbx192qnnp5",
               "from": ""
-            }
+            },
+            "ok": [
+              "srcSuffix"
+            ]
           },
           "S061": {
             "redo": {
