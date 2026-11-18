@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T02:16:49.835Z",
+    "updatedAt": "2026-11-18T02:16:57.709Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -11037,7 +11037,12 @@
             "gl": null,
             "rel": null,
             "hv": null,
-            "ok": [],
+            "ok": [
+              "ratRedo",
+              "ratMap",
+              "typo",
+              "srcSuffix"
+            ],
             "pick": {
               "k": "A",
               "tr": "Rudolph the (   )-Nosed Reindeer~♪, ribbit!",
@@ -11051,7 +11056,13 @@
               "from": "번역 AI"
             }
           },
-          "S067": {},
+          "S067": {
+            "ok": [
+              "srcSuffix",
+              "uTerm",
+              "typo"
+            ]
+          },
           "S068": {
             "memos": [
               {
