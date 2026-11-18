@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T01:39:51.601Z",
+    "updatedAt": "2026-11-18T01:42:14.528Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -11033,6 +11033,18 @@
               "ans": "그대로(창밖→바깥)",
               "also": "S083, S084",
               "copy": "없음(새로 씀)"
+            },
+            "pick": {
+              "k": "유지",
+              "tr": "Snow is falling (   ), snow is falling (   )~♪, ribbit!",
+              "mean": "",
+              "rec": "기본",
+              "recTr": "Snow is falling (   ), snow is falling (   )~♪, ribbit!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-18T01:42:14.495Z",
+              "trh": "15lfhom15bv8217",
+              "from": ""
             }
           },
           "S084": {
