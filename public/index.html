@@ -4239,7 +4239,7 @@ function basisOf(r) {
   const x = r.x, R = r.rat || {}, rv = x.rv, b0 = bt0Of(r);
   const v = !rv ? '검수 전' : rv.exc ? `검수 AI ${rv.orig || 'FAIL'}→사람 유지` : `검수 ${rv.hold ? 'HOLD' : r.vd ? r.vd.P : aiNow(rv)}${rv.total != null ? ` ${rv.total}점` : ''}`;
   const mf = methFinal(r);
-  return [/^직역/.test(whyOf(r)) && !mf.split ? '' : mf.m ? mf.m + (mf.split ? '(판정 갈림)' : '') : '', wmapShort(R.wmap), v, b0 ? `역번역 ‘${b0.t.replace(/\n/g, ' ')}’` : (x.bt || [])[0] ? `역번역 ‘${x.bt[0]}’` : ''].filter(Boolean).join(' · ');
+  return [/^직역/.test(whyOf(r)) && !mf.split ? '' : mf.m ? mf.m + (mf.split ? '(판정 갈림)' : '') : '', wmapShort(R.wmap), v].filter(Boolean).join(' · ');
 }
 /* 같은 설명을 반복하지 않게: 같은 줄이 다른 화면에 또 나오면 ‘↑ 화면과 같음’, 다른 줄인데 이유가 같으면 ‘번호와 같은 이유’ */
 function reasonDedup() {
@@ -4257,18 +4257,19 @@ function reasonDedup() {
 function finalSheet(t, lk) {
   const { langs, out } = finalRows(t, lk), u = uOf(t), scrs = (u && u.draft && u.draft.screens) || [];
   const files = [...new Set(out.map(o => o.file))].sort((a, b) => { const ia = scrs.findIndex(x => normId(x.id) === normId(a)), ib = scrs.findIndex(x => normId(x.id) === normId(b)); return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib) || a.localeCompare(b, 'ko', { numeric: true }); });
-  const L = langs[0], head = ['화면 ID', '순서', '요소', '번호', '한국어 원문', `${L.label} 최종 번역`, '번역 이유', '근거 (방식 · 핵심 단어 · 검수 · 역번역)', '상태'];
+  const L = langs[0], head = ['화면 ID', '순서', '요소', '번호', '한국어 원문', `${L.label} 최종 번역`, '역번역 (한국어)', '번역 이유', '근거 (방식 · 핵심 단어 · 검수)', '상태'];
+  const btTxt = r => { if (!r || !r.tr) return ''; const b0 = bt0Of(r), b = b0 ? b0.t : ((r.x.bt || [])[0] || ''); return String(b || '').trim() || '역번역 없음'; };
   const body = [], soft = new Set(), hard = new Set(), RD = reasonDedup();
   files.forEach(f => { const list = out.filter(o => o.file === f).sort((a, b) => (isNaN(a.ord) ? 1e9 : a.ord) - (isNaN(b.ord) ? 1e9 : b.ord) || a.row.n - b.row.n);
     const okN = list.filter(o => o.row.per[L.key] && finalOk(t, L.key, o.row.per[L.key]) && !banOf(o.row.per[L.key])).length, noW = list.filter(o => o.row.per[L.key] && whyOf(o.row.per[L.key]) === NO_WHY).length;
     const redoN = list.filter(o => /^재설계 전/.test(banOf(o.row.per[L.key]))).length, pzN = list.filter(o => /^퍼즐 검사/.test(banOf(o.row.per[L.key]))).length;
-    body.push(['■ ' + f, '', '', '', `${list.length}줄`, `${okN}/${list.length} 확정${okN < list.length ? ' · 나머지는 지금 번역(노란 칸)' : ''}${redoN ? ` · 재설계 전 ${redoN}줄` : ''}${pzN ? ` · 퍼즐 검사 실패 ${pzN}줄` : ''}`, noW ? `이유 없음 ${noW}줄 → 번역 근거 다시 받기` : '', '', redoN || pzN ? '사용 금지 줄 있음' : okN === list.length ? '화면 전체 확정' : '미확정 있음']);
+    body.push(['■ ' + f, '', '', '', `${list.length}줄`, `${okN}/${list.length} 확정${okN < list.length ? ' · 나머지는 지금 번역(노란 칸)' : ''}${redoN ? ` · 재설계 전 ${redoN}줄` : ''}${pzN ? ` · 퍼즐 검사 실패 ${pzN}줄` : ''}`, '', noW ? `이유 없음 ${noW}줄 → 번역 근거 다시 받기` : '', '', redoN || pzN ? '사용 금지 줄 있음' : okN === list.length ? '화면 전체 확정' : '미확정 있음']);
     list.forEach((o, i) => { const r = o.row.per[L.key], ban = banOf(r), ok = !!(r && finalOk(t, L.key, r)) && !ban, rs = RD(r, f);
       /* 미확정이어도 지금 번역을 넣음 (노란 칸 = 아직 검수 중) · 재설계 전·퍼즐 실패는 빨간 칸 (사용 금지) */
       if (r && r.tr && ban) hard.add(`${body.length + 1}:5`); else if (r && r.tr && !ok) soft.add(`${body.length + 1}:5`);
-      body.push([f, isNaN(o.ord) ? i + 1 : o.ord, o.elem || '', o.row.id || '', o.row.ko, r ? r.tr || '(번역 없음)' : '(번역 없음)', rs.why, rs.basis, ban || (ok ? '확정' : '미확정(지금 번역)')]); }); });
-  return { name: '최종 번역', rows: [head, ...body], widths: [12, 6, 14, 8, 32, 34, 40, 44, 16], filter: true, freezeCols: 0,
-    style: (ri, ci, r) => /^■/.test(r[0]) ? (ci === 8 && /사용 금지/.test(r[8]) ? 2 : 5) : ci === 8 ? (r[8] === '확정' ? 4 : /사용 금지/.test(r[8]) ? 2 : 3) : hard.has(`${ri}:${ci}`) ? 2 : soft.has(`${ri}:${ci}`) ? 3 : r[ci] === '(번역 없음)' ? 2 : ci === 6 && r[6] === NO_WHY ? 3 : ci === 6 && /^↑ |줄과 같은 이유/.test(r[6]) ? 5 : 0 };
+      body.push([f, isNaN(o.ord) ? i + 1 : o.ord, o.elem || '', o.row.id || '', o.row.ko, r ? r.tr || '(번역 없음)' : '(번역 없음)', btTxt(r), rs.why, rs.basis, ban || (ok ? '확정' : '미확정(지금 번역)')]); }); });
+  return { name: '최종 번역', rows: [head, ...body], widths: [12, 6, 14, 8, 32, 34, 34, 40, 40, 16], filter: true, freezeCols: 0,
+    style: (ri, ci, r) => /^■/.test(r[0]) ? (ci === 9 && /사용 금지/.test(r[9]) ? 2 : 5) : ci === 9 ? (r[9] === '확정' ? 4 : /사용 금지/.test(r[9]) ? 2 : 3) : hard.has(`${ri}:${ci}`) ? 2 : soft.has(`${ri}:${ci}`) ? 3 : r[ci] === '(번역 없음)' ? 2 : ci === 6 && r[6] === '역번역 없음' ? 3 : ci === 7 && r[7] === NO_WHY ? 3 : ci === 7 && /^↑ |줄과 같은 이유/.test(r[7]) ? 5 : 0 };
 }
 /* 최종 번역의 다음 장: 왜 이렇게 번역했는지 (최종 번역과 같은 순서, 같은 문구는 처음 나온 화면에만) */
 function reasonSheet(t, lk) {
@@ -4758,7 +4759,7 @@ function filesBoxHTML(id, t, lk, F) {
     <div class="librow"><span><b>① 검수 엑셀 (내부)</b><small>01 게임 이해·번역 기준 · 02 용어·표현별 검수 · 03 줄별 검수 작업 · 부록. 맨 앞 ‘검수 작업’ 시트에서 우선순위대로 보고 ‘사람 결정’을 고른 뒤 그대로 다시 올리면 반영됨. 뒤에 번역 · 원문·번역·역번역 · 비율 · 수정 이력 시트</small></span><span class="iacts"><button type="button" class="btn primary" data-xres>받기</button>${readOnly ? '' : `<label class="btn upl">결정 채운 파일 올리기<input type="file" hidden data-one="one:work" accept="${FILE_ACCEPT}"></label>`}</span></div>
     ${(() => { const F2 = flowState(t, lk), nN = F2.rows.filter(r => nativeOf(t, lk, r).length).length, nQ = F2.rows.filter(r => nativeOf(t, lk, r).length && !natDone(r) && !(r.x.natQ && r.x.natQ.trh === trCk(r.tr))).length, nD = F2.rows.filter(r => nativeOf(t, lk, r).length && natDone(r)).length;
       return `<div class="librow"><span><b>② 현지인 검수 엑셀 (${esc(LANGS.find(l => l.key === lk).label)} · 외부 전달용)</b><small>AI만으로 확정하기 어려운 ${nN}줄 · 확인 끝 ${nD}줄. 상황·뜻·질문이 한국어와 ${esc(LANGS.find(l => l.key === lk).label)}로 들어감.${nQ ? ` 질문이 아직 기본 문구인 줄 ${nQ}개 — ‘질문 만들기’ 프롬프트로 구체적인 질문을 받으면 좋음.` : ''}</small></span><span class="iacts">${nQ && !readOnly ? `<button type="button" class="btn" data-copy="p-natq">질문 만들기 프롬프트 복사</button><label class="btn upl">질문 올리기<input type="file" hidden data-one="one:natq" accept="${FILE_ACCEPT}"></label>` : ''}<button type="button" class="btn" data-xnat ${nN ? '' : 'disabled'}>받기</button>${readOnly ? '' : `<label class="btn upl">현지인 결과 올리기<input type="file" hidden data-one="one:nat" accept="${FILE_ACCEPT}"></label>`}</span></div>${nQ ? `<pre class="ptext" id="pt-p-natq" hidden>${esc(natQPrompt(t, lk))}</pre>` : ''}`; })()}
-    <div class="librow"><span><b>③ 최종 번역 엑셀 (${esc(LANGS.find(l => l.key === lk).label)}만 · 게임 적용용)</b><small>화면별 · 화면 안 등장 순서 · 줄마다 번역 이유와 근거 · 모든 줄에 지금 번역이 들어감. 사람 승인(+현지인 확인)까지 끝난 줄은 ‘확정’, 아직인 줄은 노란 칸 + ‘미확정(지금 번역)’. 같은 문구를 합친 줄은 화면마다 다시 풀어 놓음. 다음 장 ‘번역 이유’에 줄마다 번역 방식·이유·핵심 단어·고른 대안·바뀐 이력·검수 결과.</small></span><button type="button" class="btn" data-xfinal>받기</button></div>
+    <div class="librow"><span><b>③ 최종 번역 엑셀 (${esc(LANGS.find(l => l.key === lk).label)}만 · 게임 적용용)</b><small>화면별 · 화면 안 등장 순서 · 줄마다 역번역(한국어)·번역 이유·근거 · 모든 줄에 지금 번역이 들어감. 사람 승인(+현지인 확인)까지 끝난 줄은 ‘확정’, 아직인 줄은 노란 칸 + ‘미확정(지금 번역)’. 같은 문구를 합친 줄은 화면마다 다시 풀어 놓음. 다음 장 ‘번역 이유’에 줄마다 번역 방식·이유·핵심 단어·고른 대안·바뀐 이력·검수 결과.</small></span><button type="button" class="btn" data-xfinal>받기</button></div>
     ${ups.map((u, i) => `<div class="librow"><span><b>${esc(u.name)}</b>${i === 0 ? ' <em class="chip">최신</em>' : ''}<small>${esc(u.by || '')} · ${fmtDate(u.at)} · ${u.rows}줄</small></span>${u.file ? `<a class="btn" href="/api/files/${encodeURIComponent(id)}/${encodeURIComponent(u.file)}" download="${esc(u.name)}">원본 받기</a>` : '<small class="sb">원본 없음</small>'}</div>`).join('')}
     <details class="more"${memoEditing ? ' open' : ''}><summary>번역 표 보기 · 수정 요청 메모 남기기</summary>${sheetViewHTML(t, lk)}</details>
   </section>`;
