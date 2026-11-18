@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T02:27:56.446Z",
+    "updatedAt": "2026-11-18T02:28:03.920Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -11320,7 +11320,10 @@
             "rel": null,
             "hv": null,
             "ok": [
-              "srcSuffix"
+              "srcSuffix",
+              "typo",
+              "ratRedo",
+              "ratMap"
             ]
           },
           "S084": {
@@ -11352,7 +11355,12 @@
               "srcSuffix"
             ]
           },
-          "S087": {},
+          "S087": {
+            "ok": [
+              "srcSuffix",
+              "same"
+            ]
+          },
           "S088": {
             "redo": {
               "by": "번역 AI",
