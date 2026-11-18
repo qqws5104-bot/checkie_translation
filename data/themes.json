@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T01:54:02.522Z",
+    "updatedAt": "2026-11-18T01:56:04.653Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -10651,18 +10651,73 @@
               "srcSuffix"
             ]
           },
-          "S007": {},
-          "S008": {},
-          "S009": {},
-          "S012": {},
-          "S013": {},
-          "S014": {},
-          "S017": {},
-          "S018": {},
-          "S019": {},
-          "S022": {},
-          "S023": {},
-          "S024": {},
+          "S007": {
+            "ok": [
+              "typo",
+              "srcSuffix"
+            ]
+          },
+          "S008": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S009": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S012": {
+            "ok": [
+              "srcSuffix",
+              "negAdd"
+            ]
+          },
+          "S013": {
+            "ok": [
+              "srcSuffix",
+              "typo"
+            ]
+          },
+          "S014": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S017": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S018": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S019": {
+            "ok": [
+              "uTerm",
+              "srcSuffix",
+              "typo"
+            ]
+          },
+          "S022": {
+            "ok": [
+              "uTerm",
+              "srcSuffix",
+              "typo"
+            ]
+          },
+          "S023": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S024": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
           "S027": {
             "pick": {
               "k": "유지",
@@ -10675,17 +10730,62 @@
               "at": "2026-11-18T01:37:06.300Z",
               "trh": "r60un2196l63kb",
               "from": ""
-            }
+            },
+            "ok": [
+              "srcSuffix"
+            ]
           },
-          "S028": {},
-          "S029": {},
-          "S032": {},
-          "S034": {},
-          "S037": {},
-          "S038": {},
-          "S039": {},
-          "S042": {},
-          "S043": {},
+          "S028": {
+            "ok": [
+              "srcSuffix",
+              "typo"
+            ]
+          },
+          "S029": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S032": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S034": {
+            "ok": [
+              "uTerm",
+              "srcSuffix",
+              "typo"
+            ]
+          },
+          "S037": {
+            "ok": [
+              "uTerm",
+              "srcSuffix",
+              "typo"
+            ]
+          },
+          "S038": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S039": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S042": {
+            "ok": [
+              "srcSuffix"
+            ]
+          },
+          "S043": {
+            "ok": [
+              "srcSuffix",
+              "uTerm"
+            ]
+          },
           "S044": {},
           "S047": {},
           "S048": {
