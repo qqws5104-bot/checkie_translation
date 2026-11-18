@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T01:37:28.381Z",
+    "updatedAt": "2026-11-18T01:37:58.093Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -10808,7 +10808,69 @@
                 "doneBy": "김예은",
                 "doneAt": "2026-11-18T01:33:40.401Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-18T01:37:58.058Z",
+                "by": "김예은",
+                "from": "Rudolph's (   ) nose lights up the sky~♪, ribbit!",
+                "ratFrom": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "루돌프의 (   ) 코가 하늘을 밝힌다~♪, 개굴!",
+                  "sense": "light up: 밝히다/불을 켜다/환해지다 → 밝게 비추다",
+                  "reason": "원곡 영어 가사는 저작권이 남아 있어 옮기지 않고, 같은 노래를 떠올리게 하는 새 가사를 씀",
+                  "redo": "① 원문은 한국어판 루돌프 노래 가사 기억을 묻는 문제인데, 영어 원곡(1949)은 저작권이 남아 있어 실제 가사를 쓸 수 없음 ② 루돌프 코의 특징(반짝임)을 노래 형식으로 떠올리게 하는 것 ③ 새로 쓴 노래풍 문장에 '하늘을 밝힌다'를 넣어 Shiny가 정답으로 자연스럽게 연결되게 함",
+                  "wmap": "루돌프 → Rudolph = 루돌프 / 코 → nose = 코 / 밝히다 → lights up = 밝게 비추다",
+                  "sub": "밝히다: brightens(밝게 하다) / lights the way(길을 밝히다)",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": null,
+                "hvSnap": null,
+                "to": "Rudolph the (   )-Nosed Reindeer~♪, ribbit!",
+                "why": "제목이라 제일 직관적임",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "번역 AI",
+                "rat": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "(   ) 코 순록 루돌프~♪ (노래 제목)",
+                  "sense": "",
+                  "reason": "정답이 Red가 되어 S065·S066 교체 필요, round3_4와 내용 겹침",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "번역 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "정답이 Red가 되어 S065·S066 교체 필요, round3_4와 내용 겹침",
+                  "by": "김예은",
+                  "at": "2026-11-18T01:37:58.058Z"
+                }
+              }
+            ],
+            "tr": "Rudolph the (   )-Nosed Reindeer~♪, ribbit!",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "A",
+              "tr": "Rudolph the (   )-Nosed Reindeer~♪, ribbit!",
+              "mean": "(   ) 코 순록 루돌프~♪ (노래 제목)",
+              "rec": "기본",
+              "recTr": "Rudolph's (   ) nose lights up the sky~♪, ribbit!",
+              "why": "제목이라 제일 직관적임",
+              "by": "김예은",
+              "at": "2026-11-18T01:37:58.058Z",
+              "trh": "x2m46m1u1rmc812",
+              "from": "번역 AI"
+            }
           },
           "S067": {},
           "S068": {
