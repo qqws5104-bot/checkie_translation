@@ -110,7 +110,7 @@
       "ja": {
         "avoid": "",
         "avoidWhy": "",
-        "status": "확정",
+        "status": "후보",
         "text": "ひだり！これ！みぎ！"
       },
       "zh": {
@@ -121,7 +121,7 @@
       }
     },
     "type": "버튼 라벨",
-    "updatedAt": "2026-11-03T01:20:38.667Z"
+    "updatedAt": "2026-11-18T03:13:41.131Z"
   },
   "ui-front": {
     "common": false,
