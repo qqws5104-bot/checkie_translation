@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T01:42:14.528Z",
+    "updatedAt": "2026-11-18T01:42:29.493Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -11035,17 +11035,67 @@
               "copy": "없음(새로 씀)"
             },
             "pick": {
-              "k": "유지",
-              "tr": "Snow is falling (   ), snow is falling (   )~♪, ribbit!",
-              "mean": "",
+              "k": "A",
+              "tr": "Look (   ), look (   ), white snow is falling~♪, ribbit!",
+              "mean": "(   )을 보라, (   )을 보라, 흰 눈이 내린다~♪",
               "rec": "기본",
               "recTr": "Snow is falling (   ), snow is falling (   )~♪, ribbit!",
-              "why": "",
+              "why": "원문 유지",
               "by": "김예은",
-              "at": "2026-11-18T01:42:14.495Z",
-              "trh": "15lfhom15bv8217",
-              "from": ""
-            }
+              "at": "2026-11-18T01:42:29.460Z",
+              "trh": "1p5xpxjhyjeyz18",
+              "from": "번역 AI"
+            },
+            "hist": [
+              {
+                "at": "2026-11-18T01:42:29.460Z",
+                "by": "김예은",
+                "from": "Snow is falling (   ), snow is falling (   )~♪, ribbit!",
+                "ratFrom": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "눈이 (   )에 내린다, 눈이 (   )에 내린다~♪, 개굴!",
+                  "sense": "fall: 떨어지다/(눈이) 내리다/가을 → (눈이) 내리다",
+                  "reason": "새로 쓴 노래풍 가사. 빈칸 두 개·정답 '바깥' 구조 유지",
+                  "redo": "① 한국어판 캐럴 가사 기억을 묻는 문제라 영어권 방문객이 풀 수 없음. 저작권 없는 영어 눈 캐럴 중 널리 알려진 곡이 없음 ② 눈이 오는 곳(바깥)을 빈칸 두 개로 채우는 것 ③ 한국어 가사를 번역하지 않고 새로 쓴 문장으로 같은 빈칸 두 개·같은 정답을 유지",
+                  "wmap": "눈 → snow = 눈 / 내리다 → falling = 내리는 중",
+                  "sub": "내리다: coming down(내려오다)",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": null,
+                "hvSnap": null,
+                "to": "Look (   ), look (   ), white snow is falling~♪, ribbit!",
+                "why": "원문 유지",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "번역 AI",
+                "rat": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "(   )을 보라, (   )을 보라, 흰 눈이 내린다~♪",
+                  "sense": "",
+                  "reason": "한국어 가사를 번역한 것이라 '원곡 가사 번역 금지' 규칙 위반",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "번역 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "한국어 가사를 번역한 것이라 '원곡 가사 번역 금지' 규칙 위반",
+                  "by": "김예은",
+                  "at": "2026-11-18T01:42:29.460Z"
+                }
+              }
+            ],
+            "tr": "Look (   ), look (   ), white snow is falling~♪, ribbit!",
+            "rv": null,
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "hv": null,
+            "ok": []
           },
           "S084": {
             "redo": {
