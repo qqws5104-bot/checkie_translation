@@ -726,6 +726,12 @@ h1 { font-size: 22px; }
 .reset-box { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; display: grid; gap: 6px; font-size: 15px; }
 .reset-box p { margin: 0; }
 .frlangs { display: grid; gap: 6px; }
+.ccand { display: grid; gap: 2px; border-top: 1px dashed var(--line); padding: 6px 4px; }
+.ccand.picked { background: var(--ok-soft); border-radius: 6px; }
+.ccand .iacts { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.ccand .iacts label { display: inline-flex; gap: 4px; align-items: center; margin: 0; }
+.ccand input[type=radio] { width: 16px; height: 16px; min-height: 0; margin: 0; padding: 0; flex: none; }
+#card-ai { width: auto; display: inline-block; min-width: 120px; }
 .frlangs label { display: flex; gap: 10px; align-items: flex-start; justify-content: flex-start; text-align: left; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 14.5px; margin: 0; }
 .frlangs label > span { flex: 1; min-width: 0; }
 .frlangs input[type=checkbox] { width: 18px; height: 18px; min-height: 0; flex: none; margin: 2px 0 0; padding: 0; }
@@ -2390,6 +2396,8 @@ function flowState(t, lk) {
     r.btFar = bt && !r.btShift && !(r.cls === 'B' || r.cls === 'C' || r.x.redo || /의역|재구성/.test(methFinal(r).m)) && normKo(r.ko).replace(/[^\p{L}\p{N}]/gu, '').length >= 5 && (simKo(r.ko, bt) || 0) < 0.1 && !(r.x.ok || []).includes('btFar'); });
   const all = rows.map(r => ({ r, x: r.x, list: autoChecks(t, lk, r, byKo).filter(([k]) => !((r.x.ok) || []).includes(k)) }));
   all.forEach(v => { v.r.open = v.list; v.r.vd = verdictOf(v.r, v.list); });
+  /* 카드 줄: 카드가 완료(풀어 보기 PASS·정답 확인)되고 그 번역이 줄에 들어가 있어야 승인 가능 */
+  if (Cards.listOf(t).length) { const trM = id => (rows.find(r => r.id === id) || {}).tr || ''; rows.forEach(r => { const c = Cards.cardOfRow(t, r.id); if (!c) return; const cs = Cards.cardState(t, lk, c, trM); r.card = { id: c.id, ok: cs.ok && cs.applied }; if (!r.card.ok) r.vd = Object.assign({}, r.vd, { canApprove: false, why: `퀴즈 카드 ${c.id}: ${cs.ok ? '카드 번역이 이 줄에 아직 안 들어감' : cs.why} (⓪ 퀴즈 카드 탭)` }); }); }
   const issues = all.filter(v => v.list.length);
   /* 자동 점검: FAIL만 할 일(AI 수정 요청으로 처리). REVIEW는 검수 AI 참고 정보 → 사람이 누를 것 없음 */
   const fails = issues.filter(v => v.list.some(([k]) => progSev(k, v.r) === 'FAIL')), reviewN = issues.reduce((a, v) => a + v.list.filter(([k]) => progSev(k, v.r) !== 'FAIL').length, 0);
@@ -4663,6 +4671,137 @@ document.addEventListener('click', async e => {
   await saveWork(items => { ids.forEach(i => { const x = items[i] = items[i] || {}; x.ok = [...new Set([...(x.ok || []), ...ks])]; x.okWhy = Object.assign({}, x.okWhy, Object.fromEntries(ks.map(k => [k, { why: `AI 사유 인정: ${r.x.autoAi.why}`, by: meName(), at: nowISO(), msg: (autoFailsOf(r).find(o => o[0] === k) || [])[1] || '' }]))); }); return ids.length; }, () => '');
   render(true); toast(`${id} 예외 통과 (사유: AI 설명). 누가 했는지 기록됨.`);
 });
+/* ================= 카드 모델 2단계: 카드 단위 번역 · 대체 · 풀어 보기 =================
+   상식 카드 → 번역 AI 2개가 카드째 번역 → 다른 AI가 번역문만 보고 풀어 봄(두 순서) → 정답이면 자동 선택 → 줄에 반영
+   노래·말장난·문화 카드 → 번역하지 않고 그 언어 상식형 대체 카드 후보 → 풀어 보기 → 사람이 하나 고르며 정답 확인 → 줄에 반영 */
+const CARD_TR_AIS = ['Claude', 'ChatGPT'];
+let cardAi = null;
+const cardSolveAi = (t, lk) => revAiOf(t, lk, 'test');
+function cardKoOf(t) { const B = new Map(baseRows(t).map(b => [b.id, b])); return id => ((B.get(id) || {}).ko || '').trim(); }
+function cardTrOf(t, lk) { const M = new Map(sheetRows(t, lk).map(r => [r.id, r])); return id => (M.get(id) || {}).tr || ''; }
+function cardTrPrompt(t, lk, ai) {
+  const L = LANGS.find(l => l.key === lk), ko = cardKoOf(t), list = Cards.listOf(t), en = lk !== 'en' ? cardTrOf(t, 'en') : null;
+  const enOk = c => en && Cards.cardState(t, 'en', c, en).ok;
+  const allow = (Cards.REPL_ALLOW[lk] || ['상식']).join('·');
+  return `규칙 버전 ${PROMPT_VER} · 카드 번역 AI ${ai} · ${L.label}
+
+# 작업
+2지선다 퀴즈 카드(문제 1개 + 선택지 2개)를 카드째 ${L.label}로 만든다. 카드마다 ‘경로’를 따른다.
+## 경로 ‘번역’ (상식 카드)
+- 문제와 선택지 2개를 함께 번역한다. 문제의 빈칸 (   )에 정답 선택지를 넣으면 자연스러운 한 문장이 되고, 오답을 넣으면 분명히 틀린 문장이 되게 한다.
+- 선택지 순서를 바꾸지 않는다 (선택지1 → 선택지1). 정답 번호는 표에 적힌 그대로 쓴다. 정답은 사람이 정한 값이다.
+- 문제 끝 말버릇·효과음(예: 개굴!)은 용어집 표기를 따른다.
+- 후보 칸은 ‘번역’, 한 카드에 한 행.
+## 경로 ‘대체’ (노래·말장난·문화 카드)
+- 번역하지 않는다. ${L.label} 플레이어가 한국 문화를 몰라도 풀 수 있는 새 카드 후보 A·B·C를 만든다.
+- 허용 유형: ${allow}만. 노래 가사·말장난·특정 나라 문화 지식이 필요하면 안 된다.
+- 게임 주제(카드의 원래 소재)와 난이도는 비슷하게. 정답은 표의 ‘화면 정답 위치’ 쪽 선택지에 둔다 (왼쪽 = 선택지1, 오른쪽 = 선택지2).
+- 정답 칸에 AI가 생각하는 정답 번호, 태그 칸에 ${L.label} 기준 유형(상식·노래·말장난·문화 중 해당하는 것 모두), 출처·근거 칸에 왜 ${L.label} 플레이어가 알 만한지.
+
+${gameInfoBlock(t, lk)}
+${honorBlock(lk, 'translate')}
+# 용어집 (확정은 반드시 지킴)
+${termLines(gidOf(t), lk)}
+${banBlock(lk)}${hcmpLessons(t, lk)}
+# 결과물: 시트 \`카드 번역\` (엑셀을 못 만들면 같은 표를 채팅에 표로, 표 위에 시트 이름)
+카드 | 후보 | 문제 | 선택지1 | 선택지2 | 정답 | 태그 | 출처·근거 | 이유
+- 카드 번호는 아래 표 그대로. 줄바꿈은 ‘ / ’로. 이유는 한국어로 한 줄.
+
+# 카드
+${tsv(['카드', '경로', '한국어 문제', '선택지1', '선택지2', '정답 번호(사람)', '화면 정답 위치', '유형 태그', '태그 근거', ...(en ? ['English (확정 카드, 참고)'] : [])], list.map(c => [c.id, Cards.ROUTE_LABEL[Cards.routeOf(c)], ko(c.q).replace(/\n/g, ' / '), ko(c.opts[0]), ko(c.opts[1]), Cards.routeOf(c) === 'tr' ? c.answer + 1 : '(새 카드에서 정함)', c.pos === 'R' ? '오른쪽' : '왼쪽', c.tag, c.tagWhy || '-', ...(en ? [enOk(c) && Cards.routeOf(c) === 'tr' ? [en(c.q), en(c.opts[0]), en(c.opts[1])].map(s => s.replace(/\n/g, ' / ')).join(' | ') : '-'] : [])]))}`;
+}
+function cardSolveItems(t, lk) {
+  const per = Cards.perOf(t, lk), out = [];
+  Cards.listOf(t).forEach(c => ((per[c.id] || {}).cands || []).forEach(cand => { const s = ((per[c.id] || {}).solve || {})[cand.h]; if (s && s.runs && s.runs.a != null && s.runs.b != null) return; out.push([Cards.solveId(cand.h, false), cand.q, cand.opts[0], cand.opts[1]], [Cards.solveId(cand.h, true), cand.q, cand.opts[1], cand.opts[0]]); }));
+  /* 같은 카드의 두 순서가 붙어 있지 않게 섞음 (번호로 정렬하면 해시 순서라 흩어짐) */
+  return out.sort((a, b) => a[0].localeCompare(b[0]));
+}
+function cardSolvePrompt(t, lk) {
+  const L = LANGS.find(l => l.key === lk), items = cardSolveItems(t, lk);
+  return `풀어 보기 · ${L.label} · ${cardSolveAi(t, lk)}
+
+# 작업
+너는 ${L.label}를 쓰는 처음 보는 게임 플레이어다. 아래 2지선다 문제를 하나씩 푼다.
+- 문제 빈칸 (   )에 들어갈 답을 선택지 1·2 중에서 고른다. 다른 문제와 비교하지 말고 각 문제만 본다.
+- 문장이 어색하거나, 두 선택지 모두 답이 될 수 있거나, 답이 없으면 ‘이상한 점’에 쓴다.
+
+# 결과물: 시트 \`풀어 보기\` (엑셀을 못 만들면 같은 표를 채팅에 표로)
+번호 | 고른 답 | 확신(0~100) | 이상한 점
+- 고른 답은 1 또는 2. 이상한 점은 한국어로, 없으면 ‘-’.
+
+# 문제
+${tsv(['번호', '문제', '선택지 1', '선택지 2'], items.map(r => [r[0], r[1].replace(/\n/g, ' / '), r[2], r[3]]))}`;
+}
+/* 카드 상태가 ok가 된 카드는 그 줄 번역에 바로 반영 + 카드 검증으로 검수 통과 처리 (사람 승인은 따로) */
+function cardsApplyInto(next, lk, items) {
+  const rows = new Map(sheetRows(next, lk).map(r => [r.id, r])), tr = id => (rows.get(id) || {}).tr || '';
+  let n = 0, miss = 0;
+  Cards.listOf(next).forEach(c => { const s = Cards.cardState(next, lk, c, tr); if (!s.ok || s.applied) return;
+    const ids = [c.q, ...c.opts], want = [s.pick.q, ...s.pick.opts];
+    if (!ids.every(id => rows.has(id))) { miss++; return; }
+    ids.forEach((id, i) => { const row = rows.get(id), x = items[id] = items[id] || {};
+      if (normKo(row.tr) !== normKo(want[i]) || row.tr !== want[i]) pushVer(x, row, { to: want[i], why: `카드 ${c.id} ${Cards.ROUTE_LABEL[s.route]} (${s.pick.k}${s.auto ? ' · 풀어 보기 PASS로 자동 선택' : ''})`, kind: 'card', type: s.route === 'repl' ? '문화적 현지화 오류' : '기타', stage: '카드', byAi: s.pick.by || '' });
+      x.rv = { v: '통과', kind: '카드 검증', why: `카드 ${c.id} 풀어 보기 PASS`, at: nowISO(), by: '카드', trh: trCk(want[i]), pv: PROMPT_VER }; });
+    n++; });
+  return { n, miss };
+}
+async function applyCardTr(tables) {
+  const t = cur().data, lk = promptLang, ai = cardAi || aiOf(t, lk);
+  const tb = tables.find(r => r.sheet && /카드/.test(r.sheet)) || tables.find(r => (r[0] || []).some(h => String(h).replace(/\s/g, '') === '선택지1'));
+  if (!tb) { toast('‘카드 번역’ 표를 찾지 못함. AI 답 전체를 붙여 넣기.', 5000); return; }
+  const hi = Math.max(0, tb.findIndex(r => r.some(h => String(h).replace(/\s/g, '') === '선택지1')));
+  const P = Cards.parseTr(tb.slice(hi), Cards.listOf(t), lk, ai);
+  let n = 0, ap = { n: 0, miss: 0 };
+  await saveWork((items, next) => { next.cards = next.cards || {}; next.cards.per = next.cards.per || {}; const per = next.cards.per[lk] = next.cards.per[lk] || {};
+    Object.entries(P.out).forEach(([id, L]) => { const pc = per[id] = per[id] || {}; pc.cands = (pc.cands || []).filter(x => !L.some(y => y.k === x.k)); L.forEach(cand => { pc.cands.push(Object.assign(cand, { at: nowISO() })); n++; }); });
+    ap = cardsApplyInto(next, lk, items); return n; }, () => '');
+  render(true);
+  toast(`카드 ${Object.keys(P.out).length}장 · 후보 ${n}개 받음 (${ai})${P.errors.length ? ` · 버린 행 ${P.errors.length}: ${P.errors.slice(0, 2).join(' / ')}` : ''}. 다음: 풀어 보기.`, 7000);
+}
+async function applyCardSolve(tables) {
+  const t = cur().data, lk = promptLang, tb = tables.find(r => r.sheet && /풀어/.test(r.sheet)) || tables.find(r => (r[0] || []).some(h => /고른답/.test(String(h).replace(/\s/g, ''))));
+  if (!tb) { toast('‘풀어 보기’ 표를 찾지 못함.', 5000); return; }
+  const hi = Math.max(0, tb.findIndex(r => r.some(h => /고른답/.test(String(h).replace(/\s/g, ''))))), h = tb[hi].map(x => String(x).replace(/\s/g, '')), ix = f => h.findIndex(f);
+  const iNo = Math.max(0, ix(x => x === '번호')), iA = ix(x => /고른답/.test(x)), iC = ix(x => /^확신/.test(x)), iN = ix(x => /이상한/.test(x));
+  const M = new Map(); Cards.listOf(t).forEach(c => ((Cards.perOf(t, lk)[c.id] || {}).cands || []).forEach(cand => { M.set(Cards.solveId(cand.h, false), [c.id, cand.h, false]); M.set(Cards.solveId(cand.h, true), [c.id, cand.h, true]); }));
+  const got = []; let bad = 0;
+  tb.slice(hi + 1).forEach(r => { const m = M.get(String(r[iNo] || '').trim().toUpperCase()); if (!m) return; const a = Cards.answerOf(r[iA]); if (a < 0) { bad++; return; } got.push([...m, m[2] ? 1 - a : a, iC >= 0 ? Number(r[iC]) || null : null, iN >= 0 ? String(r[iN] || '').trim() : '']); });
+  let ap = { n: 0, miss: 0 };
+  await saveWork((items, next) => { const per = next.cards.per[lk];
+    got.forEach(([id, h, flip, a, conf, note]) => { const pc = per[id]; pc.solve = pc.solve || {}; const s = pc.solve[h] = pc.solve[h] || { runs: {} }; s.runs = Object.assign({}, s.runs, { [flip ? 'b' : 'a']: a }); if (note && note !== '-') s.note = [s.note, note].filter(Boolean).join(' / '); if (conf != null) s.conf = Math.min(s.conf == null ? 100 : s.conf, conf); s.at = nowISO(); s.by = cardSolveAi(next, lk); });
+    ap = cardsApplyInto(next, lk, items); return got.length; }, () => '');
+  render(true);
+  toast(`풀어 보기 ${got.length}문항 반영${bad ? ` · 답이 1·2가 아닌 ${bad}행 버림` : ''} · 줄에 반영한 카드 ${ap.n}장${ap.miss ? ` · 번역 엑셀에 줄이 없는 카드 ${ap.miss}장` : ''}.`, 6000);
+}
+document.addEventListener('change', e => { if (e.target.id === 'card-ai') cardAi = e.target.value; });
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-cardpick]'); if (!b || readOnly) return;
+  const [id, k] = b.dataset.cardpick.split('|'), lk = promptLang, ans = document.querySelector(`input[name="cans-${CSS.escape(id)}"]:checked`);
+  if (!ans) { toast('정답 번호를 골라야 함 (정답은 사람이 확인).'); return; }
+  let ap = { n: 0 };
+  await saveWork((items, next) => { const pc = next.cards.per[lk][id], cand = (pc.cands || []).find(x => x.k === k); if (!cand) return 0; pc.pick = { k, h: cand.h, answer: Number(ans.value), by: meName(), at: nowISO() }; ap = cardsApplyInto(next, lk, items); return 1; }, () => '');
+  render(true); toast(`카드 ${id}: 후보 ${k} 선택 · 정답 ${Number(ans.value) + 1}번${ap.n ? ' · 줄에 반영' : ' · 풀어 보기 PASS가 되면 줄에 반영'}.`, 5000);
+});
+function cardsTabHTML(t, lk, F) {
+  const list = Cards.listOf(t); if (!list.length) return '<p class="sb">카드가 없음. ‘원문 준비 → 퀴즈 카드’에서 먼저 등록.</p>';
+  const tr = cardTrOf(t, lk), ko = cardKoOf(t), st = list.map(c => ({ c, s: Cards.cardState(t, lk, c, tr) })), okN = st.filter(o => o.s.ok).length, sol = cardSolveItems(t, lk).length / 2;
+  const ai = cardAi && CARD_TR_AIS.includes(cardAi) ? cardAi : aiOf(t, lk), got = new Set(st.flatMap(o => o.s.cands.map(v => v.cand.by)));
+  const sv = v => v === 'PASS' ? '<span class="vtag pass">PASS</span>' : v === 'FAIL' ? '<span class="vtag fail">FAIL</span>' : '<span class="vtag rev">전</span>';
+  return `<p class="sb">문제·선택지·정답을 한 장으로 번역하고 검증함. 상식 카드는 번역 AI ${CARD_TR_AIS.length}개가 카드째 번역 → ${esc(cardSolveAi(t, lk))}가 번역문만 보고 두 순서로 풀어 봄 → 둘 다 정답이면 자동 선택. 노래·말장난·문화 카드는 상식형 대체 카드 중에서 사람이 고르며 정답 확인. 고른 카드는 그 줄 번역에 바로 들어가고 검수 통과로 처리됨 (사람 승인은 따로).</p>
+    <p><b>카드 ${list.length}장 · 완료 ${okN}</b>${okN < list.length ? ` · 남음 ${list.length - okN} (출시 막힘)` : ' · 출시 가능'}</p>
+    ${readOnly ? '' : `<ol class="do">
+      <li><i>1</i><div>카드 번역 AI <select id="card-ai">${CARD_TR_AIS.map(a => `<option ${a === ai ? 'selected' : ''}>${a}</option>`).join('')}</select> <button type="button" class="btn primary" data-copy="p-cardtr">카드 번역 프롬프트 복사</button> <label class="btn upl">받은 엑셀 올리기<input type="file" hidden data-one="one:cardtr" accept="${FILE_ACCEPT}"></label>${pasteBtn('one:cardtr', '답 붙여 넣기')} <small class="sb">받은 AI: ${[...got].filter(Boolean).map(esc).join(' · ') || '없음'} — 두 AI 모두 받기</small><pre class="ptext" id="pt-p-cardtr" hidden>${esc(cardTrPrompt(t, lk, ai))}</pre></div></li>
+      <li><i>2</i><div><button type="button" class="btn primary" data-copy="p-cardsolve" ${sol ? '' : 'disabled'}>풀어 보기 프롬프트 복사 <small>${sol}개 후보</small></button> <label class="btn upl">받은 엑셀 올리기<input type="file" hidden data-one="one:cardsolve" accept="${FILE_ACCEPT}"></label>${pasteBtn('one:cardsolve', '답 붙여 넣기')} <small class="sb">${esc(cardSolveAi(t, lk))} 새 대화 (번역한 AI와 다른 AI)</small><pre class="ptext" id="pt-p-cardsolve" hidden>${esc(cardSolvePrompt(t, lk))}</pre></div></li>
+    </ol>`}
+    <div class="ilist">${st.map(({ c, s }) => `<div class="irow${s.ok ? ' resolved' : ''}"><code>${esc(c.id)}<br>${esc(c.tag)}<br>${Cards.ROUTE_LABEL[s.route]}</code><div class="ibody">
+      <b style="white-space:pre-wrap">${esc(ko(c.q))}</b> <small class="sb">${c.opts.map((o, i) => `${i + 1}. ${esc(ko(o))}${c.answer === i ? ' ✓' : ''}`).join(' · ')}</small>
+      ${s.cands.map(({ cand, errs, sol }) => { const picked = s.pick === cand; return `<div class="ccand${picked ? ' picked' : ''}"><span>${sv(sol.v)} <b>${esc(cand.k)}</b> ${esc(cand.q.replace(/\n/g, ' / '))} <small>1. ${esc(cand.opts[0])} · 2. ${esc(cand.opts[1])}${s.route === 'repl' ? ` · AI 정답 ${cand.aiAns + 1}번 · 태그 ${esc((cand.tags || []).join('·') || '-')}` : ''}</small></span>
+        ${sol.v === 'FAIL' ? `<small class="badtxt">${esc(sol.why)}${((Cards.perOf(t, lk)[c.id] || {}).solve || {})[cand.h] && Cards.perOf(t, lk)[c.id].solve[cand.h].note ? ' · ' + esc(Cards.perOf(t, lk)[c.id].solve[cand.h].note) : ''}</small>` : ''}${errs.length ? `<small class="badtxt">${esc(errs.join(' · '))}</small>` : ''}${cand.src ? `<small class="sb">근거: ${esc(cand.src)}</small>` : ''}
+        ${s.route === 'repl' && !readOnly && !errs.length ? `<span class="iacts">정답 <label><input type="radio" name="cans-${esc(c.id)}" value="0" ${picked ? (s.answer === 0 ? 'checked' : '') : ''}> 1</label> <label><input type="radio" name="cans-${esc(c.id)}" value="1" ${picked ? (s.answer === 1 ? 'checked' : '') : ''}> 2</label> <button type="button" class="btn" data-cardpick="${esc(c.id)}|${esc(cand.k)}">${picked ? '다시 선택' : '이 카드로'}</button></span>` : ''}</div>`; }).join('') || '<small class="sb">후보 없음</small>'}
+      <small class="${s.ok ? 'okmsg' : 'badtxt'}">${s.ok ? `✓ ${esc(s.pick.k)}${s.auto ? ' (풀어 보기 PASS로 자동 선택)' : ''} · 정답 ${s.answer + 1}번${s.applied ? ' · 줄에 반영됨' : ' · 번역 엑셀에 줄이 없어 반영 못 함'}` : esc(s.why)}</small>
+    </div></div>`).join('')}</div>`;
+}
+
 function stepConds(t, lk, F) { return { info: infoDone(t), excel: F.N > 0, auto: !F.openAuto, files: !F.filesTodo, cross: !F.rvTodo && !F.human && !F.pzTodo, ctx: !F.ctxTodo && !F.rvTodo, human: F.N > 0 && !F.hvTodo && !F.rvTodo }; }
 /* 교차 검수 ‘퍼즐 검수’ 시트의 퍼즐 이름 (퍼즐 없음 제외) */
 function puzzleNames(t, lk) {
@@ -4845,12 +4984,15 @@ function sheetViewHTML(t, lk) {
   const e = all[k]; return tabs + `<div class="tprev"><table><tbody>${e.rows.map(r => `<tr>${r.map(c => `<td style="white-space:pre-wrap">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 function reviewHTML(id, t, lk, F, reviewer) {
-  const tabs = [['auto', '① 자동 점검', F.openAuto ? `AI 수정 ${F.openAuto}줄` : '할 일 없음'], ['cross', '② 독립 검수', `${F.pass}/${F.N}`], ...(F.ctxG.length ? [['ctx', '③ 맥락 검수', F.ctxTodo ? `${F.ctxTodo}묶음 남음` : '완료']] : []), ...(F.humanReq ? [['human', F.ctxG.length ? '④ 사람 승인' : '③ 사람 승인', `${F.hvOk}/${F.N}`]] : []), ['hcmp', '+ 사람 번역 비교', (() => { const n = hcmpRows(F.rows, lk).filter(o => !o.same).length; return n ? `다른 줄 ${n}` : '선택'; })()]];
+  const cardN = Cards.listOf(t).length, cardOk = cardN ? Cards.listOf(t).filter(c => Cards.cardState(t, lk, c, cardTrOf(t, lk)).ok).length : 0;
+  const tabs = [...(cardN ? [['cards', '⓪ 퀴즈 카드', cardOk < cardN ? `${cardN - cardOk}장 남음` : '완료']] : []), ['auto', '① 자동 점검', F.openAuto ? `AI 수정 ${F.openAuto}줄` : '할 일 없음'], ['cross', '② 독립 검수', `${F.pass}/${F.N}`], ...(F.ctxG.length ? [['ctx', '③ 맥락 검수', F.ctxTodo ? `${F.ctxTodo}묶음 남음` : '완료']] : []), ...(F.humanReq ? [['human', F.ctxG.length ? '④ 사람 승인' : '③ 사람 승인', `${F.hvOk}/${F.N}`]] : []), ['hcmp', '+ 사람 번역 비교', (() => { const n = hcmpRows(F.rows, lk).filter(o => !o.same).length; return n ? `다른 줄 ${n}` : '선택'; })()]];
   if (rvTab === 'human' && !F.humanReq) rvTab = 'auto';
   if (rvTab === 'files') rvTab = 'auto';   /* 이미지 대조 단계는 없앰 */
   const cond = stepConds(t, lk, F);
-  const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${isDone(t, lk, k, F) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${k === 'auto' ? c : isDone(t, lk, k, F) ? '✓ ' + esc(whoOf(signOf(t, lk, k))) : c}</small></button>`).join('')}</div>`;
+  const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${k === 'cards' ? (c === '완료' ? ' ok' : '') : isDone(t, lk, k, F) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${k === 'auto' || k === 'cards' ? c : isDone(t, lk, k, F) ? '✓ ' + esc(whoOf(signOf(t, lk, k))) : c}</small></button>`).join('')}</div>`;
   let inner = '';
+  if (rvTab === 'cards' && !cardN) rvTab = 'auto';
+  if (rvTab === 'cards') inner = cardsTabHTML(t, lk, F);
   if (rvTab === 'auto') inner = pzPanelHTML(t, lk, F) + autoTabHTML(t, lk, F);
   if (rvTab === 'files') {
     const stored = gameFiles[id] || [];
@@ -4905,7 +5047,7 @@ function reviewHTML(id, t, lk, F, reviewer) {
   }
   const WHY = { auto: 'FAIL은 고치거나 예외 사유, REVIEW는 확인하면 누를 수 있음', files: '모든 파일을 체크하면 누를 수 있음', cross: '독립 검수 결과를 넣고 FAIL·REVIEW 처리 + 퍼즐마다 담당자 확인을 하면 누를 수 있음', ctx: '모든 묶음의 맥락 검수 결과를 넣으면 누를 수 있음 (문제는 ① 자동 점검에서 처리)', human: '모든 줄을 사람이 승인하면 누를 수 있음 (수정 요청·보류가 남으면 불가)' };
   const NAME = { auto: '자동 점검', files: '이미지 대조', cross: '독립 검수', ctx: '맥락 검수', human: '사람 최종 승인' };
-  return tabHTML + `<div class="rpane">${ratBoxHTML(id, t, lk)}${inner}${rvTab === 'auto' ? '' : signRow(t, lk, rvTab, cond[rvTab], NAME[rvTab], WHY[rvTab])}</div>` + (F.memos ? '<p class="sb badtxt">맨 위 수정 요청을 반영해야 확정 가능.</p>' : '');
+  return tabHTML + `<div class="rpane">${ratBoxHTML(id, t, lk)}${inner}${rvTab === 'auto' || rvTab === 'cards' ? '' : signRow(t, lk, rvTab, cond[rvTab], NAME[rvTab], WHY[rvTab])}</div>` + (F.memos ? '<p class="sb badtxt">맨 위 수정 요청을 반영해야 확정 가능.</p>' : '');
 }
 
 /* 사람이 볼 것에서 함께 처리할 줄: 같은 원문·번역 + 한 번 검수한 결과를 같이 받은 줄 */
@@ -5738,7 +5880,7 @@ document.addEventListener('change', e => {
 
 /* 붙여 넣기 */
 let pasteTarget = null;
-const PASTE_TITLES = { 'one:autofix': '자동 점검 수정 답 붙여 넣기', 'one:solve': '풀어 보기 답 붙여 넣기', 'one:human': '사람 번역본 붙여 넣기 (번호 | 사람 번역)', 'one:hdiff': '차이 판정 답 붙여 넣기', 'one:natq': '현지인 질문 답 붙여 넣기', 'one:und': '게임 이해 답 붙여 넣기', 'one:nat': '현지인 검수 결과 붙여 넣기', 'one:ctx': '맥락 검수 답 붙여 넣기', 'one:work': '검수 작업표 붙여 넣기', 'one:blind': '독립 역번역 답 붙여 넣기', 'one:alt': '추가 대안 답 붙여 넣기', 'one:rat': '바뀐 번역의 근거 답 붙여 넣기', 'ap:ocr': '이미지 글자 판독 답 붙여 넣기', 'ap:test': '처음 보는 사람 테스트 답 붙여 넣기', 'one:res': '번역 결과 표 붙여 넣기 (표 3개 모두 붙여 넣어도 됨)', 'one:cross': '교차 검수 답 붙여 넣기', 'one:x': 'AI 원문 추출 답 붙여 넣기', 'one:tr': 'AI 번역 답 붙여 넣기', 'one:rv': 'AI 검수 답 붙여 넣기', tr: '번역 결과', b: 'DeepL 결과', bt: '역번역 결과', rv: '검수 결과', ts: '테스트 결과', fx: '수정 결과', inputTable: '번역 입력표', enFinal: '영어 확정본' };
+const PASTE_TITLES = { 'one:cardtr': '카드 번역 답 붙여 넣기', 'one:cardsolve': '풀어 보기 답 붙여 넣기', 'one:autofix': '자동 점검 수정 답 붙여 넣기', 'one:solve': '풀어 보기 답 붙여 넣기', 'one:human': '사람 번역본 붙여 넣기 (번호 | 사람 번역)', 'one:hdiff': '차이 판정 답 붙여 넣기', 'one:natq': '현지인 질문 답 붙여 넣기', 'one:und': '게임 이해 답 붙여 넣기', 'one:nat': '현지인 검수 결과 붙여 넣기', 'one:ctx': '맥락 검수 답 붙여 넣기', 'one:work': '검수 작업표 붙여 넣기', 'one:blind': '독립 역번역 답 붙여 넣기', 'one:alt': '추가 대안 답 붙여 넣기', 'one:rat': '바뀐 번역의 근거 답 붙여 넣기', 'ap:ocr': '이미지 글자 판독 답 붙여 넣기', 'ap:test': '처음 보는 사람 테스트 답 붙여 넣기', 'one:res': '번역 결과 표 붙여 넣기 (표 3개 모두 붙여 넣어도 됨)', 'one:cross': '교차 검수 답 붙여 넣기', 'one:x': 'AI 원문 추출 답 붙여 넣기', 'one:tr': 'AI 번역 답 붙여 넣기', 'one:rv': 'AI 검수 답 붙여 넣기', tr: '번역 결과', b: 'DeepL 결과', bt: '역번역 결과', rv: '검수 결과', ts: '테스트 결과', fx: '수정 결과', inputTable: '번역 입력표', enFinal: '영어 확정본' };
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-paste]'); if (!b) return;
   pasteTarget = b.dataset.paste;
@@ -5753,7 +5895,7 @@ $('#paste-form').addEventListener('submit', async e => {
     if (!tables.length) { $('#paste-err').textContent = '표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.'; return; }
     $('#pastedlg').close();
     if (pasteTarget.startsWith('ap:')) return applyUpload(pasteTarget.slice(3), tables);
-    return pasteTarget === 'one:solve' ? applySolve(tables) : pasteTarget === 'one:human' ? applyHuman(tables) : pasteTarget === 'one:hdiff' ? applyHdiff(tables) : pasteTarget === 'one:natq' ? applyNatQ(tables) : pasteTarget === 'one:und' ? applyUnderstand(tables) : pasteTarget === 'one:nat' ? applyNative(tables) : pasteTarget === 'one:ctx' ? applyCtx(tables) : pasteTarget === 'one:work' ? applyWork(tables) : pasteTarget === 'one:blind' ? applyBlind(tables) : pasteTarget === 'one:alt' ? applyAltReq(tables) : pasteTarget === 'one:autofix' ? applyAutoFix(tables) : pasteTarget === 'one:rat' ? applyRat(tables) : pasteTarget === 'one:cross' ? applyCross(tables) : pasteTarget === 'one:tr' ? applyTranslation(tables) : pasteTarget === 'one:x' ? applyExtraction(tables) : applyReview(tables);
+    return pasteTarget === 'one:solve' ? applySolve(tables) : pasteTarget === 'one:human' ? applyHuman(tables) : pasteTarget === 'one:hdiff' ? applyHdiff(tables) : pasteTarget === 'one:natq' ? applyNatQ(tables) : pasteTarget === 'one:und' ? applyUnderstand(tables) : pasteTarget === 'one:nat' ? applyNative(tables) : pasteTarget === 'one:ctx' ? applyCtx(tables) : pasteTarget === 'one:work' ? applyWork(tables) : pasteTarget === 'one:blind' ? applyBlind(tables) : pasteTarget === 'one:alt' ? applyAltReq(tables) : pasteTarget === 'one:autofix' ? applyAutoFix(tables) : pasteTarget === 'one:cardtr' ? applyCardTr(tables) : pasteTarget === 'one:cardsolve' ? applyCardSolve(tables) : pasteTarget === 'one:rat' ? applyRat(tables) : pasteTarget === 'one:cross' ? applyCross(tables) : pasteTarget === 'one:tr' ? applyTranslation(tables) : pasteTarget === 'one:x' ? applyExtraction(tables) : applyReview(tables);
   }
   const rows = parseTable($('#paste-text').value);
   if (rows.length < 2) { $('#paste-err').textContent = '표를 찾지 못함. 첫 행에 열 이름(ID 등)이 있어야 함.'; return; }
@@ -5888,7 +6030,7 @@ document.addEventListener('change', async e => {
     try {
       const tables = await readWorkbook(f);
       if (!tables.length || tables[0].length < 2) { toast('표를 찾지 못함.'); return; }
-      await (target === 'one:solve' ? applySolve(tables) : target === 'one:human' ? applyHuman(tables) : target === 'one:hdiff' ? applyHdiff(tables) : target === 'one:natq' ? applyNatQ(tables) : target === 'one:und' ? applyUnderstand(tables) : target === 'one:nat' ? applyNative(tables) : target === 'one:ctx' ? applyCtx(tables) : target === 'one:work' ? applyWork(tables) : target === 'one:blind' ? applyBlind(tables) : target === 'one:alt' ? applyAltReq(tables) : target === 'one:autofix' ? applyAutoFix(tables) : target === 'one:cross' ? applyCross(tables) : target === 'one:rat' ? applyRat(tables) : target === 'one:tr' ? applyTranslation(tables) : applyReview(tables));
+      await (target === 'one:solve' ? applySolve(tables) : target === 'one:human' ? applyHuman(tables) : target === 'one:hdiff' ? applyHdiff(tables) : target === 'one:natq' ? applyNatQ(tables) : target === 'one:und' ? applyUnderstand(tables) : target === 'one:nat' ? applyNative(tables) : target === 'one:ctx' ? applyCtx(tables) : target === 'one:work' ? applyWork(tables) : target === 'one:blind' ? applyBlind(tables) : target === 'one:alt' ? applyAltReq(tables) : target === 'one:autofix' ? applyAutoFix(tables) : target === 'one:cardtr' ? applyCardTr(tables) : target === 'one:cardsolve' ? applyCardSolve(tables) : target === 'one:cross' ? applyCross(tables) : target === 'one:rat' ? applyRat(tables) : target === 'one:tr' ? applyTranslation(tables) : applyReview(tables));
     } catch (err) { done(); toast(err.message || '파일을 읽지 못함.', 5000); }
     return;
   }
@@ -6147,7 +6289,7 @@ document.addEventListener('input', e => { if (e.target.id === 'sq-q') { SQ.q = e
 document.addEventListener('change', e => { const k = e.target.dataset && e.target.dataset.sq; if (k) { SQ[k] = e.target.value; const el = document.getElementById('sq-res'); if (el) el.innerHTML = searchResultsHTML(); } });
 
 /* ---------- 번역 버전: 같은 ID 안에서 V1, V2 … (덮어쓰지 않음 · 기록에 없는 버전은 만들지 않음) ---------- */
-const STAGE_LABEL = { '교차 검수': '검수 AI 수정안 반영', '사람 승인': '사람 수정 요청 반영', '자동 점검': '자동 점검 후 수정', '직접 수정': '사람 직접 수정', '엑셀 다시 올림': '번역 엑셀 다시 올림' };
+const STAGE_LABEL = { '카드': '퀴즈 카드 반영', '교차 검수': '검수 AI 수정안 반영', '사람 승인': '사람 수정 요청 반영', '자동 점검': '자동 점검 후 수정', '직접 수정': '사람 직접 수정', '엑셀 다시 올림': '번역 엑셀 다시 올림' };
 function versionsOf(t, lk, r) {
   const x = r.x, hs = x.hist || [], sh = sheetOf(t, lk) || {}, sr = r.sheetRat || null;
   /* 지금 엑셀의 근거(sr)는 마지막으로 올린 엑셀 이후의, 같은 번역문인 버전에만 연결 */

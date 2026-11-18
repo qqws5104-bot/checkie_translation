@@ -116,5 +116,84 @@
     return { n: L.length, by, needRepl: L.filter(c => NEED_REPL.includes(c.tag)).length, broken: broken(t).length };
   }
 
-  return { TAGS, NEED_REPL, tagOf, answerOf, posOf, resolveRow, parse, listOf, rowIds, broken, replCheck, releaseBlocks, stats, normKo };
+  /* ================= 2단계: 카드 단위 번역 · 대체 · 풀어 보기 =================
+     t.cards.per[lk][카드] = { cands: [{ k, q, opts, aiAns, tags, src, why, by, at, h }], pick: { k, answer, h, by, at, auto }, solve: { [후보 h]: { runs: {a: 답, b: 답}, conf, note, at, by } } }
+     - 상식 카드: 경로 ‘번역’. 선택지 순서를 그대로 옮기므로 정답은 한국어 카드의 사람 정답 그대로
+     - 노래·말장난·문화 카드: 경로 ‘대체’. 그 언어에서 허용된 태그(기본 상식만)의 새 카드. 정답은 사람이 고를 때 확인
+     - 풀어 보기: 번역문만 본 다른 AI가 두 순서(그대로·뒤집음)로 풀어 둘 다 정답이어야 PASS */
+  const REPL_ALLOW = { en: ['상식'], ja: ['상식'], zh: ['상식'] };
+  const TR_AIS = 2;   // 상식 카드는 서로 다른 번역 AI 2개의 번역을 받고, 풀어 보기 PASS인 것 중 먼저 받은 것을 씀
+  const routeOf = c => NEED_REPL.includes(c.tag) ? 'repl' : 'tr';
+  const ROUTE_LABEL = { tr: '번역', repl: '대체' };
+  const ntext = s => clean(s).replace(/\s+/g, ' ');
+  function hashOf(q, opts) { const s = [q, ...(opts || [])].map(ntext).join('\u0001'); let h = 5381; for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0; return h.toString(36); }
+  const perOf = (t, lk) => ((t && t.cards && t.cards.per) || {})[lk] || {};
+  const candOf = (pc, k) => ((pc && pc.cands) || []).find(x => x.k === k) || null;
+
+  /* AI 답 표(시트 ‘카드 번역’): 카드 | 후보 | 문제 | 선택지1 | 선택지2 | 정답 | 태그 | 출처·근거 | 이유 */
+  function parseTr(table, cards, lk, by) {
+    const errors = [], out = {}, head = (table[0] || []).map(h => clean(h).replace(/\s/g, ''));
+    const ix = f => head.findIndex(f), iC = Math.max(0, ix(h => h === '카드' || h === '번호')), iK = ix(h => h === '후보'), iQ = ix(h => h === '문제'), i1 = ix(h => h === '선택지1'), i2 = ix(h => h === '선택지2'), iA = ix(h => h === '정답'), iT = ix(h => h.startsWith('태그')), iS = ix(h => h.startsWith('출처')), iW = ix(h => h === '이유');
+    if (iQ < 0 || i1 < 0 || i2 < 0) return { out, errors: ['열 이름(문제·선택지1·선택지2)을 찾지 못함'] };
+    const M = new Map(cards.map(c => [c.id, c]));
+    table.slice(1).forEach((r, n) => {
+      const id = clean(r[iC]).toUpperCase().replace(/\s/g, ''); if (!id) return;
+      const c = M.get(id), where = `${n + 2}행 ${id}`; if (!c) return errors.push(`${where}: 없는 카드`);
+      const route = routeOf(c), q = clean(r[iQ]).replace(/\s\/\s/g, '\n'), opts = [clean(r[i1]), clean(r[i2])];
+      if (!q || opts.some(o => !o)) return errors.push(`${where}: 문제·선택지 빈칸`);
+      if (ntext(opts[0]) === ntext(opts[1])) return errors.push(`${where}: 두 선택지가 같음`);
+      const a = iA >= 0 ? answerOf(r[iA]) : -1;
+      if (route === 'tr' && a >= 0 && a !== c.answer) return errors.push(`${where}: 정답이 한국어 카드(${c.answer + 1}번)와 다름 — 선택지 순서를 바꾸지 말 것`);
+      const tags = iT >= 0 ? clean(r[iT]).split(/[,·/\s]+/).map(tagOf).filter(x => x !== '') : [];
+      const k = route === 'tr' ? (by || '번역') : (clean(iK >= 0 ? r[iK] : '') || String.fromCharCode(65 + ((out[id] || []).length))).toUpperCase().slice(0, 12);
+      (out[id] = out[id] || []).push({ k: route === 'tr' ? k : `${k}·${by || 'AI'}`, q, opts, aiAns: route === 'tr' ? c.answer : a, tags, src: iS >= 0 ? clean(r[iS]) : '', why: iW >= 0 ? clean(r[iW]) : '', by: by || '', h: hashOf(q, opts) });
+    });
+    return { out, errors };
+  }
+  /* 후보 등록 가능 여부 (대체 카드는 그 언어 허용 태그만, 정답 위치는 한국어 화면과 같은 쪽) */
+  function candCheck(c, cand, lk) {
+    const errs = [];
+    if (routeOf(c) === 'repl') {
+      const tags = (cand.tags || []).filter(x => x);
+      if (!tags.length) errs.push(`${lk} 기준 태그 없음`);
+      if (tags.some(x => x === null)) errs.push('알 수 없는 태그');
+      const bad = tags.filter(x => x && !(REPL_ALLOW[lk] || ['상식']).includes(x));
+      if (bad.length) errs.push(`${bad.join('·')} 태그 → 대체 카드 불가 (${(REPL_ALLOW[lk] || ['상식']).join('·')}만)`);
+      if (cand.aiAns !== 0 && cand.aiAns !== 1) errs.push('AI 정답 없음');
+    }
+    return errs;
+  }
+  /* 풀어 보기 문항 번호: 후보 h에서 정함 (복사한 프롬프트와 붙여 넣은 답을 상태 없이 맞춤) */
+  const solveId = (h, flip) => `K${h.slice(0, 7).toUpperCase()}${flip ? 'B' : 'A'}`;
+  function solveVerdict(pc, cand, answer) {
+    const s = ((pc && pc.solve) || {})[cand.h]; if (!s || s.runs == null) return { v: '', why: '풀어 보기 전' };
+    const ra = s.runs.a, rb = s.runs.b;   // rb는 뒤집은 순서에서 고른 번호 → 원래 번호로 바꿔 둠
+    if (ra == null || rb == null) return { v: '', why: '풀어 보기 한쪽만 있음' };
+    if (answer !== 0 && answer !== 1) return { v: '', why: '정답 확인 전' };
+    if (ra === answer && rb === answer) return { v: 'PASS', why: '두 순서 모두 정답' };
+    return { v: 'FAIL', why: ra === rb ? `두 순서 모두 ${ra + 1}번을 고름 (정답 ${answer + 1}번)` : '순서에 따라 답이 바뀜 (위치로 찍음)' };
+  }
+  /* 카드 하나의 상태 (화면·서버 공용). trOf(id) → 그 줄 지금 번역 */
+  function cardState(t, lk, c, trOf) {
+    const pc = perOf(t, lk)[c.id] || {}, route = routeOf(c), cands = pc.cands || [];
+    const answerOfCand = cand => route === 'tr' ? c.answer : (pc.pick && pc.pick.k === cand.k ? pc.pick.answer : cand.aiAns);
+    const sv = cands.map(cand => ({ cand, errs: candCheck(c, cand, lk), sol: solveVerdict(pc, cand, answerOfCand(cand)) }));
+    const nAi = new Set(cands.map(x => x.by).filter(Boolean)).size, needAi = route === 'tr' && nAi < TR_AIS;
+    let pick = pc.pick && candOf(pc, pc.pick.k) && pc.pick.h === candOf(pc, pc.pick.k).h ? candOf(pc, pc.pick.k) : null, auto = false;
+    if (!pick && route === 'tr' && !needAi) { const p = sv.find(o => o.sol.v === 'PASS' && !o.errs.length); if (p) { pick = p.cand; auto = true; } }
+    const ans = pick ? (route === 'tr' ? c.answer : (pc.pick && pc.pick.k === pick.k ? pc.pick.answer : null)) : null;
+    const ps = pick ? sv.find(o => o.cand === pick) : null;
+    const side = ans == null ? '' : ans === (c.pos === 'R' ? 1 : 0) ? '' : '정답이 한국어 화면과 다른 쪽 → 개발 공유 필요';
+    const why = !cands.length ? `카드 ${ROUTE_LABEL[route]} 받기 전` : needAi && !pick ? `번역 AI ${TR_AIS}개 중 ${nAi}개만 받음` : !pick ? (route === 'repl' ? '대체 카드 고르기 전' : sv.some(o => !o.sol.v) ? '풀어 보기 전' : '두 번역 모두 풀어 보기 FAIL → 한국어 원문 단순화 필요') : ps.errs.length ? ps.errs.join(' · ') : ans == null ? '정답 확인 전' : ps.sol.v !== 'PASS' ? `풀어 보기 ${ps.sol.v || '전'}: ${ps.sol.why}` : side ? side : '';
+    let applied = null;
+    if (pick && trOf) { const now = [c.q, ...c.opts].map(id => ntext(trOf(id))), want = [pick.q, ...pick.opts].map(ntext); applied = now.every((v, i) => v === want[i]); }
+    return { route, cands: sv, pick, auto, answer: ans, ok: !why, why, side, applied };
+  }
+  /* 출시 차단 (2단계): 모든 카드가 ok여야 함 */
+  function blocks(t, lk, trOf) { return listOf(t).map(c => ({ c, s: cardState(t, lk, c, trOf) })).filter(o => !o.s.ok).map(o => ({ id: o.c.id, tag: o.c.tag, why: o.s.why })); }
+  /* 카드 줄 번호 → 카드 */
+  function cardOfRow(t, id) { return listOf(t).find(c => c.q === id || (c.opts || []).includes(id)) || null; }
+
+  return { TAGS, NEED_REPL, tagOf, answerOf, posOf, resolveRow, parse, listOf, rowIds, broken, replCheck, releaseBlocks, stats, normKo,
+    REPL_ALLOW, TR_AIS, routeOf, ROUTE_LABEL, hashOf, perOf, parseTr, candCheck, solveId, solveVerdict, cardState, blocks, cardOfRow };
 });

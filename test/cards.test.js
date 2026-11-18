@@ -35,3 +35,50 @@ test('출시 차단: 상식이 아닌 카드에 그 언어 대체 카드가 없�
   assert.deepEqual(C.releaseBlocks(t, 'ja').map(x => x.id), ['Q3']);
   assert.deepEqual(C.releaseBlocks(t, 'en').map(x => x.id), ['Q2', 'Q3']);
 });
+
+/* ---- 2단계 ---- */
+const cards2 = [{ id: 'Q1', q: 'S001', opts: ['S002', 'S003'], answer: 1, pos: 'R', tag: '상식' }, { id: 'Q2', q: 'S006', opts: ['S007', 'S008'], answer: 0, pos: 'L', tag: '노래' }];
+const T2 = (per) => ({ source: { sheet: { rows } }, cards: { list: cards2, per: { ja: per } } });
+
+test('카드 번역 표 읽기: 상식은 정답 번호가 사람 정답과 같아야, 대체는 후보 A·B', () => {
+  const tb = [['카드', '후보', '문제', '선택지1', '선택지2', '정답', '태그', '출처·근거', '이유'],
+    ['Q1', '번역', 'クリスマスは(　)にある', '夏', '冬', '2', '', '', ''], ['Q1', '번역', 'x', 'a', 'b', '1', '', '', ''],
+    ['Q2', 'A', 'クリスマスは何月?(　)', '12月', '8月', '1', '상식', '일본 상식', ''], ['Q2', 'B', 'y', 'c', 'c', '1', '상식', '', '']];
+  const P = C.parseTr(tb, cards2, 'ja', 'Claude');
+  assert.equal(P.out.Q1.length, 1); assert.equal(P.out.Q1[0].k, 'Claude'); assert.equal(P.out.Q1[0].aiAns, 1);
+  assert.equal(P.out.Q2.length, 1); assert.equal(P.out.Q2[0].k, 'A·Claude'); assert.deepEqual(P.out.Q2[0].tags, ['상식']);
+  assert.match(P.errors.join('\n'), /정답이 한국어 카드\(2번\)와 다름/); assert.match(P.errors.join('\n'), /두 선택지가 같음/);
+});
+
+test('카드 상태: 상식은 두 순서 풀어 보기 PASS면 자동 선택, 순서 따라 바뀌면 FAIL', () => {
+  const cand = { k: 'Claude', q: 'q', opts: ['夏', '冬'], aiAns: 1, h: C.hashOf('q', ['夏', '冬']) };
+  let s = C.cardState(T2({ Q1: { cands: [cand] } }), 'ja', cards2[0]);
+  assert.equal(s.ok, false); assert.match(s.why, /번역 AI 2개 중 0개만/);
+  s = C.cardState(T2({ Q1: { cands: [cand], solve: { [cand.h]: { runs: { a: 1, b: 0 } } } } }), 'ja', cards2[0]);
+  assert.equal(s.cands[0].sol.v, 'FAIL'); assert.match(s.cands[0].sol.why, /순서에 따라/);
+  const one = T2({ Q1: { cands: [Object.assign({ by: 'Claude' }, cand)], solve: { [cand.h]: { runs: { a: 1, b: 1 } } } } });
+  assert.match(C.cardState(one, 'ja', cards2[0]).why, /번역 AI 2개 중 1개만/);
+  const c2 = { k: 'ChatGPT', by: 'ChatGPT', q: 'q', opts: ['なつ', 'ふゆ'], aiAns: 1, h: C.hashOf('q', ['なつ', 'ふゆ']) };
+  const t = T2({ Q1: { cands: [Object.assign({ by: 'Claude' }, cand), c2], solve: { [cand.h]: { runs: { a: 1, b: 1 } }, [c2.h]: { runs: { a: 0, b: 0 } } } } });
+  s = C.cardState(t, 'ja', cards2[0], id => ({ S001: 'q', S002: '夏', S003: '冬' })[id]);
+  assert.equal(s.ok, true); assert.equal(s.auto, true); assert.equal(s.pick.k, 'Claude'); assert.equal(s.answer, 1); assert.equal(s.applied, true);
+  const bothFail = T2({ Q1: { cands: [Object.assign({ by: 'Claude' }, cand), c2], solve: { [cand.h]: { runs: { a: 0, b: 0 } }, [c2.h]: { runs: { a: 0, b: 0 } } } } });
+  assert.match(C.cardState(bothFail, 'ja', cards2[0]).why, /원문 단순화 필요/);
+  assert.equal(C.cardState(t, 'ja', cards2[0], id => ({ S001: 'q', S002: '夏', S003: '冬?' })[id]).applied, false);
+});
+
+test('대체 카드: 사람이 정답을 확인해야 완료, 노래 태그 후보는 불가, 정답 쪽이 다르면 개발 공유', () => {
+  const a = { k: 'A·Claude', q: 'q2', opts: ['12月', '8月'], aiAns: 0, tags: ['상식'], h: C.hashOf('q2', ['12月', '8月']) };
+  const b = { k: 'B·Claude', q: 'q3', opts: ['x', 'y'], aiAns: 0, tags: ['노래'], h: C.hashOf('q3', ['x', 'y']) };
+  const solve = { [a.h]: { runs: { a: 0, b: 0 } } };
+  let s = C.cardState(T2({ Q2: { cands: [a, b], solve } }), 'ja', cards2[1]);
+  assert.equal(s.ok, false); assert.match(s.why, /대체 카드 고르기 전/); assert.match(s.cands[1].errs.join(), /노래 태그 → 대체 카드 불가/);
+  s = C.cardState(T2({ Q2: { cands: [a, b], solve, pick: { k: a.k, h: a.h, answer: 0 } } }), 'ja', cards2[1]);
+  assert.equal(s.ok, true);
+  s = C.cardState(T2({ Q2: { cands: [a, b], solve, pick: { k: a.k, h: a.h, answer: 1 } } }), 'ja', cards2[1]);
+  assert.equal(s.ok, false); assert.match(s.why, /풀어 보기 FAIL/);
+  const flip = { k: 'C', q: 'q4', opts: ['8月', '12月'], aiAns: 1, tags: ['상식'], h: C.hashOf('q4', ['8月', '12月']) };
+  s = C.cardState(T2({ Q2: { cands: [flip], solve: { [flip.h]: { runs: { a: 1, b: 1 } } }, pick: { k: 'C', h: flip.h, answer: 1 } } }), 'ja', cards2[1]);
+  assert.equal(s.ok, false); assert.match(s.why, /개발 공유 필요/);
+  assert.deepEqual(C.blocks(T2({}), 'ja').map(x => x.id), ['Q1', 'Q2']);
+});

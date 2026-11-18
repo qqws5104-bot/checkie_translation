@@ -194,6 +194,7 @@ const Retention = require('./public/retention.js');
 const Puzzle = require('./public/puzzle.js');
 const Rules = require('./public/rules.js');
 const Reset = require('./public/reset.js');
+const Cards = require('./public/cards.js');
 const resetBackups = new Map();   // 관리자·게임·언어별로 리셋 직전 백업을 받은 시각 (백업 없이 리셋 불가)
 const AI_KEY = AI.anyVision();
 const AI_LIMIT = Number(env.AI_HOURLY_LIMIT) || 200;
@@ -443,6 +444,15 @@ function guardTheme(before, after, conflicts) {
       if (x.hv && x.hv.v === '승인' && x.rv && x.rv.hold && !x.rv.exc) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (HOLD: 원문 확인 전에는 승인 불가)`); }
       if (x.hv && x.hv.v === '승인' && x.rv && Array.isArray(x.rv.crit) && x.rv.crit.length && !x.rv.exc) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (치명 오류가 있는 줄은 예외 사유 없이 승인 불가)`); }
     });
+    /* 퀴즈 카드 줄: 카드가 완료(풀어 보기 PASS·사람 정답 확인)되고 그 번역이 줄에 들어간 경우만 승인 (화면과 같은 cards.js로 다시 계산) */
+    if (Cards.listOf(after).length) {
+      Object.entries(w.items).forEach(([id, x]) => {
+        if (!x || !x.hv || x.hv.v !== '승인' || id.startsWith('@')) return;
+        const c = Cards.cardOfRow(after, id); if (!c) return;
+        const cs = Cards.cardState(after, lk, c, eff);
+        if (!cs.ok || !cs.applied) { const was = before && before.work && before.work[lk] && before.work[lk].items && before.work[lk].items[id] && before.work[lk].items[id].hv; if (!(was && was.v === '승인' && was.at === x.hv.at)) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (퀴즈 카드 ${c.id}: ${cs.ok ? '카드 번역이 줄에 안 들어감' : cs.why} — 승인 불가)`); } }
+      });
+    }
     /* 퍼즐 ‘직접 확인함’: 프로그램 퍼즐 검사 FAIL이면 불가, 확인한 뒤 퍼즐 줄 번역이 바뀌면 무효 (화면과 같은 puzzle.js로 다시 계산) */
     if (w.pzOk && typeof w.pzOk === 'object') {
       const sh = w.sheet || {}, ids = new Set([...(Array.isArray(sh.ids) ? sh.ids : (sh.rows || []).map((_, i) => 'R' + String(i + 1).padStart(3, '0'))), ...Object.keys(w.items).filter(k => !k.startsWith('@'))]);
