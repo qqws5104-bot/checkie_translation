@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T01:46:19.976Z",
+    "updatedAt": "2026-11-18T01:46:33.875Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -11440,9 +11440,18 @@
                 "doneBy": "김예은",
                 "doneAt": "2026-11-18T01:34:10.134Z"
               }
+            ],
+            "ok": [
+              "srcSuffix"
             ]
           },
-          "S091": {},
+          "S091": {
+            "ok": [
+              "typo",
+              "uTerm",
+              "srcSuffix"
+            ]
+          },
           "@plan": {
             "memos": [
               {
