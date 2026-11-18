@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T02:17:17.990Z",
+    "updatedAt": "2026-11-18T02:19:54.118Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -11227,6 +11227,10 @@
                 "doneBy": "김예은",
                 "doneAt": "2026-11-18T01:33:45.031Z"
               }
+            ],
+            "ok": [
+              "typo",
+              "srcSuffix"
             ]
           },
           "S082": {
@@ -11315,7 +11319,9 @@
             "gl": null,
             "rel": null,
             "hv": null,
-            "ok": []
+            "ok": [
+              "srcSuffix"
+            ]
           },
           "S084": {
             "redo": {
