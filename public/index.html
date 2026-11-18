@@ -1696,11 +1696,12 @@ const hvOf = r => { const hv = r.x.hv; return hv && (!hv.trh || hv.trh === trCk(
 const aiNow = rv => !rv ? '' : rv.v === '통과' ? 'PASS' : rv.v === '수정 필요' ? 'FAIL' : 'REVIEW';
 function verdictOf(r, open) {
   const x = r.x, rv = x.rv;
-  const pf = open.filter(([k]) => progSev(k, r) === 'FAIL'), pr = open.filter(([k]) => progSev(k, r) === 'REVIEW');
+  const seen = rv && verNum(rv.pv) >= 25;   /* 자동 점검 참고를 보고 한 검수면 프로그램 REVIEW는 검수 판정에 맡김 */
+  const pf = open.filter(([k]) => progSev(k, r) === 'FAIL'), pr = open.filter(([k]) => progSev(k, r) === 'REVIEW' && !(seen && k !== 'btShift' && k !== 'btFar'));
   const O = pf.length ? 'FAIL' : 'PASS', ai0 = rv ? (rv.orig || aiNow(rv)) : '';
   const P = !rv ? '미검수' : (O === 'FAIL' || ai0 === 'FAIL') ? 'FAIL' : (ai0 === 'REVIEW' || pr.length) ? 'REVIEW' : 'PASS';
   const hv = hvOf(r);
-  const why = x.srcChg ? '원문이 바뀜' : !rv ? '독립 검수 전' : rv.hold && !rv.exc ? '원문 확인 필요 (HOLD) — 기획 확인 후 ‘독립 검수’ 탭에서 사유를 쓰고 처리' : pf.length ? '프로그램 검사 FAIL을 고치거나 예외 사유를 써야 함' : aiNow(rv) === 'FAIL' ? 'AI FAIL을 고치거나 예외 사유를 써야 함 (독립 검수 탭)' : aiNow(rv) === 'REVIEW' ? '독립 검수 탭에서 REVIEW를 먼저 처리' : '';
+  const why = x.srcChg ? '원문이 바뀜' : !rv ? '독립 검수 전' : rv.hold && !rv.exc ? '원문 확인 필요 (HOLD) — 기획 확인 후 ‘독립 검수’ 탭에서 사유를 쓰고 처리' : pf.length ? '자동 점검 FAIL — ① 자동 점검 탭의 수정 요청 프롬프트로 번역 AI가 고쳐야 함' : aiNow(rv) === 'FAIL' ? 'AI FAIL을 고치거나 예외 사유를 써야 함 (독립 검수 탭)' : aiNow(rv) === 'REVIEW' ? '독립 검수 탭에서 REVIEW를 먼저 처리' : '';
   const T = x.srcChg || (!rv && (x.hist || []).length) ? '재검수 필요' : !rv ? '미검수' : hv && hv.v === '승인' ? '최종 승인' : hv && hv.v === '수정 요청' ? '수정 필요' : (aiNow(rv) === 'FAIL' || pf.length) ? '수정 필요' : hv && hv.v === '보류' ? '사람 검토 중' : 'AI 검수 완료';
   return { O, P, T, pf, pr, ai0, canApprove: !why, why, exc: (rv && rv.exc) || '' };
 }
@@ -2390,6 +2391,8 @@ function flowState(t, lk) {
   const all = rows.map(r => ({ r, x: r.x, list: autoChecks(t, lk, r, byKo).filter(([k]) => !((r.x.ok) || []).includes(k)) }));
   all.forEach(v => { v.r.open = v.list; v.r.vd = verdictOf(v.r, v.list); });
   const issues = all.filter(v => v.list.length);
+  /* 자동 점검: FAIL만 할 일(AI 수정 요청으로 처리). REVIEW는 검수 AI 참고 정보 → 사람이 누를 것 없음 */
+  const fails = issues.filter(v => v.list.some(([k]) => progSev(k, v.r) === 'FAIL')), reviewN = issues.reduce((a, v) => a + v.list.filter(([k]) => progSev(k, v.r) !== 'FAIL').length, 0);
   const sh0 = sheetOf(t, lk), humanReq = !!(sh0 && sh0.ids);
   const hvOk = rows.filter(r => { const h = hvOf(r); return h && h.v === '승인'; }).length, hvTodo = humanReq ? rows.length - hvOk : 0;
   const files = fileNames(t, lk, rows), fchk = ((t.work || {})[lk] || {}).fileCheck || {};
@@ -2399,7 +2402,7 @@ function flowState(t, lk) {
   const pass = rows.filter(r => r.x.rv && r.x.rv.v === '통과').length;
   const memos = rows.reduce((a, r) => a + openMemosOf(r.x).length, 0) + openMemosOf(it['@plan']).length + openMemosOf(it['@puzzle']).length + openMemosOf(it['@old']).length;
   const pzNames = puzzleNames(t, lk), pzOk = ((t.work || {})[lk] || {}).pzOk || {}, pzTodo = pzNames.filter(n => !pzOk[n]).length;
-  return { pz: byKo.PZ, memos, pzTodo, pzNames, rows, it, N, nTr: N, issues, openAuto: issues.length, files, fchk, filesTodo, rvTodo, rvAsk, btTodo, ctxG, ctxTodo: ctxG.filter(g => !ctxCur.has(g.id)).length, ctxReq: ctxG.length > 0 && rows.some(r => r.x.rv && r.x.rv.sc), human, pass, humanReq, hvOk, hvTodo, sysLog: ((t.work || {})[lk] || {}).sysLog || [] };
+  return { pz: byKo.PZ, memos, pzTodo, pzNames, rows, it, N, nTr: N, issues, fails, reviewN, openAuto: fails.length, files, fchk, filesTodo, rvTodo, rvAsk, btTodo, ctxG, ctxTodo: ctxG.filter(g => !ctxCur.has(g.id)).length, ctxReq: ctxG.length > 0 && rows.some(r => r.x.rv && r.x.rv.sc), human, pass, humanReq, hvOk, hvTodo, sysLog: ((t.work || {})[lk] || {}).sysLog || [] };
 }
 const splitFiles = s => String(s || '').split(/[,،、\n]+/).map(x => x.trim()).filter(Boolean);
 /* 대조할 파일: 엑셀 파일 열의 값(공통 제외) + 사이트에 올린 이미지 */
@@ -3448,6 +3451,7 @@ function crossPrompt(id, t, lk) {
   const extra = (sh && sh.extra || []).filter(e => !isAltSheet(e)).map(e => `## 시트: ${e.name}\n${rowsToTSV(e.rows)}`).join('\n\n');
   const ref = lk === 'zh' ? enRef(t) : null, anyBt0 = rows.some(r => bt0Of(r));
   const rvAi = revAiOf(t, lk, 'cross');
+  const FRM = new Map(flowState(t, lk).rows.map(r => [r.id, r])), autoRef = r => { const o = FRM.get(r.id), L = o ? autoRevsOf(o) : []; return L.length ? `· 자동 점검 참고(프로그램이 의심만 함): ${L.map(([, m]) => m).join(' / ')} — 직접 보고 맞으면 감점·이유에 쓰고, 아니면 무시` : ''; };
   const focus = rvAi === 'Claude' ? '의미 전달, 현지 표현의 자연스러움, 용어 통일' : '의미 누락, 문법, 경어, 표현의 적절성';
   return `규칙 버전 ${PROMPT_VER} · 검수 AI ${rvAi} · ${L.label}
 
@@ -3584,7 +3588,7 @@ ${extra ? '5.' : '4.'} \`의견\` — 구분 | 내용
 - 엑셀을 만들 수 없으면 같은 표들을 위 순서대로 채팅에 표로 쓰고, 각 표 바로 위에 시트 이름을 쓴다.
 
 # 검수할 표
-${(() => { const sc = srcConfirmed(t), basis = r => [specialTag(t, r), r.x.redo ? redoTag(r.x.redo) : r.cls === 'C' ? '재설계 줄' : '', sc && r.cls ? `${CLS[r.cls] || r.cls}${r.clsDir && r.clsDir !== '-' ? ` · 주의점: ${r.clsDir}` : ''}` : '', sc && r.b && srcAdvice(r.b, lk) ? `· 분석 제안: ${srcAdvice(r.b, lk)} (반영됐는지 보고, 안 됐으면 문맥 감점 + 이유에 ‘분석 제안 미반영’)` : ''].filter(Boolean).join(' '), bh = sc ? '원문 분석 기준(사람 승인)' : '특수 규칙';
+${(() => { const sc = srcConfirmed(t), basis = r => [specialTag(t, r), r.x.redo ? redoTag(r.x.redo) : r.cls === 'C' ? '재설계 줄' : '', sc && r.cls ? `${CLS[r.cls] || r.cls}${r.clsDir && r.clsDir !== '-' ? ` · 주의점: ${r.clsDir}` : ''}` : '', sc && r.b && srcAdvice(r.b, lk) ? `· 분석 제안: ${srcAdvice(r.b, lk)} (반영됐는지 보고, 안 됐으면 문맥 감점 + 이유에 ‘분석 제안 미반영’)` : '', autoRef(r)].filter(Boolean).join(' '), bh = sc ? '원문 분석 기준(사람 승인)' : '특수 규칙';
     const bx = [...(anyBt0 ? ['독립 역번역 (원문 안 본 AI)'] : []), ...(multi ? ['비고(사용 횟수)'] : [])], bv = r => [...(anyBt0 ? [(b => b ? `${b.t.replace(/\n/g, ' / ')}${b.amb ? ` (애매: ${b.amb})` : ''}` : '(없음)')(bt0Of(r))] : []), ...(multi ? [r.used] : [])];
     return ref ? tsv(['번호', '확인값', '파일', '화면', '요소', '한국어 원문', 'English(확정, 참조)', LHEAD[lk], bh, ...bx], rows.map(r => [r.id, rowCk(r), r.file, r.screen, r.elem, r.ko.replace(/\n/g, ' / '), enCell(enFor(ref, r)), r.tr.replace(/\n/g, ' / '), basis(r), ...bv(r)]))
       : tsv(['번호', '확인값', '파일', '화면', '요소', '한국어 원문', LHEAD[lk], bh, ...bx], rows.map(r => [r.id, rowCk(r), r.file, r.screen, r.elem, r.ko.replace(/\n/g, ' / '), r.tr.replace(/\n/g, ' / '), basis(r), ...bv(r)])); })()}
@@ -3842,6 +3846,7 @@ async function applyCross(tables) {
       if (iMethRv >= 0 && methOf(r[iMethRv])) x.rv = Object.assign({}, x.rv, { methRv: methOf(r[iMethRv]) });
       if (sc) x.rv = Object.assign({}, x.rv, { sc, total, band, crit, cfg: Object.assign({}, judgeCfg), aiV: v0, scWhy: iScW >= 0 ? String(r[iScW] || '').trim() : '' }, band === 'REVIEW 수정 필수' && !(fix && fix !== '-') ? { needFix: true } : {});
       x.rv.trh = trCk((RM0.get(id) || {}).tr);
+      x.rv.pv = PROMPT_VER;   /* v25부터 검수 프롬프트에 자동 점검 REVIEW가 참고로 들어감 → 그 뒤 검수는 REVIEW를 소화한 것으로 봄 */
       if (x.hv) { x.hvHist = [...(x.hvHist || []), { v: '무효', by: '시스템', at: nowISO(), why: '새 검수 결과가 들어옴', was: x.hv.v }].slice(-20); x.hv = null; }
       const mis = iMis >= 0 ? String(r[iMis] || '').replace(/\s/g, '') : '';
       if (mis && mis !== '없음' && mis !== '-') x.rv = Object.assign({}, x.rv, { mis });
@@ -4592,6 +4597,72 @@ function gameXlsx(id, t) {
 /* ---------- 단계별 확인(서명) ---------- */
 const signOf = (t, lk, key) => key === 'info' ? ((t.sign || {}).info || null) : ((((t.work || {})[lk] || {}).sign || {})[key] || null);
 /* 단계 완료 여부: 확인을 눌렀고 (조건을 채웠거나 ‘완료로 처리’했으면) 완료 */
+/* ---- 자동 점검 v25: 사람에게 묻지 않고 AI에게 넘김 ----
+   FAIL(숫자·변수·기호·한글 남음·길이·금지어 등 기계로 확실한 것) → ‘수정 요청 프롬프트’로 번역 AI에게 한 번에. 고칠 때까지 그 줄만 승인 막힘
+   REVIEW(오탐이 있을 수 있는 것) → 단계를 막지 않고, 독립 검수 프롬프트에 줄마다 ‘자동 점검 참고’로 들어감 */
+const autoFailsOf = r => (r.open || []).filter(([k]) => progSev(k, r) === 'FAIL');
+const autoRevsOf = r => (r.open || []).filter(([k]) => progSev(k, r) !== 'FAIL' && k !== 'btShift' && k !== 'btFar');
+function autoFixRows(F) { const seen = new Set(); return F.fails.map(v => v.r).filter(r => { const k = rvKey(r); if (seen.has(k)) return false; seen.add(k); return true; }); }
+function autoFixPrompt(t, lk, F) {
+  const L = LANGS.find(l => l.key === lk), rows = autoFixRows(F);
+  return `규칙 버전 ${PROMPT_VER} · 번역 AI ${aiOf(t, lk) || 'Claude'} · ${L.label} · 자동 점검 수정
+
+# 작업
+아래 줄은 사이트의 프로그램 검사(숫자·변수·특수 기호·줄 수·한글 남음·길이·용어·금지 표현)에서 FAIL이 난 줄이다.
+- ‘걸린 문제’만 고친다. 뜻·말투·게임 규칙·정답은 바꾸지 않는다. 문제와 상관없는 곳은 지금 번역 그대로 둔다.
+- 일부러 그렇게 쓴 것이라 고치면 안 되면, ‘고친 번역’은 비우고 ‘못 고친 이유’에 근거를 쓴다 (예: 원문 숫자는 게임 화면 그림 안의 값이라 번역문에 넣지 않음).
+- 같은 원문·번역이 여러 화면에 쓰이면 한 번만 나옴. 고치면 모든 화면에 함께 들어감.
+
+${gameInfoBlock(t, lk)}
+${honorBlock(lk, 'translate')}
+# 용어집 (확정은 반드시 지킴)
+${termLines(gidOf(t), lk)}
+${banBlock(lk)}
+# 결과물: 시트 \`자동 점검 수정\` (엑셀을 못 만들면 같은 표를 채팅에 표로, 표 위에 시트 이름)
+번호 | 확인값 | 고친 번역 | 고친 이유 | 못 고친 이유
+- 번호·확인값은 아래 표 그대로 복사. 줄바꿈은 ‘ / ’로.
+
+# 표
+${tsv(['번호', '확인값', '파일', '화면', '한국어 원문', `지금 ${L.label} 번역`, '걸린 문제 (FAIL)', '함께 참고 (REVIEW)'], rows.map(r => [r.id, rowCk(r), r.file, r.screen, r.ko.replace(/\n/g, ' / '), r.tr.replace(/\n/g, ' / '), autoFailsOf(r).map(([, m]) => m).join(' · '), autoRevsOf(r).map(([, m]) => m).join(' · ') || '-']))}`;
+}
+function autoTabHTML(t, lk, F) {
+  const rows = autoFixRows(F), shift = F.issues.filter(v => v.r.btShift || v.r.btFar).length;
+  const revBy = {}; F.issues.forEach(v => autoRevsOf(v.r).forEach(([k, m]) => { const lab = String(m || k).split(/\s[—(]|[:：(]/)[0].trim().slice(0, 24) || k; revBy[lab] = (revBy[lab] || 0) + 1; }));
+  const decl = rows.filter(r => r.x.autoAi && r.x.autoAi.trh === trCk(r.tr));
+  return `<p class="sb">사이트가 번역문을 바로 검사함. <b>사람이 줄마다 누를 것 없음.</b> FAIL은 번역 AI에게 수정 요청 → 고칠 때까지 그 줄만 승인 막힘. REVIEW는 독립 검수 AI에게 참고로 넘어감.</p>
+    ${shift > 1 && !readOnly ? `<div class="ratbox"><b>검수 결과가 밀려 붙은 것으로 보이는 줄 ${shift}개</b><small class="sb">역번역이 자기 원문보다 앞뒤 줄 원문과 훨씬 비슷함. 지우면 그 줄만 독립 검수 프롬프트에 다시 들어감</small><div class="iacts"><button type="button" class="btn primary" data-rvclear="@shift">모두 지우고 다시 검수</button></div></div>` : ''}
+    <h4 class="mh">FAIL → 번역 AI 수정 ${rows.length ? `${rows.length}줄` : '없음'}</h4>
+    ${rows.length ? `${readOnly ? '' : `<ol class="do"><li><i>1</i><div><button type="button" class="btn primary" data-copy="p-autofix">수정 요청 프롬프트 복사 <small>${rows.length}줄</small></button> <small class="sb">번역 AI(${esc(aiOf(t, lk) || 'Claude')}) 새 대화에 붙여 넣기</small></div></li>
+      <li><i>2</i><div><label class="btn upl">받은 엑셀 올리기<input type="file" hidden data-one="one:autofix" accept="${FILE_ACCEPT}"></label>${pasteBtn('one:autofix', '답 붙여 넣기')} <small class="sb">고친 줄은 새 버전이 되어 검사·검수를 다시 받음</small></div></li></ol><pre class="ptext" id="pt-p-autofix" hidden>${esc(autoFixPrompt(t, lk, F))}</pre>`}
+      <div class="tprev"><table><thead><tr><th>번호</th><th>한국어 원문</th><th>지금 번역</th><th>걸린 문제</th></tr></thead><tbody>${rows.map(r => `<tr><td><button type="button" class="linkbtn" data-item="${esc(lk)}|${esc(r.id)}">${esc(r.id)}</button></td><td style="white-space:pre-wrap">${esc(r.ko)}</td><td style="white-space:pre-wrap">${esc(r.tr)}</td><td>${autoFailsOf(r).map(([, m]) => esc(m)).join('<br>')}${r.x.autoAi && r.x.autoAi.trh === trCk(r.tr) ? `<br><small class="sb">AI: 못 고침 — ${esc(r.x.autoAi.why)}</small>` : ''}</td></tr>`).join('')}</tbody></table></div>
+      ${decl.length && !readOnly ? `<details class="more"${decl.length ? ' open' : ''}><summary>AI가 ‘일부러 그렇게 씀’이라고 한 줄 ${decl.length}개 · 맞으면 예외로 통과</summary>${decl.map(r => `<p><b>${esc(r.id)}</b> ${esc(r.x.autoAi.why)} <button type="button" class="btn" data-autoaiok="${esc(r.id)}">이 이유로 예외 통과</button></p>`).join('')}</details>` : ''}` : '<p class="okmsg">FAIL 없음.</p>'}
+    <details class="more"><summary>REVIEW ${F.reviewN}건 · 독립 검수 AI에게 참고로 넘어감 (누를 것 없음)</summary><p class="sb">${Object.entries(revBy).map(([k, n]) => `${esc(k)} ${n}`).join(' · ') || '없음'}</p><p class="sb">이미 검수한 줄은 다시 검수하지 않음. 걱정되는 줄은 항목 상세에서 검수 결과를 지우면 다음 검수 프롬프트에 참고와 함께 들어감.</p></details>`;
+}
+async function applyAutoFix(tables) {
+  const tb = tables.find(r => r.sheet && /자동\s*점검/.test(r.sheet)) || tables.find(r => (r.slice(0, 3).some(x => x.map(normHead).includes('고친번역'))));
+  if (!tb) { toast('‘자동 점검 수정’ 표를 찾지 못함. AI 답 전체를 붙여 넣기.', 5000); return; }
+  const hi = Math.max(0, tb.findIndex(r => r.map(normHead).includes('고친번역'))), h = tb[hi].map(normHead), ix = f => h.findIndex(f);
+  const iNo = Math.max(0, ix(x => x === '번호' || x === 'id')), iCk = ix(x => x === '확인값'), iTr = ix(x => x === '고친번역'), iWhy = ix(x => x === '고친이유'), iNo2 = ix(x => x.startsWith('못고친'));
+  const t = cur().data, lk = promptLang, F = flowState(t, lk), RM = new Map(F.rows.map(r => [normId(r.id), r])), failIds = new Set(autoFixRows(F).map(r => r.id));
+  const fixes = [], decl = []; let bad = 0;
+  tb.slice(hi + 1).forEach(r0 => { const r = RM.get(normId(r0[iNo])); if (!r || !failIds.has(r.id)) return; if (iCk >= 0 && String(r0[iCk] || '').trim() && String(r0[iCk]).trim() !== rowCk(r)) { bad++; return; }
+    const to = String(r0[iTr] || '').trim().replace(/\s\/\s/g, '\n'), why = iWhy >= 0 ? String(r0[iWhy] || '').trim() : '', no = iNo2 >= 0 ? String(r0[iNo2] || '').trim() : '';
+    if (to && to !== '-' && normKo(to) !== normKo(r.tr)) fixes.push([r, to, why]); else if (no && no !== '-') decl.push([r, no]); });
+  const ai = aiOf(t, lk) || '번역 AI';
+  await saveWork(items => {
+    fixes.forEach(([r, to, why]) => F.rows.filter(o => rvKey(o) === rvKey(r)).forEach(o => { const x = items[o.id] = items[o.id] || {}; pushVer(x, o, { to, why: `자동 점검: ${why || autoFailsOf(r).map(([, m]) => m).join(' · ')}`, kind: 'fix', type: PROG_ERR[(autoFailsOf(r)[0] || [])[0]] || '기타', stage: '자동 점검', byAi: ai }); }));
+    decl.forEach(([r, no]) => F.rows.filter(o => rvKey(o) === rvKey(r)).forEach(o => { const x = items[o.id] = items[o.id] || {}; x.autoAi = { why: no, trh: trCk(o.tr), by: ai, at: nowISO() }; }));
+    return fixes.length + decl.length; }, () => '');
+  render(true);
+  toast(`자동 점검 수정: 고친 줄 ${fixes.length}개(새 버전 → 다시 검사·검수)${decl.length ? ` · AI가 못 고친 줄 ${decl.length}개(이유 확인)` : ''}${bad ? ` · 확인값이 안 맞아 버린 행 ${bad}` : ''}.`, 6000);
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-autoaiok]'); if (!b || readOnly) return;
+  const id = b.dataset.autoaiok, F = flowState(cur().data, promptLang), r = F.rows.find(o => o.id === id); if (!r || !r.x.autoAi) return;
+  const ks = autoFailsOf(r).map(([k]) => k), ids = F.rows.filter(o => rvKey(o) === rvKey(r)).map(o => o.id);
+  await saveWork(items => { ids.forEach(i => { const x = items[i] = items[i] || {}; x.ok = [...new Set([...(x.ok || []), ...ks])]; x.okWhy = Object.assign({}, x.okWhy, Object.fromEntries(ks.map(k => [k, { why: `AI 사유 인정: ${r.x.autoAi.why}`, by: meName(), at: nowISO(), msg: (autoFailsOf(r).find(o => o[0] === k) || [])[1] || '' }]))); }); return ids.length; }, () => '');
+  render(true); toast(`${id} 예외 통과 (사유: AI 설명). 누가 했는지 기록됨.`);
+});
 function stepConds(t, lk, F) { return { info: infoDone(t), excel: F.N > 0, auto: !F.openAuto, files: !F.filesTodo, cross: !F.rvTodo && !F.human && !F.pzTodo, ctx: !F.ctxTodo && !F.rvTodo, human: F.N > 0 && !F.hvTodo && !F.rvTodo }; }
 /* 교차 검수 ‘퍼즐 검수’ 시트의 퍼즐 이름 (퍼즐 없음 제외) */
 function puzzleNames(t, lk) {
@@ -4600,7 +4671,8 @@ function puzzleNames(t, lk) {
   const h = pz.rows[0].map(normHead), iP = Math.max(0, h.findIndex(x => x.startsWith('퍼즐')));
   return [...new Set(pz.rows.slice(1).map(r => String(r[iP] || '').trim()).filter(n => n && !/퍼즐\s*없음/.test(n)))];
 }
-function isDone(t, lk, key, F) { const sg = signOf(t, lk, key); return !!sg && (!!sg.forced || stepConds(t, lk, F)[key]); }
+function isDone(t, lk, key, F) { if (key === 'auto') return true;   /* 자동 점검은 사람 단계가 아님 (FAIL 줄은 그 줄만 승인 막힘) */
+  const sg = signOf(t, lk, key); return !!sg && (!!sg.forced || stepConds(t, lk, F)[key]); }
 const whoOf = sg => sg ? `${sg.by} · ${fmtShort(sg.at)}` : '';
 const fmtShort = s => { if (!s) return ''; const d = new Date(s); return `${d.getMonth() + 1}/${d.getDate()}`; };
 function signRow(t, lk, key, cond, what, why) {
@@ -4722,7 +4794,7 @@ function workHTML({ id, data: t }) {
       ${sh ? `<p class="sb">지금 <b>${esc(sh.src || '')}</b> · ${F.N}줄${(sh.extra || []).length ? ` · 별도 시트 ${sh.extra.map(e => esc(e.name)).join(', ')}` : ''} (${esc(sh.by || '')}, ${fmtDate(sh.at)})</p>` : ''}
       <details class="more"><summary>프롬프트 보기${readOnly ? '' : ' · 번역 AI 바꾸기'}</summary><div class="optbox"><label class="aisel">번역 AI <select id="ai-sel" ${readOnly ? 'disabled' : ''}>${['Claude', 'ChatGPT', 'Gemini'].map(a => `<option ${(aiOf(t, lk) || 'Claude') === a ? 'selected' : ''}>${a}</option>`).join('')}</select></label></div><pre class="ptext" id="pt-p-main">${esc(makePrompt(id, t, lk))}</pre></details>
       ${signRow(t, lk, 'excel', F.N > 0, '번역 엑셀', '엑셀을 올리면 누를 수 있음')}`,
-    3: () => !F.N && !isDone(t, lk, 'excel', F) ? '<p class="sb">번역 엑셀을 먼저 올리기.</p>' : !F.N ? `<p class="sb">엑셀 없이 완료 처리된 상태. 이미 끝낸 검수는 아래에서 완료 처리.</p>${signRow(t, lk, 'auto', false, '자동 점검', '엑셀이 없음')}${signRow(t, lk, 'files', false, '이미지 대조', '엑셀이 없음')}${signRow(t, lk, 'cross', false, '교차 검수', '엑셀이 없음')}` : reviewHTML(id, t, lk, F, reviewer),
+    3: () => !F.N && !isDone(t, lk, 'excel', F) ? '<p class="sb">번역 엑셀을 먼저 올리기.</p>' : !F.N ? `<p class="sb">엑셀 없이 완료 처리된 상태. 이미 끝낸 검수는 아래에서 완료 처리.</p>${''}${signRow(t, lk, 'files', false, '이미지 대조', '엑셀이 없음')}${signRow(t, lk, 'cross', false, '교차 검수', '엑셀이 없음')}` : reviewHTML(id, t, lk, F, reviewer),
     4: () => (step === 'done' ? `<p class="sb">검수 ${F.humanReq ? '4' : '3'}가지 모두 확인 완료.</p>${readOnly ? '' : `<button type="button" class="btn primary" data-wact="confirm">${esc(L.label)} 확정하기</button>`}`
       : isFinal(step) ? `<p class="okmsg">✓ 확정됨</p><div class="nextrow"><button type="button" class="btn primary" data-show="5">다음: 적용 검수</button></div>`
       : `<p class="sb">검수 ${F.humanReq ? '4가지(사람 승인 포함)' : '3가지'}를 마치면 여기서 확정.</p>${readOnly || F.humanReq || srcRequired(t) || srcHas(t) ? '' : '<div class="signrow"><button type="button" class="btn ghost force" data-forceconfirm>이미 끝났으면 확정 처리</button><small>다른 곳에서 이미 확정했는데 반영이 안 됐을 때</small></div>'}`),
@@ -4730,7 +4802,7 @@ function workHTML({ id, data: t }) {
   };
   const TITLES = { 1: '게임 정보', 1.5: '원문 준비 · 모든 언어 공통', 2: '번역 엑셀', 3: '검수', 4: '확정', 5: '적용 검수' };
   const who = k => isDone(t, lk, k, F) ? `<em class="who-chip">✓ ${esc(whoOf(signOf(t, lk, k)))}</em>` : '';
-  const sub3 = ['auto', 'cross', ...(F.ctxReq ? ['ctx'] : []), ...(F.humanReq ? ['human'] : [])].map(k => `<em class="who-chip${isDone(t, lk, k, F) ? '' : ' off'}">${{ auto: '자동 점검', cross: '독립 검수', ctx: '맥락 검수', human: '사람 승인' }[k]} ${isDone(t, lk, k, F) ? '✓ ' + esc(signOf(t, lk, k).by) : '○'}</em>`).join('');
+  const sub3 = ['cross', ...(F.ctxReq ? ['ctx'] : []), ...(F.humanReq ? ['human'] : [])].map(k => `<em class="who-chip${isDone(t, lk, k, F) ? '' : ' off'}">${{ auto: '자동 점검', cross: '독립 검수', ctx: '맥락 검수', human: '사람 승인' }[k]} ${isDone(t, lk, k, F) ? '✓ ' + esc(signOf(t, lk, k).by) : '○'}</em>`).join('');
   const pb = (t.progressBy || {})[lk] || {}, fin = pb[5] || pb[4];
   const ss = srcStats(t), ssg = (t.source && t.source.sign && t.source.sign.confirm) || null;
   const SUB = { 1.5: srcConfirmed(t) ? `<em class="who-chip">✓ 원문 ${ss.n}줄 확정 · ${esc(ssg.by)} · ${fmtShort(ssg.at)}</em>` : srcHas(t) ? `<em class="who-chip off">원문 ${ss.n}줄 · 승인 ${ss.ok}/${ss.n}</em>` : '', 1: who('info'), 2: `${F.N ? F.N + '줄 ' : ''}${who('excel')}`, 3: F.N || isDone(t, lk, 'excel', F) ? sub3 : '', 4: isFinal(step) && pb[4] ? `<em class="who-chip">✓ 확정 · ${esc(pb[4].n)} · ${fmtShort(pb[4].at)}</em>` : '', 5: step === 'applied' && pb[5] ? `<em class="who-chip">✓ 적용 완료 · ${esc(pb[5].n)} · ${fmtShort(pb[5].at)}</em>` : isFinal(step) ? ['aside', 'aocr', 'atest'].map(k => `<em class="who-chip${signOf(t, lk, k) ? '' : ' off'}">${{ aside: '나란히', aocr: '글자 대조', atest: '처음 보는 사람' }[k]} ${signOf(t, lk, k) ? '✓ ' + esc(signOf(t, lk, k).by) : '○'}</em>`).join('') : '' };
@@ -4773,14 +4845,13 @@ function sheetViewHTML(t, lk) {
   const e = all[k]; return tabs + `<div class="tprev"><table><tbody>${e.rows.map(r => `<tr>${r.map(c => `<td style="white-space:pre-wrap">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 function reviewHTML(id, t, lk, F, reviewer) {
-  const tabs = [['auto', '① 자동 점검', F.openAuto ? `${F.openAuto}줄 남음` : '완료'], ['cross', '② 독립 검수', `${F.pass}/${F.N}`], ...(F.ctxG.length ? [['ctx', '③ 맥락 검수', F.ctxTodo ? `${F.ctxTodo}묶음 남음` : '완료']] : []), ...(F.humanReq ? [['human', F.ctxG.length ? '④ 사람 승인' : '③ 사람 승인', `${F.hvOk}/${F.N}`]] : []), ['hcmp', '+ 사람 번역 비교', (() => { const n = hcmpRows(F.rows, lk).filter(o => !o.same).length; return n ? `다른 줄 ${n}` : '선택'; })()]];
+  const tabs = [['auto', '① 자동 점검', F.openAuto ? `AI 수정 ${F.openAuto}줄` : '할 일 없음'], ['cross', '② 독립 검수', `${F.pass}/${F.N}`], ...(F.ctxG.length ? [['ctx', '③ 맥락 검수', F.ctxTodo ? `${F.ctxTodo}묶음 남음` : '완료']] : []), ...(F.humanReq ? [['human', F.ctxG.length ? '④ 사람 승인' : '③ 사람 승인', `${F.hvOk}/${F.N}`]] : []), ['hcmp', '+ 사람 번역 비교', (() => { const n = hcmpRows(F.rows, lk).filter(o => !o.same).length; return n ? `다른 줄 ${n}` : '선택'; })()]];
   if (rvTab === 'human' && !F.humanReq) rvTab = 'auto';
   if (rvTab === 'files') rvTab = 'auto';   /* 이미지 대조 단계는 없앰 */
   const cond = stepConds(t, lk, F);
-  const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${isDone(t, lk, k, F) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${isDone(t, lk, k, F) ? '✓ ' + esc(whoOf(signOf(t, lk, k))) : c}</small></button>`).join('')}</div>`;
+  const tabHTML = `<div class="rtabs">${tabs.map(([k, l, c]) => `<button type="button" class="${rvTab === k ? 'on' : ''}${isDone(t, lk, k, F) ? ' ok' : ''}" data-rtab="${k}">${l}<small>${k === 'auto' ? c : isDone(t, lk, k, F) ? '✓ ' + esc(whoOf(signOf(t, lk, k))) : c}</small></button>`).join('')}</div>`;
   let inner = '';
-  if (rvTab === 'auto') inner = pzPanelHTML(t, lk, F) + `<p class="sb">${F.issues.filter(v => v.r.btShift || v.r.btFar).length > 1 && !readOnly ? `<div class="ratbox"><b>검수 결과가 밀려 붙은 것으로 보이는 줄 ${F.issues.filter(v => v.r.btShift || v.r.btFar).length}개</b><small class="sb">역번역이 자기 원문보다 앞뒤 줄 원문과 훨씬 비슷함. 지우면 그 줄만 독립 검수 프롬프트에 다시 들어감</small><div class="iacts"><button type="button" class="btn primary" data-rvclear="@shift">모두 지우고 다시 검수</button></div></div>` : ''}숫자 · 변수 · 특수 기호 · 줄 수 · 한글 남음 · 같은 원문 다른 번역 · 길이 · 용어·금지 표현을 사이트가 바로 확인함. <b>FAIL</b>은 고치거나 예외 사유를 써야 넘어가고, <b>REVIEW</b>는 보고 ‘문제 없음’ 가능.</p>
-    ${F.issues.length ? `<div class="ilist">${F.issues.map(({ r, list }) => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b>${readOnly ? `<div style="white-space:pre-wrap">${esc(r.tr)}</div>` : `<textarea class="grow" rows="2" data-tr="${esc(r.id)}">${esc(r.tr)}</textarea>`}${r.note ? `<small class="sb">비고: ${esc(r.note)}</small>` : ''}${list.map(([k, m]) => { const sev = progSev(k, r), key = r.id + '|' + k; return `<span class="itag ${sev === 'FAIL' ? 'fail' : ''}"><b>${sev}</b> ${esc(m)}${readOnly ? '' : k === 'methX' || k === 'methSim' ? ` <select data-methset="${esc(r.id)}"><option value="">방식 정하기</option>${['직역', '의역', '재구성'].map(v => `<option>${v}</option>`).join('')}</select> <small class="sb">판단 순서로 사람이 정함 — 비슷한 문구도 같이 맞추기</small>` : k === 'btShift' || k === 'btFar' ? ` <button type="button" class="linkbtn" data-rvclear="${esc(r.id)}">검수 결과 지우고 다시 검수</button> <button type="button" class="linkbtn" data-autoex="${esc(key)}">예외 사유 쓰고 통과</button>` : sev === 'FAIL' ? ` <button type="button" class="linkbtn" data-autoex="${esc(key)}">예외 사유 쓰고 통과</button>` : ` <button type="button" class="linkbtn" data-autook="${esc(key)}">문제 없음</button>`}</span>${autoExEditing === key ? `<span class="exrow"><input type="text" id="autoex-why" placeholder="예외 사유 (필수) 예: 원작 표기를 그대로 둠"><button type="button" class="btn primary" data-autoexsave="${esc(key)}">저장</button><button type="button" class="btn ghost" data-autoexcancel>취소</button></span>` : ''}`; }).join('')}${memoBtn(r)}${memoEditorHTML(r)}</div></div>`).join('')}</div>` : '<p class="okmsg">자동 점검에서 걸린 게 없음.</p>'}`;
+  if (rvTab === 'auto') inner = pzPanelHTML(t, lk, F) + autoTabHTML(t, lk, F);
   if (rvTab === 'files') {
     const stored = gameFiles[id] || [];
     const common = F.rows.filter(r => !splitFiles(r.file).some(isFileName));
@@ -4834,7 +4905,7 @@ function reviewHTML(id, t, lk, F, reviewer) {
   }
   const WHY = { auto: 'FAIL은 고치거나 예외 사유, REVIEW는 확인하면 누를 수 있음', files: '모든 파일을 체크하면 누를 수 있음', cross: '독립 검수 결과를 넣고 FAIL·REVIEW 처리 + 퍼즐마다 담당자 확인을 하면 누를 수 있음', ctx: '모든 묶음의 맥락 검수 결과를 넣으면 누를 수 있음 (문제는 ① 자동 점검에서 처리)', human: '모든 줄을 사람이 승인하면 누를 수 있음 (수정 요청·보류가 남으면 불가)' };
   const NAME = { auto: '자동 점검', files: '이미지 대조', cross: '독립 검수', ctx: '맥락 검수', human: '사람 최종 승인' };
-  return tabHTML + `<div class="rpane">${ratBoxHTML(id, t, lk)}${inner}${signRow(t, lk, rvTab, cond[rvTab], NAME[rvTab], WHY[rvTab])}</div>` + (F.memos ? '<p class="sb badtxt">맨 위 수정 요청을 반영해야 확정 가능.</p>' : '');
+  return tabHTML + `<div class="rpane">${ratBoxHTML(id, t, lk)}${inner}${rvTab === 'auto' ? '' : signRow(t, lk, rvTab, cond[rvTab], NAME[rvTab], WHY[rvTab])}</div>` + (F.memos ? '<p class="sb badtxt">맨 위 수정 요청을 반영해야 확정 가능.</p>' : '');
 }
 
 /* 사람이 볼 것에서 함께 처리할 줄: 같은 원문·번역 + 한 번 검수한 결과를 같이 받은 줄 */
@@ -5667,7 +5738,7 @@ document.addEventListener('change', e => {
 
 /* 붙여 넣기 */
 let pasteTarget = null;
-const PASTE_TITLES = { 'one:solve': '풀어 보기 답 붙여 넣기', 'one:human': '사람 번역본 붙여 넣기 (번호 | 사람 번역)', 'one:hdiff': '차이 판정 답 붙여 넣기', 'one:natq': '현지인 질문 답 붙여 넣기', 'one:und': '게임 이해 답 붙여 넣기', 'one:nat': '현지인 검수 결과 붙여 넣기', 'one:ctx': '맥락 검수 답 붙여 넣기', 'one:work': '검수 작업표 붙여 넣기', 'one:blind': '독립 역번역 답 붙여 넣기', 'one:alt': '추가 대안 답 붙여 넣기', 'one:rat': '바뀐 번역의 근거 답 붙여 넣기', 'ap:ocr': '이미지 글자 판독 답 붙여 넣기', 'ap:test': '처음 보는 사람 테스트 답 붙여 넣기', 'one:res': '번역 결과 표 붙여 넣기 (표 3개 모두 붙여 넣어도 됨)', 'one:cross': '교차 검수 답 붙여 넣기', 'one:x': 'AI 원문 추출 답 붙여 넣기', 'one:tr': 'AI 번역 답 붙여 넣기', 'one:rv': 'AI 검수 답 붙여 넣기', tr: '번역 결과', b: 'DeepL 결과', bt: '역번역 결과', rv: '검수 결과', ts: '테스트 결과', fx: '수정 결과', inputTable: '번역 입력표', enFinal: '영어 확정본' };
+const PASTE_TITLES = { 'one:autofix': '자동 점검 수정 답 붙여 넣기', 'one:solve': '풀어 보기 답 붙여 넣기', 'one:human': '사람 번역본 붙여 넣기 (번호 | 사람 번역)', 'one:hdiff': '차이 판정 답 붙여 넣기', 'one:natq': '현지인 질문 답 붙여 넣기', 'one:und': '게임 이해 답 붙여 넣기', 'one:nat': '현지인 검수 결과 붙여 넣기', 'one:ctx': '맥락 검수 답 붙여 넣기', 'one:work': '검수 작업표 붙여 넣기', 'one:blind': '독립 역번역 답 붙여 넣기', 'one:alt': '추가 대안 답 붙여 넣기', 'one:rat': '바뀐 번역의 근거 답 붙여 넣기', 'ap:ocr': '이미지 글자 판독 답 붙여 넣기', 'ap:test': '처음 보는 사람 테스트 답 붙여 넣기', 'one:res': '번역 결과 표 붙여 넣기 (표 3개 모두 붙여 넣어도 됨)', 'one:cross': '교차 검수 답 붙여 넣기', 'one:x': 'AI 원문 추출 답 붙여 넣기', 'one:tr': 'AI 번역 답 붙여 넣기', 'one:rv': 'AI 검수 답 붙여 넣기', tr: '번역 결과', b: 'DeepL 결과', bt: '역번역 결과', rv: '검수 결과', ts: '테스트 결과', fx: '수정 결과', inputTable: '번역 입력표', enFinal: '영어 확정본' };
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-paste]'); if (!b) return;
   pasteTarget = b.dataset.paste;
@@ -5682,7 +5753,7 @@ $('#paste-form').addEventListener('submit', async e => {
     if (!tables.length) { $('#paste-err').textContent = '표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.'; return; }
     $('#pastedlg').close();
     if (pasteTarget.startsWith('ap:')) return applyUpload(pasteTarget.slice(3), tables);
-    return pasteTarget === 'one:solve' ? applySolve(tables) : pasteTarget === 'one:human' ? applyHuman(tables) : pasteTarget === 'one:hdiff' ? applyHdiff(tables) : pasteTarget === 'one:natq' ? applyNatQ(tables) : pasteTarget === 'one:und' ? applyUnderstand(tables) : pasteTarget === 'one:nat' ? applyNative(tables) : pasteTarget === 'one:ctx' ? applyCtx(tables) : pasteTarget === 'one:work' ? applyWork(tables) : pasteTarget === 'one:blind' ? applyBlind(tables) : pasteTarget === 'one:alt' ? applyAltReq(tables) : pasteTarget === 'one:rat' ? applyRat(tables) : pasteTarget === 'one:cross' ? applyCross(tables) : pasteTarget === 'one:tr' ? applyTranslation(tables) : pasteTarget === 'one:x' ? applyExtraction(tables) : applyReview(tables);
+    return pasteTarget === 'one:solve' ? applySolve(tables) : pasteTarget === 'one:human' ? applyHuman(tables) : pasteTarget === 'one:hdiff' ? applyHdiff(tables) : pasteTarget === 'one:natq' ? applyNatQ(tables) : pasteTarget === 'one:und' ? applyUnderstand(tables) : pasteTarget === 'one:nat' ? applyNative(tables) : pasteTarget === 'one:ctx' ? applyCtx(tables) : pasteTarget === 'one:work' ? applyWork(tables) : pasteTarget === 'one:blind' ? applyBlind(tables) : pasteTarget === 'one:alt' ? applyAltReq(tables) : pasteTarget === 'one:autofix' ? applyAutoFix(tables) : pasteTarget === 'one:rat' ? applyRat(tables) : pasteTarget === 'one:cross' ? applyCross(tables) : pasteTarget === 'one:tr' ? applyTranslation(tables) : pasteTarget === 'one:x' ? applyExtraction(tables) : applyReview(tables);
   }
   const rows = parseTable($('#paste-text').value);
   if (rows.length < 2) { $('#paste-err').textContent = '표를 찾지 못함. 첫 행에 열 이름(ID 등)이 있어야 함.'; return; }
@@ -5817,7 +5888,7 @@ document.addEventListener('change', async e => {
     try {
       const tables = await readWorkbook(f);
       if (!tables.length || tables[0].length < 2) { toast('표를 찾지 못함.'); return; }
-      await (target === 'one:solve' ? applySolve(tables) : target === 'one:human' ? applyHuman(tables) : target === 'one:hdiff' ? applyHdiff(tables) : target === 'one:natq' ? applyNatQ(tables) : target === 'one:und' ? applyUnderstand(tables) : target === 'one:nat' ? applyNative(tables) : target === 'one:ctx' ? applyCtx(tables) : target === 'one:work' ? applyWork(tables) : target === 'one:blind' ? applyBlind(tables) : target === 'one:alt' ? applyAltReq(tables) : target === 'one:cross' ? applyCross(tables) : target === 'one:rat' ? applyRat(tables) : target === 'one:tr' ? applyTranslation(tables) : applyReview(tables));
+      await (target === 'one:solve' ? applySolve(tables) : target === 'one:human' ? applyHuman(tables) : target === 'one:hdiff' ? applyHdiff(tables) : target === 'one:natq' ? applyNatQ(tables) : target === 'one:und' ? applyUnderstand(tables) : target === 'one:nat' ? applyNative(tables) : target === 'one:ctx' ? applyCtx(tables) : target === 'one:work' ? applyWork(tables) : target === 'one:blind' ? applyBlind(tables) : target === 'one:alt' ? applyAltReq(tables) : target === 'one:autofix' ? applyAutoFix(tables) : target === 'one:cross' ? applyCross(tables) : target === 'one:rat' ? applyRat(tables) : target === 'one:tr' ? applyTranslation(tables) : applyReview(tables));
     } catch (err) { done(); toast(err.message || '파일을 읽지 못함.', 5000); }
     return;
   }
@@ -6448,7 +6519,7 @@ function applyStepHTML(id, t, lk, step) {
   const finalBtn = step === 'applied' ? '<p class="okmsg">✓ 화면 적용까지 끝남.</p>' : readOnly ? '' : `<div class="nextrow">${allA && !A.fm && !F.memos ? '<button type="button" class="btn primary" data-wact="applied">화면 적용 완료</button>' : '<small class="sb">적용 검수 3가지를 마치고, 수정 요청을 다 반영하면 ‘화면 적용 완료’ 가능.</small>'}</div>`;
   return `<p class="sb">${esc(APPLY_CHECK[lk])}</p>` + tabHTML + `<div class="rpane">${inner}${signRow(t, lk, NAME[0], cond[NAME[0]], NAME[1], NAME[2])}</div>` + finalBtn;
 }
-function isDoneA(t, lk, key, cond) { const sg = signOf(t, lk, key); return !!sg && (!!sg.forced || !!cond[key]); }
+function isDoneA(t, lk, key, cond) { if (key === 'auto') return true; const sg = signOf(t, lk, key); return !!sg && (!!sg.forced || !!cond[key]); }
 /* 파일 단위 메모 (적용 검수에서 발견한 문제) */
 let apMemoEd = null;
 function apMemoEditor(k) { return `<div class="memo-ed"><textarea id="apmemo-text" rows="2" placeholder="어떤 문제인지 적기. 예: 2P 말풍선 둘째 줄이 잘림"></textarea><div class="iacts"><button type="button" class="btn primary" data-apmemo-save="${esc(k)}">메모 남기기</button><button type="button" class="btn ghost" data-apmemo-cancel>취소</button></div></div>`; }
