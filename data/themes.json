@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-18T01:42:29.493Z",
+    "updatedAt": "2026-11-18T01:46:06.449Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -11213,7 +11213,19 @@
                 "doneBy": "김예은",
                 "doneAt": "2026-11-18T01:33:59.644Z"
               }
-            ]
+            ],
+            "pick": {
+              "k": "유지",
+              "tr": "Hey",
+              "mean": "",
+              "rec": "기본",
+              "recTr": "Hey",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-18T01:46:06.416Z",
+              "trh": "ecsgbx192qnnp5",
+              "from": ""
+            }
           },
           "S061": {
             "redo": {
@@ -11296,7 +11308,20 @@
           "S070": {},
           "S071": {},
           "S075": {},
-          "S076": {},
+          "S076": {
+            "pick": {
+              "k": "유지",
+              "tr": "The man who brings Christmas gifts is (   ) Claus, ribbit!",
+              "mean": "",
+              "rec": "기본",
+              "recTr": "The man who brings Christmas gifts is (   ) Claus, ribbit!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-18T01:46:05.029Z",
+              "trh": "bwf650utkysi1c",
+              "from": ""
+            }
+          },
           "S080": {
             "redo": {
               "by": "번역 AI",
