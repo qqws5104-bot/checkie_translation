@@ -730,6 +730,7 @@ h1 { font-size: 22px; }
 .splitpl label { display: flex; gap: 6px; align-items: center; font-size: 14px; margin: 0; }
 .splitpl input { width: 16px; height: 16px; min-height: 0; margin: 0; flex: none; }
 .splitbox .splitwhy { width: min(100%, 520px); }
+.flagfix { border-top: 1px dashed var(--line); margin-top: 8px; padding-top: 8px; display: grid; gap: 6px; }
 .ccand { display: grid; gap: 2px; border-top: 1px dashed var(--line); padding: 6px 4px; }
 .ccand.picked { background: var(--ok-soft); border-radius: 6px; }
 .ccand .iacts { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -2655,12 +2656,22 @@ async function uploadSource(file) {
 const FLAG_RE = /^(REVIEW\s*[:：]|분류\s*이견\s*[:：])/;
 function flagsOf(r) { return String(r.note || '').split(/\s\/\s|\n/).map(x => x.trim()).filter(x => FLAG_RE.test(x)); }
 const flagKey = r => trCk(flagsOf(r).join('|') + '\u0001' + (r.tr || ''));
-function flagRows(t, lk) { if (!sheetOf(t, lk)) return []; return sheetRows(t, lk).filter(r => flagsOf(r).length && !(r.x.flagOk && r.x.flagOk.k === flagKey(r))); }
+function flagRows(t, lk) { if (!sheetOf(t, lk)) return []; return sheetRows(t, lk).filter(r => flagsOf(r).length && !(r.x.flagOk && r.x.flagOk.k === flagKey(r)) && !(pickOk(r) && r.x.pick.at && (!r.x.flagOk || r.x.pick.at > r.x.flagOk.at))); }
 function flagBannerHTML(t, lk) {
   const L = flagRows(t, lk); if (!L.length) return '';
   return `<details class="more splitban" open><summary><b>AI가 사람 판단을 요청한 줄 ${L.length}개</b> · 확인하고 번역을 고치거나 ‘확인함’</summary>
-    ${L.map(r => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b> → <span style="white-space:pre-wrap">${esc(r.tr)}</span>${flagsOf(r).map(f => `<small class="badtxt">${esc(f)}</small>`).join('')}${readOnly ? '' : `<div class="iacts"><button type="button" class="linkbtn" data-item="${esc(lk)}|${esc(r.id)}">번역 고치기</button><button type="button" class="btn" data-flagok="${esc(r.id)}">확인함</button></div>`}</div></div>`).join('')}</details>`;
+    ${L.map(r => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b> → <span style="white-space:pre-wrap">${esc(r.tr)}</span>${flagsOf(r).map(f => `<small class="badtxt">${esc(f)}</small>`).join('')}${readOnly ? '' : `<div class="iacts"><button type="button" class="btn${flagFix === r.id ? ' primary' : ''}" data-flagfix="${esc(r.id)}">${flagFix === r.id ? '대안 닫기' : '번역 고치기 (대안 보기)'}</button><button type="button" class="btn" data-flagok="${esc(r.id)}">확인함</button></div>${flagFix === r.id ? flagFixHTML(t, lk, r, L) : ''}`}</div></div>`).join('')}</details>`;
 }
+let flagFix = null;
+/* ‘번역 고치기’: 그 자리에서 대안 2~3개를 보고 고름. 대안이 2개보다 적으면 표시된 줄을 모아 번역 AI에게 대안 요청 */
+function flagFixHTML(t, lk, r, all) {
+  const others = r.alts.filter(a => normKo(a.tr) !== normKo(r.tr)), need = all.filter(o => o.alts.filter(a => normKo(a.tr) !== normKo(o.tr)).length < 2).map(o => o.id);
+  return `<div class="flagfix">${r.alts.length ? altCardsHTML(r, lk) : ''}${pickInfoHTML(r)}
+    ${others.length < 2 ? `<p class="sb">대안이 ${others.length}개뿐임. 표시된 줄 중 대안이 2개 안 되는 ${need.length}줄을 모아 번역 AI(${esc(aiOf(t, lk) || 'Claude')})에게 대안 2~3개를 받기 — 확인 요청 내용이 프롬프트에 같이 들어감.</p>
+      <div class="iacts"><button type="button" class="btn primary" data-copy="p-flagalt">대안 요청 프롬프트 복사 <small>${need.length}줄</small></button><label class="btn upl">받은 엑셀 올리기<input type="file" hidden data-one="one:alt" accept="${FILE_ACCEPT}"></label>${pasteBtn('one:alt', '답 붙여 넣기')}</div><pre class="ptext" id="pt-p-flagalt" hidden>${esc(altReqPrompt(t, lk, need))}</pre>` : ''}
+    <p class="sb">대안에 맞는 게 없으면 <button type="button" class="linkbtn" data-item="${esc(lk)}|${esc(r.id)}">직접 고치기</button></p></div>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-flagfix]'); if (!b) return; flagFix = flagFix === b.dataset.flagfix ? null : b.dataset.flagfix; render(true); });
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-flagok]'); if (!b || readOnly) return;
   const id = b.dataset.flagok, r = sheetRows(cur().data, promptLang).find(o => o.id === id); if (!r) return;
@@ -3511,7 +3522,7 @@ ${ALT_COLS('번호')}
 - 한국어 의미·뉘앙스·쓸 상황·원문과 차이·캐릭터 적합성은 한국어로. 추천은 세 대안 중 가장 나은 하나에 ‘O’ (지금 번역이 더 낫다면 모두 ‘-’, 추천 이유 칸에 그 이유).
 
 # 표
-${tsv(['번호', '파일', '한국어 원문', `지금 번역 (${L.label})`, '이미 있는 대안 (번역문 = 한국어 의미)'], rows.map(r => [r.id, r.file, r.ko.replace(/\n/g, ' / '), r.tr.replace(/\n/g, ' / '), r.alts.map(a => `${a.k}: ${a.tr.replace(/\n/g, ' ')} = ${a.mean}`).join(' || ') || '-']))}`;
+${(fl => tsv(['번호', '파일', '한국어 원문', `지금 번역 (${L.label})`, '이미 있는 대안 (번역문 = 한국어 의미)', ...(fl ? ['사람이 확인 요청한 점 (대안이 이 점을 해결해야 함)'] : [])], rows.map(r => [r.id, r.file, r.ko.replace(/\n/g, ' / '), r.tr.replace(/\n/g, ' / '), r.alts.map(a => `${a.k}: ${a.tr.replace(/\n/g, ' ')} = ${a.mean}`).join(' || ') || '-', ...(fl ? [flagsOf(r).join(' / ') || '-'] : [])])))(rows.some(r => flagsOf(r).length))}`;
 }
 async function applyAltReq(tables, by) {
   const tb = tables.find(r => isAltSheet({ rows: r })) || tables.find(r => r.sheet && /대안/.test(r.sheet));
