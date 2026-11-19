@@ -444,6 +444,20 @@ function guardTheme(before, after, conflicts) {
       if (x.hv && x.hv.v === '승인' && x.rv && x.rv.hold && !x.rv.exc) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (HOLD: 원문 확인 전에는 승인 불가)`); }
       if (x.hv && x.hv.v === '승인' && x.rv && Array.isArray(x.rv.crit) && x.rv.crit.length && !x.rv.exc) { x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (치명 오류가 있는 줄은 예외 사유 없이 승인 불가)`); }
     });
+    /* 기획 확인 표시가 남은 줄: 기획 결정(flagOk.why)이 지금 번역·표시 기준으로 기록돼야 승인 (화면과 같은 규칙) */
+    { const sh = w.sheet || {}, c = sh.cols || {};
+      const noteOf = id => { const i = Array.isArray(sh.ids) ? sh.ids.indexOf(id) : -1; return i >= 0 && c.note >= 0 && sh.rows[i] ? String(sh.rows[i][c.note] || '') : ''; };
+      Object.entries(w.items).forEach(([id, x]) => {
+        if (!x || !x.hv || x.hv.v !== '승인' || id.startsWith('@')) return;
+        const flags = noteOf(id).split(/\s\/\s|\n/).map(v => v.trim()).filter(v => /^(REVIEW\s*[:：]|분류\s*이견\s*[:：])/.test(v));
+        if (!flags.some(f => /기획\s*확인/.test(f))) return;
+        const k = Merge.trHash(flags.join('|') + '\u0001' + (eff(id) || ''));
+        if (x.flagOk && x.flagOk.k === k && x.flagOk.why) return;
+        const was = before && before.work && before.work[lk] && before.work[lk].items && before.work[lk].items[id] && before.work[lk].items[id].hv;
+        if (was && was.v === '승인' && was.at === x.hv.at) return;
+        x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (기획 확인 필요 — 기획 결정을 기록하기 전에는 승인 불가)`);
+      });
+    }
     /* 퀴즈 카드 줄: 카드가 완료(풀어 보기 PASS·사람 정답 확인)되고 그 번역이 줄에 들어간 경우만 승인 (화면과 같은 cards.js로 다시 계산) */
     if (Cards.listOf(after).length) {
       Object.entries(w.items).forEach(([id, x]) => {

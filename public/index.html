@@ -2418,6 +2418,8 @@ function flowState(t, lk) {
     r.btFar = bt && !r.btShift && !(r.cls === 'B' || r.cls === 'C' || r.x.redo || /의역|재구성/.test(methFinal(r).m)) && normKo(r.ko).replace(/[^\p{L}\p{N}]/gu, '').length >= 5 && (simKo(r.ko, bt) || 0) < 0.1 && !(r.x.ok || []).includes('btFar'); });
   const all = rows.map(r => ({ r, x: r.x, list: autoChecks(t, lk, r, byKo).filter(([k]) => !((r.x.ok) || []).includes(k)) }));
   all.forEach(v => { v.r.open = v.list; v.r.vd = verdictOf(v.r, v.list); });
+  /* 기획 확인 표시(‘REVIEW: 기획 확인 …’)가 남은 줄은 기획 결정을 기록하기 전에는 승인 불가 (v29, 서버도 같은 규칙) */
+  rows.forEach(r => { if (planFlagOpen(r)) r.vd = Object.assign({}, r.vd, { canApprove: false, why: `기획 확인 필요: ${flagsOf(r).filter(f => PLAN_FLAG_RE.test(f))[0].slice(0, 80)} (맨 위 ‘AI가 사람 판단을 요청한 줄’에서 기획 결정 기록)` }); });
   /* 카드 줄: 카드가 완료(풀어 보기 PASS·정답 확인)되고 그 번역이 줄에 들어가 있어야 승인 가능 */
   if (Cards.listOf(t).length) { const trM = id => (rows.find(r => r.id === id) || {}).tr || ''; rows.forEach(r => { const c = Cards.cardOfRow(t, r.id); if (!c) return; const cs = Cards.cardState(t, lk, c, trM); r.card = { id: c.id, ok: cs.ok && cs.applied }; if (!r.card.ok) r.vd = Object.assign({}, r.vd, { canApprove: false, why: `퀴즈 카드 ${c.id}: ${cs.ok ? '카드 번역이 이 줄에 아직 안 들어감' : cs.why} (⓪ 퀴즈 카드 탭)` }); }); }
   const issues = all.filter(v => v.list.length);
@@ -2656,11 +2658,13 @@ async function uploadSource(file) {
 const FLAG_RE = /^(REVIEW\s*[:：]|분류\s*이견\s*[:：])/;
 function flagsOf(r) { return String(r.note || '').split(/\s\/\s|\n/).map(x => x.trim()).filter(x => FLAG_RE.test(x)); }
 const flagKey = r => trCk(flagsOf(r).join('|') + '\u0001' + (r.tr || ''));
-function flagRows(t, lk) { if (!sheetOf(t, lk)) return []; return sheetRows(t, lk).filter(r => flagsOf(r).length && !(r.x.flagOk && r.x.flagOk.k === flagKey(r)) && !(pickOk(r) && r.x.pick.at && (!r.x.flagOk || r.x.pick.at > r.x.flagOk.at))); }
+const PLAN_FLAG_RE = /기획\s*확인/;
+const planFlagOpen = r => flagsOf(r).some(f => PLAN_FLAG_RE.test(f)) && !(r.x.flagOk && r.x.flagOk.k === flagKey(r) && r.x.flagOk.why);
+function flagRows(t, lk) { if (!sheetOf(t, lk)) return []; return sheetRows(t, lk).filter(r => flagsOf(r).length && !(r.x.flagOk && r.x.flagOk.k === flagKey(r) && (r.x.flagOk.why || !flagsOf(r).some(f => PLAN_FLAG_RE.test(f)))) && !(pickOk(r) && r.x.pick.at && (!r.x.flagOk || r.x.pick.at > r.x.flagOk.at) && !flagsOf(r).some(f => PLAN_FLAG_RE.test(f)))); }
 function flagBannerHTML(t, lk) {
   const L = flagRows(t, lk); if (!L.length) return '';
   return `<details class="more splitban" open><summary><b>AI가 사람 판단을 요청한 줄 ${L.length}개</b> · 확인하고 번역을 고치거나 ‘확인함’</summary>
-    ${L.map(r => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b> → <span style="white-space:pre-wrap">${esc(r.tr)}</span>${flagsOf(r).map(f => `<small class="badtxt">${esc(f)}</small>`).join('')}${readOnly ? '' : `<div class="iacts"><button type="button" class="btn${flagFix === r.id ? ' primary' : ''}" data-flagfix="${esc(r.id)}">${flagFix === r.id ? '대안 닫기' : '번역 고치기 (대안 보기)'}</button><button type="button" class="btn" data-flagok="${esc(r.id)}">확인함</button></div>${flagFix === r.id ? flagFixHTML(t, lk, r, L) : ''}`}</div></div>`).join('')}</details>`;
+    ${L.map(r => `<div class="irow"><code>${esc(r.id)}<br>${esc(r.file)}</code><div class="ibody"><b style="white-space:pre-wrap">${esc(r.ko)}</b> → <span style="white-space:pre-wrap">${esc(r.tr)}</span>${flagsOf(r).map(f => `<small class="badtxt">${esc(f)}</small>`).join('')}${readOnly ? '' : `<div class="iacts"><button type="button" class="btn${flagFix === r.id ? ' primary' : ''}" data-flagfix="${esc(r.id)}">${flagFix === r.id ? '대안 닫기' : '번역 고치기 (대안 보기)'}</button>${flagsOf(r).some(f => PLAN_FLAG_RE.test(f)) ? `<input type="text" data-flagwhy="${esc(r.id)}" placeholder="기획 결정 (필수) 예: 원문 유지 / 오답을 ‘추석’으로 변경" style="min-width:16em"><button type="button" class="btn" data-flagok="${esc(r.id)}">기획 결정 기록</button>` : `<button type="button" class="btn" data-flagok="${esc(r.id)}">확인함</button>`}</div>${flagFix === r.id ? flagFixHTML(t, lk, r, L) : ''}`}</div></div>`).join('')}</details>`;
 }
 let flagFix = null;
 /* ‘번역 고치기’: 그 자리에서 대안 2~3개를 보고 고름. 대안이 2개보다 적으면 표시된 줄을 모아 번역 AI에게 대안 요청 */
@@ -2675,7 +2679,9 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-flag
 document.addEventListener('click', async e => {
   const b = e.target.closest('[data-flagok]'); if (!b || readOnly) return;
   const id = b.dataset.flagok, r = sheetRows(cur().data, promptLang).find(o => o.id === id); if (!r) return;
-  await saveWork(items => { const x = items[id] = items[id] || {}; x.flagOk = { k: flagKey(r), by: meName(), at: nowISO(), flags: flagsOf(r) }; return 1; }, () => `${id} 확인함. 번역이나 표시가 바뀌면 다시 뜸.`);
+  const plan = flagsOf(r).some(f => PLAN_FLAG_RE.test(f)), why = ((document.querySelector(`[data-flagwhy="${CSS.escape(id)}"]`) || {}).value || '').trim();
+  if (plan && !why) { toast('기획 확인 줄은 결정 내용을 써야 함 (누가 무엇으로 정했는지 기록됨).', 4000); return; }
+  await saveWork(items => { const x = items[id] = items[id] || {}; x.flagOk = Object.assign({ k: flagKey(r), by: meName(), at: nowISO(), flags: flagsOf(r) }, plan ? { why } : {}); return 1; }, () => plan ? `${id} 기획 결정 기록: ${why}. 이제 승인 가능.` : `${id} 확인함. 번역이나 표시가 바뀌면 다시 뜸.`);
 });
 /* ---- 합쳐진 줄 나누기: 같은 문구라 한 줄로 합쳤는데 화면마다 가리키는 대상이 다를 때 ----
    번역 AI가 검수 주의사항에 ‘분리 필요: …’를 쓰면 위에 띄움. 사람이 화면을 골라 새 줄로 나누면
@@ -3007,7 +3013,7 @@ function specialTag(t, row) {
 }
 
 /* ================= 번역 프롬프트 = 공통 지시 + AI별 지시 + 게임별 정보 + 언어별 블록 + 이번 작업 ================= */
-const PROMPT_VER = '2026.11-v28';
+const PROMPT_VER = '2026.11-v29';
 const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 
 1. 역할
@@ -3091,7 +3097,9 @@ ${prev}
    - 항목은 다음 ${U_ITEMS.length}개를 이 이름 그대로 한 행씩: ${U_ITEMS.join(' / ')}
    - 근거: 어느 화면(파일 이름)이나 게임 정보에서 알았는지. 확실도: ${U_SURE.join(' / ')} 중 하나
    - 번역 지침: 이 내용 때문에 번역에서 지켜야 할 것 (예: ‘수령’은 선물을 받아 가는 게임 행동이라 버튼에서는 짧은 동사로)
-2. 시트 \`화면\` — 화면 ID | 화면 이름 | 언제 나오나 | 플레이어가 여기서 하는 일 | 확실도 | 불확실한 점
+2. 시트 \`화면\` — 화면 ID | 화면 이름 | 언제 나오나 | 플레이어가 여기서 하는 일 | 이 화면에 보이는 것 | 앞 화면에서 사라진 것 | 플레이어가 보는 곳 | 확실도 | 불확실한 점
+   - 이 화면에 보이는 것 / 앞 화면에서 사라진 것: 문구가 가리키는 대상이 지금 보이는지 판단하는 데 씀 (예: 문제 화면에서는 기억 화면의 3×3 칸이 사라짐). 모르면 ‘모름’.
+   - 플레이어가 보는 곳: 화면 / 실제 버튼 / 공간·소품 / 다른 플레이어. 이미지로 알 수 없으면 ‘모름’ (질문으로도 남긴다).
    - 화면 ID는 PNG 파일 이름(확장자 없이). 진행 순서대로 쓴다.
 3. 시트 \`캐릭터\` — 이름 | 역할 | 성격 | 누구에게 말하나 | 말투 기준 | 확실도
    - 말투 기준: 존대 수준·어조를 한국어로 (예: 플레이어에게 공손하지만 바쁜 비서 말투). 이름 말장난이 있으면 같이 적는다.
@@ -3115,7 +3123,7 @@ async function applyUnderstand(tables) {
   const rd = (tb, keys) => { if (!tb || tb.length < 2) return []; const h = tb[0].map(normHead), ix = keys.map(([k, f]) => [k, h.findIndex(f)]); return tb.slice(1).filter(r => r.some(c => String(c ?? '').trim())).map(r => Object.fromEntries(ix.map(([k, i]) => [k, i >= 0 ? String(r[i] ?? '').trim() : '']))); };
   const ov = rd(by('개요', '항목'), [['item', x => x === '항목'], ['text', x => x === '내용'], ['src', x => x.startsWith('근거')], ['sure', x => x.startsWith('확실')], ['rule', x => x.startsWith('번역지침')]]);
   if (!ov.length) { toast('‘개요’ 표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.', 5000); return; }
-  const scr = rd(by('화면', '화면ID'), [['id', x => x.startsWith('화면id')], ['name', x => x.startsWith('화면이름')], ['when', x => x.startsWith('언제')], ['act', x => x.startsWith('플레이어')], ['sure', x => x.startsWith('확실')], ['unsure', x => x.startsWith('불확실')]]);
+  const scr = rd(by('화면', '화면ID'), [['id', x => x.startsWith('화면id')], ['name', x => x.startsWith('화면이름')], ['when', x => x.startsWith('언제')], ['act', x => x.startsWith('플레이어가여기서') || x === '플레이어가하는일'], ['see', x => x.startsWith('이화면에보이는')], ['gone', x => x.startsWith('앞화면에서')], ['look', x => x.startsWith('플레이어가보는')], ['sure', x => x.startsWith('확실')], ['unsure', x => x.startsWith('불확실')]]);
   const ch = rd(by('캐릭터', '이름'), [['name', x => x === '이름'], ['role', x => x.startsWith('역할')], ['trait', x => x.startsWith('성격')], ['to', x => x.startsWith('누구')], ['tone', x => x.startsWith('말투')], ['sure', x => x.startsWith('확실')]]);
   const tm = rd(by('용어', '뜻·기능'), [['ko', x => x === '한국어'], ['mean', x => x.startsWith('뜻')], ['scr', x => x.startsWith('나오는')], ['rule', x => x.startsWith('번역기준')], ['sure', x => x.startsWith('확실')]]);
   const sg = rd(by('화면 묶음', '왜같이봐야하나'), [['name', x => x.startsWith('묶음')], ['ids', x => x.startsWith('화면id')], ['why', x => x.startsWith('왜')]]).filter(g => g.ids).map(g => ({ name: g.name || g.ids, ids: g.ids.split(/[,，、\s/]+/).filter(Boolean), why: g.why }));
@@ -3144,21 +3152,72 @@ ${G.map(g => `- ${g.name}: ${g.ids.join(', ')}${g.why ? ` — ${g.why}` : ''}`).
 - 묶음 안의 이미지는 ${mode === 'review' ? '모두 함께 보고 검수한다' : '모두 한꺼번에 본 뒤에 번역한다'}. 한 장씩 따로 ${mode === 'review' ? '판단' : '번역'}하지 않는다.
 - 묶음 안의 문구는 서로 이어지는 하나의 내용으로 다룬다 (문제와 힌트, 1P와 2P, 이어지는 대화). 같은 대상은 같은 말로, 정답·단서·순서가 묶음 전체에서 맞물리게 한다.${mode === 'review' ? '' : '\n- 답이 길어 나눠 써야 하면 묶음 단위로 나눈다. 한 묶음을 둘로 쪼개지 않는다.'}
 `; };
+/* 기획 답이 ‘모름’이거나 AI가 추정·모름으로 둔 것 → 번역 AI에게 ‘추측 금지’로 따로 알림 (v29) */
+const UNKNOWN_RE = /^\s*(모름|모르|미정|확인\s*중|tbd|\?|-)\s*$/i;
+const notSure = v => /추정|모름/.test(String(v || ''));
+function unknownsOf(d) {
+  if (!d) return [];
+  const out = [];
+  (d.qs || []).filter(q => !q.ans || UNKNOWN_RE.test(q.ans)).forEach(q => out.push(`${q.q}${q.scr ? ` (${q.scr})` : ''}`));
+  (d.overview || []).filter(o => notSure(o.sure)).forEach(o => out.push(`${o.item}: ‘${o.text}’는 ${o.sure}`));
+  (d.screens || []).forEach(x => { if (notSure(x.sure)) out.push(`화면 ${x.id}: 플레이어 행동 ‘${x.act || '-'}’는 ${x.sure}`); ['look', 'gone'].forEach(k => { if (/^모름|^\?$/.test(String(x[k] || '').trim())) out.push(`화면 ${x.id}: ${k === 'look' ? '플레이어가 보는 곳' : '앞 화면에서 사라진 것'} 모름`); }); });
+  (d.terms || []).filter(x => notSure(x.sure)).forEach(x => out.push(`용어 ‘${x.ko}’의 뜻 ‘${x.mean}’는 ${x.sure}`));
+  return out;
+}
 /* 번역·검수 프롬프트에 들어가는 공통 기준 (독립 역번역에는 넣지 않음) */
 function understandBlock(t) {
   const u = uOf(t); if (!u || !u.draft) return '';
   const d = u.draft, ok = uOk(t), L = a => a.filter(Boolean).join(' · ');
   return `# 게임 이해 (번역 전 분석${ok ? ` · 기획 확정 v${u.ver}` : ' · 아직 확정 안 됨 — 참고만'})
 ${d.overview.map(o => `- ${o.item}: ${o.text}${o.sure && o.sure !== '확인됨' ? ` (${o.sure})` : ''}${o.rule && o.rule !== '-' ? ` → 번역 지침: ${o.rule}` : ''}`).join('\n')}
-${d.screens.length ? `## 화면 (진행 순서)\n${d.screens.map(x => `- ${x.id} ${x.name}: ${L([x.when, x.act])}${x.sure && x.sure !== '확인됨' ? ` (${x.sure})` : ''}`).join('\n')}` : ''}
+${d.screens.length ? `## 화면 (진행 순서)\n${d.screens.map(x => `- ${x.id} ${x.name}: ${L([x.when, x.act])}${x.see ? ` · 보이는 것: ${x.see}` : ''}${x.gone && x.gone !== '-' ? ` · 사라진 것: ${x.gone}` : ''}${x.look ? ` · 플레이어가 보는 곳: ${x.look}` : ''}${x.sure && x.sure !== '확인됨' ? ` (${x.sure})` : ''}`).join('\n')}` : ''}
 ${d.chars.length ? `## 캐릭터\n${d.chars.map(x => `- ${x.name} (${x.role}) → ${x.to || '-'}: ${L([x.trait, x.tone])}`).join('\n')}` : ''}
 ${d.terms.length ? `## 핵심 용어\n${d.terms.map(x => `- ${x.ko}: ${x.mean}${x.rule && x.rule !== '-' ? ` → ${x.rule}` : ''}`).join('\n')}` : ''}
 ${(d.comps || []).length ? `## 퍼즐·과제 구성요소 (재설계는 이 표 기준)\n${d.comps.map(c => `- ${c.scr} ${c.pz ? c.pz + ' · ' : ''}${c.kind}: ${c.text}${/^예/.test(c.lang) ? ` [언어 의존: ${c.why || '-'}]` : ''}${/^예/.test(c.redo) ? ' → 재설계 필요 (C)' : /확인/.test(c.redo) ? ' → 재설계 확인 필요' : ''}`).join('\n')}\n- ‘재설계 필요’ 요소가 들어간 문구는 C(재설계)로 다루고, 같은 퍼즐의 다른 요소(문제·단서·정답)도 함께 맞춘다.` : ''}
 ${(d.ops || []).length ? `## 조작 목록 (조작 동사 고정 — 이 동사만 쓴다)\n${d.ops.map(o => `- ${o.id} ${o.ko} (${o.forms || '-'}): ${o.fix || '-'}${o.avoid && o.avoid !== '-' ? ` · 쓰지 말 것: ${o.avoid}` : ''}`).join('\n')}\n- 조작 지시 줄은 해당 조작의 고정 동사로 옮기고, 쓰지 말 것은 쓰지 않는다. 화면이 달라도 같은 조작은 같은 동사.` : ''}
-${(d.qs || []).some(q => q.ans) ? `## 기획이 답한 것\n${d.qs.filter(q => q.ans).map(q => `- ${q.q} → ${q.ans}`).join('\n')}` : ''}
-- 위 내용으로 판단할 수 없는 문구는 추측하지 말고 비고(또는 이유)에 ‘맥락 불확실: …’로 남긴다.
+${(d.qs || []).some(q => q.ans && !UNKNOWN_RE.test(q.ans)) ? `## 기획이 답한 것\n${d.qs.filter(q => q.ans && !UNKNOWN_RE.test(q.ans)).map(q => `- ${q.q} → ${q.ans}`).join('\n')}` : ''}
+${(unk => unk.length ? `## 아직 모르는 것 (기획도 모름·확인 안 됨 — 추측 금지)\n${unk.map(x => `- ${x}`).join('\n')}` : '')(unknownsOf(d))}
+- 확정되지 않은 것((추정)·(모름) 표시, 위 ‘아직 모르는 것’)에 기대야 하는 줄은 추측해서 번역하지 않는다. 가장 무난한 번역을 쓰고 검수 주의사항(또는 이유)에 ‘REVIEW: 상황 확인 필요 — (무엇을 모르는지)’.
 `;
 }
+/* 기획 질문지 (v29): 답 안 된 질문 + AI가 추정·모름으로 둔 항목 → 엑셀로 기획에 전달 → 답을 받아 올림 */
+function uqItems(t) {
+  const u = uOf(t), d = u && u.draft; if (!d) return [];
+  const out = [];
+  (d.qs || []).forEach((q, i) => { if (!q.ans || UNKNOWN_RE.test(q.ans)) out.push({ kind: '질문', key: `Q${i + 1}`, text: q.q, scr: q.scr || '', why: q.why || '', cur: q.ans || '' }); });
+  (d.overview || []).forEach(o => { if (notSure(o.sure)) out.push({ kind: 'AI 추정 확인', key: `개요:${o.item}`, text: `${o.item}: ${o.text} — 맞나요? (AI ${o.sure})`, scr: '', why: o.rule || '', cur: '' }); });
+  (d.screens || []).forEach(x => {
+    if (notSure(x.sure)) out.push({ kind: 'AI 추정 확인', key: `화면:${x.id}`, text: `${x.id} ${x.name || ''}: 플레이어가 ‘${x.act || '-'}’ — 맞나요? (AI ${x.sure})`, scr: x.id, why: x.unsure || '', cur: '' });
+    if (/^모름|^\?$/.test(String(x.look || '').trim())) out.push({ kind: '질문', key: `보는곳:${x.id}`, text: `${x.id}: 이 화면에서 플레이어는 어디를 보고 조작하나요? (화면 / 실제 버튼 / 공간·소품)`, scr: x.id, why: '지시어(this·that)와 ‘누르다’ 대상 번역에 필요', cur: '' });
+    if (/^모름|^\?$/.test(String(x.gone || '').trim())) out.push({ kind: '질문', key: `사라짐:${x.id}`, text: `${x.id}: 앞 화면에서 보였다가 이 화면에서 사라진 것이 있나요?`, scr: x.id, why: '시제(is/was)·지시어 번역에 필요', cur: '' });
+  });
+  (d.terms || []).forEach(x => { if (notSure(x.sure)) out.push({ kind: 'AI 추정 확인', key: `용어:${x.ko}`, text: `용어 ‘${x.ko}’ = ${x.mean} — 맞나요? (AI ${x.sure})`, scr: x.scr || '', why: x.rule || '', cur: '' }); });
+  return out;
+}
+function uqXlsx(t) {
+  const L = uqItems(t); if (!L.length) { toast('기획에 물어볼 것이 없음.'); return; }
+  const sh = { name: '기획 질문지', rows: [['번호', '구분', '질문 · 확인할 내용', '관련 화면', '왜 필요한가', '기획 답 (여기에 쓰기 · 모르면 ‘모름’)'], ...L.map(x => [x.key, x.kind, x.text, x.scr, x.why, x.cur])], widths: [14, 12, 60, 14, 36, 40], filter: true, style: (ri, ci) => ri > 0 && ci === 5 ? 3 : 0 };
+  saveBlob(XS([sh]), `${abbrOf(t)}_기획질문지.xlsx`);
+}
+async function applyUqs(tables) {
+  const tb = tables.find(r => r.sheet && /질문지/.test(r.sheet)) || tables.find(r => (r[0] || []).some(h => /기획답/.test(normHead(h))));
+  if (!tb) { toast('‘기획 질문지’ 표를 찾지 못함.', 5000); return; }
+  const hi = Math.max(0, tb.findIndex(r => r.some(h => /기획답/.test(normHead(h))))), h = tb[hi].map(normHead), iK = Math.max(0, h.indexOf('번호')), iA = h.findIndex(x => /기획답/.test(x)), iT = h.findIndex(x => x.startsWith('질문'));
+  const t = cur().data, u = JSON.parse(JSON.stringify(uOf(t) || {})); if (!u.draft) return;
+  const items = new Map(uqItems(t).map(x => [x.key, x])); let n = 0, add = 0;
+  tb.slice(hi + 1).forEach(r => { const key = String(r[iK] || '').trim(), ans = String(r[iA] || '').trim(); if (!key || !ans) return;
+    const m = /^Q(\d+)$/.exec(key); if (m && u.draft.qs[+m[1] - 1]) { u.draft.qs[+m[1] - 1].ans = ans; n++; return; }
+    const it = items.get(key), text = it ? it.text : String(r[iT] || '').trim(); if (!text) return;
+    /* 화면·개요·용어 항목 자체도 고침: 보는 곳·사라진 것은 답으로 채우고, 추정 항목은 기획이 답했으면 ‘확인됨’ */
+    if (!UNKNOWN_RE.test(ans)) { const [kd, ref] = [key.slice(0, key.indexOf(':')), key.slice(key.indexOf(':') + 1)], d = u.draft;
+      const sc = (d.screens || []).find(x => x.id === ref), ov = (d.overview || []).find(x => x.item === ref), tm = (d.terms || []).find(x => x.ko === ref);
+      if (kd === '보는곳' && sc) sc.look = ans; else if (kd === '사라짐' && sc) sc.gone = ans; else if (kd === '화면' && sc) sc.sure = '확인됨'; else if (kd === '개요' && ov) ov.sure = '확인됨'; else if (kd === '용어' && tm) tm.sure = '확인됨'; }
+    const ex = u.draft.qs.find(q => normKo(q.q) === normKo(text)); if (ex) ex.ans = ans; else { u.draft.qs.push({ q: text, why: it ? it.why || it.kind : '기획 질문지', scr: it ? it.scr : '', ans, from: '질문지' }); add++; } n++; });
+  u.confirmed = null;
+  await saveGameField('understand', u); render(true);
+  toast(`기획 답 ${n}개 반영${add ? ` (AI 추정 확인 ${add}개는 질문으로 추가)` : ''}. 게임 이해를 다시 확정해야 번역에 들어감.`, 6000);
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-uqx]')) uqXlsx(cur().data); });
 function understandHTML(t) {
   const u = uOf(t), d = u && u.draft, ok = uOk(t), hasSheet = LANGS.some(l => sheetOf(t, l.key));
   const qOpen = d ? (d.qs || []).filter(q => !q.ans).length : 0;
@@ -3170,7 +3229,7 @@ function understandHTML(t) {
       <li><i>2</i><div>${readOnly ? '' : `<label class="btn upl${d ? '' : ' primary'}">받은 엑셀 올리기<input type="file" hidden data-one="one:und" accept="${FILE_ACCEPT}"></label>`}${pasteBtn('one:und', '답 붙여 넣기')}</div></li></ol>
     <details class="more"><summary>프롬프트 보기</summary><pre class="ptext" id="pt-p-und">${esc(understandPrompt(t))}</pre></details>
     ${d ? `${tb(['항목', '내용', '근거', '번역 지침'], d.overview.map(o => [o.item, sure(o.sure) + o.text, o.src, o.rule]))}
-      ${d.screens.length ? `<details class="more"><summary>화면 ${d.screens.length}개</summary>${tb(['화면 ID', '이름', '언제', '플레이어가 하는 일', '불확실'], d.screens.map(x => [x.id, x.name, sure(x.sure) + x.when, x.act, x.unsure]))}</details>` : ''}
+      ${d.screens.length ? `<details class="more"><summary>화면 ${d.screens.length}개</summary>${tb(['화면 ID', '이름', '언제', '플레이어가 하는 일', '보이는 것', '사라진 것', '보는 곳', '불확실'], d.screens.map(x => [x.id, x.name, sure(x.sure) + x.when, x.act, x.see, x.gone, x.look, x.unsure]))}</details>` : ''}
       ${d.chars.length ? `<details class="more"><summary>캐릭터 ${d.chars.length}명</summary>${tb(['이름', '역할', '성격', '누구에게', '말투 기준'], d.chars.map(x => [x.name, x.role, x.trait, x.to, sure(x.sure) + x.tone]))}</details>` : ''}
       ${d.terms.length ? `<details class="more"><summary>핵심 용어 ${d.terms.length}개</summary>${tb(['한국어', '뜻·기능', '나오는 화면', '번역 기준'], d.terms.map(x => [x.ko, sure(x.sure) + x.mean, x.scr, x.rule]))}</details>` : ''}
       ${(d.ops || []).length ? `<details class="more"><summary>조작 목록 ${d.ops.length}개 <small class="sb">이해 확정 때 함께 확정 · 조작 지시 줄의 동사를 고정</small></summary>${tb(['조작 ID', '한국어 동사', '활용형', '언어별 고정 동사', '쓰지 말 것'], d.ops.map(o => [o.id, o.ko, o.forms, o.fix, o.avoid]))}</details>` : '<p class="sb">조작 목록 미지정 — 조작 동사 검사를 건너뜀. 다시 정리 프롬프트로 받으면 생김.</p>'}
@@ -3178,6 +3237,7 @@ function understandHTML(t) {
       <h5 class="mh">함께 봐야 하는 화면 묶음 <small>한 묶음의 이미지는 번역·검수 때 한 번에 봄. 한 줄에 하나: 묶음 이름 | 화면 ID들(쉼표) | 이유</small></h5>
       ${readOnly ? `<pre class="ptext">${esc(sgOf(t).map(g => `${g.name} | ${g.ids.join(', ')} | ${g.why || ''}`).join('\n') || '(없음)')}</pre>` : `<textarea rows="3" data-sgroups placeholder="예) 낱말퀴즈 | AD_07, AD_14 | 문제 화면과 힌트 화면을 같이 봐야 정답 칸이 맞음">${esc((u.groups || []).map(g => `${g.name} | ${g.ids.join(', ')} | ${g.why || ''}`).join('\n'))}</textarea>`}
       <h5 class="mh">질문 ${(d.qs || []).length}개${qOpen ? ` · <span class="badtxt">답 안 한 것 ${qOpen}</span>` : ''}</h5>
+      ${(n => n ? `<div class="ratbox"><b>기획에 확인할 것 ${n}개</b> <small class="sb">답 없는 질문 · ‘모름’ 답 · AI가 추정·모름으로 둔 항목. 확정해도 이것들은 번역 AI에게 ‘추측 금지’로 전달됨</small><div class="iacts"><button type="button" class="btn" data-uqx>기획 질문지 엑셀 받기</button>${readOnly ? '' : `<label class="btn upl">답 채운 질문지 올리기<input type="file" hidden data-one="one:uqs" accept="${FILE_ACCEPT}"></label>`}</div></div>` : '')(uqItems(t).length)}
       ${(d.qs || []).map((q, i) => `<div class="uq"><b>${i + 1}. ${esc(q.q)}</b><small class="sb">${esc(q.why)}${q.scr ? ` · ${esc(q.scr)}` : ''}</small>${readOnly ? `<p>${esc(q.ans || '-')}</p>` : `<textarea rows="1" data-uans="${i}" placeholder="기획의 답 (모르면 ‘모름’)">${esc(q.ans || '')}</textarea>`}</div>`).join('')}
       ${readOnly ? '' : `<label class="sb">기획 메모 (고칠 점이 있으면 — 다시 정리 프롬프트에 들어감)<textarea rows="2" data-umemo>${esc(u.memo || '')}</textarea></label>
       <div class="iacts">${ok ? `<button type="button" class="btn ghost" data-uconf="off">확정 취소</button>` : `<button type="button" class="btn primary" data-uconf="on" ${qOpen ? 'disabled' : ''}>이해 확정</button>${qOpen ? '<small class="sb">질문에 모두 답해야 확정 가능 (모르면 ‘모름’)</small>' : ''}`}</div>`}` : ''}
@@ -3188,7 +3248,7 @@ function gameInfoBlock(t, lk) {
   return `# 게임별 정보
 - 게임: ${t.name || ''}${t.concept ? ` — ${t.concept}` : ''}
 - 상황: ${t.situation || '(없음)'}
-- 게임 규칙·정답: ${t.rules || '(없음 — 이미지에서 파악하고, 확실하지 않으면 비고에 적기)'}
+- 게임 규칙·정답: ${t.rules || '(없음 — 추측하지 않는다. 규칙·정답에 기대는 줄은 검수 주의사항에 ‘REVIEW: 규칙 확인 필요 — (무엇을 모르는지)’)'}
 - 읽는 사람: 한국어를 모르고 이 게임을 처음 하는 ${L.region} 방문객
 - 화자별 말투:
 ${toneLines(t, lk).split('\n').map(x => '  ' + x).join('\n')}`;
@@ -3210,6 +3270,21 @@ function situBlock(mode) {
 - 번역 근거: 지시어나 표현을 원문과 다르게 바꿨으면 ${mode === 'card' ? '이유 칸' : '번역 이유'}에 그 표현을 고른 이유와 게임 상황의 관계를 한국어로 쓴다. 예: ‘위 도형이 위치한 칸 → (그 그림이) 있었던 칸: 문제 화면에서는 기억 화면의 칸 그림이 사라졌으므로 지금 있는 것처럼 쓰지 않음’.
 `;
 }
+/* 기획이 정할 것 (v29): 번역 AI는 원문대로 두고 제안만, 결정은 기획 */
+const PLAN_KINDS = ['원문 판독', '정답·오답 교체', '문화 소재 선택', '고유명사·IP'];
+function planBlock(mode) {
+  if (mode === 'review') return `# 기획이 정할 것 (검수)
+- 번역이 ${PLAN_KINDS.map((k, i) => `${'①②③④'[i]} ${k}`).join(' ')} 중 하나를 원문과 다르게 정했는데 ‘기획 확인’ 표시(검수 주의사항의 ‘REVIEW: 기획 확인 [분류] …’ 또는 기획 확인 시트)가 없으면, 판정 REVIEW · 이유 ‘기획 판단 필요: [분류] …’. 원문 그대로인 정상 번역은 해당 없음.
+`;
+  return `# 기획이 정할 것 (번역 AI가 혼자 바꾸지 않는다)
+- 아래 4가지는 원문대로 번역한다. 바꾸는 게 낫다고 보면 바꾸지 말고 검수 주의사항에 ‘REVIEW: 기획 확인 [분류] — 제안: …’${mode === 'card' ? '' : ', 대안이 있으면 ‘기획 확인’ 시트에도'} 쓴다.
+  ① 원문 판독: 원문 글자가 이상해 보여도 고쳐 읽지 않는다.
+  ② 정답·오답 교체: 정답이나 오답 선택지를 다른 것으로 바꾸지 않는다 (예: 오답 ‘개천절’이 현지에서 낯설어도 그대로 번역하고 제안).
+  ③ 문화 소재 선택: 다른 나라 노래·명절·음식 등으로 바꾸지 않는다.
+  ④ 고유명사·IP: 실존 작품·캐릭터·브랜드 이름을 넣거나 바꾸지 않는다.
+- 예외: 원문 분석에서 재설계(C)로 정한 줄${mode === 'card' ? '과 ‘대체’ 경로 카드' : ''}는 재설계 규칙을 따른다 (그 결과도 기획 확인을 거친다).
+`;
+}
 function makePrompt(id, t, lk) {
   const L = LANGS.find(l => l.key === lk), ab = abbrOf(t), ai = aiOf(t, lk);
   return `규칙 버전 ${PROMPT_VER} · 번역 AI ${ai} · ${L.label}
@@ -3227,7 +3302,7 @@ ${termLines(id, lk)}
 # ${L.label} 언어 규칙
 ${[...CULTURE[lk], ...CULTURE.common.slice(0, 2)].map(x => '- ' + x).join('\n')}${lk === 'zh' ? '\n- 중국 본토 간체만 쓴다. 번체와 대만·홍콩 지역 표현을 쓰지 않는다.' : ''}
 
-${honorBlock(lk, 'translate')}${situBlock('translate')}${enKeepBlock(lk, srcConfirmed(t))}${lk === 'zh' ? enRefBlock(t, 'translate') : ''}${srcConfirmed(t) ? srcTranslateTail(t, lk, ab) : `
+${honorBlock(lk, 'translate')}${situBlock('translate')}${planBlock('translate')}${enKeepBlock(lk, srcConfirmed(t))}${lk === 'zh' ? enRefBlock(t, 'translate') : ''}${srcConfirmed(t) ? srcTranslateTail(t, lk, ab) : `
 # 현지화 분류 (모든 줄, ${L.region} 방문객 기준으로 판단)
 - A. 직접 번역 가능 (낮은 위험): 뜻과 표현을 크게 바꾸지 않고 옮겨도 외국인이 똑같이 이해함. 예: 문을 열어 주세요 / 카드를 선택하세요 / 제한 시간은 60초입니다
 - B. 의미 현지화 필요 (중간 위험): 그대로 옮기면 뜻이 전달되지 않거나 다르게 받아들여짐. 원문 규칙은 유지한 채 뜻만 현지 표현으로 바꿈. 예: 청개구리처럼 행동하세요 / 눈치껏 행동하세요 / 손이 크다
@@ -3513,7 +3588,7 @@ function altReqPrompt(t, lk, ids) {
 
 ${gameInfoBlock(t, lk)}
 ${honorBlock(lk, 'translate')}
-${situBlock('translate')}# 용어집 (확정은 반드시 지킴)
+${situBlock('translate')}${planBlock('translate')}# 용어집 (확정은 반드시 지킴)
 ${termLines(gidOf(t), lk)}
 
 # 결과물: 시트 \`번역 대안\` (엑셀을 못 만들면 같은 표를 채팅에 표로, 표 위에 시트 이름)
@@ -3625,7 +3700,7 @@ ${srcHas(t) ? answersBlock(t).replace('# 정답 기준 (게임상 정답과 판�
 6. 게임 적합성: 플레이어가 할 행동(찾기, 고르기, 방향, 순서)과 퍼즐의 단서·정답·규칙이 변형되지 않았는가
 - 그 밖에: 화면 칸에 들어갈 길이인가 / 문화 금기: ${CULTURE[lk].join(' ')}
 
-${honorBlock(lk, 'review')}${situBlock('review')}${enKeepReview(lk)}
+${honorBlock(lk, 'review')}${situBlock('review')}${planBlock('review')}${enKeepReview(lk)}
 - 이번 검수에서 특히 볼 것: ${focus}
 
 # 공통 지시
@@ -4468,7 +4543,7 @@ function understandSheet(t) {
   rows.push(['상태', uOk(t) ? `확정 v${u.ver}` : `확정 전 (v${u.ver})`, uOk(t) ? `${u.confirmed.by} · ${fmtDate(u.confirmed.at)}` : '', '', '', '']);
   LANGS.forEach(l => { const sh = sheetOf(t, l.key); if (sh) rows.push(['번역 기준', `${l.label} 번역 엑셀`, sh.uVer ? `게임 이해 v${sh.uVer} 기준으로 번역` : '게임 이해 없이(확정 전에) 번역됨 — 다시 번역 권장', '', sh.uVer ? '확인됨' : '모름', '']); });
   d.overview.forEach(o => rows.push(['개요', o.item, o.text, o.src, o.sure, o.rule]));
-  d.screens.forEach(x => rows.push(['화면', `${x.id} ${x.name}`, [x.when, x.act].filter(Boolean).join(' / '), x.unsure || '', x.sure, '']));
+  d.screens.forEach(x => rows.push(['화면', `${x.id} ${x.name}`, [x.when, x.act, x.see && `보이는 것: ${x.see}`, x.gone && x.gone !== '-' && `사라진 것: ${x.gone}`, x.look && `보는 곳: ${x.look}`].filter(Boolean).join(' / '), x.unsure || '', x.sure, '']));
   d.chars.forEach(x => rows.push(['캐릭터', `${x.name} (${x.role})`, x.trait, x.to, x.sure, x.tone]));
   d.terms.forEach(x => rows.push(['용어', x.ko, x.mean, x.scr, x.sure, x.rule]));
   (d.ops || []).forEach(o => rows.push(['조작', `${o.id} ${o.ko}`, `활용형: ${o.forms || '-'}`, `쓰지 말 것: ${o.avoid || '-'}`, '', `고정 동사: ${o.fix || '-'}`]));
@@ -4771,7 +4846,7 @@ function autoFixPrompt(t, lk, F) {
 
 ${gameInfoBlock(t, lk)}
 ${honorBlock(lk, 'translate')}
-${situBlock('translate')}# 용어집 (확정은 반드시 지킴)
+${situBlock('translate')}${planBlock('translate')}# 용어집 (확정은 반드시 지킴)
 ${termLines(gidOf(t), lk)}
 ${banBlock(lk)}
 # 결과물: 시트 \`자동 점검 수정\` (엑셀을 못 만들면 같은 표를 채팅에 표로, 표 위에 시트 이름)
@@ -4848,7 +4923,7 @@ function cardTrPrompt(t, lk, ai) {
 
 ${gameInfoBlock(t, lk)}
 ${honorBlock(lk, 'translate')}
-${situBlock('card')}# 용어집 (확정은 반드시 지킴)
+${situBlock('card')}${planBlock('card')}# 용어집 (확정은 반드시 지킴)
 ${termLines(gidOf(t), lk)}
 ${banBlock(lk)}${hcmpLessons(t, lk)}
 # 결과물: 시트 \`카드 번역\` (엑셀을 못 만들면 같은 표를 채팅에 표로, 표 위에 시트 이름)
@@ -6044,7 +6119,7 @@ $('#paste-form').addEventListener('submit', async e => {
     if (!tables.length) { $('#paste-err').textContent = '표를 찾지 못함. AI 답 전체를 복사해서 붙여 넣기.'; return; }
     $('#pastedlg').close();
     if (pasteTarget.startsWith('ap:')) return applyUpload(pasteTarget.slice(3), tables);
-    return pasteTarget === 'one:solve' ? applySolve(tables) : pasteTarget === 'one:human' ? applyHuman(tables) : pasteTarget === 'one:hdiff' ? applyHdiff(tables) : pasteTarget === 'one:natq' ? applyNatQ(tables) : pasteTarget === 'one:und' ? applyUnderstand(tables) : pasteTarget === 'one:nat' ? applyNative(tables) : pasteTarget === 'one:ctx' ? applyCtx(tables) : pasteTarget === 'one:work' ? applyWork(tables) : pasteTarget === 'one:blind' ? applyBlind(tables) : pasteTarget === 'one:alt' ? applyAltReq(tables) : pasteTarget === 'one:autofix' ? applyAutoFix(tables) : pasteTarget === 'one:cardtr' ? applyCardTr(tables) : pasteTarget === 'one:cardsolve' ? applyCardSolve(tables) : pasteTarget === 'one:rat' ? applyRat(tables) : pasteTarget === 'one:cross' ? applyCross(tables) : pasteTarget === 'one:tr' ? applyTranslation(tables) : pasteTarget === 'one:x' ? applyExtraction(tables) : applyReview(tables);
+    return pasteTarget === 'one:solve' ? applySolve(tables) : pasteTarget === 'one:human' ? applyHuman(tables) : pasteTarget === 'one:hdiff' ? applyHdiff(tables) : pasteTarget === 'one:natq' ? applyNatQ(tables) : pasteTarget === 'one:und' ? applyUnderstand(tables) : pasteTarget === 'one:nat' ? applyNative(tables) : pasteTarget === 'one:ctx' ? applyCtx(tables) : pasteTarget === 'one:work' ? applyWork(tables) : pasteTarget === 'one:blind' ? applyBlind(tables) : pasteTarget === 'one:alt' ? applyAltReq(tables) : pasteTarget === 'one:autofix' ? applyAutoFix(tables) : pasteTarget === 'one:cardtr' ? applyCardTr(tables) : pasteTarget === 'one:uqs' ? applyUqs(tables) : pasteTarget === 'one:cardsolve' ? applyCardSolve(tables) : pasteTarget === 'one:rat' ? applyRat(tables) : pasteTarget === 'one:cross' ? applyCross(tables) : pasteTarget === 'one:tr' ? applyTranslation(tables) : pasteTarget === 'one:x' ? applyExtraction(tables) : applyReview(tables);
   }
   const rows = parseTable($('#paste-text').value);
   if (rows.length < 2) { $('#paste-err').textContent = '표를 찾지 못함. 첫 행에 열 이름(ID 등)이 있어야 함.'; return; }
@@ -6179,7 +6254,7 @@ document.addEventListener('change', async e => {
     try {
       const tables = await readWorkbook(f);
       if (!tables.length || tables[0].length < 2) { toast('표를 찾지 못함.'); return; }
-      await (target === 'one:solve' ? applySolve(tables) : target === 'one:human' ? applyHuman(tables) : target === 'one:hdiff' ? applyHdiff(tables) : target === 'one:natq' ? applyNatQ(tables) : target === 'one:und' ? applyUnderstand(tables) : target === 'one:nat' ? applyNative(tables) : target === 'one:ctx' ? applyCtx(tables) : target === 'one:work' ? applyWork(tables) : target === 'one:blind' ? applyBlind(tables) : target === 'one:alt' ? applyAltReq(tables) : target === 'one:autofix' ? applyAutoFix(tables) : target === 'one:cardtr' ? applyCardTr(tables) : target === 'one:cardsolve' ? applyCardSolve(tables) : target === 'one:cross' ? applyCross(tables) : target === 'one:rat' ? applyRat(tables) : target === 'one:tr' ? applyTranslation(tables) : applyReview(tables));
+      await (target === 'one:solve' ? applySolve(tables) : target === 'one:human' ? applyHuman(tables) : target === 'one:hdiff' ? applyHdiff(tables) : target === 'one:natq' ? applyNatQ(tables) : target === 'one:und' ? applyUnderstand(tables) : target === 'one:nat' ? applyNative(tables) : target === 'one:ctx' ? applyCtx(tables) : target === 'one:work' ? applyWork(tables) : target === 'one:blind' ? applyBlind(tables) : target === 'one:alt' ? applyAltReq(tables) : target === 'one:autofix' ? applyAutoFix(tables) : target === 'one:cardtr' ? applyCardTr(tables) : target === 'one:uqs' ? applyUqs(tables) : target === 'one:cardsolve' ? applyCardSolve(tables) : target === 'one:cross' ? applyCross(tables) : target === 'one:rat' ? applyRat(tables) : target === 'one:tr' ? applyTranslation(tables) : applyReview(tables));
     } catch (err) { done(); toast(err.message || '파일을 읽지 못함.', 5000); }
     return;
   }
