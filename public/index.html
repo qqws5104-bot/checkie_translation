@@ -1831,6 +1831,18 @@ function ctxHTML(t, lk, F) {
     <div class="tprev"><table><thead><tr><th>묶음</th><th>종류</th><th>줄</th><th>결과</th></tr></thead><tbody>${G.map(g => { const d = done[g.id], cur0 = d && d.h === g.h; return `<tr><td>${esc(g.id)}</td><td>${esc(g.kind)}</td><td>${esc(g.ids.join(', '))}</td><td>${cur0 ? `<span class="vtag ${d.st === 'FAIL' ? 'fail' : d.st === 'REVIEW' ? 'rev' : 'ok'}">${esc(d.st)}</span>` : d ? '<span class="sb">번역이 바뀜 · 다시 검수</span>' : '<span class="sb">대기</span>'}</td></tr>`; }).join('')}</tbody></table></div>
     ${iss.length ? `<h4 class="mh">맥락 문제가 걸린 줄 ${iss.length}개 <small>① 자동 점검에서 고치거나 예외 사유</small></h4><ul class="glist">${iss.map(r => `<li><button type="button" class="linkbtn" data-item="${esc(lk)}|${esc(r.id)}">${esc(r.id)}</button> ${r.ctxIss.map(c => `<b>${esc(c.type)}</b> ${esc(c.msg)}${c.fix ? ` → ${esc(c.fix)}` : ''}`).join(' / ')}</li>`).join('')}</ul>` : ''}`;
 }
+/* 한국어 활용형 차이를 같은 말로 봄: 춥·춥다·추운 / 덥·더운 / 받는다·받다 / 큰·크다 (사전형 근사) */
+function koStems(v) {
+  const t = String(v || '').normalize('NFC').replace(/[^\p{L}\p{N}]/gu, ''); const out = new Set([t]); if (!t) return out;
+  const cut = (x, suf) => x.length > suf.length && x.endsWith(suf) ? x.slice(0, -suf.length) : null;
+  ['습니다', 'ㅂ니다', '어요', '아요', '해요', '는다', '다', '요', '는', '은', '게', '고', '지'].forEach(suf => { const c = cut(t, suf); if (c) out.add(c); });
+  [...out].forEach(x => { const last = x.charCodeAt(x.length - 1) - 0xAC00; if (last < 0 || last > 11171) return; const base = x.slice(0, -1), cho = Math.floor(last / 588), jung = Math.floor((last % 588) / 28), jong = last % 28;
+    if ((x.endsWith('운') || x.endsWith('워')) && x.length >= 2) { const p = x.charCodeAt(x.length - 2) - 0xAC00; if (p >= 0 && p <= 11171 && p % 28 === 0) out.add(x.slice(0, -2) + String.fromCharCode(0xAC00 + p + 17)); }   // ㅂ 불규칙: 추운 → 춥
+    if (jong === 4) out.add(base + String.fromCharCode(0xAC00 + cho * 588 + jung * 28));   // 큰 → 크
+  });
+  return out;
+}
+function koSameWord(a, b) { const A = koStems(a), B = koStems(b); for (const x of A) if (x && B.has(x)) return true; return false; }
 function xcmpOf(r) {
   const rv = r.x.rv, b0 = bt0Of(r);
   if (!rv) return { st: '검수 전', list: [] };
@@ -1847,8 +1859,12 @@ function xcmpOf(r) {
   /* 뜻 전체 */
   if (normKo(r.ko).replace(/[^\p{L}\p{N}]/gu, '').length >= 6 && sim < 0.15 && full('핵심', '의미') && pass) H.push('역번역 문장이 원문과 글자가 거의 겹치지 않음 (참고: 의역·현지화면 정상. 행동·대상·조건·정답이 같은지만 보기)');
   if (sim >= 0.8 && sc && scLvOf(SC_ITEMS[0], sc.핵심) >= 2 && !crit) L.push('역번역은 원문과 거의 같은데 검수는 핵심 의미 손실 — 검수 근거 확인');
-  /* 애매한 부분 */
-  if (b0.amb && pass && sc && SC_ITEMS.every(it => Number(sc[it.k]) === it.max)) L.push(`역번역 AI가 애매하다고 본 부분(${b0.amb.slice(0, 40)})이 있는데 검수는 모두 온전`);
+  /* 애매한 부분: 독립 역번역은 문맥 없이 번역문만 보므로 한두 단어짜리 번역은 원래 애매함. 역번역의 첫 해석이 원문과 같은 뜻이면(활용형 차이 포함) 모순이 아님 → 참고만 */
+  if (b0.amb && pass && sc && SC_ITEMS.every(it => Number(sc[it.k]) === it.max)) {
+    const short = String(r.tr || '').trim().split(/\s+/).filter(Boolean).length <= 2 || normKo(r.tr).length <= 4, same = koSameWord(r.ko, b0.t) || sim >= 0.5;
+    if (short || same) H.push(`역번역 AI가 애매하다고 본 부분(${b0.amb.slice(0, 40)}) — ${short ? '짧은 단어라 문맥 없이는 원래 애매함' : '첫 해석은 원문과 같은 뜻'}. 검수는 화면 문맥을 보고 판단함`);
+    else L.push(`역번역 AI가 애매하다고 본 부분(${b0.amb.slice(0, 40)})이 있는데 검수는 모두 온전`);
+  }
   /* 검수 AI가 원문을 보고 뜻을 되살렸는지 */
   const bt = (r.x.bt || [])[0] || '';
   if (pass && bt && normKo(r.ko).replace(/[^\p{L}\p{N}]/gu, '').length >= 8 && (simKo(r.ko, bt) || 0) >= 0.8 && sim < 0.5) L.push('검수 AI 역번역은 원문과 같은데 독립 역번역은 다름 — 검수 AI가 원문을 보고 뜻을 되살려 썼을 수 있음');
