@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-19T05:36:31.751Z",
+    "updatedAt": "2026-11-20T00:26:37.558Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -19880,9 +19880,49 @@
                   "by": "Claude (번역 AI)",
                   "at": "2026-11-19T01:49:37.499Z"
                 }
+              },
+              {
+                "at": "2026-11-20T00:26:37.519Z",
+                "by": "김예은",
+                "from": "National Foundation Day",
+                "ratFrom": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "국가의 건국 또는 창건을 기념하는 날을 뜻하며, 이 문맥에서는 한국의 국경일인 개천절을 가리킨다.",
+                  "sense": "national: 국가의 / 전국적인 → 국가와 관련된 / foundation: 설립, 창건, 건국 → 건국 / day: 날 → 기념일의 날",
+                  "wmap": "개천절 → National Foundation Day = 한국의 건국을 기념하는 국경일",
+                  "reason": "‘개천절’은 한국의 특정 국경일이므로 다른 문화권의 기념일 이름으로 대체하지 않고, 해당 명칭에 대응하는 영어 표현인 ‘National Foundation Day’를 사용했다. 영어권 방문객에게 한국의 기념일이라는 맥락을 유지한다.",
+                  "redo": "",
+                  "by": "Claude (근거 다시 받기)",
+                  "at": "2026-11-19T01:49:37.499Z"
+                },
+                "rvSnap": null,
+                "hvSnap": null,
+                "to": "Halloween",
+                "why": "베스트",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "번역 AI",
+                "rat": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "핼러윈",
+                  "sense": "",
+                  "reason": "원문 소재(개천절)가 바뀜",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "번역 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "원문 소재(개천절)가 바뀜",
+                  "by": "김예은",
+                  "at": "2026-11-20T00:26:37.519Z"
+                }
               }
             ],
-            "tr": "National Foundation Day",
+            "tr": "Halloween",
             "rv": null,
             "bt": null,
             "gl": null,
@@ -19895,9 +19935,9 @@
               "mean": "핼러윈",
               "rec": "기본",
               "recTr": "Foundation Day",
-              "why": "오답을 보여줘야해서",
+              "why": "베스트",
               "by": "김예은",
-              "at": "2026-11-18T01:38:11.326Z",
+              "at": "2026-11-20T00:26:37.519Z",
               "trh": "ynf7063a6onab",
               "from": "번역 AI"
             },
