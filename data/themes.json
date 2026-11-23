@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-23T07:11:02.510Z",
+    "updatedAt": "2026-11-23T07:11:10.896Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -80688,52 +80688,10 @@
               "by": "Claude",
               "trh": "1f8ktg5xzaiad11"
             },
-            "bt": [
-              "눈사람이 (지금) 입고 있는 것을 모두 눌러!"
-            ],
-            "gl": "everything = 전부 / snowman = 눈사람 / is wearing = 입고·쓰고·두르고 있다(현재)",
-            "rel": "플레이어 → 눈사람이 입고 있는 것(전부) : 누르기",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "Press everything the snowman was wearing!",
-              "why": "상황 지시어: 정답 기준이 ‘기억한 그림을 이루던 요소’라서 문제 화면에서는 눈사람의 모자·목도리를 기억으로 골라야 함. 현재형 ‘is wearing’은 지금 화면의 눈사람을 보라는 뜻으로 읽힘. 같은 구조의 S041(‘was holding’)과도 맞춰 ‘was wearing’으로 고침. ‘wearing’이 모자·목도리를 모두 포함하는 점은 맞음.",
-              "at": "2026-11-23T07:04:48.673Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 온전; 행동: 온전(누르기·전부 유지); 대상: 온전; 문맥: 현재형이 이미 사라진 기억 화면의 내용을 가리켜 상황과 어긋남; 말투: 온전(짧은 명령·느낌표)",
-              "trh": "1f8ktg5xzaiad11",
-              "pv": "2026.11-v29",
-              "err3": [
-                "맥락 오류"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -80773,7 +80731,86 @@
                 "by": "검수 AI",
                 "at": "2026-11-23T07:04:48.675Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-23T07:11:08.923Z",
+                "by": "김예은",
+                "from": "Press everything the snowman is wearing!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "눈사람이 입고(쓰고) 있는 것을 모두 눌러라!",
+                  "sense": "wear: 입다/쓰다/두르다/닳다 → 몸에 걸치다(모자·목도리 모두 포함)",
+                  "reason": "①눈사람이 걸친 옷·소품을 모두 고르라는 지시 ②‘눈사람이 걸치고 있는 것을 모두 눌러라’ ③영어 wear는 모자·목도리·옷에 모두 쓰여 ‘착장’ 범위와 맞음. outfit(옷차림)은 모자가 빠지는 느낌이라 피함 ④명사 ‘착장’을 그대로 옮길 단어가 없어 동사 wearing으로 풀어 씀 ⑤판정(전부 선택)",
+                  "redo": "",
+                  "wmap": "눈사람 → snowman = 눈사람 / 착장 → (what it) is wearing = 걸치고 있는 것 / 전부 → everything = 모두 / 누르다 → press = 누르다",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "상황 지시어: 정답 기준이 ‘기억한 그림을 이루던 요소’라서 문제 화면에서는 눈사람의 모자·목도리를 기억으로 골라야 함. 현재형 ‘is wearing’은 지금 화면의 눈사람을 보라는 뜻으로 읽힘. 같은 구조의 S041(‘was holding’)과도 맞춰 ‘was wearing’으로 고침. ‘wearing’이 모자·목도리를 모두 포함하는 점은 맞음.",
+                  "fix": "Press everything the snowman was wearing!",
+                  "exc": "",
+                  "bt": "눈사람이 (지금) 입고 있는 것을 모두 눌러!",
+                  "gl": "everything = 전부 / snowman = 눈사람 / is wearing = 입고·쓰고·두르고 있다(현재)",
+                  "at": "2026-11-23T07:04:48.673Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Press everything the snowman was wearing!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "눈사람이 입고 있던 것을 모두 눌러!",
+                  "sense": "",
+                  "reason": "최소 수정으로 시제만 맞춰 다른 문구와 통일됨 / 현재형 → 과거형으로만 바꿈",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "현재형 → 과거형으로만 바꿈",
+                  "by": "김예은",
+                  "at": "2026-11-23T07:11:08.923Z"
+                }
+              }
+            ],
+            "tr": "Press everything the snowman was wearing!",
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "수정",
+              "tr": "Press everything the snowman was wearing!",
+              "mean": "눈사람이 입고 있던 것을 모두 눌러!",
+              "rec": "수정",
+              "recTr": "Press everything the snowman was wearing!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-23T07:11:08.923Z",
+              "trh": "1djk5u81gi1vwu12",
+              "from": "검수 AI"
+            }
           },
           "S035": {
             "bt0": {
@@ -80783,52 +80820,10 @@
               "by": "Claude",
               "trh": "safo2py3cby1y"
             },
-            "bt": [
-              "인형이 (지금) 입고 있는 것을 모두 눌러!"
-            ],
-            "gl": "everything = 전부 / doll = 인형 / is wearing = 입고·달고 있다(현재)",
-            "rel": "플레이어 → 인형이 입고 있는 것(전부) : 누르기",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "Press everything the doll was wearing!",
-              "why": "상황 지시어: 정답 기준이 ‘기억한 그림을 이루던 요소’(분홍 드레스·빨간 리본)인데 현재형 ‘is wearing’은 지금 보이는 인형을 가리키는 것처럼 읽힘. ‘was wearing’으로 고쳐 S034·S041과 통일.",
-              "at": "2026-11-23T07:04:48.673Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 온전; 행동: 온전(누르기·전부 유지); 대상: 온전; 문맥: 현재형이 이미 사라진 기억 화면의 내용을 가리켜 상황과 어긋남; 말투: 온전(짧은 명령·느낌표)",
-              "trh": "safo2py3cby1y",
-              "pv": "2026.11-v29",
-              "err3": [
-                "맥락 오류"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -80868,7 +80863,86 @@
                 "by": "검수 AI",
                 "at": "2026-11-23T07:04:48.675Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-23T07:11:10.704Z",
+                "by": "김예은",
+                "from": "Press everything the doll is wearing!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "인형이 입고(달고) 있는 것을 모두 눌러라!",
+                  "sense": "wear: 입다/쓰다/달다 → 몸에 걸치다(리본 포함)",
+                  "reason": "①인형이 입은 옷·리본을 모두 고르라는 지시 ②‘인형이 걸치고 있는 것을 모두 눌러라’ ③S034와 같은 틀로 통일. wear는 머리 리본에도 씀 ⑤판정(전부 선택)",
+                  "redo": "",
+                  "wmap": "인형 → doll = 인형 / 착장 → (what it) is wearing = 걸치고 있는 것 / 전부 → everything = 모두",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "상황 지시어: 정답 기준이 ‘기억한 그림을 이루던 요소’(분홍 드레스·빨간 리본)인데 현재형 ‘is wearing’은 지금 보이는 인형을 가리키는 것처럼 읽힘. ‘was wearing’으로 고쳐 S034·S041과 통일.",
+                  "fix": "Press everything the doll was wearing!",
+                  "exc": "",
+                  "bt": "인형이 (지금) 입고 있는 것을 모두 눌러!",
+                  "gl": "everything = 전부 / doll = 인형 / is wearing = 입고·달고 있다(현재)",
+                  "at": "2026-11-23T07:04:48.673Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Press everything the doll was wearing!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "인형이 입고 있던 것을 모두 눌러!",
+                  "sense": "",
+                  "reason": "최소 수정으로 시제만 맞춰 다른 문구와 통일됨 / 현재형 → 과거형으로만 바꿈",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "현재형 → 과거형으로만 바꿈",
+                  "by": "김예은",
+                  "at": "2026-11-23T07:11:10.704Z"
+                }
+              }
+            ],
+            "tr": "Press everything the doll was wearing!",
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "수정",
+              "tr": "Press everything the doll was wearing!",
+              "mean": "인형이 입고 있던 것을 모두 눌러!",
+              "rec": "수정",
+              "recTr": "Press everything the doll was wearing!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-23T07:11:10.704Z",
+              "trh": "gxyej06ksk0az",
+              "from": "검수 AI"
+            }
           },
           "S036": {
             "bt0": {
