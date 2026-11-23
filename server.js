@@ -195,6 +195,7 @@ const Puzzle = require('./public/puzzle.js');
 const Rules = require('./public/rules.js');
 const Reset = require('./public/reset.js');
 const Cards = require('./public/cards.js');
+const Redo = require('./public/redo.js');
 const resetBackups = new Map();   // 관리자·게임·언어별로 리셋 직전 백업을 받은 시각 (백업 없이 리셋 불가)
 const AI_KEY = AI.anyVision();
 const AI_LIMIT = Number(env.AI_HOURLY_LIMIT) || 200;
@@ -456,6 +457,17 @@ function guardTheme(before, after, conflicts) {
         const was = before && before.work && before.work[lk] && before.work[lk].items && before.work[lk].items[id] && before.work[lk].items[id].hv;
         if (was && was.v === '승인' && was.at === x.hv.at) return;
         x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (기획 확인 필요 — 기획 결정을 기록하기 전에는 승인 불가)`);
+      });
+    }
+    /* 재설계 묶음: 기획이 지금 번역 기준으로 묶음을 승인(redoOk)해야 그 줄 승인 (화면과 같은 redo.js) */
+    { const ids = Array.isArray((w.sheet || {}).ids) ? w.sheet.ids : Object.keys(w.items).filter(k => !k.startsWith('@'));
+      const G = Redo.groups(ids.map(id => ({ id, tr: eff(id) || '', redo: (w.items[id] || {}).redo || null, ok: (w.items[id] || {}).redoOk || null })), Merge.trHash), gOf = new Map(); G.forEach(g => g.ids.forEach(id => gOf.set(id, g)));
+      Object.entries(w.items).forEach(([id, x]) => {
+        if (!x || !x.hv || x.hv.v !== '승인' || id.startsWith('@')) return;
+        const g = gOf.get(id); if (!g || g.ok) return;
+        const was = before && before.work && before.work[lk] && before.work[lk].items && before.work[lk].items[id] && before.work[lk].items[id].hv;
+        if (was && was.v === '승인' && was.at === x.hv.at) return;
+        x.hv = null; conflicts.push(`work.${lk}.items.${id}.hv (재설계 묶음 ${g.ids.join('·')} 기획 승인 전 — 승인 불가)`);
       });
     }
     /* 퀴즈 카드 줄: 카드가 완료(풀어 보기 PASS·사람 정답 확인)되고 그 번역이 줄에 들어간 경우만 승인 (화면과 같은 cards.js로 다시 계산) */

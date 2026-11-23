@@ -1006,6 +1006,7 @@ a.btn { text-decoration: none; display: inline-flex; align-items: center; }
 <script src="rules.js"></script>
 <script src="reset.js"></script>
 <script src="cards.js"></script>
+<script src="redo.js"></script>
 <script src="store.js"></script>
 
 <script>
@@ -1690,11 +1691,11 @@ const AI_CHECK_Q = { 의미: '원문과 같은 뜻인가', 행동: '플레이어
 const chkGet = (chk, k) => !chk ? '' : chk[k] || (k === '문화' ? chk['현지화'] || '' : '');
 /* 프로그램 검사 등급: FAIL은 고치거나 예외 사유를 써야 넘어감, REVIEW는 사람이 보고 넘김 */
 const PZ_KEYS = ['pzBlank', 'pzCross', 'pzDiff', 'pzMap', 'pzGrid'];
-const PROG_FAIL = new Set([...PZ_KEYS, 'opVerb', 'opRead', 'shareTerm', 'redoMissing', 'longF', 'empty', 'var', 'term', 'avoid', 'hangul', 'script', 'srcChg', 'relSwap', 'btShift', 'neg', 'ctxF']);
+const PROG_FAIL = new Set([...PZ_KEYS, 'opVerb', 'opRead', 'shareTerm', 'redoMissing', 'redoGroup', 'longF', 'empty', 'var', 'term', 'avoid', 'hangul', 'script', 'srcChg', 'relSwap', 'btShift', 'neg', 'ctxF']);
 function progSev(k, r) { if (r.cls === 'C' && (k === 'neg' || k === 'relSwap')) return 'REVIEW'; if (k === 'term' && (r.cls === 'B' || r.cls === 'C' || (r.x && r.x.redo))) return 'REVIEW'; if (k === 'num') return (r.cls === 'B' || r.cls === 'C' || r.krForm || /숫자\s*(변경|표기)?\s*허용/.test(`${r.clsDir} ${r.note}`)) ? 'REVIEW' : 'FAIL'; return PROG_FAIL.has(k) ? 'FAIL' : 'REVIEW'; }
 const ERR_TYPES = ['의미 오류', '행동 오류', '조건 오류', '정답 오류', '문화적 현지화 오류', '용어 불일치', '문법 오류', '자연스러움 문제', '누락', '추가 정보 생성', '숫자 및 변수 오류', '화면 길이 초과', '기타'];
 const CHK_ERR = { 의미: '의미 오류', 행동: '행동 오류', 조건: '조건 오류', 정답: '정답 오류', 자연스러움: '자연스러움 문제', 말투: '말투·존대 불일치', 문화: '문화적 현지화 오류', 현지화: '문화적 현지화 오류', '추가 정보': '추가 정보 생성', 용어: '용어 불일치' };
-const PROG_ERR = { relSwap: '행동 오류', relDiff: '행동 오류', empty: '누락', hangul: '누락', var: '숫자 및 변수 오류', num: '숫자 및 변수 오류', term: '용어 불일치', avoid: '용어 불일치', long: '화면 길이 초과', longF: '화면 길이 초과', typo: '문법 오류', gram: '문법 오류', unfin: '문법 오류', script: '문법 오류' };
+const PROG_ERR = { redoGroup: '정답 오류', relSwap: '행동 오류', relDiff: '행동 오류', empty: '누락', hangul: '누락', var: '숫자 및 변수 오류', num: '숫자 및 변수 오류', term: '용어 불일치', avoid: '용어 불일치', long: '화면 길이 초과', longF: '화면 길이 초과', typo: '문법 오류', gram: '문법 오류', unfin: '문법 오류', script: '문법 오류' };
 const errTypeOfRv = rv => { const chk = (rv && rv.chk) || {}; return Object.keys(chk).filter(k => chk[k] === 'FAIL').map(k => CHK_ERR[k]).filter(Boolean)[0] || ''; };
 /* 지금 번역문에 대한 사람 판정만 유효 (승인 뒤 번역이 바뀌면 무효) */
 const trCk = tr => Merge.trHash(tr);
@@ -2292,6 +2293,7 @@ function autoChecks(t, lk, r, byKo) {
   if (byKo && byKo.MS && byKo.MS.get(r.id)) out.push(['methSim', `비슷한 문구인데 번역 방식이 다름 (이 줄 ${methFinal(r).m} / ${byKo.MS.get(r.id).slice(0, 3).join(', ')}) — 판단 순서(재구성 → 직역 조건 → 의역)로 다시 확인`]);
   if (byKo && byKo.SU && splitFiles(r.file).filter(isFileName).length && !splitFiles(r.file).filter(isFileName).some(f => byKo.SU.has(normId(fileIdOf(f))))) out.push(['uScreen', `번역 AI의 ‘화면 이해’에 이 화면(${splitFiles(r.file)[0]})이 없음 — 게임 이해를 보고 번역했는지 확인`]);
   ((byKo && byKo.UT ? byKo.UT.get(r.id) : null) || []).forEach(m => out.push(['uTerm', m]));
+  { const g = byKo.RG && byKo.RG.get(r.id); if (g && g.problem) out.push(['redoGroup', `재설계 묶음 불일치 (${g.ids.join('·')}): ${g.problem}`]); }
   if (tr.trim() && !r.x.redo && needsRedo(t, r)) out.push(['redoMissing', 'C(재설계) 줄인데 재설계안이 없음 — 지금 번역은 직역이라 퍼즐이 작동하지 않을 수 있음. ‘재설계’ 시트로 다시 받기']);
   const sfx = splitFiles(r.file).map(f => (String(fileIdOf(f)).match(/_(en|jp|ja|cn|zh)$/i) || [])[1]).filter(Boolean);
   if (sfx.length) { const LS = { en: 'en', jp: 'ja', ja: 'ja', cn: 'zh', zh: 'zh' }; out.push(['srcSuffix', `화면 ID가 ‘_${sfx[0]}’로 끝남 — 원본이 아니라 ${LS[sfx[0].toLowerCase()] !== lk ? '다른 언어 ' : ''}번역본 파일 이름일 수 있음. 한국어 원본 이미지로 번역했는지 확인`]); }
@@ -2416,8 +2418,14 @@ function flowState(t, lk) {
   const RMf = new Map(rows.map(r => [r.id, r])); rows.forEach(r => { const bt = r.x.rv && (r.x.bt || [])[0]; r.btShift = bt ? btNeighbor(RMf, r.id, bt, r.x.rv.fix || '') : '';
     /* 이웃 줄은 못 찾았지만 역번역이 이 줄 원문과 거의 안 겹침 (짧은 이름·말장난은 제외) */
     r.btFar = bt && !r.btShift && !(r.cls === 'B' || r.cls === 'C' || r.x.redo || /의역|재구성/.test(methFinal(r).m)) && normKo(r.ko).replace(/[^\p{L}\p{N}]/gu, '').length >= 5 && (simKo(r.ko, bt) || 0) < 0.1 && !(r.x.ok || []).includes('btFar'); });
+  /* 재설계 묶음 (v31) */
+  let F_RG = []; byKo.RG = new Map(); const RG = Redo.groups(rows.map(r => ({ id: r.id, tr: r.tr, redo: r.x.redo || null, ok: r.x.redoOk || null })), trCk);
+  RG.forEach(g => g.ids.forEach(id => byKo.RG.set(id, g)));
   const all = rows.map(r => ({ r, x: r.x, list: autoChecks(t, lk, r, byKo).filter(([k]) => !((r.x.ok) || []).includes(k)) }));
   all.forEach(v => { v.r.open = v.list; v.r.vd = verdictOf(v.r, v.list); });
+  /* 재설계 줄: 기획이 지금 번역 기준으로 재설계 묶음을 승인해야 사람 승인 가능 (v31, 서버도 같은 규칙) */
+  rows.forEach(r => { const g = byKo.RG.get(r.id); if (g && !g.ok && r.vd.canApprove) r.vd = Object.assign({}, r.vd, { canApprove: false, why: `재설계 묶음 ${g.ids.join('·')} 기획 승인 전${g.problem ? ` — ${g.problem}` : ''} (맨 위 ‘재설계 묶음’에서 승인)` }); });
+  F_RG = RG;
   /* 기획 확인 표시(‘REVIEW: 기획 확인 …’)가 남은 줄은 기획 결정을 기록하기 전에는 승인 불가 (v29, 서버도 같은 규칙) */
   rows.forEach(r => { if (planFlagOpen(r)) r.vd = Object.assign({}, r.vd, { canApprove: false, why: `기획 확인 필요: ${flagsOf(r).filter(f => PLAN_FLAG_RE.test(f))[0].slice(0, 80)} (맨 위 ‘AI가 사람 판단을 요청한 줄’에서 기획 결정 기록)` }); });
   /* 카드 줄: 카드가 완료(풀어 보기 PASS·정답 확인)되고 그 번역이 줄에 들어가 있어야 승인 가능 */
@@ -2434,7 +2442,7 @@ function flowState(t, lk) {
   const pass = rows.filter(r => r.x.rv && r.x.rv.v === '통과').length;
   const memos = rows.reduce((a, r) => a + openMemosOf(r.x).length, 0) + openMemosOf(it['@plan']).length + openMemosOf(it['@puzzle']).length + openMemosOf(it['@old']).length;
   const pzNames = puzzleNames(t, lk), pzOk = ((t.work || {})[lk] || {}).pzOk || {}, pzTodo = pzNames.filter(n => !pzOk[n]).length;
-  return { pz: byKo.PZ, memos, pzTodo, pzNames, rows, it, N, nTr: N, issues, fails, reviewN, openAuto: fails.length, files, fchk, filesTodo, rvTodo, rvAsk, btTodo, ctxG, ctxTodo: ctxG.filter(g => !ctxCur.has(g.id)).length, ctxReq: ctxG.length > 0 && rows.some(r => r.x.rv && r.x.rv.sc), human, pass, humanReq, hvOk, hvTodo, sysLog: ((t.work || {})[lk] || {}).sysLog || [] };
+  return { redoGroups: F_RG, pz: byKo.PZ, memos, pzTodo, pzNames, rows, it, N, nTr: N, issues, fails, reviewN, openAuto: fails.length, files, fchk, filesTodo, rvTodo, rvAsk, btTodo, ctxG, ctxTodo: ctxG.filter(g => !ctxCur.has(g.id)).length, ctxReq: ctxG.length > 0 && rows.some(r => r.x.rv && r.x.rv.sc), human, pass, humanReq, hvOk, hvTodo, sysLog: ((t.work || {})[lk] || {}).sysLog || [] };
 }
 const splitFiles = s => String(s || '').split(/[,،、\n]+/).map(x => x.trim()).filter(Boolean);
 /* 대조할 파일: 엑셀 파일 열의 값(공통 제외) + 사이트에 올린 이미지 */
@@ -2682,6 +2690,35 @@ document.addEventListener('click', async e => {
   const plan = flagsOf(r).some(f => PLAN_FLAG_RE.test(f)), why = ((document.querySelector(`[data-flagwhy="${CSS.escape(id)}"]`) || {}).value || '').trim();
   if (plan && !why) { toast('기획 확인 줄은 결정 내용을 써야 함 (누가 무엇으로 정했는지 기록됨).', 4000); return; }
   await saveWork(items => { const x = items[id] = items[id] || {}; x.flagOk = Object.assign({ k: flagKey(r), by: meName(), at: nowISO(), flags: flagsOf(r) }, plan ? { why } : {}); return 1; }, () => plan ? `${id} 기획 결정 기록: ${why}. 이제 승인 가능.` : `${id} 확인함. 번역이나 표시가 바뀌면 다시 뜸.`);
+});
+/* C: 언어에 기대는 줄(재설계 필요) 비율 — 높으면 번역보다 기획 수정이 먼저 (v31) */
+function redoRatioHTML(t) {
+  if (!srcHas(t)) return '';
+  const B = baseRows(t), need = B.filter(b => needsRedo(t, Object.assign({}, b, { cls: b.clsEff || b.cls }))), comps = (((uOf(t) || {}).draft || {}).comps || []).filter(c => /^예/.test(c.lang || ''));
+  if (!need.length && !comps.length) return '';
+  const pct = Math.round(need.length / Math.max(1, B.length) * 100), hi = pct >= 30;
+  return `<div class="${hi ? 'ratbox' : 'sb'}"><b>재설계 필요 ${need.length}/${B.length}줄 (${pct}%)</b>${comps.length ? ` · 언어에 기대는 퍼즐 요소 ${comps.length}개` : ''}${hi ? `<br><small class="badtxt">30% 이상 — 번역으로 해결되는 게임이 아님. 번역을 돌리기 전에 기획이 언어 의존 퍼즐(초성·받침·동음이의어·말장난)을 어떻게 바꿀지 먼저 정하는 걸 권장. 재설계 줄은 번역되더라도 ‘재설계 묶음 기획 승인’ 전에는 확정 안 됨.</small>` : ' · 재설계 줄은 ‘재설계 묶음 기획 승인’ 전에는 확정 안 됨'}</div>`;
+}
+/* ---- 재설계 묶음 승인 (v31): 재설계는 기획이 최종 확인 ---- */
+function redoBannerHTML(t, lk) {
+  if (!sheetOf(t, lk)) return '';
+  const F = flowState(t, lk), G = (F.redoGroups || []), RM = new Map(F.rows.map(r => [r.id, r])); if (!G.length) return '';
+  const wait = G.filter(g => !g.ok);
+  return `<details class="more splitban"${wait.length ? ' open' : ''}><summary><b>재설계 묶음 ${G.length}개</b> · 기획 승인 ${G.length - wait.length}${wait.some(g => g.problem) ? ` · <span class="badtxt">불일치 ${wait.filter(g => g.problem).length}</span>` : ''}</summary>
+    <p class="sb">재설계안과 ‘함께 바꿀 것’에 적힌 줄을 한 묶음으로 봄. 기획이 지금 번역으로 묶음을 승인해야 그 줄들을 승인할 수 있음. 번역이 바뀌면 다시 승인.</p>
+    ${G.map(g => { const v = (RM.get(g.ids.find(id => (RM.get(id) || {}).x && RM.get(id).x.redo)) || { x: {} }).x.redo || {}; return `<div class="irow${g.ok ? ' resolved' : ''}"><code>${g.ids.map(esc).join('<br>')}</code><div class="ibody">
+      ${g.ids.map(id => { const r = RM.get(id) || {}; return `<div><b style="white-space:pre-wrap">${esc(r.ko || '')}</b> → <span style="white-space:pre-wrap">${esc(r.tr || '')}</span></div>`; }).join('')}
+      <small class="sb">원래 기능: ${esc(v.fn || '-')} · 재설계안의 뜻: ${esc(v.mean || '-')} · 바뀐 정답: ${esc(v.ans || '-')}</small>
+      ${g.problem ? `<small class="badtxt">${esc(g.problem)}</small>` : ''}
+      ${g.ok ? `<span class="sg-ok">✓ 기획 승인 · ${esc(g.okBy.by)} · ${esc(g.okBy.why)}</span>` : readOnly ? '' : `<div class="iacts"><input type="text" data-redowhy="${esc(g.ids.join(','))}" placeholder="기획 결정 (필수) 예: 이 재설계안으로 확정" style="min-width:16em" ${g.problem ? 'disabled' : ''}><button type="button" class="btn" data-redook="${esc(g.ids.join(','))}" ${g.problem ? 'disabled title="불일치를 먼저 고치기"' : ''}>묶음 기획 승인</button></div>`}
+    </div></div>`; }).join('')}</details>`;
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-redook]'); if (!b || readOnly) return;
+  const ids = b.dataset.redook.split(','), why = ((document.querySelector(`[data-redowhy="${CSS.escape(b.dataset.redook)}"]`) || {}).value || '').trim();
+  if (!why) { toast('기획 결정 내용을 써야 함.', 3500); return; }
+  const g = (flowState(cur().data, promptLang).redoGroups || []).find(x => x.ids.join(',') === b.dataset.redook); if (!g || g.problem) return;
+  await saveWork(items => { ids.forEach(id => { const x = items[id] = items[id] || {}; x.redoOk = { k: g.k, by: meName(), at: nowISO(), why, ids }; }); return ids.length; }, () => `재설계 묶음 ${ids.join('·')} 기획 승인: ${why}`);
 });
 /* ---- 합쳐진 줄 나누기: 같은 문구라 한 줄로 합쳤는데 화면마다 가리키는 대상이 다를 때 ----
    번역 AI가 검수 주의사항에 ‘분리 필요: …’를 쓰면 위에 띄움. 사람이 화면을 골라 새 줄로 나누면
@@ -3013,7 +3050,7 @@ function specialTag(t, row) {
 }
 
 /* ================= 번역 프롬프트 = 공통 지시 + AI별 지시 + 게임별 정보 + 언어별 블록 + 이번 작업 ================= */
-const PROMPT_VER = '2026.11-v30';
+const PROMPT_VER = '2026.11-v31';
 const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 
 1. 역할
@@ -3920,7 +3957,8 @@ async function uploadSheet(file) {
   }
   /* 재설계 시트 → 줄마다 재설계 정보 (원래 기능·바뀐 정답·함께 바꿀 것) */
   const redoX = extra.find(isRedoSheet), RD = redoX ? parseRedo(redoX.rows, rows.map((r, i) => ({ id: srcIds ? srcIds[i] : 'R' + String(i + 1).padStart(3, '0'), file: m.cols.file >= 0 ? String(r[m.cols.file] || '') : '', ko: String(r[m.cols.ko] || '') }))) : new Map();
-  RD.forEach((v, id) => { (items[id] = items[id] || {}).redo = Object.assign({ by: '번역 AI', at: nowISO() }, v); });
+  const rowTr = id => { const i = srcIds ? srcIds.indexOf(id) : (/^R\d+$/.test(id) ? Number(id.slice(1)) - 1 : -1); return i >= 0 && rows[i] ? String(rows[i][m.cols.tr] ?? '') : ''; };
+  RD.forEach((v, id) => { (items[id] = items[id] || {}).redo = Object.assign({ by: '번역 AI', at: nowISO(), trh: trCk(rowTr(id)) }, v); });   /* trh: 재설계안이 나온 그 번역 (v31 묶음 대조) */
   /* C(재설계 필요)로 분류된 줄 → 기획 확인 메모 (기획 확인 시트에 없어도) */
   const baseMap = srcIds ? new Map(baseRows(t).map(b => [b.id, b])) : null;
   if (m.cols.cls >= 0 || baseMap) rows.forEach((r, i) => {
@@ -5143,7 +5181,7 @@ function workHTML({ id, data: t }) {
     1.5: () => srcPanelHTML(id, t),
     1: () => `<p class="sb">AI가 게임 분위기를 알 수 있게 작성. <b>컨셉·상황</b>은 필수.</p>${infoFormHTML(t)}${understandHTML(t)}
       ${signRow(t, lk, 'info', infoDone(t), '게임 정보', '컨셉·상황을 채우면 누를 수 있음')}`,
-    2: () => !uOk(t) && !sh ? `<p class="sb badtxt">먼저 ① 게임 정보의 <b>게임 이해</b>를 확정하기. AI가 게임의 진행·화면별 상황·캐릭터·용어를 이해한 뒤에 번역함.</p>` : srcRequired(t) && !srcConfirmed(t) && !sh ? `<p class="sb">먼저 위의 <b>원문 준비</b>를 마치기. 원문이 확정되면 이 언어 번역 프롬프트에 원문표가 들어감.</p>` : `${srcConfirmed(t) ? `<p class="sb enref ok">✓ 확정 원문표 ${baseRows(t).length}줄 기준으로 번역 (원문을 다시 뽑지 않음)${sh && sh.ids ? ` · 번역 ${F.rows.filter(r => String(r.tr).trim()).length}/${baseRows(t).length}` : ''}</p>` : ''}${lk === 'zh' ? enNoticeHTML(t) : ''}
+    2: () => !uOk(t) && !sh ? `<p class="sb badtxt">먼저 ① 게임 정보의 <b>게임 이해</b>를 확정하기. AI가 게임의 진행·화면별 상황·캐릭터·용어를 이해한 뒤에 번역함.</p>` : srcRequired(t) && !srcConfirmed(t) && !sh ? `<p class="sb">먼저 위의 <b>원문 준비</b>를 마치기. 원문이 확정되면 이 언어 번역 프롬프트에 원문표가 들어감.</p>` : `${redoRatioHTML(t)}${srcConfirmed(t) ? `<p class="sb enref ok">✓ 확정 원문표 ${baseRows(t).length}줄 기준으로 번역 (원문을 다시 뽑지 않음)${sh && sh.ids ? ` · 번역 ${F.rows.filter(r => String(r.tr).trim()).length}/${baseRows(t).length}` : ''}</p>` : ''}${lk === 'zh' ? enNoticeHTML(t) : ''}
       <ol class="do">
         <li><i>1</i><div>${uOk(t) ? `<button type="button" class="btn${sh ? '' : ' primary'}" data-copy="p-main">프롬프트 복사</button>` : '<b class="badtxt">게임 이해 확정 전 — 다시 번역하려면 ① 게임 정보에서 게임 이해를 먼저 확정</b>'}</div></li>
         <li><i>2</i><div><b>${esc(aiOf(t, lk) || 'Claude')}</b> 새 대화에 붙여 넣고, 게임 화면 <b>PNG(또는 zip)</b>를 첨부해 보냄.</div></li>
@@ -5183,7 +5221,7 @@ function workHTML({ id, data: t }) {
     </div>
     ${retentionBannerHTML(id, t)}
     ${dupBannerHTML(t)}
-    ${Retention.isOff(t, lk) ? '' : splitBannerHTML(t, lk) + flagBannerHTML(t, lk)}
+    ${Retention.isOff(t, lk) ? '' : splitBannerHTML(t, lk) + redoBannerHTML(t, lk) + flagBannerHTML(t, lk)}
     ${Retention.isOff(t, lk) ? langOffHTML(id, t, lk) : `${memoBannerHTML(t, lk)}${fileMemoBannerHTML(t, lk)}
     <ol class="checklist">${items}</ol>
     ${filesBoxHTML(id, t, lk, F)}`}
