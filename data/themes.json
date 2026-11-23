@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-23T07:12:15.151Z",
+    "updatedAt": "2026-11-23T07:12:18.239Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -81266,52 +81266,10 @@
               "by": "Claude",
               "trh": "1wo55mhaepajf12"
             },
-            "bt": [
-              "군인이 들고 있던 것을 모두 눌러!"
-            ],
-            "gl": "soldier = 군인, 병사 (다르게 읽힐 수 있음: 장난감 병정) / was holding = 들고 있었다(과거) / everything = 전부",
-            "rel": "플레이어 → 병사가 들고 있던 것(전부) : 누르기",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Press everything the knight was holding!",
-              "why": "분석 제안 미반영: 그림은 갑옷 입은 기사인데 ‘soldier’로 옮김. 영어권에서 갑옷·긴 검·십자 방패 차림은 거의 ‘knight’로 부르고, ‘soldier’는 현대 군인이나 장난감 병정을 떠올려 그림과 말이 따로 놂. 원문 ‘병사’를 살릴지 그림에 맞춰 ‘knight’로 할지 사람이 확인. 과거형 ‘was holding’은 기억 질문에 맞아 유지.",
-              "at": "2026-11-23T07:04:48.673Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 16,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 93,
-              "band": "PASS 주의",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 온전; 행동: 온전; 대상: ‘soldier’가 그림(갑옷 입은 기사)과 맞지 않음; 문맥: 분석 제안 미반영; 말투: 온전",
-              "trh": "1wo55mhaepajf12",
-              "pv": "2026.11-v29",
-              "err3": [
-                "부정확한 의미"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -81362,7 +81320,86 @@
                 "by": "검수 AI",
                 "at": "2026-11-23T07:04:48.675Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-23T07:12:18.047Z",
+                "by": "김예은",
+                "from": "Press everything the soldier was holding!",
+                "ratFrom": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "병사가 들고 있던 것을 모두 눌러라!",
+                  "sense": "hold: 들다/잡다/유지하다/개최하다 → 손에 들다",
+                  "reason": "①병사가 손에 들고 있던 물건을 모두 고르라는 지시 ②‘병사가 들고 있던 것을 모두 눌러라’ ③‘들고 있던’(과거 기억)을 과거진행형 was holding으로 그대로 살림. 병사는 원문대로 soldier ⑤판정(전부 선택)",
+                  "redo": "",
+                  "wmap": "병사 → soldier = 병사 / 들고 있던 → was holding = 들고 있었던 / 전부 → everything = 모두",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "분석 제안 미반영: 그림은 갑옷 입은 기사인데 ‘soldier’로 옮김. 영어권에서 갑옷·긴 검·십자 방패 차림은 거의 ‘knight’로 부르고, ‘soldier’는 현대 군인이나 장난감 병정을 떠올려 그림과 말이 따로 놂. 원문 ‘병사’를 살릴지 그림에 맞춰 ‘knight’로 할지 사람이 확인. 과거형 ‘was holding’은 기억 질문에 맞아 유지.",
+                  "fix": "Press everything the knight was holding!",
+                  "exc": "",
+                  "bt": "군인이 들고 있던 것을 모두 눌러!",
+                  "gl": "soldier = 군인, 병사 (다르게 읽힐 수 있음: 장난감 병정) / was holding = 들고 있었다(과거) / everything = 전부",
+                  "at": "2026-11-23T07:04:48.673Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Press everything the knight was holding!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "기사가 들고 있던 것을 모두 눌러!",
+                  "sense": "",
+                  "reason": "영어권 방문객이 그림을 보고 바로 떠올리는 단어 / ‘병사’ → ‘기사’",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "‘병사’ → ‘기사’",
+                  "by": "김예은",
+                  "at": "2026-11-23T07:12:18.047Z"
+                }
+              }
+            ],
+            "tr": "Press everything the knight was holding!",
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "수정",
+              "tr": "Press everything the knight was holding!",
+              "mean": "기사가 들고 있던 것을 모두 눌러!",
+              "rec": "수정",
+              "recTr": "Press everything the knight was holding!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-23T07:12:18.047Z",
+              "trh": "1dy4yzy192om7s11",
+              "from": "검수 AI"
+            }
           },
           "S042": {
             "bt0": {
