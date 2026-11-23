@@ -35,7 +35,7 @@
         "banned": "~해요."
       }
     ],
-    "updatedAt": "2026-11-23T01:43:09.255Z",
+    "updatedAt": "2026-11-23T01:44:35.122Z",
     "progressBy": {
       "en": {},
       "zh": {},
@@ -19607,10 +19607,10 @@
             ],
             "tr": "Rudolph the (   )-Nosed Reindeer~♪, ribbit!",
             "rv": {
-              "v": "수정 필요",
+              "v": "통과",
               "fix": "Rudolph’s (   ) nose lights up the sky~♪, ribbit!",
               "why": "의도된 재설계 줄이지만 별도 재설계안은 “Rudolph’s (   ) nose lights up the sky”입니다. 현재 번역 “Rudolph the (   )-Nosed Reindeer”는 다른 문장 구조이며 승인된 재설계안을 반영하지 않았습니다. 분석 제안 미반영. 수정: Rudolph’s (   ) nose lights up the sky~♪, ribbit!",
-              "at": "2026-11-18T02:40:06.719Z",
+              "at": "2026-11-23T01:44:35.085Z",
               "chk": {
                 "정답": "REVIEW",
                 "추가 정보": "PASS",
@@ -19644,7 +19644,11 @@
               "trh": "x2m46m1u1rmc812",
               "err3": [
                 "맥락 오류"
-              ]
+              ],
+              "by": "김예은",
+              "kind": "사람 판단",
+              "orig": "FAIL",
+              "exc": "원문이 더 나음"
             },
             "bt": [
               "(   ) 코 순록 루돌프(소리)~♪, 개굴!"
