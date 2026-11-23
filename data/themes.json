@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-23T08:10:11.531Z",
+    "updatedAt": "2026-11-23T08:12:43.208Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -77810,52 +77810,10 @@
               "by": "Claude",
               "trh": "15afyew11rja6uz"
             },
-            "bt": [
-              "이 모양이 (지금) 있는 칸을 모두 눌러!"
-            ],
-            "gl": "Press = 누르다 / all = 전부 / boxes = 칸들 (다르게 읽힐 수 있음: 상자) / this shape = 위에 보이는 이 모양 / is = 있다(현재)",
-            "rel": "플레이어 → 이 모양이 있는 칸들(전부) : 누르기",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "Press all the boxes where this shape was!",
-              "why": "상황 지시어: 문제 화면(Q)에서는 기억 화면(M)의 도형이 사라진 상태이고, 정답 기준도 ‘원래 도형에서 나타나던 칸’을 기억해서 고르는 구조임. ‘where this shape is’는 지금 그 칸에 모양이 보이는 것처럼 읽혀 처음 하는 방문객이 화면에서 모양을 찾게 됨. ‘is’를 ‘was’로 바꿔 기억을 묻는 문장으로 고침. 전부(all)·누르기·칸은 그대로 둠.",
-              "at": "2026-11-23T07:04:48.672Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 온전; 행동: 온전(누르기·전부 유지); 대상: 온전; 문맥: 현재형이 이미 사라진 기억 화면의 내용을 가리켜 상황과 어긋남; 말투: 온전(짧은 명령·느낌표)",
-              "trh": "15afyew11rja6uz",
-              "pv": "2026.11-v29",
-              "err3": [
-                "맥락 오류"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -77895,7 +77853,86 @@
                 "by": "검수 AI",
                 "at": "2026-11-23T07:04:48.675Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-23T08:12:43.005Z",
+                "by": "김예은",
+                "from": "Press all the boxes where this shape is!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "이 모양이 있는 칸을 모두 눌러라!",
+                  "sense": "box: 상자/칸/네모 → 칸(화면의 3×3 칸 = 버튼) / shape: 모양/도형 → 모양(조각 모양)",
+                  "reason": "①위에 보인 조각 모양이 원래 그림에서 있던 칸을 모두 고르라는 지시 ②‘이 모양이 있는 칸을 모두 눌러라’ ③‘전부’(복수 정답)를 all로, ‘누르기’는 용어집대로 Press. ‘위’는 화면 위쪽 그림을 가리키므로 this로 지시 ④‘위치한’을 located로 직역하면 길고 어려워 where … is로 풀어 씀 ⑤UI·판정(정답 전부 선택)",
+                  "redo": "",
+                  "wmap": "모양 → shape = 모양 / 칸 → boxes = 칸들 / 전부 → all = 모두 / 누르다 → press = 누르다",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "상황 지시어: 문제 화면(Q)에서는 기억 화면(M)의 도형이 사라진 상태이고, 정답 기준도 ‘원래 도형에서 나타나던 칸’을 기억해서 고르는 구조임. ‘where this shape is’는 지금 그 칸에 모양이 보이는 것처럼 읽혀 처음 하는 방문객이 화면에서 모양을 찾게 됨. ‘is’를 ‘was’로 바꿔 기억을 묻는 문장으로 고침. 전부(all)·누르기·칸은 그대로 둠.",
+                  "fix": "Press all the boxes where this shape was!",
+                  "exc": "",
+                  "bt": "이 모양이 (지금) 있는 칸을 모두 눌러!",
+                  "gl": "Press = 누르다 / all = 전부 / boxes = 칸들 (다르게 읽힐 수 있음: 상자) / this shape = 위에 보이는 이 모양 / is = 있다(현재)",
+                  "at": "2026-11-23T07:04:48.672Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Press all the boxes where this shape was!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "이 모양이 있던 칸을 모두 눌러!",
+                  "sense": "",
+                  "reason": "최소 수정으로 시제만 맞춰 다른 문구와 통일됨 / 현재형 → 과거형으로만 바꿈",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "현재형 → 과거형으로만 바꿈",
+                  "by": "김예은",
+                  "at": "2026-11-23T08:12:43.005Z"
+                }
+              }
+            ],
+            "tr": "Press all the boxes where this shape was!",
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "수정",
+              "tr": "Press all the boxes where this shape was!",
+              "mean": "이 모양이 있던 칸을 모두 눌러!",
+              "rec": "수정",
+              "recTr": "Press all the boxes where this shape was!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-23T08:12:43.005Z",
+              "trh": "1ny787r15zqm3p10",
+              "from": "검수 AI"
+            }
           },
           "S005": {
             "bt0": {
