@@ -13,7 +13,7 @@ test('카드 표 오류: 모호한 글자, 없는 줄, 정답 없음, 태그 없
   const P = C.parse(['Q1|S001|빨강|겨울|1||상식', 'Q2|S001|S009|겨울|1||상식', 'Q3|S006|S007|S008|||노래', 'Q4|S006|S007|S008|1||', 'Q5|S001|S002|S003|1||상식', 'Q6|S001|S002|S003|1||상식'], rows);
   const e = P.errors.join('\n');
   assert.match(e, /Q1.*S004·S005/); assert.match(e, /Q2.*S009 없음/); assert.match(e, /Q3.*정답/); assert.match(e, /Q4.*태그/);
-  assert.match(e, /S001: 카드 Q5·Q6가 같이 씀/);
+  assert.match(e, /S001: 카드 Q5·Q6 여러 장이 같이 씀/);
 });
 
 test('카드 줄 번호 모음 · 원문에서 사라진 줄', () => {

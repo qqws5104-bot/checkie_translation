@@ -77,7 +77,7 @@
     /* 한 줄을 여러 카드가 같이 쓰면 안 됨 (번역이 카드마다 달라질 수 있음) */
     const use = {};
     list.forEach(cd => [cd.q, ...cd.opts].forEach(r => (use[r] = use[r] || []).push(cd.id)));
-    Object.entries(use).filter(([, L]) => L.length > 1).forEach(([r, L]) => errors.push(`${r}: 카드 ${[...new Set(L)].join('·')}가 같이 씀 → 원문표에서 줄을 나누고(같은 문구 합치기 해제) 다시 올리기`));
+    Object.entries(use).filter(([, L]) => L.length > 1).forEach(([r, L]) => errors.push(`${r}: 카드 ${[...new Set(L)].join('·')} 여러 장이 같이 씀 → 번역 화면 위 ‘합친 줄 나누기’에서 화면별로 나눈 뒤 새 줄 번호로 다시 저장`));
     return { list, errors };
   }
 
