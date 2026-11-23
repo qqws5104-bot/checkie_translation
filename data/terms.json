@@ -535,7 +535,7 @@
     "tr": {
       "en": {
         "text": "Buttons to use",
-        "status": "후보",
+        "status": "확정",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -553,6 +553,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-23T08:31:04.143Z"
+    "updatedAt": "2026-11-23T08:31:04.991Z"
   }
 }
