@@ -170,6 +170,9 @@
     const ra = s.runs.a, rb = s.runs.b;   // rb는 뒤집은 순서에서 고른 번호 → 원래 번호로 바꿔 둠
     if (ra == null || rb == null) return { v: '', why: '풀어 보기 한쪽만 있음' };
     if (answer !== 0 && answer !== 1) return { v: '', why: '정답 확인 전' };
+    /* 관광객이 풀려면 한국 지식이나 특정 노래·작품을 알아야 한다고 답하면 FAIL (v30: 최대한 상식) */
+    const kn = Object.values(s.know || {}).map(String).find(k => /한국|노래|작품|곡/.test(k));
+    if (ra === answer && rb === answer && kn) return { v: 'FAIL', why: `정답은 맞혔지만 배경지식 필요: ${kn}` };
     if (ra === answer && rb === answer) return { v: 'PASS', why: '두 순서 모두 정답' };
     return { v: 'FAIL', why: ra === rb ? `두 순서 모두 ${ra + 1}번을 고름 (정답 ${answer + 1}번)` : '순서에 따라 답이 바뀜 (위치로 찍음)' };
   }

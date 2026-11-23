@@ -82,3 +82,11 @@ test('대체 카드: 사람이 정답을 확인해야 완료, 노래 태그 후�
   assert.equal(s.ok, false); assert.match(s.why, /개발 공유 필요/);
   assert.deepEqual(C.blocks(T2({}), 'ja').map(x => x.id), ['Q1', 'Q2']);
 });
+
+test('풀어 보기: 정답을 맞혀도 한국 지식·특정 노래가 필요하면 FAIL (상식 우선)', () => {
+  const cand = { h: 'h1' };
+  assert.equal(C.solveVerdict({ solve: { h1: { runs: { a: 0, b: 0 }, know: { a: '상식', b: '없음' } } } }, cand, 0).v, 'PASS');
+  const v = C.solveVerdict({ solve: { h1: { runs: { a: 0, b: 0 }, know: { a: '특정 노래·작품', b: '상식' } } } }, cand, 0);
+  assert.equal(v.v, 'FAIL'); assert.match(v.why, /배경지식 필요: 특정 노래/);
+  assert.equal(C.solveVerdict({ solve: { h1: { runs: { a: 0, b: 0 }, know: { b: '한국 지식' } } } }, cand, 0).v, 'FAIL');
+});
