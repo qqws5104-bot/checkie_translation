@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-23T07:12:59.965Z",
+    "updatedAt": "2026-11-23T07:13:09.784Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -85337,52 +85337,10 @@
               "by": "Claude",
               "trh": "1ga8k1w1b2sg9q1d"
             },
-            "bt": [
-              "무슨 일 있었는지 알아? 우리 고양이가 내 숙제를 먹었어? (9조각)"
-            ],
-            "gl": "happened? = 일어났다(물음표 포함) / homework? = 숙제(물음표 포함) / ate = 먹었다",
-            "rel": "-",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "You · know · what · happened? · Guess · what · my · cat · ate?",
-              "why": "의도된 재설계 — ‘?’ 칸 4·9번 위치는 맞음. 다만 ‘My cat ate my homework?’는 자기 일을 말하면서 물음표를 붙여 어색하고(독립 역번역도 오타인지 애매하다고 봄), 방문객이 ‘?’를 실수로 여겨 정답 근거가 흔들릴 수 있음. 마지막을 자연스러운 질문 ‘Guess what my cat ate?’로 바꾸면 ‘?’ 2칸(4·9번)이 유지됨.",
-              "at": "2026-11-23T07:04:48.674Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 원래 기능(‘?’ 든 칸 찾기) 유지 — 의도된 재설계; 행동: 온전; 대상: 온전(‘?’ 칸 4·9번); 문맥: 평서문 ‘My cat ate my homework’에 물음표가 붙어 어색함; 말투: 해당 없음",
-              "trh": "1ga8k1w1b2sg9q1d",
-              "pv": "2026.11-v29",
-              "err3": [
-                "맥락 오류"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -85433,7 +85391,86 @@
                 "by": "검수 AI",
                 "at": "2026-11-23T07:04:48.675Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-23T07:13:09.594Z",
+                "by": "김예은",
+                "from": "You · know · what · happened? · My · cat · ate · my · homework?",
+                "ratFrom": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "무슨 일 있었는지 알아? 우리 고양이가 내 숙제를 먹었어?(문장 조각 9개, ? 든 칸 2개)",
+                  "sense": "",
+                  "reason": "①문장 조각 중 ‘?’가 든 칸을 찾게 하는 보기 ②‘무슨 일 있었는지 알아? 고양이가 내 숙제를 먹었어?’ ③어이없는 상황을 말하는 원문 분위기를 살린 새 문장을 쓰고 ‘?’를 원래 정답 칸(4·9번)에 둠 ④영화 밈·‘어이’ 말장난이라 직역 불가 ⑤기능(정답 2칸·위치)",
+                  "redo": "①한국 영화 유행어와 ‘어이없다’ 말장난을 쪼갠 구조 ②문장 속 ‘?’가 든 칸을 모두 찾게 하는 것 ③어이없는 이야기를 하는 영어 문장을 새로 쓰고 ‘?’ 위치를 맞춤",
+                  "wmap": "알아요?(정답) → happened? = 일어났어?(4번 칸) / 없네?(정답) → homework? = 숙제를?(9번 칸)",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "의도된 재설계 — ‘?’ 칸 4·9번 위치는 맞음. 다만 ‘My cat ate my homework?’는 자기 일을 말하면서 물음표를 붙여 어색하고(독립 역번역도 오타인지 애매하다고 봄), 방문객이 ‘?’를 실수로 여겨 정답 근거가 흔들릴 수 있음. 마지막을 자연스러운 질문 ‘Guess what my cat ate?’로 바꾸면 ‘?’ 2칸(4·9번)이 유지됨.",
+                  "fix": "You · know · what · happened? · Guess · what · my · cat · ate?",
+                  "exc": "",
+                  "bt": "무슨 일 있었는지 알아? 우리 고양이가 내 숙제를 먹었어? (9조각)",
+                  "gl": "happened? = 일어났다(물음표 포함) / homework? = 숙제(물음표 포함) / ate = 먹었다",
+                  "at": "2026-11-23T07:04:48.674Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "You · know · what · happened? · Guess · what · my · cat · ate?",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "무슨 일 있었는지 알아? 우리 고양이가 뭘 먹었게?",
+                  "sense": "",
+                  "reason": "물음표가 둘 다 실제 질문에 붙어 자연스럽고 정답 위치도 그대로 / 마지막 문장을 질문으로 바꿈(‘?’ 칸 4·9번 유지)",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "마지막 문장을 질문으로 바꿈(‘?’ 칸 4·9번 유지)",
+                  "by": "김예은",
+                  "at": "2026-11-23T07:13:09.594Z"
+                }
+              }
+            ],
+            "tr": "You · know · what · happened? · Guess · what · my · cat · ate?",
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "수정",
+              "tr": "You · know · what · happened? · Guess · what · my · cat · ate?",
+              "mean": "무슨 일 있었는지 알아? 우리 고양이가 뭘 먹었게?",
+              "rec": "수정",
+              "recTr": "You · know · what · happened? · Guess · what · my · cat · ate?",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-23T07:13:09.594Z",
+              "trh": "2xs8op1isb9t1c",
+              "from": "검수 AI"
+            }
           },
           "S100": {
             "memos": [
