@@ -534,8 +534,8 @@
     "intent": "버튼 사용에 대한 확인",
     "tr": {
       "en": {
-        "text": "",
-        "status": "미정",
+        "text": "Buttons to use",
+        "status": "후보",
         "avoid": "",
         "avoidWhy": ""
       },
@@ -553,6 +553,6 @@
       }
     },
     "memo": "",
-    "updatedAt": "2026-11-23T08:30:56.969Z"
+    "updatedAt": "2026-11-23T08:31:04.143Z"
   }
 }
