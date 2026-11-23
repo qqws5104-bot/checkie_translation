@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-23T08:43:54.398Z",
+    "updatedAt": "2026-11-23T08:44:13.785Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -88102,8 +88102,10 @@
                 "by": "교차 검수 AI",
                 "at": "2026-11-23T08:28:13.389Z",
                 "text": "[기획 확인] ‘What color is a carrot?’ → ‘What color is an orange?’로 되돌림. 답 노출을 피하려면 [기획 확인] 후 그림과 함께 교체",
-                "done": false,
-                "addedBy": "김예은"
+                "done": true,
+                "addedBy": "김예은",
+                "doneBy": "김예은",
+                "doneAt": "2026-11-23T08:44:13.593Z"
               }
             ],
             "bt": [
