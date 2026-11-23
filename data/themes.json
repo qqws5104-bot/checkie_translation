@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-23T07:12:42.419Z",
+    "updatedAt": "2026-11-23T07:12:46.784Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -83655,52 +83655,10 @@
               "by": "Claude",
               "trh": "1o7t6qy1vesqlys"
             },
-            "bt": [
-              "빨간 사각형은 (지금) 몇 개야?"
-            ],
-            "gl": "How many = 몇 개 / red = 빨간 / squares = 사각형, 네모 칸 / are there = 있다(현재)",
-            "rel": "플레이어 → 빨간 네모의 개수 : 답하기(질문)",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "How many red squares were there?",
-              "why": "상황 지시어: 정답 기준이 ‘기억한 색 배치를 기준으로’이고 문제 화면에는 색 격자 대신 4·5·6 버튼만 남음. ‘are there’는 지금 화면에 있는 빨간 네모를 세라는 뜻이 되어 방문객이 화면을 뒤질 수 있음. ‘were there’로 고쳐 기억을 묻는 질문으로 만듦. 같은 묶음의 S072(What color was it?)와 시제도 맞음.",
-              "at": "2026-11-23T07:04:48.674Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 온전; 행동: 온전(개수 묻기); 대상: 온전(색·대상 유지); 문맥: 현재형 'are there'가 이미 사라진 기억 화면을 지금 있는 것처럼 가리킴; 말투: 온전",
-              "trh": "1o7t6qy1vesqlys",
-              "pv": "2026.11-v29",
-              "err3": [
-                "맥락 오류"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -83740,7 +83698,86 @@
                 "by": "검수 AI",
                 "at": "2026-11-23T07:04:48.675Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-23T07:12:46.594Z",
+                "by": "김예은",
+                "from": "How many red squares are there?",
+                "ratFrom": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "빨간 사각형은 몇 개 있을까?",
+                  "sense": "square: 사각형/광장 → 사각형 칸",
+                  "reason": "①빨간 칸의 수를 묻는 질문 ②‘빨간 사각형은 몇 개야?’ ③S076과 같은 틀 ⑤기능",
+                  "redo": "",
+                  "wmap": "빨간색 → red = 빨간 / 네모 → squares = 사각형들 / 몇 개 → how many = 몇",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "상황 지시어: 정답 기준이 ‘기억한 색 배치를 기준으로’이고 문제 화면에는 색 격자 대신 4·5·6 버튼만 남음. ‘are there’는 지금 화면에 있는 빨간 네모를 세라는 뜻이 되어 방문객이 화면을 뒤질 수 있음. ‘were there’로 고쳐 기억을 묻는 질문으로 만듦. 같은 묶음의 S072(What color was it?)와 시제도 맞음.",
+                  "fix": "How many red squares were there?",
+                  "exc": "",
+                  "bt": "빨간 사각형은 (지금) 몇 개야?",
+                  "gl": "How many = 몇 개 / red = 빨간 / squares = 사각형, 네모 칸 / are there = 있다(현재)",
+                  "at": "2026-11-23T07:04:48.674Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "How many red squares were there?",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "빨간 네모는 몇 개였어?",
+                  "sense": "",
+                  "reason": "최소 수정으로 S072와 시제 통일 / 현재형 → 과거형",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "현재형 → 과거형",
+                  "by": "김예은",
+                  "at": "2026-11-23T07:12:46.594Z"
+                }
+              }
+            ],
+            "tr": "How many red squares were there?",
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "수정",
+              "tr": "How many red squares were there?",
+              "mean": "빨간 네모는 몇 개였어?",
+              "rec": "수정",
+              "recTr": "How many red squares were there?",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-23T07:12:46.594Z",
+              "trh": "f3arix1xc1a2pt",
+              "from": "검수 AI"
+            }
           },
           "S078": {
             "memos": [
