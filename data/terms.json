@@ -523,5 +523,34 @@
     },
     "memo": "",
     "updatedAt": "2026-11-05T07:28:06.081Z"
+  },
+  "item-etv59": {
+    "ko": "사용버튼",
+    "type": "지시 동사",
+    "common": true,
+    "games": [],
+    "intent": "",
+    "tr": {
+      "en": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      },
+      "ja": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      },
+      "zh": {
+        "text": "",
+        "status": "미정",
+        "avoid": "",
+        "avoidWhy": ""
+      }
+    },
+    "memo": "",
+    "updatedAt": "2026-11-23T08:30:39.110Z"
   }
 }
