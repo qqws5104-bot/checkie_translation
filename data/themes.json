@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-23T07:09:08.182Z",
+    "updatedAt": "2026-11-23T07:09:24.780Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -77904,52 +77904,10 @@
               "by": "Claude",
               "trh": "1qmrq0w18vyfd8w"
             },
-            "bt": [
-              "이 그림이 있는 칸을 눌러!"
-            ],
-            "gl": "Press = 누르다 / the box = 칸 하나 / this picture = 위에 보이는 이 그림(퍼즐 조각) / is = 있다(현재)",
-            "rel": "플레이어 → 이 그림이 있는 칸(하나) : 누르기",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "Press the box where this picture was!",
-              "why": "상황 지시어: 정답 기준은 ‘퍼즐 조각이 원래 있던 칸’을 기억해서 고르는 것인데, 현재형 ‘is’는 지금 그 칸에 조각이 보이는 것처럼 읽힘. ‘was’로 고침. 단수 ‘box’는 정답이 한 칸(6번·4번)인 것과 맞으므로 유지(자동 점검의 box/boxes 차이는 원문의 ‘전부’ 유무를 따른 의도된 구분).",
-              "at": "2026-11-23T07:04:48.672Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 온전; 행동: 온전(누르기 유지); 대상: 온전; 문맥: 현재형이 이미 사라진 기억 화면의 내용을 가리켜 상황과 어긋남; 말투: 온전(짧은 명령·느낌표)",
-              "trh": "1qmrq0w18vyfd8w",
-              "pv": "2026.11-v29",
-              "err3": [
-                "맥락 오류"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -77989,7 +77947,86 @@
                 "by": "검수 AI",
                 "at": "2026-11-23T07:04:48.675Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-23T07:09:19.549Z",
+                "by": "김예은",
+                "from": "Press the box where this picture is!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "이 그림(조각)이 있는 칸을 눌러라!",
+                  "sense": "picture: 그림/사진 → 그림(위에 보인 퍼즐 조각) / box: 상자/칸 → 칸",
+                  "reason": "①퍼즐 조각이 원래 있던 칸 하나를 고르라는 지시 ②‘이 그림이 있는 칸을 눌러라’ ③정답이 한 칸이므로 단수 the box로 써서 ‘전부’ 문장(S009)과 구분. 도형은 S003·S009와 같은 pictures/picture로 통일 ④located 직역 대신 where … is ⑤판정(정답 1개) 고려",
+                  "redo": "",
+                  "wmap": "도형 → picture = 그림 / 칸 → box = 칸(하나) / 누르다 → press = 누르다",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "상황 지시어: 정답 기준은 ‘퍼즐 조각이 원래 있던 칸’을 기억해서 고르는 것인데, 현재형 ‘is’는 지금 그 칸에 조각이 보이는 것처럼 읽힘. ‘was’로 고침. 단수 ‘box’는 정답이 한 칸(6번·4번)인 것과 맞으므로 유지(자동 점검의 box/boxes 차이는 원문의 ‘전부’ 유무를 따른 의도된 구분).",
+                  "fix": "Press the box where this picture was!",
+                  "exc": "",
+                  "bt": "이 그림이 있는 칸을 눌러!",
+                  "gl": "Press = 누르다 / the box = 칸 하나 / this picture = 위에 보이는 이 그림(퍼즐 조각) / is = 있다(현재)",
+                  "at": "2026-11-23T07:04:48.672Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Press the box where this picture was!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "이 그림이 있던 칸을 눌러!",
+                  "sense": "",
+                  "reason": "최소 수정으로 시제만 맞춰 다른 문구와 통일됨 / 현재형 → 과거형으로만 바꿈",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "현재형 → 과거형으로만 바꿈",
+                  "by": "김예은",
+                  "at": "2026-11-23T07:09:19.549Z"
+                }
+              }
+            ],
+            "tr": "Press the box where this picture was!",
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "수정",
+              "tr": "Press the box where this picture was!",
+              "mean": "이 그림이 있던 칸을 눌러!",
+              "rec": "수정",
+              "recTr": "Press the box where this picture was!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-23T07:09:19.549Z",
+              "trh": "19exzz3uqqabjx",
+              "from": "검수 AI"
+            }
           },
           "S006": {
             "bt0": {
@@ -78182,52 +78219,10 @@
               "by": "Claude",
               "trh": "g0h9njxq528911"
             },
-            "bt": [
-              "이 그림이 (지금) 있는 칸을 모두 눌러!"
-            ],
-            "gl": "Press = 누르다 / all = 전부 / boxes = 칸들 / this picture = 위에 크게 보인 이 그림 / is = 있다(현재)",
-            "rel": "플레이어 → 이 그림이 있는 칸들(전부) : 누르기",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "Press all the boxes where this picture was!",
-              "why": "상황 지시어: 정답 기준이 ‘위에 크게 보인 그림과 같은 그림이 있던 칸’(과거)인데 ‘is’는 지금 칸에 그림이 보이는 것처럼 읽힘. ‘was’로 고침. ‘도형’을 ‘picture’로 넓힌 것은 하트·얼굴·잎·과일 화면에 맞아 유지.",
-              "at": "2026-11-23T07:04:48.673Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 온전; 행동: 온전(누르기·전부 유지); 대상: 온전; 문맥: 현재형이 이미 사라진 기억 화면의 내용을 가리켜 상황과 어긋남; 말투: 온전(짧은 명령·느낌표)",
-              "trh": "g0h9njxq528911",
-              "pv": "2026.11-v29",
-              "err3": [
-                "맥락 오류"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -78267,7 +78262,86 @@
                 "by": "검수 AI",
                 "at": "2026-11-23T07:04:48.675Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-23T07:09:21.316Z",
+                "by": "김예은",
+                "from": "Press all the boxes where this picture is!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "이 그림이 있는 칸을 모두 눌러라!",
+                  "sense": "picture: 그림/사진 → 그림(하트·얼굴·클로버·사과 그림)",
+                  "reason": "①위에 크게 보인 그림과 같은 그림이 있던 칸을 모두 고르라는 지시 ②‘이 그림이 있는 칸을 모두 눌러라’ ③도형을 기하학 도형(shape)으로 좁히지 않으려고 picture. ‘전부’는 all + 복수 boxes ④located 직역 대신 where … is ⑤판정(전부 선택)",
+                  "redo": "",
+                  "wmap": "도형 → picture = 그림 / 칸 → boxes = 칸들 / 전부 → all = 모두 / 누르다 → press = 누르다",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "상황 지시어: 정답 기준이 ‘위에 크게 보인 그림과 같은 그림이 있던 칸’(과거)인데 ‘is’는 지금 칸에 그림이 보이는 것처럼 읽힘. ‘was’로 고침. ‘도형’을 ‘picture’로 넓힌 것은 하트·얼굴·잎·과일 화면에 맞아 유지.",
+                  "fix": "Press all the boxes where this picture was!",
+                  "exc": "",
+                  "bt": "이 그림이 (지금) 있는 칸을 모두 눌러!",
+                  "gl": "Press = 누르다 / all = 전부 / boxes = 칸들 / this picture = 위에 크게 보인 이 그림 / is = 있다(현재)",
+                  "at": "2026-11-23T07:04:48.673Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Press all the boxes where this picture was!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "이 그림이 있던 칸을 모두 눌러!",
+                  "sense": "",
+                  "reason": "최소 수정으로 시제만 맞춰 다른 문구와 통일됨 / 현재형 → 과거형으로만 바꿈",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "현재형 → 과거형으로만 바꿈",
+                  "by": "김예은",
+                  "at": "2026-11-23T07:09:21.316Z"
+                }
+              }
+            ],
+            "tr": "Press all the boxes where this picture was!",
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "수정",
+              "tr": "Press all the boxes where this picture was!",
+              "mean": "이 그림이 있던 칸을 모두 눌러!",
+              "rec": "수정",
+              "recTr": "Press all the boxes where this picture was!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-23T07:09:21.316Z",
+              "trh": "8dimo61ok192212",
+              "from": "검수 AI"
+            }
           },
           "S010": {
             "bt0": {
@@ -78277,52 +78351,10 @@
               "by": "Claude",
               "trh": "1t5igp1g011uhx"
             },
-            "bt": [
-              "이 컵이 (지금) 있는 칸을 모두 눌러!"
-            ],
-            "gl": "Press = 누르다 / all = 전부 / boxes = 칸들 / this cup = 위에 보이는 바로 그 컵(파란 머그) / is = 있다(현재)",
-            "rel": "플레이어 → 이 컵이 있는 칸들(전부) : 누르기",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "Press all the boxes where this cup was!",
-              "why": "상황 지시어: 정답 기준이 ‘제시된 컵이 있던 칸’을 기억해서 고르는 것이라 현재형 ‘is’가 상황과 어긋남. ‘was’로 고침. ‘this cup’은 머그·찻잔·텀블러 중 위에 보이는 그 컵을 정확히 가리켜 유지.",
-              "at": "2026-11-23T07:04:48.673Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 온전; 행동: 온전(누르기·전부 유지); 대상: 온전; 문맥: 현재형이 이미 사라진 기억 화면의 내용을 가리켜 상황과 어긋남; 말투: 온전(짧은 명령·느낌표)",
-              "trh": "1t5igp1g011uhx",
-              "pv": "2026.11-v29",
-              "err3": [
-                "맥락 오류"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -78362,7 +78394,86 @@
                 "by": "검수 AI",
                 "at": "2026-11-23T07:04:48.675Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-23T07:09:22.965Z",
+                "by": "김예은",
+                "from": "Press all the boxes where this cup is!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "이 컵이 있는 칸을 모두 눌러라!",
+                  "sense": "cup: 컵/우승컵/찻잔 → 그림 속 바로 그 컵(파란 머그) — this로 한정",
+                  "reason": "①위의 파란 머그가 있던 칸을 모두 고르라는 지시 ②‘이 컵이 있는 칸을 모두 눌러라’ ③판에 머그·찻잔·텀블러가 섞여 있어 mug로 구체화하면 원문보다 힌트가 많아지므로 원문대로 cup + this ④S009와 같은 틀 ⑤판정(전부 선택)",
+                  "redo": "",
+                  "wmap": "컵 → cup = 컵 / 칸 → boxes = 칸들 / 전부 → all = 모두 / 누르다 → press = 누르다",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "상황 지시어: 정답 기준이 ‘제시된 컵이 있던 칸’을 기억해서 고르는 것이라 현재형 ‘is’가 상황과 어긋남. ‘was’로 고침. ‘this cup’은 머그·찻잔·텀블러 중 위에 보이는 그 컵을 정확히 가리켜 유지.",
+                  "fix": "Press all the boxes where this cup was!",
+                  "exc": "",
+                  "bt": "이 컵이 (지금) 있는 칸을 모두 눌러!",
+                  "gl": "Press = 누르다 / all = 전부 / boxes = 칸들 / this cup = 위에 보이는 바로 그 컵(파란 머그) / is = 있다(현재)",
+                  "at": "2026-11-23T07:04:48.673Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Press all the boxes where this cup was!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "이 컵이 있던 칸을 모두 눌러!",
+                  "sense": "",
+                  "reason": "최소 수정으로 시제만 맞춰 다른 문구와 통일됨 / 현재형 → 과거형으로만 바꿈",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "현재형 → 과거형으로만 바꿈",
+                  "by": "김예은",
+                  "at": "2026-11-23T07:09:22.965Z"
+                }
+              }
+            ],
+            "tr": "Press all the boxes where this cup was!",
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "수정",
+              "tr": "Press all the boxes where this cup was!",
+              "mean": "이 컵이 있던 칸을 모두 눌러!",
+              "rec": "수정",
+              "recTr": "Press all the boxes where this cup was!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-23T07:09:22.965Z",
+              "trh": "1rfbf7oc93n2iy",
+              "from": "검수 AI"
+            }
           },
           "S011": {
             "bt0": {
@@ -78372,52 +78483,10 @@
               "by": "Claude",
               "trh": "167vus21p5r6uw10"
             },
-            "bt": [
-              "이 꽃이 (지금) 있는 칸을 모두 눌러!"
-            ],
-            "gl": "Press = 누르다 / all = 전부 / boxes = 칸들 / this flower = 위에 보이는 그 꽃(장미) / is = 있다(현재)",
-            "rel": "플레이어 → 이 꽃이 있는 칸들(전부) : 누르기",
-            "rv": {
-              "v": "수정 필요",
-              "fix": "Press all the boxes where this flower was!",
-              "why": "상황 지시어: 정답 기준이 ‘제시된 꽃이 있던 칸’을 기억해서 고르는 것이라 현재형 ‘is’가 상황과 어긋남. ‘was’로 고침. 같은 구조의 S004·S005·S009·S010과 함께 고쳐야 통일됨.",
-              "at": "2026-11-23T07:04:48.673Z",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "의역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "FAIL",
-              "scWhy": "핵심: 온전; 행동: 온전(누르기·전부 유지); 대상: 온전; 문맥: 현재형이 이미 사라진 기억 화면의 내용을 가리켜 상황과 어긋남; 말투: 온전(짧은 명령·느낌표)",
-              "trh": "167vus21p5r6uw10",
-              "pv": "2026.11-v29",
-              "err3": [
-                "맥락 오류"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "FAIL",
@@ -78457,7 +78526,86 @@
                 "by": "검수 AI",
                 "at": "2026-11-23T07:04:48.675Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-23T07:09:24.588Z",
+                "by": "김예은",
+                "from": "Press all the boxes where this flower is!",
+                "ratFrom": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "이 꽃이 있는 칸을 모두 눌러라!",
+                  "sense": "",
+                  "reason": "①위의 장미가 있던 칸을 모두 고르라는 지시 ②‘이 꽃이 있는 칸을 모두 눌러라’ ③rose로 바꾸면 원문보다 구체적이 되므로 flower 유지, this로 위 그림을 가리킴 ⑤판정(전부 선택)",
+                  "redo": "",
+                  "wmap": "꽃 → flower = 꽃 / 칸 → boxes = 칸들 / 전부 → all = 모두 / 누르다 → press = 누르다",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "FAIL",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "상황 지시어: 정답 기준이 ‘제시된 꽃이 있던 칸’을 기억해서 고르는 것이라 현재형 ‘is’가 상황과 어긋남. ‘was’로 고침. 같은 구조의 S004·S005·S009·S010과 함께 고쳐야 통일됨.",
+                  "fix": "Press all the boxes where this flower was!",
+                  "exc": "",
+                  "bt": "이 꽃이 (지금) 있는 칸을 모두 눌러!",
+                  "gl": "Press = 누르다 / all = 전부 / boxes = 칸들 / this flower = 위에 보이는 그 꽃(장미) / is = 있다(현재)",
+                  "at": "2026-11-23T07:04:48.673Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Press all the boxes where this flower was!",
+                "why": "대안 수정 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "의역",
+                  "intent": "이 꽃이 있던 칸을 모두 눌러!",
+                  "sense": "",
+                  "reason": "최소 수정으로 시제만 맞춰 다른 문구와 통일됨 / 현재형 → 과거형으로만 바꿈",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "현재형 → 과거형으로만 바꿈",
+                  "by": "김예은",
+                  "at": "2026-11-23T07:09:24.588Z"
+                }
+              }
+            ],
+            "tr": "Press all the boxes where this flower was!",
+            "hv": null,
+            "ok": [],
+            "pick": {
+              "k": "수정",
+              "tr": "Press all the boxes where this flower was!",
+              "mean": "이 꽃이 있던 칸을 모두 눌러!",
+              "rec": "수정",
+              "recTr": "Press all the boxes where this flower was!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-23T07:09:24.588Z",
+              "trh": "o2i0a16gxzjn11",
+              "from": "검수 AI"
+            }
           },
           "S012": {
             "memos": [
