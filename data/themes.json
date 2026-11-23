@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-23T07:09:33.932Z",
+    "updatedAt": "2026-11-23T07:09:44.178Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -78793,52 +78793,10 @@
               "by": "Claude",
               "trh": "9vtauz10vw9w7q"
             },
-            "bt": [
-              "위에 있는 글자들을 외워!"
-            ],
-            "gl": "Memorize = 외우다 / letters = 낱글자들(A, B 같은 알파벳) / above = 위에 있는",
-            "rel": "플레이어 → 위의 글자들 : 외우기",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Memorize what's written above!",
-              "why": "원문 ‘글자’는 한글 음절이라 칸 내용 전체를 가리켰지만, 영어판은 재설계로 E_017(Red·Orange 등 색 이름), E_018(MON 등 요일), E_019(MER 등 행성 약자), E_013·E_014(계이름)가 단어·음절 칸이 됨. ‘letters’는 낱글자로 읽혀 이 화면들에서 지시와 화면이 어긋남. 모든 화면에 맞는 ‘what's written(쓰여 있는 것)’으로 바꾸는 안을 제안. 낱글자 화면(E_011·E_012·E_015·E_016·E_020)만 보면 현 번역도 맞으므로 사람이 결정.",
-              "at": "2026-11-23T07:04:48.673Z",
-              "chk": {
-                "정답": "NA",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "직역",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 온전; 행동: 온전; 대상: 온전; 문맥: 재설계로 E_013·E_014(Do·Re…), E_017(Red·Orange…), E_018(MON…), E_019(MER…) 화면이 단어·음절 칸이 되어 ‘letters’(낱글자)와 어긋남; 말투: 온전",
-              "trh": "9vtauz10vw9w7q",
-              "pv": "2026.11-v29",
-              "err3": [
-                "맥락 오류"
-              ]
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -78893,7 +78851,64 @@
                 "by": "검수 AI",
                 "at": "2026-11-23T07:04:48.675Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-23T07:09:43.988Z",
+                "by": "김예은",
+                "from": "Memorize the letters above!",
+                "ratFrom": {
+                  "meth": "직역",
+                  "methRaw": "직역",
+                  "intent": "위에 있는 글자들을 외워라!",
+                  "sense": "letters: 글자/편지 → 글자(칸에 쓰인 문자)",
+                  "reason": "①3×3 칸의 글자와 위치를 외우라는 지시 ②‘위의 글자들을 외워라’ ③letters는 알파벳 한 글자·짧은 글자 묶음을 모두 가리킬 수 있어 ‘글자’의 넓은 뜻과 맞음 ⑤UI 안내문, Memorize 통일",
+                  "redo": "",
+                  "wmap": "기억하다 → memorize = 외우다 / 글자 → letters = 글자들 / 위의 → above = 위에 있는",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "NA",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "원문 ‘글자’는 한글 음절이라 칸 내용 전체를 가리켰지만, 영어판은 재설계로 E_017(Red·Orange 등 색 이름), E_018(MON 등 요일), E_019(MER 등 행성 약자), E_013·E_014(계이름)가 단어·음절 칸이 됨. ‘letters’는 낱글자로 읽혀 이 화면들에서 지시와 화면이 어긋남. 모든 화면에 맞는 ‘what's written(쓰여 있는 것)’으로 바꾸는 안을 제안. 낱글자 화면(E_011·E_012·E_015·E_016·E_020)만 보면 현 번역도 맞으므로 사람이 결정.",
+                  "fix": "Memorize what's written above!",
+                  "exc": "",
+                  "bt": "위에 있는 글자들을 외워!",
+                  "gl": "Memorize = 외우다 / letters = 낱글자들(A, B 같은 알파벳) / above = 위에 있는",
+                  "at": "2026-11-23T07:04:48.673Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Memorize what's written above!",
+                "why": "원문 ‘글자’는 한글 음절이라 칸 내용 전체를 가리켰지만, 영어판은 재설계로 E_017(Red·Orange 등 색 이름), E_018(MON 등 요일), E_019(MER 등 행성 약자), E_013·E_014(계이름)가 단어·음절 칸이 됨. ‘letters’는 낱글자로 읽혀 이 화면들에서 지시와 화면이 어긋남. 모든 화면에 맞는 ‘what's written(쓰여 있는 것)’으로 바꾸는 안을 제안. 낱글자 화면(E_011·E_012·E_015·E_016·E_020)만 보면 현 번역도 맞으므로 사람이 결정.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Claude",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
+              }
+            ],
+            "tr": "Memorize what's written above!",
+            "hv": null,
+            "ok": []
           },
           "S014": {
             "memos": [
