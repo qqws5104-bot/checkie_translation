@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-25T07:30:06.793Z",
+    "updatedAt": "2026-11-25T07:30:31.692Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -80077,9 +80077,7 @@
                 "doneAt": "2026-11-23T08:43:36.040Z"
               }
             ],
-            "ok": [
-              "redoMissing"
-            ],
+            "ok": [],
             "bt0": {
               "t": "이 음료 이름처럼 들리는 음(계이름)을 눌러!",
               "amb": "",
@@ -80088,53 +80086,10 @@
               "trh": "1nt07kz1gm48lh18",
               "act": ""
             },
-            "bt": [
-              "이 음료 이름처럼 들리는 음(계이름)을 눌러!"
-            ],
-            "gl": "Press = 누르다 / note = 계이름·음 (다르게 읽힐 수 있음: 메모) / sounds like = 소리가 같은 / this drink = 위 그림의 음료(차)",
-            "rel": "플레이어 → 계이름 칸 : 이 음료 이름처럼 들리는 음을 누르기",
-            "rv": {
-              "v": "사람 확인 필요",
-              "fix": "Press the note that sounds like this drink!",
-              "why": "의도된 재설계. ① ‘drink's name’을 ‘drink’로 줄여 공백 제외 36자로 한도 안에 맞춤(뜻 동일: 그림 속 음료와 소리가 같은 계이름). ② 정답 Ti는 E_013 그림을 찻잔으로 바꾸는 결정이 있어야 성립 → [기획 확인](기획 확인 시트 S018). ③ ‘Ti’는 미국식 계이름 표기라 미국 방문객에겐 맞지만, 영국·유럽식(Te/Si)에 익숙한 방문객은 못 풀 수 있어 현지인 확인 필요.",
-              "at": "2026-11-23T08:28:13.390Z",
-              "chk": {
-                "정답": "REVIEW",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 12,
-                "말투": 10
-              },
-              "total": 97,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "REVIEW",
-              "scWhy": "핵심: 원래 기능(그림 이름과 같은 계이름 칸 찾기, 4번) 유지; 행동: ‘입력’을 실제 조작인 ‘누르기’로 옮김(주의점 반영); 대상: 정답 Ti(=tea)는 E_013_Q 그림을 대파 → 찻잔으로 바꿔야 성립하고 아직 기획 확정 전; 문맥: 공백 제외 42자로 길이 한도(37자) 초과; 말투: 만점",
-              "trh": "1nt07kz1gm48lh18",
-              "pv": "2026.11-v29",
-              "err3": [
-                "맥락 오류"
-              ],
-              "plan": true
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -80299,9 +80254,59 @@
                   "by": "김예은",
                   "at": "2026-11-23T07:10:06.401Z"
                 }
+              },
+              {
+                "at": "2026-11-25T07:30:31.506Z",
+                "by": "김예은",
+                "from": "Press the note that sounds like this drink's name!",
+                "ratFrom": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "이 음료 이름과 소리가 같은 음을 눌러!",
+                  "sense": "",
+                  "reason": "‘음료가 내는 소리’로 읽힐 여지를 없앰 / ‘name’을 넣어 판정 기준을 밝힘",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "rvSnap": {
+                  "v": "REVIEW",
+                  "orig": "",
+                  "chk": {
+                    "정답": "REVIEW",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "의도된 재설계. ① ‘drink's name’을 ‘drink’로 줄여 공백 제외 36자로 한도 안에 맞춤(뜻 동일: 그림 속 음료와 소리가 같은 계이름). ② 정답 Ti는 E_013 그림을 찻잔으로 바꾸는 결정이 있어야 성립 → [기획 확인](기획 확인 시트 S018). ③ ‘Ti’는 미국식 계이름 표기라 미국 방문객에겐 맞지만, 영국·유럽식(Te/Si)에 익숙한 방문객은 못 풀 수 있어 현지인 확인 필요.",
+                  "fix": "Press the note that sounds like this drink!",
+                  "exc": "",
+                  "bt": "이 음료 이름처럼 들리는 음(계이름)을 눌러!",
+                  "gl": "Press = 누르다 / note = 계이름·음 (다르게 읽힐 수 있음: 메모) / sounds like = 소리가 같은 / this drink = 위 그림의 음료(차)",
+                  "at": "2026-11-23T08:28:13.390Z",
+                  "by": ""
+                },
+                "hvSnap": null,
+                "to": "Press the note that sounds like this drink!",
+                "why": "의도된 재설계. ① ‘drink's name’을 ‘drink’로 줄여 공백 제외 36자로 한도 안에 맞춤(뜻 동일: 그림 속 음료와 소리가 같은 계이름). ② 정답 Ti는 E_013 그림을 찻잔으로 바꾸는 결정이 있어야 성립 → [기획 확인](기획 확인 시트 S018). ③ ‘Ti’는 미국식 계이름 표기라 미국 방문객에겐 맞지만, 영국·유럽식(Te/Si)에 익숙한 방문객은 못 풀 수 있어 현지인 확인 필요.",
+                "kind": "fix",
+                "type": "",
+                "stage": "교차 검수",
+                "byAi": "Claude",
+                "change": {
+                  "kind": "표현",
+                  "diff": "",
+                  "by": "추정 (검수 AI 지적 기준)",
+                  "est": true
+                }
               }
             ],
-            "tr": "Press the note that sounds like this drink's name!",
+            "tr": "Press the note that sounds like this drink!",
             "hv": null,
             "pick": {
               "k": "수정",
