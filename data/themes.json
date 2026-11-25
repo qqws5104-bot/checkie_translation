@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-25T07:00:31.109Z",
+    "updatedAt": "2026-11-25T07:13:18.273Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -86455,49 +86455,10 @@
               "trh": "2xs8op1isb9t1c",
               "act": ""
             },
-            "bt": [
-              "너 무슨 일 있었는지 알아? 맞혀 봐, 내 고양이가 뭘 먹었게?"
-            ],
-            "gl": "happened? = 물음표가 든 칸(4번) / ate? = 물음표가 든 칸(9번) / You·know·what·Guess·my·cat = 물음표 없는 오답 칸",
-            "rel": "-",
-            "rv": {
-              "v": "통과",
-              "at": "2026-11-23T08:28:13.390Z",
-              "by": "AI",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "NA"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 15,
-                "말투": 10
-              },
-              "total": 100,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "PASS",
-              "scWhy": "핵심: 의도된 재설계 — ‘?’가 든 칸 2개(4·9번) 구조 유지, 맷돌·어이 밈 대신 쉬운 단어의 완결 문장; 행동: 만점; 대상: 정답 칸 4·9번과 맞음(E_078_A 빨간 원 위치와 일치); 문맥: 한국 지식 없이 풀 수 있음, ‘Guess what my cat ate?’는 구어에서 흔한 물음; 말투: 해당 없음(보기 칸)",
-              "trh": "2xs8op1isb9t1c",
-              "pv": "2026.11-v29",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "REVIEW",
@@ -86617,21 +86578,81 @@
                   "by": "김예은",
                   "at": "2026-11-23T07:13:09.594Z"
                 }
+              },
+              {
+                "at": "2026-11-25T07:13:18.081Z",
+                "by": "김예은",
+                "from": "You · know · what · happened? · Guess · what · my · cat · ate?",
+                "ratFrom": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "무슨 일 있었는지 알아? 우리 고양이가 뭘 먹었게?",
+                  "sense": "",
+                  "reason": "물음표가 둘 다 실제 질문에 붙어 자연스럽고 정답 위치도 그대로 / 마지막 문장을 질문으로 바꿈(‘?’ 칸 4·9번 유지)",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "rvSnap": {
+                  "v": "PASS",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "NA"
+                  },
+                  "why": "",
+                  "fix": "",
+                  "exc": "",
+                  "bt": "너 무슨 일 있었는지 알아? 맞혀 봐, 내 고양이가 뭘 먹었게?",
+                  "gl": "happened? = 물음표가 든 칸(4번) / ate? = 물음표가 든 칸(9번) / You·know·what·Guess·my·cat = 물음표 없는 오답 칸",
+                  "at": "2026-11-23T08:28:13.390Z",
+                  "by": "AI"
+                },
+                "hvSnap": null,
+                "to": "Did · you · hear · that? · Is · it · really · that · short?",
+                "why": "농담살리기",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "검수 AI",
+                "rat": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "그거 들었어? 정말 그렇게 짧아?",
+                  "sense": "",
+                  "reason": "내용이 새로 바뀜(‘?’ 칸 4·9번 유지)",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "검수 AI"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "내용이 새로 바뀜(‘?’ 칸 4·9번 유지)",
+                  "by": "김예은",
+                  "at": "2026-11-25T07:13:18.081Z"
+                }
               }
             ],
-            "tr": "You · know · what · happened? · Guess · what · my · cat · ate?",
+            "tr": "Did · you · hear · that? · Is · it · really · that · short?",
             "hv": null,
             "ok": [],
             "pick": {
-              "k": "수정",
-              "tr": "You · know · what · happened? · Guess · what · my · cat · ate?",
-              "mean": "무슨 일 있었는지 알아? 우리 고양이가 뭘 먹었게?",
+              "k": "A",
+              "tr": "Did · you · hear · that? · Is · it · really · that · short?",
+              "mean": "그거 들었어? 정말 그렇게 짧아?",
               "rec": "수정",
               "recTr": "You · know · what · happened? · Guess · what · my · cat · ate?",
-              "why": "",
+              "why": "농담살리기",
               "by": "김예은",
-              "at": "2026-11-23T07:13:09.594Z",
-              "trh": "2xs8op1isb9t1c",
+              "at": "2026-11-25T07:13:18.081Z",
+              "trh": "i3k1kv119k1k719",
               "from": "검수 AI"
             }
           },
