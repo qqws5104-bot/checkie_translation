@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-26T02:05:50.488Z",
+    "updatedAt": "2026-11-26T02:06:46.934Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -87343,11 +87343,7 @@
                 "doneAt": "2026-11-06T05:37:07.168Z"
               }
             ],
-            "ok": [
-              "methInc",
-              "incons",
-              "redoMissing"
-            ],
+            "ok": [],
             "bt0": {
               "t": "이 그림의 이름이 있는 칸을 모두 눌러!",
               "amb": "",
@@ -87355,49 +87351,10 @@
               "by": "Claude",
               "trh": "jynuex1uxrxy914"
             },
-            "bt": [
-              "이 그림의 이름이 있는 칸을 모두 눌러!"
-            ],
-            "gl": "Press = 누르다 / all = 전부 / picture's name = 그림의 이름",
-            "rel": "플레이어 → 이 그림의 이름이 든 칸들(전부) : 누르기",
-            "rv": {
-              "v": "통과",
-              "at": "2026-11-23T07:04:48.674Z",
-              "by": "AI",
-              "chk": {
-                "정답": "PASS",
-                "추가 정보": "PASS",
-                "용어": "PASS",
-                "의미": "PASS",
-                "행동": "PASS",
-                "조건": "PASS",
-                "자연스러움": "PASS",
-                "문화": "PASS",
-                "말투": "PASS"
-              },
-              "methRv": "재구성",
-              "sc": {
-                "핵심": 35,
-                "의도": 20,
-                "대상": 20,
-                "문맥": 15,
-                "말투": 10
-              },
-              "total": 100,
-              "band": "PASS",
-              "crit": [],
-              "cfg": {
-                "caution": 95,
-                "pass": 90,
-                "fixReq": 80,
-                "fail": 70
-              },
-              "aiV": "PASS",
-              "scWhy": "핵심: 원래 기능(그림 이름이 든 칸 모두 누르기) 유지 — 의도된 재설계; 행동: 온전; 대상: 정답 개수·칸 위치 유지; 문맥: 한국 지식 없이 풀 수 있음; 말투: 온전",
-              "trh": "jynuex1uxrxy914",
-              "pv": "2026.11-v29",
-              "err3": []
-            },
+            "bt": null,
+            "gl": null,
+            "rel": null,
+            "rv": null,
             "rvLog": [
               {
                 "v": "PASS",
@@ -87466,7 +87423,85 @@
                 "by": "추가 요청",
                 "at": "2026-11-26T02:05:50.288Z"
               }
-            ]
+            ],
+            "hist": [
+              {
+                "at": "2026-11-26T02:06:46.747Z",
+                "by": "김예은",
+                "from": "Press all the boxes with this picture's name!",
+                "ratFrom": {
+                  "meth": "재구성",
+                  "methRaw": "재구성",
+                  "intent": "이 그림의 이름이 들어 있는 칸을 모두 눌러라!",
+                  "sense": "",
+                  "reason": "①위 그림(기린)의 이름이 적힌 칸을 모두 고르라는 지시 ②‘이 그림의 이름이 들어 있는 칸을 모두 눌러라’ ③화면 위에 글자가 아니라 그림이 나오므로 ‘그림의 이름’으로 판정 기준을 맞춤 ④원문대로 옮기면 지시가 화면과 맞지 않음 ⑤판정(전부 선택)",
+                  "redo": "①화면 위에는 글자가 아니라 그림이 나와 원문 그대로는 지시가 맞지 않음 ②그림 이름(기린) 칸을 모두 고르게 하는 것 ③‘그림의 이름’을 찾으라는 지시로 바꿈",
+                  "wmap": "글자 → picture's name = 그림의 이름 / 칸 → boxes = 칸들 / 전부 → all = 모두 / 누르다 → press = 누르다",
+                  "sub": "",
+                  "shr": "",
+                  "by": "번역 AI"
+                },
+                "rvSnap": {
+                  "v": "PASS",
+                  "orig": "",
+                  "chk": {
+                    "정답": "PASS",
+                    "추가 정보": "PASS",
+                    "용어": "PASS",
+                    "의미": "PASS",
+                    "행동": "PASS",
+                    "조건": "PASS",
+                    "자연스러움": "PASS",
+                    "문화": "PASS",
+                    "말투": "PASS"
+                  },
+                  "why": "",
+                  "fix": "",
+                  "exc": "",
+                  "bt": "이 그림의 이름이 있는 칸을 모두 눌러!",
+                  "gl": "Press = 누르다 / all = 전부 / picture's name = 그림의 이름",
+                  "at": "2026-11-23T07:04:48.674Z",
+                  "by": "AI"
+                },
+                "hvSnap": null,
+                "to": "Press every box containing the character shown above!",
+                "why": "대안 F 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "추가 요청",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "직역에 가까운 의역",
+                  "intent": "위에 표시된 문자가 들어 있는 모든 칸을 눌러!",
+                  "sense": "",
+                  "reason": "원문의 ‘글자’를 특정 문자 체계로 한정하지 않으면서도 의미를 정확하게 전달함 / ‘letter’보다 넓은 의미의 ‘character’를 사용해 원문의 글자 범위를 유지",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "추가 요청"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "‘letter’보다 넓은 의미의 ‘character’를 사용해 원문의 글자 범위를 유지",
+                  "by": "김예은",
+                  "at": "2026-11-26T02:06:46.747Z"
+                }
+              }
+            ],
+            "tr": "Press every box containing the character shown above!",
+            "hv": null,
+            "pick": {
+              "k": "F",
+              "tr": "Press every box containing the character shown above!",
+              "mean": "위에 표시된 문자가 들어 있는 모든 칸을 눌러!",
+              "rec": "F",
+              "recTr": "Press every box containing the character shown above!",
+              "why": "",
+              "by": "김예은",
+              "at": "2026-11-26T02:06:46.747Z",
+              "trh": "1m0ygbv1sn3ppj1c",
+              "from": "추가 요청"
+            }
           },
           "S102": {
             "memos": [
