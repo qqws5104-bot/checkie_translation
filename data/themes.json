@@ -50052,7 +50052,7 @@
       "zh": 0
     },
     "memo": "",
-    "updatedAt": "2026-11-26T02:08:55.638Z",
+    "updatedAt": "2026-11-26T02:09:10.164Z",
     "sign": {
       "info": {
         "by": "김예은",
@@ -87509,9 +87509,39 @@
                 "type": "기타",
                 "stage": "자동 점검",
                 "byAi": "ChatGPT"
+              },
+              {
+                "at": "2026-11-26T02:09:09.976Z",
+                "by": "김예은",
+                "from": "Press all boxes with the character above!",
+                "ratFrom": null,
+                "rvSnap": null,
+                "hvSnap": null,
+                "to": "Press every box containing the character shown above!",
+                "why": "대안 F 선택 (AI 추천)",
+                "kind": "pick",
+                "type": "대안 선택",
+                "stage": "대안 선택",
+                "byAi": "추가 요청",
+                "rat": {
+                  "meth": "의역",
+                  "methRaw": "직역에 가까운 의역",
+                  "intent": "위에 표시된 문자가 들어 있는 모든 칸을 눌러!",
+                  "sense": "",
+                  "reason": "원문의 ‘글자’를 특정 문자 체계로 한정하지 않으면서도 의미를 정확하게 전달함 / ‘letter’보다 넓은 의미의 ‘character’를 사용해 원문의 글자 범위를 유지",
+                  "redo": "",
+                  "wmap": "",
+                  "by": "추가 요청"
+                },
+                "change": {
+                  "kind": "표현",
+                  "diff": "‘letter’보다 넓은 의미의 ‘character’를 사용해 원문의 글자 범위를 유지",
+                  "by": "김예은",
+                  "at": "2026-11-26T02:09:09.976Z"
+                }
               }
             ],
-            "tr": "Press all boxes with the character above!",
+            "tr": "Press every box containing the character shown above!",
             "hv": null,
             "pick": {
               "k": "F",
@@ -87521,7 +87551,7 @@
               "recTr": "Press every box containing the character shown above!",
               "why": "",
               "by": "김예은",
-              "at": "2026-11-26T02:06:46.747Z",
+              "at": "2026-11-26T02:09:09.976Z",
               "trh": "1m0ygbv1sn3ppj1c",
               "from": "추가 요청"
             }
