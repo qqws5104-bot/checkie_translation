@@ -782,6 +782,20 @@ h1 { font-size: 22px; }
 .fhead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
 .fhead b { font-size: 16px; }
 .memo.plan { border-left-color: var(--warn, #c92a2a); }
+.pzlist { display: grid; gap: 8px; }
+.pzcard { border: 1px solid var(--line); border-left-width: 4px; border-radius: 8px; padding: 8px 12px; display: grid; gap: 6px; background: var(--panel); }
+.pzcard.bad { border-left-color: var(--warn, #c92a2a); }
+.pzcard.rev { border-left-color: #e0a800; }
+.pzcard.ok { border-left-color: var(--ok); }
+.pzhead { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 15px; }
+.pzspacer { flex: 1; }
+.pzchips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.pzchip { font-size: 13px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); white-space: nowrap; }
+.pzchip.bad { color: var(--warn, #c92a2a); border-color: currentColor; font-weight: 700; background: color-mix(in srgb, var(--warn, #c92a2a) 10%, transparent); }
+.pzchip.rev { color: #9a6b00; border-color: #e0a800; font-weight: 700; background: color-mix(in srgb, #e0a800 14%, transparent); }
+.pzchip.ok { color: var(--ok); }
+.pzchip.na { color: var(--muted); }
+.pzwhy { margin: 0; white-space: pre-wrap; font-size: 14px; line-height: 1.55; }
 .pzt td.pz { text-align: center; font-weight: 700; white-space: nowrap; }
 .pzt td.pz.ok { color: var(--ok); }
 .pzt td.pz.bad { color: var(--warn, #c92a2a); background: color-mix(in srgb, var(--warn, #c92a2a) 10%, transparent); }
@@ -796,7 +810,8 @@ h1 { font-size: 22px; }
 .stbl, .vtbl { width: 100%; font-size: 13.5px; } .vtbl tr.cur td { background: var(--accent-soft); } .vchg { border: 1px dashed var(--line); border-radius: 10px; padding: 8px 10px; margin: 8px 0; }
 .glist { margin: 4px 0; padding-left: 18px; font-size: 14px; } .ratbox { border: 1px solid #E3C770; background: #FFF9E6; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; display: grid; gap: 6px; }
 .sqbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; align-items: center; } .sqbar input { flex: 1 1 100%; } .sqbar select { width: auto; flex: 0 1 auto; min-width: 0; } .srch td { font-size: 13.5px; vertical-align: top; } .sgroups { margin-bottom: 10px; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ratbox { background: #2b2410; } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ratbox { background: #2b2410; } :root:not([data-theme="light"]) .pzchip.rev { color: #f0c14b; } }
+:root[data-theme="dark"] .pzchip.rev { color: #f0c14b; }
 :root[data-theme="dark"] .ratbox { background: #2b2410; }
 .judge { border: 1px solid var(--line); border-left: 4px solid var(--ok); border-radius: 10px; padding: 10px 12px; margin: 8px 0; display: grid; gap: 8px; }
 .judge.warn { border-left-color: #C9A227; } .judge.bad { border-left-color: #C4502A; }
@@ -1644,11 +1659,14 @@ const METH_TREE = `- 번역 방식은 화면이나 페이지 단위가 아니라
   1) 원문에 없는 소재·정답·말장난·노래로 바꿨으면 → 재구성 (재설계 줄은 항상 재구성)
   2) 핵심어(행동·대상·조건·숫자·고유명사)를 모두 사전에 나오는 같은 뜻의 말로 옮겼고, 문장 구성(문장 수, 누가·무엇을·어떻게)을 유지했으면 → 직역. 어순·조사·관사·단복수·존대 활용처럼 언어 차이로 반드시 바뀌는 것은 직역에 포함한다. 원문이 빈칸에 들어갈 어간·조각(예: ‘춥’, ‘덥’ → ‘(   )다’를 채움)이라 완전한 단어(Cold, Hot)로 옮긴 것도 직역이다
   3) 뜻은 같지만 핵심어를 다른 말로 바꾸거나 문장 구성을 바꿨으면 → 의역 (예: ‘집을 찾아주세요’ → ‘Help me get home’)
-  - 애매하면 2)의 두 조건을 하나씩 다시 확인한다. ‘조금 자연스럽게 다듬었다’는 이유만으로 의역이라 하지 않는다.`;
+  - 애매하면 2)의 두 조건을 하나씩 다시 확인한다. ‘조금 자연스럽게 다듬었다’는 이유만으로 의역이라 하지 않는다.
+  - 요약: 직역 = 표현·구조를 유지해도 같은 뜻·행동이 전달됨 / 의역 = 단어·구조를 바꿔야 하지만 같은 뜻·행동이 전달됨 / 재구성 = 언어·문화 차이 때문에 옮기는 것만으로는 게임·퍼즐이 성립하지 않아 새로 만듦.
+  - 자연스럽게 바꿨다는 이유, 직역이 어색하다는 이유만으로 재구성이라 하지 않는다.
+  - 번역 방식(직역·의역·재구성)과 현지화 분류(A/B/C)는 다른 기준이다. B는 규칙을 지키며 표현을 현지화하는 것(보통 직역·의역), C는 퍼즐·게임 기능을 재설계하는 것(재구성)이다.`;
 const methOf = v => { const s = String(v || ''); return /재구성/.test(s) ? '재구성' : /의역/.test(s) ? '의역' : /직역/.test(s) ? '직역' : ''; };
 /* 번역 근거가 추상적인가: ‘자연스러워서’ 같은 말만 있고 구체적 내용이 없음 */
-const ABSTRACT_WHY = /자연스러|적절|문맥에\s*맞|어색하지\s*않|일반적|무난/;
-const isAbstractWhy = s => { const t = String(s || '').replace(/[\s.。·,]/g, ''); return !!t && ABSTRACT_WHY.test(s) && t.replace(/자연스러[운워움]*|적절[한해함]*|문맥에맞[는게아음]*|표현|번역|하여|해서|이므로|이기때문|때문|으로|로|을|를|이|가|함|했음|임|선택|사용/g, '').length < 6; };
+const ABSTRACT_WHY = /자연스러|적절|문맥에\s*맞|어색하지\s*않|일반적|무난|이해하기\s*쉬|현지\s*표현에\s*맞|현지에\s*맞/;
+const isAbstractWhy = s => { const t = String(s || '').replace(/[\s.。·,]/g, ''); return !!t && ABSTRACT_WHY.test(s) && t.replace(/자연스러[운워움]*|적절[한해함]*|문맥에맞[는게아음]*|이해하기쉬[운워움]*|현지(표현)?에맞[춰게는아음]*|더|표현|번역|하여|해서|이므로|이기때문|때문|으로|로|을|를|이|가|함|했음|임|선택|사용/g, '').length < 6; };
 function sheetRowsRaw(t, lk) { return sheetRows(t, lk); }
 function sheetRows(t, lk) {
   const sh = sheetOf(t, lk); if (!sh) return [];
@@ -3050,7 +3068,7 @@ function specialTag(t, row) {
 }
 
 /* ================= 번역 프롬프트 = 공통 지시 + AI별 지시 + 게임별 정보 + 언어별 블록 + 이번 작업 ================= */
-const PROMPT_VER = '2026.11-v31';
+const PROMPT_VER = '2026.11-v32';
 const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 
 1. 역할
@@ -3077,31 +3095,44 @@ const COMMON_TRANSLATE = `[공통 지시] 오프라인 게임 현지화 번역
 - 정답에 영향을 주는 말장난이나 언어유희는 임의로 일반화하지 않는다.
 - 그대로 옮기면 문제가 작동하지 않는 줄(노래 가사, 한국 문화 지식, 한국어 말장난에 기대는 문제)은 C로 분류하고 재설계한다. 아래 ‘재설계’ 규칙을 따른다.
 
-5. 문체 및 표현
+5. 표현 선택: 단어가 아니라 게임 기능으로
+- 한국어 단어를 바로 외국어 단어로 바꾸지 않는다. 줄마다 이 순서로 정한다.
+  ① 어디에 쓰이나: 화면·요소 (버튼·메뉴·UI, 안내·지시문, 문제·단서, 시스템 메시지, 정답·오답 피드백, 캐릭터 대사)
+  ② 무슨 기능인가: 안내 · 지시 · 상태 표시 · 질문 · 피드백 · 연출
+  ③ 플레이어가 받아야 할 의미
+  ④ 플레이어가 실제로 할 행동: 무엇을, 어떤 순서·조건으로
+  ⑤ 그 상황에서 그 언어 사용자가 실제로 쓰는 표현을 고른다
+  ⑥ 원문의 규칙·의미·행동이 그대로인지 확인한다
+- 예: ‘사용 버튼’ — 앞으로 조작할 버튼을 안내하면 Buttons to Use, 지금 켜진 버튼을 표시하면 Active Buttons, 지금 쓰고 있는 버튼을 설명하면 Buttons in Use. 문법은 모두 맞지만 뜻과 쓰임이 다르다. 화면 기능을 확인해 하나를 고른다.
+- 플레이어 관점 확인: 처음 보는 외국인 관광객이 번역문만 보고 (1) 무엇을 해야 한다고 이해할지 (2) 행동 대상이 분명한지 (3) 순서·조건이 맞는지 (4) 다른 행동으로 오해할 여지가 없는지 (5) 다음 진행 단계와 이어지는지 본다. 원문과 다른 행동을 하게 만들면 자연스러워도 고친다. 단, 원문에 없는 행동·설명은 더하지 않는다.
+- 후보 비교: 다의어 · 버튼·UI · 조작 동사 · 문화 표현 · 언어유희 · 뜻이 갈릴 수 있는 문장 구조 · 기존 번역과 다르게 읽힐 수 있는 표현이면, 처음 떠오른 번역을 바로 확정하지 않고 후보들의 실제 뜻 · 뉘앙스 · 쓰는 상황 · 플레이어가 알아들을 가능성 · 규칙·행동과의 일치를 비교해 고른다. 그 밖의 줄은 비교하지 않아도 된다. 비교 뒤에도 고를 가치가 있는 후보가 남으면 ‘번역 대안’ 규칙대로 따로 남긴다.
+
+6. 문체 및 표현
 - 해당 언어권에서 실제로 쓰는 자연스러운 표현을 쓴다. 한국어 어순을 그대로 옮기지 않는다.
 - 처음 게임을 접하는 사람이 한 번에 이해할 수 있게 쓴다. 화면 안내문은 짧고 명확하게.
 - 화자별 말투와 캐릭터 성격을 유지한다. 불필요한 존댓말, 설명, 수식어를 붙이지 않는다.
 
-6. 형식 보존
+7. 형식 보존
 - 원문의 문장과 행을 임의로 합치거나 나누지 않는다.
 - 숫자, 기호, 효과음, 줄바꿈 등 원문의 구조를 최대한 보존한다. {변수}·지정 기호가 있으면 그대로 둔다.
 - 번역 대상이 아닌 요소는 번역하지 않는다.
 
-7. 불확실한 부분
-- 의미가 불분명하거나 게임 상황만으로 확정할 수 없으면 추측하지 않는다.
-- 대안이 필요하면 최대 2개까지 제시한다. 추측이 들어간 번역은 반드시 ‘(추측)’이라고 표시한다.
+8. 불확실한 부분
+- 의미가 불분명하거나 게임 상황만으로 확정할 수 없으면 추측하지 않는다. 가장 무난한 번역을 쓰고 검수 주의사항(없으면 비고)에 ‘REVIEW: 추측 — (무엇을 추측했는지)’.
+- 대안은 ‘번역 대안’ 규칙(시트)대로만 낸다.
 
-8. 최종 결과
+9. 최종 결과
 - 모든 번역 대상 문장을 빠짐없이 처리하고, 원문과 번역문을 1:1로 대응시킨다.
 - 번역 AI는 번역할 때 내린 판단과 근거, 번역문이 전달하는 의미를 한국어로 기록한다. 독립 역번역은 번역하지 않은 검수 AI가 나중에 따로 한다.
 - 번역이 불가능하거나 기획 판단이 필요한 부분은 따로 표시한다.
 - 지정된 엑셀 시트, 열, 행 구조를 바꾸지 않는다.
 
 최종 원칙: 번역의 자연스러움보다 게임의 정상적인 플레이 가능성을 우선한다.`;
+/* AI별 지시: 번역 원칙은 모두 COMMON_TRANSLATE에 두고, 여기에는 그 AI가 작업할 때 놓치기 쉬운 것만 (v32에서 공통 지시와 겹치는 줄 정리) */
 const TRANSLATE_TIPS = {
-  Claude: ['번역을 시작하기 전에 게임 정보, 용어집, 원문, 이미지 자료를 전체적으로 파악한다.', '문장을 번역하기 전에 앞뒤 문맥과 그 문장의 게임 내 역할을 확인한다.', '같은 게임 안의 표현과 캐릭터 말투가 일관되게 유지되게 한다.', '긴 작업에서도 앞서 정한 용어와 번역 방식을 유지한다.', '의미가 불분명한 부분은 임의로 확정하지 않는다.', '결과를 내기 전에 원문 누락과 번역 누락이 없는지 확인한다.'],
-  Gemini: ['첨부된 PNG와 자료를 함께 보고 게임의 시각적 맥락을 파악한다.', '이미지에 표시된 문구와 원문 목록을 대응시킨다.', '버튼, 안내창, 제목, 효과음 등 화면에서의 역할을 구분해 번역한다.', '글자 크기·배치·강조 여부를 고려해 화면에 맞는 표현을 고른다.', '이미지에서 정확히 판독할 수 없는 문구는 추측하지 않는다.', '자료가 여러 개면 서로의 연결 관계를 파악한 뒤 번역한다.', '결과에 원문 누락이나 중복이 없는지 확인한다.'],
-  ChatGPT: ['제공된 게임 정보, 용어집, 원문, 이미지 자료를 기준으로 번역한다.', '번역 대상 전체를 원문과 1:1로 대응시킨다.', '지정된 엑셀 시트와 열 구조를 엄격하게 지킨다.', '원문, 번역문, 한국어 역번역을 각각 구분해 쓴다.', '번역 대안이나 기획 판단이 필요한 항목은 일반 번역 결과와 분리해 ‘기획 확인’ 시트에 쓴다.', '번역 후 원문 대비 누락, 중복, 변수·숫자 변경 여부를 확인한다.', '결과를 요약하거나 일부 문장만 쓰지 않는다.'],
+  Claude: ['번역을 시작하기 전에 게임 정보·게임 이해·용어집·원문표·이미지를 끝까지 한 번 훑고 시작한다.', '줄이 많아도 앞서 정한 용어·번역 방식·캐릭터 말투를 마지막 줄까지 유지한다.'],
+  Gemini: ['첨부 PNG를 원문표와 맞춰 보고, 각 문구가 화면의 어느 요소(버튼·안내창·제목·효과음)인지 확인한 뒤 번역한다.', '글자 크기·배치·강조를 보고 화면에 들어갈 길이를 함께 고려한다.', '여러 이미지에 걸친 문구는 이미지 사이의 연결(앞 화면 → 다음 화면)을 먼저 파악한다.'],
+  ChatGPT: ['지정된 엑셀 시트와 열 구조를 엄격하게 지킨다. 결과를 요약하거나 일부 줄만 쓰지 않는다.', '번역 대안은 ‘번역 대안’ 시트에, 기획이 정할 것만 ‘기획 확인’ 시트에 쓴다. 번역 시트에 섞지 않는다.', '‘번역 결과의 한국어 의미’는 번역문이 전달하는 뜻을 쓰는 칸이다. 역번역은 쓰지 않는다 (독립 역번역은 다른 AI가 따로 함).'],
 };
 /* 게임별 정보: 게임마다 다르고, 번역·검수 프롬프트에 똑같이 들어감 */
 /* ---------- 게임 이해 (번역 전 단계) ---------- */
@@ -3291,19 +3322,30 @@ function gameInfoBlock(t, lk) {
 ${toneLines(t, lk).split('\n').map(x => '  ' + x).join('\n')}`;
 }
 /* 게임 상황·맥락 기반 번역 규칙 (2026-11-18): 지시어·시제는 사전 뜻이 아니라 그 순간 플레이어가 보는 것 기준 */
-function situBlock(mode) {
+const FUNC_RULES = `# 표현 선택: 단어가 아니라 게임 기능으로 (공통 지시 5와 같음)
+- 한국어 단어를 바로 외국어 단어로 바꾸지 않는다. 줄마다 이 순서로 정한다.
+  ① 어디에 쓰이나: 화면·요소 (버튼·메뉴·UI, 안내·지시문, 문제·단서, 시스템 메시지, 정답·오답 피드백, 캐릭터 대사)
+  ② 무슨 기능인가: 안내 · 지시 · 상태 표시 · 질문 · 피드백 · 연출
+  ③ 플레이어가 받아야 할 의미
+  ④ 플레이어가 실제로 할 행동: 무엇을, 어떤 순서·조건으로
+  ⑤ 그 상황에서 그 언어 사용자가 실제로 쓰는 표현을 고른다
+  ⑥ 원문의 규칙·의미·행동이 그대로인지 확인한다
+- 예: ‘사용 버튼’ — 앞으로 조작할 버튼을 안내하면 Buttons to Use, 지금 켜진 버튼을 표시하면 Active Buttons, 지금 쓰고 있는 버튼을 설명하면 Buttons in Use. 문법은 모두 맞지만 뜻과 쓰임이 다르다. 화면 기능을 확인해 하나를 고른다.
+- 플레이어 관점 확인: 처음 보는 외국인 관광객이 번역문만 보고 (1) 무엇을 해야 한다고 이해할지 (2) 행동 대상이 분명한지 (3) 순서·조건이 맞는지 (4) 다른 행동으로 오해할 여지가 없는지 (5) 다음 진행 단계와 이어지는지 본다. 원문과 다른 행동을 하게 만들면 자연스러워도 고친다. 단, 원문에 없는 행동·설명은 더하지 않는다.
+- 후보 비교: 다의어 · 버튼·UI · 조작 동사 · 문화 표현 · 언어유희 · 뜻이 갈릴 수 있는 문장 구조 · 기존 번역과 다르게 읽힐 수 있는 표현이면, 처음 떠오른 번역을 바로 확정하지 않고 후보들의 실제 뜻 · 뉘앙스 · 쓰는 상황 · 플레이어가 알아들을 가능성 · 규칙·행동과의 일치를 비교해 고른다. 그 밖의 줄은 비교하지 않아도 된다. 비교 뒤에도 고를 가치가 있는 후보가 남으면 ‘번역 대안’ 규칙대로 따로 남긴다.
+`;
+function situBlock(mode, func) {
   if (mode === 'review') return `# 게임 상황·맥락 확인 (검수)
 - 그 문장이 쓰이는 순간 플레이어가 무엇을 보고 무엇을 하는지(기억 화면 → 문제 화면 → 정답 화면, 화면을 보는지·버튼이나 공간을 보는지)를 게임 정보·게임 이해·화면 순서로 확인한다.
 - this·that·it·these·here·above 같은 지시어와 시제(is/was)가 실제 상황과 맞는지 본다. 예: 문제 화면에서 이미 사라진 기억 화면의 칸을 가리키는데 지금 있는 것처럼(현재형·‘이것’) 쓰면 문맥 감점.
+- 버튼·UI·조작 동사 표현이 화면 기능(앞으로 쓸 것 안내 / 지금 상태 표시 / 지시)과 맞는지, 번역문만 본 플레이어가 원문과 다른 행동을 하게 되지 않는지 본다. 예: 앞으로 조작할 버튼 안내인데 Active Buttons(지금 켜진 버튼)로 쓰면 문맥 어긋남.
 - 상황과 어긋나면 문맥 점수를 깎고 이유에 ‘상황 지시어: (무엇이 왜 어긋나는지)’. 상황을 확인할 수 없으면 판정은 REVIEW, 이유에 ‘상황 확인 필요’.
 `;
-  return `# 게임 상황·맥락 기반 번역 규칙
-1. 번역 전에 그 문장이 쓰이는 게임 상황과 플레이어의 행동 단계를 파악한다 (게임 정보·게임 이해의 화면 설명·화면 순서·요소를 본다. 예: 기억 화면 → 문제 화면 → 정답 화면).
-2. 가리키는 대상이 지금 화면에 보이는 것인지, 앞 화면에서 보였다가 지금은 사라진 것인지 구분한다.
-3. this·that·it·these·here 같은 지시어와 시제는 사전 뜻만으로 고르지 않는다. 실제 게임 상황에서 플레이어와 지시 대상의 관계(지금 보임 / 사라짐 / 손에 있음 / 공간에 있음)로 고른다.
-4. 플레이어가 그 순간 화면을 보고 있지 않으면(버튼·공간·다른 플레이어를 보는 단계) 눈앞의 대상을 가리키는 표현을 쓰지 않는다.
-5. 원문의 의미와 게임 진행 규칙(무엇을 몇 개 누르는지, 정답 조건)은 그대로 두고, 그 상황에서 바로 이해되는 표현을 고른다.
-6. 맥락만으로 판단할 수 없으면 추측하지 않는다. 가장 무난한 번역을 쓰고 ${mode === 'card' ? '이유 칸' : '검수 주의사항'}에 ‘REVIEW: 상황 확인 필요 — (무엇을 모르는지)’.
+  return `${func ? FUNC_RULES : ''}# 게임 상황·맥락 기반 번역 규칙 (지시어·시제)
+1. 가리키는 대상이 지금 화면에 보이는 것인지, 앞 화면에서 보였다가 지금은 사라진 것인지 구분한다 (게임 정보·게임 이해의 화면 설명·화면 순서를 본다. 예: 기억 화면 → 문제 화면 → 정답 화면).
+2. this·that·it·these·here 같은 지시어와 시제는 사전 뜻만으로 고르지 않는다. 실제 게임 상황에서 플레이어와 지시 대상의 관계(지금 보임 / 사라짐 / 손에 있음 / 공간에 있음)로 고른다.
+3. 플레이어가 그 순간 화면을 보고 있지 않으면(버튼·공간·다른 플레이어를 보는 단계) 눈앞의 대상을 가리키는 표현을 쓰지 않는다.
+4. 맥락만으로 판단할 수 없으면 추측하지 않는다. 가장 무난한 번역을 쓰고 ${mode === 'card' ? '이유 칸' : '검수 주의사항'}에 ‘REVIEW: 상황 확인 필요 — (무엇을 모르는지)’.
 - 번역 근거: 지시어나 표현을 원문과 다르게 바꿨으면 ${mode === 'card' ? '이유 칸' : '번역 이유'}에 그 표현을 고른 이유와 게임 상황의 관계를 한국어로 쓴다. 예: ‘위 도형이 위치한 칸 → (그 그림이) 있었던 칸: 문제 화면에서는 기억 화면의 칸 그림이 사라졌으므로 지금 있는 것처럼 쓰지 않음’.
 `;
 }
@@ -3364,7 +3406,7 @@ ${honorBlock(lk, 'translate')}${situBlock('translate')}${planBlock('translate')}
    - 요소: 제목, 버튼, 말풍선(위), 로고처럼 화면 안의 위치·종류
    - 화면 순서: 그 화면(파일) 안에서 위→아래, 왼→오른쪽으로 몇 번째 문구인지 1부터. 같은 화면 문구는 이 순서대로 줄을 놓는다.
    - 현지화 분류 ~ 재설계 여부: 아래 ‘현지화 분류’ 규칙대로. 모든 줄에 쓴다.
-   - 비고: 모호하거나 확인이 필요한 것만. 추측이면 ‘(추측)’
+   - 비고: 모호하거나 확인이 필요한 것만. 추측이면 ‘REVIEW: 추측 — (무엇을 추측했는지)’
    - 같은 문구가 여러 파일에 나오면 파일마다 한 줄씩 쓴다. (화면에 적용할 때 편하도록)
 2. 시트 \`재설계\` — C 줄 (아래 ‘재설계’ 규칙). 없으면 만들지 않음
    - 시트 \`기획 확인\` — 파일 | 한국어 원문 | 문제 | 대안 1 | 대안 2 (아이콘·그림 교체처럼 번역 밖에서 기획이 정할 것만. 없으면 만들지 않음)
@@ -3403,15 +3445,12 @@ function srcTranslateTail(t, lk, ab) {
 # 번역 판단 및 근거 기록 (번역할 때의 확인용 · 독립 역번역은 검수 AI가 나중에 따로 함)
 - 번역 방식 (모든 줄, 하나만):
 ${METH_TREE.split('\n').map(x => '  ' + x).join('\n')}
-  - 직역: 원문의 단어와 문장 구조를 최대한 유지
-  - 의역: 의미와 의도는 유지하고 ${L.label}의 자연스러운 표현으로 재구성
-  - 재구성: 직역이나 일반적인 의역으로는 원문의 의미·기능·맥락을 전달할 수 없어 표현을 새로 만듦. 단순히 자연스럽게 바꾼 것은 재구성이 아니다.
-- 번역 결과의 한국어 의미 (모든 줄): ${L.label} 번역문이 실제로 전달하는 의미를 한국어로. 원문을 그대로 반복하지 않는다.
-- 단어 의미 판단: 원문의 다의어는 원문표의 해석을 따른 결과를, 고른 ${L.label} 단어가 여러 뜻으로 읽힐 수 있으면 ‘단어: 가능한 의미들 → 이 번역에서의 의미 (이유)’. 예: Check: 확인하다/체크 표시/체크무늬/계산서 → 확인하다 (화면에서 항목을 확인하는 버튼). 해당 없으면 ‘-’. 확실하지 않으면 ‘문맥 확인 필요: (필요한 정보)’.
+- 번역 결과의 한국어 의미 (모든 줄): ${L.label} 번역문 전체가 실제로 전달하는 뜻을 한국어로 (단어별 풀이가 아니라 문장 전체). 원문을 그대로 반복하지 않는다.
+- 단어 의미 판단 (해당 줄만): 여러 뜻 중 하나를 고른 단어만. 원문의 다의어는 원문표의 해석을 따른 결과를, 고른 ${L.label} 단어가 여러 뜻으로 읽힐 수 있으면 ‘단어: 가능한 의미들 → 이 번역에서의 의미 (이유)’. 예: Check: 확인하다/체크 표시/체크무늬/계산서 → 확인하다 (화면에서 항목을 확인하는 버튼). 해당 없으면 ‘-’. 확실하지 않으면 ‘문맥 확인 필요: (필요한 정보)’.
 - 핵심어 대응 (모든 줄): 원문에서 의미를 좌우하는 단어(행동 동사, 대상, 조건·횟수·순서, 숫자와 단위, 고유명사) 2~5개를 골라 ‘원문 단어 → 번역어${lk === 'en' ? '' : '(한글로 읽는 법)'} = 그 번역어의 한국어 뜻’으로, ‘ / ’로 구분. 예: ${lk === 'ja' ? '버섯 → キノコ(키노코) = 버섯 / 누르다 → 押す(오스) = 누르다' : lk === 'zh' ? '버섯 → 蘑菇(모구) = 버섯 / 누르다 → 按(안) = 누르다' : '버섯 → mushroom = 버섯 / 누르다 → press = 누르다'}. 한국어를 모르는 사람이 아니라 ${L.label}를 모르는 한국 사람이 단어 단위로 대조할 수 있게 쓴다.
-- 번역 이유: 직역 줄은 ‘-’. 의역·재구성 줄과, 지시어·시제·단어를 원문 그대로가 아니게 고른 줄만 한 줄로 ‘무엇을 → 무엇으로: 왜(게임 상황·기능)’. 예: ‘찾다 → 見つける: 숨은 차이를 발견하는 행동이라 探す(찾아다님)가 아님’ / ‘위치한 칸 → 있었던 칸: 문제 화면에서는 칸이 사라짐’
-  - 번호를 매긴 문단(①②③)으로 쓰지 않는다. ‘자연스러워서’, ‘적절해서’만으로 쓰지 않는다.
-  - 같은 이유면 ‘S003과 같음’처럼 앞 번호를 쓴다.
+- 번역 이유: 직역 줄(뜻 변경·특별한 판단 없음)은 ‘-’. 의역·재구성 줄, 후보를 비교해 고른 줄, 지시어·시제·단어를 원문 그대로가 아니게 고른 줄만 1~2문장으로: 고른 표현과 다른 후보의 뜻 차이 → 이 게임 상황에서 고른 이유(플레이어가 이해할 실제 뜻).
+  - 예: ‘사용 버튼 → Buttons to Use: 지금 켜진 버튼 표시가 아니라 앞으로 조작할 버튼을 안내하는 문구라, 현재 상태를 뜻하는 Buttons in Use 대신 사용 대상을 나타내는 표현’ / ‘찾다 → 見つける: 숨은 차이를 발견하는 행동이라 探す(찾아다님)가 아님’
+  - ‘자연스러워서’, ‘더 적절해서’, ‘현지 표현에 맞춰서’, ‘이해하기 쉬워서’만으로 쓰지 않는다. 번호를 매긴 문단(①②③)으로 쓰지 않는다. 같은 이유면 ‘S003과 같음’처럼 앞 번호를 쓴다.
 - 재구성 사유 (재구성만, 나머지는 ‘-’): 한두 문장으로 ‘그대로 옮기면 안 되는 이유 → 원문의 의도를 새 표현이 어떻게 살리는지’
 - 대체 표현: 핵심어 중 다른 말로도 옮길 수 있는 것만, 단어마다 최대 3개를 ‘원문 단어: 대체어1(한국어 뜻) / 대체어2(뜻) / 대체어3(뜻)’으로. 여러 단어는 ‘ ; ’로 구분. 지금 고른 번역어는 넣지 않는다. 바꿀 말이 없으면(숫자·고유명사·뜻이 하나뿐) ‘-’. 예: ${lk === 'ja' ? '찾다: 探す(찾아다니다) / 見つけ出す(찾아내다) / 捜す(행방을 찾다)' : lk === 'zh' ? '찾다: 寻找(찾아다니다) / 找到(찾아내다) / 发现(발견하다)' : '찾다: look for(찾아다니다) / spot(발견하다) / locate(위치를 알아내다)'}
 - 공유 대상 번역: 원문표의 ‘공유 대상’이 있는 줄만 ‘사과나무=apple tree, 버섯=mushroom’처럼. 같은 퍼즐 안에서는 1P·2P 모든 줄에서 같은 대상을 같은 단어로 옮기고 번역문에도 그 단어를 쓴다 (사이트가 검사함). 없으면 ‘-’.
@@ -3602,11 +3641,12 @@ const altRules = (lk, idHead) => {
   - 직역/의역: 직역과 의역에 따라 자연스러움이나 뉘앙스가 달라짐
   - 캐릭터: 성격이나 대화 상대에 따라 표현이 달라짐
   - 말의 기능: 명령·부탁·제안·경고 중 어느 것으로도 읽힘
-- 표현만 조금 다른 대안은 만들지 않는다. 기본 번역과 무엇이 다른지 한 줄로 설명하지 못하면 뺀다.
+  - 기능 표현: 버튼·UI·조작 동사처럼 화면에서의 쓰임(안내·상태 표시·지시)에 따라 표현이 달라짐
+- 실제 뜻·뉘앙스·쓰임이 다른 후보를 우선한다. 표현만 조금 다르거나 동의어만 바꾼 대안은 만들지 않는다. 기본 번역과 무엇이 다른지 한 줄로 설명하지 못하면 뺀다.
 - 기본 번역 1개 + 추가 대안 2~4개. 기본 번역은 \`번역\` 시트의 번역문과 같아야 한다.
 - 시트 \`번역 대안\` — ${ALT_COLS(idHead)}
   - 대안 하나가 한 행. 대안 칸은 기본 · A · B · C · D. 한국어 원문 칸은 그 줄의 원문을 그대로 복사한다 (줄 밀림 확인용).
-  - 대안 사유: 중의성 · 표현 다양 · 직역/의역 · 캐릭터 · 말의 기능 중 해당하는 것.
+  - 대안 사유: 중의성 · 표현 다양 · 직역/의역 · 캐릭터 · 말의 기능 · 기능 표현 중 해당하는 것.
   - 한국어 의미·뉘앙스·쓸 상황·원문과 차이·캐릭터 적합성은 한국어로 쓴다. ${L.label}를 모르는 사람이 이것만 보고 고를 수 있어야 한다.
   - 추천: 추천하는 대안 한 행에만 ‘O’, 나머지는 ‘-’. 추천 이유는 추천한 행에만. 보통 기본 번역을 추천한다.
   - 추천 기준은 게임에서의 기능(정답·행동·조건), 이 화면의 문맥, 캐릭터다. 원문 단어와 더 닮았다거나 한국어로 되돌렸을 때 원문과 더 비슷하다는 이유로 추천하지 않는다.
@@ -3625,7 +3665,7 @@ function altReqPrompt(t, lk, ids) {
 
 ${gameInfoBlock(t, lk)}
 ${honorBlock(lk, 'translate')}
-${situBlock('translate')}${planBlock('translate')}# 용어집 (확정은 반드시 지킴)
+${situBlock('translate', true)}${planBlock('translate')}# 용어집 (확정은 반드시 지킴)
 ${termLines(gidOf(t), lk)}
 
 # 결과물: 시트 \`번역 대안\` (엑셀을 못 만들면 같은 표를 채팅에 표로, 표 위에 시트 이름)
@@ -4249,7 +4289,20 @@ function crossExtraHTML(t, lk) {
     const pzOf = r => Puzzle.matchPuzzle(r[iP], iRel >= 0 ? r[iRel] : '', PZL);
     const prog = r => { const n = String(r[iP] || '').trim(); if (!n || /퍼즐\s*없음/.test(n)) return '<td>-</td>'; const q = pzOf(r); return !q ? '<td class="pz na"><small class="sb">프로그램 검사 없음</small></td>' : `<td class="pz ${q.v === 'PASS' ? 'ok' : q.v === 'FAIL' ? 'bad' : 'na'}" title="${esc(q.msgs.join(' / '))}">${q.v === 'NONE' ? '구조 없음' : q.v}${q.v === 'FAIL' ? `<br><small>${esc(q.msgs[0] || '')}</small>` : ''}${q.solve ? `<br><small>풀어 보기: ${q.solveOk ? '맞음' : '다름'}</small>` : ''}</td>`; };
     const conf = (name, r) => { const n = String(name || '').trim(); if (!n || /퍼즐\s*없음/.test(n)) return '<td>-</td>'; const o = ok[n], q = r ? pzOf(r) : null, bad = q && q.v === 'FAIL'; return `<td class="pzc">${o ? `<span class="sg-ok">✓ ${esc(o.by)}</span>${readOnly ? '' : ` <button type="button" class="linkbtn" data-pzok="${esc(n)}" data-off="1">취소</button>`}` : readOnly ? '<span class="sb">대기</span>' : `<button type="button" class="btn" data-pzok="${esc(n)}" data-pzrel="${esc(iRel >= 0 ? r[iRel] : '')}" ${bad ? 'disabled title="프로그램 퍼즐 검사 FAIL — 번역이나 퍼즐 구조를 고쳐야 확인할 수 있음"' : ''}>직접 확인함</button>${bad ? '<br><small class="badtxt">프로그램 FAIL</small>' : ''}`}</td>`; };
-    return `<div class="xpri"><b>퍼즐 검수</b> <small class="sb">${PUZZLE_CHECKS.map(c => c[0]).join(' · ')}</small><div class="tprev"><table class="pzt"><thead><tr><th>퍼즐</th>${PUZZLE_CHECKS.map(([k, q]) => `<th title="${esc(q)}">${esc(k)}</th>`).join('')}<th>이유</th><th>프로그램 검사</th><th>담당자</th></tr></thead><tbody>${pzs.rows.slice(1).map(r => `<tr><td>${esc(r[iP])}</td>${cols.map(i => i >= 0 ? pzCell(r[i]) : '<td class="pz na">-</td>').join('')}<td style="white-space:pre-wrap">${iY >= 0 ? esc(r[iY]) : ''}</td>${prog(r)}${conf(r[iP], r)}</tr>`).join('')}</tbody></table></div><small class="sb">퍼즐 단서·정답·규칙은 AI 결과와 관계없이 담당자가 직접 풀어 보고 ‘직접 확인함’. 문제·확인 필요는 맨 위 수정 요청(퍼즐)으로 넘어감.</small></div>`; })() : '';
+    /* 가독성 (2026-11-26): 넓은 표 대신 퍼즐마다 한 장. 문제·확인 필요만 칩으로, OK·해당 없음은 개수만, 이유는 전체 폭 */
+    const kind = v => { const x = String(v || '').trim(); return PZ_OK.test(x) ? 'ok' : PZ_NA.test(x) || !x ? 'na' : /확인\s*필요|REVIEW/i.test(x) ? 'rev' : PZ_BAD.test(x) ? 'bad' : 'na'; };
+    const items = pzs.rows.slice(1).filter(r => String(r[iP] || '').trim()).map(r => { const ks = cols.map((ci, k) => ({ name: PUZZLE_CHECKS[k][0], q: PUZZLE_CHECKS[k][1], v: ci >= 0 ? String(r[ci] || '').trim() : '', c: ci >= 0 ? kind(r[ci]) : 'na' })); const q = pzOf(r); return { r, ks, bad: ks.filter(k => k.c === 'bad').length, rev: ks.filter(k => k.c === 'rev').length, fail: q && q.v === 'FAIL' }; })
+      .sort((a, b) => (b.bad + (b.fail ? 1 : 0)) - (a.bad + (a.fail ? 1 : 0)) || b.rev - a.rev);
+    const nBad = items.filter(o => o.bad || o.fail).length, nRev = items.filter(o => !o.bad && !o.fail && o.rev).length;
+    const progTxt = r => { const n = String(r[iP] || '').trim(); if (/퍼즐\s*없음/.test(n)) return ''; const q = pzOf(r); if (!q) return '<span class="sb">프로그램 검사 없음</span>'; return `<span class="pzchip ${q.v === 'PASS' ? 'ok' : q.v === 'FAIL' ? 'bad' : 'na'}" title="${esc(q.msgs.join(' / '))}">프로그램 ${q.v === 'NONE' ? '구조 없음' : q.v}</span>${q.v === 'FAIL' && q.msgs[0] ? ` <small class="badtxt">${esc(q.msgs[0])}</small>` : ''}${q.solve ? ` <small class="sb">풀어 보기 ${q.solveOk ? '맞음' : '다름'}</small>` : ''}`; };
+    const confTd = (n, r) => conf(n, r).replace(/^<td class="pzc">|<\/td>$/g, '');
+    return `<div class="xpri"><b>퍼즐 검수 ${items.length}개</b> <small class="sb">${nBad ? `<span class="badtxt">문제 ${nBad}</span> · ` : ''}${nRev ? `확인 필요 ${nRev} · ` : ''}이상 없음 ${items.length - nBad - nRev} · 기준: ${PUZZLE_CHECKS.map(([k, q]) => `<span title="${esc(q)}">${esc(k)}</span>`).join(' · ')}</small>
+      <div class="pzlist">${items.map(o => { const okN = o.ks.filter(k => k.c === 'ok').length, naN = o.ks.filter(k => k.c === 'na').length, st = o.bad || o.fail ? 'bad' : o.rev ? 'rev' : 'ok'; return `<div class="pzcard ${st}">
+        <div class="pzhead"><b>${esc(o.r[iP])}</b>${iRel >= 0 && String(o.r[iRel] || '').trim() ? ` <small class="sb">${esc(o.r[iRel])}</small>` : ''}<span class="pzspacer"></span>${confTd(o.r[iP], o.r)}</div>
+        <div class="pzchips">${o.ks.filter(k => k.c === 'bad' || k.c === 'rev').map(k => `<span class="pzchip ${k.c}" title="${esc(k.q)}">${esc(k.name)} · ${esc(k.v)}</span>`).join('')}${okN ? `<span class="pzchip ok">OK ${okN}</span>` : ''}${naN ? `<span class="pzchip na" title="${esc(o.ks.filter(k => k.c === 'na').map(k => k.name).join(', '))}">해당 없음 ${naN}</span>` : ''}${progTxt(o.r)}</div>
+        ${iY >= 0 && String(o.r[iY] || '').trim() ? `<p class="pzwhy">${esc(o.r[iY])}</p>` : ''}
+      </div>`; }).join('')}</div>
+      <small class="sb">퍼즐 단서·정답·규칙은 AI 결과와 관계없이 담당자가 직접 풀어 보고 ‘직접 확인함’. 문제·확인 필요는 맨 위 수정 요청(퍼즐)으로 넘어감.</small></div>`; })() : '';
   const vi = rows => (rows[0] || []).findIndex(h => normHead(h).startsWith('판정'));
   return `<div class="xextra"><h4 class="mh">AI 추가 검수 결과 <small>교차 검수 엑셀의 다른 시트</small></h4>
     ${pzHTML}
@@ -4884,7 +4937,7 @@ function autoFixPrompt(t, lk, F) {
 
 ${gameInfoBlock(t, lk)}
 ${honorBlock(lk, 'translate')}
-${situBlock('translate')}${planBlock('translate')}# 용어집 (확정은 반드시 지킴)
+${situBlock('translate', true)}${planBlock('translate')}# 용어집 (확정은 반드시 지킴)
 ${termLines(gidOf(t), lk)}
 ${banBlock(lk)}
 # 결과물: 시트 \`자동 점검 수정\` (엑셀을 못 만들면 같은 표를 채팅에 표로, 표 위에 시트 이름)
@@ -4963,7 +5016,7 @@ function cardTrPrompt(t, lk, ai) {
 
 ${gameInfoBlock(t, lk)}
 ${honorBlock(lk, 'translate')}
-${situBlock('card')}${planBlock('card')}# 용어집 (확정은 반드시 지킴)
+${situBlock('card', true)}${planBlock('card')}# 용어집 (확정은 반드시 지킴)
 ${termLines(gidOf(t), lk)}
 ${banBlock(lk)}${hcmpLessons(t, lk)}
 # 결과물: 시트 \`카드 번역\` (엑셀을 못 만들면 같은 표를 채팅에 표로, 표 위에 시트 이름)
@@ -6459,11 +6512,11 @@ function ratPrompt(id, t, lk) {
 ${gameInfoBlock(t, lk)}
 
 # 번역 판단 및 근거 기록
-- 번역 방식: 직역 / 의역 / 재구성 중 하나 (단순히 자연스럽게 바꾼 것은 재구성이 아님)
-- 번역 결과의 한국어 의미: 지금 번역문이 실제로 전달하는 의미. 원문을 그대로 반복하지 않는다.
+- 번역 방식: 직역 / 의역 / 재구성 중 하나 (직역 = 표현·구조를 유지해도 같은 뜻·행동 / 의역 = 단어·구조를 바꿔야 같은 뜻·행동 / 재구성 = 언어·문화 차이로 게임·퍼즐이 성립하지 않아 새로 만듦. 자연스럽게 바꿨다는 이유만으로 재구성이 아님)
+- 번역 결과의 한국어 의미: 지금 번역문 전체가 실제로 전달하는 뜻. 원문을 그대로 반복하지 않는다.
 - 단어 의미 판단: 고른 ${L.label} 단어가 여러 뜻으로 읽힐 수 있으면 ‘단어: 가능한 의미들 → 이 번역에서의 의미 (이유)’, 없으면 ‘-’
 - 핵심어 대응: ‘원문 단어 → 번역어${lk === 'en' ? '' : '(한글로 읽는 법)'} = 한국어 뜻’ 2~5개, ‘ / ’로 구분
-- 번역 이유: 어떤 의미를 전하려고 어떤 표현을 골랐는지 구체적으로. ‘자연스러워서’만으로 쓰지 않는다.
+- 번역 이유: 직역(특별한 판단 없음)은 ‘-’. 그 밖에는 1~2문장으로: 고른 표현과 다른 후보의 뜻 차이 → 이 게임 상황에서 고른 이유. ‘자연스러워서’, ‘더 적절해서’, ‘현지 표현에 맞춰서’, ‘이해하기 쉬워서’만으로 쓰지 않는다.
 - 재구성 사유: 재구성일 때만
 - 변경 유형: 표현 (뜻은 같고 표현만) / 의미 (전달하는 뜻이 바뀜) / 기능 (게임 행동이나 기능 이해가 바뀜) 중 하나
 - 변경 전후 의미 차이: 수정 전 번역이 어떻게 읽혔고 수정 후 어떻게 읽히는지, 왜 이 변경이 필요한지. 예: 기존 번역은 ‘선택한다’로 읽힐 수 있었으나 실제 기능은 ‘정보 확인’이라 고침.
